@@ -10,6 +10,10 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 import { LoadDocumentFileComponent } from './component/load-document-file/load-document-file.component';
 import {FileUploadModule} from "ng2-file-upload";
+import { ViewDocumentComponent } from './component/view-document/view-document.component';
+import {FhirService} from "./service/fhir.service";
+import {HttpClientModule} from "@angular/common/http";
+import { ViewDocumentSectionComponent } from './component/view-document-section/view-document-section.component';
 
 
 
@@ -19,17 +23,21 @@ import {FileUploadModule} from "ng2-file-upload";
     AppComponent,
     LoadDocumentComponent,
     NavComponent,
-    LoadDocumentFileComponent
-   // AngularFontAwesomeModule
+    LoadDocumentFileComponent,
+    ViewDocumentComponent,
+    ViewDocumentSectionComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FileUploadModule,
+    HttpClientModule,
     NgbModule.forRoot()
 
   ],
-  providers: [],
+  providers: [
+    FhirService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

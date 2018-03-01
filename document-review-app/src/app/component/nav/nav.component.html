@@ -1,23 +1,18 @@
 <div class="container-fluid">
 <nav class="navbar navbar-expand navbar-dark bg-dark fixed-top">
 
-
-<!--
-    <div  ngbDropdown class="d-inline-block">
-      <button class="btn btn-outline-secondary" id="dropdownBasic1" ngbDropdownToggle><i class="fa fa-user" aria-hidden="false"></i></button>
-      <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-        <button class="dropdown-item" (click)="logout()"><i class="fa fa-sign-out" aria-hidden="false"></i> Logout</button>
-      </div>
-    </div>
-    -->
-
     <ul class="nav navbar-nav">
       <a class="navbar-brand">{{title}}</a>
       <li class="nav-item active" >
         <a class="nav-link" routerLink="/"><i class="fa fa-home" aria-hidden="false"></i> Find</a>
       </li>
     </ul>
-
+  <div  ngbDropdown class="d-inline-block">
+    <button class="btn btn-outline-secondary" id="dropdownBasic1" ngbDropdownToggle><i class="fa fa-user" aria-hidden="false"></i></button>
+    <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+      <button class="dropdown-item" (click)="logout()"><i class="fa fa-sign-out" aria-hidden="false"></i> Logout</button>
+    </div>
+  </div>
 
 </nav>
 </div>

@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import {FileUploader} from "ng2-file-upload";
+import {Router} from "@angular/router";
 
 
 
-const URL = 'http://localhost:8181/STU3/Bundle';
+const URL = 'http://localhost:8181/STU3/Bundle?_format=application/json';
 
 // https://github.com/valor-software/ng2-file-upload
 
@@ -20,28 +21,15 @@ export class LoadDocumentFileComponent implements OnInit {
   uploader:FileUploader;
   hasBaseDropZoneOver:boolean;
   hasAnotherDropZoneOver:boolean;
-  response:string;
+  response: fhir.OperationOutcome;
 
-  constructor (){
+  constructor (private router: Router){
 
     this.uploader = new FileUploader({
       url: URL,
       disableMultipart: true, // 'DisableMultipart' must be 'true' for formatDataFunction to be called.
 
-      /*
-      formatDataFunctionIsAsync: true,
 
-      formatDataFunction: async (item) => {
-        return new Promise( (resolve, reject) => {
-          resolve({
-            name: item._file.name,
-            length: item._file.size,
-            contentType: item._file.type,
-            date: new Date()
-          });
-        });
-      }
-      */
     });
 
     this.uploader.onBeforeUploadItem = (item) => {
@@ -52,9 +40,18 @@ export class LoadDocumentFileComponent implements OnInit {
     this.hasBaseDropZoneOver = true;
     this.hasAnotherDropZoneOver = false;
 
-    this.response = '';
+    this.response = undefined;
 
-    this.uploader.response.subscribe( res => this.response = res );
+    this.uploader.response.subscribe( res => {
+
+        let resJson :fhir.OperationOutcome = JSON.parse(res);
+
+        this.response = res;
+        router.navigate(['doc/'+resJson.id ] );
+      },
+        err => {
+          console.log("oopsie");
+        });
   }
 
   public getContentType(item) {
@@ -69,8 +66,5 @@ export class LoadDocumentFileComponent implements OnInit {
     this.hasBaseDropZoneOver = e;
   }
 
-  public fileOverAnother(e:any):void {
-    this.hasAnotherDropZoneOver = e;
-  }
 
 }
