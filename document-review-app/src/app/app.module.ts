@@ -13,7 +13,10 @@ import {FileUploadModule} from "ng2-file-upload";
 import { ViewDocumentComponent } from './component/view-document/view-document.component';
 import {FhirService} from "./service/fhir.service";
 import {HttpClientModule} from "@angular/common/http";
-import { ViewDocumentSectionComponent } from './component/view-document-section/view-document-section.component';
+import { ViewDocumentSectionComponent } from './component/view-document/view-document-section.component';
+import { PatientFindComponent } from './component/patient-find/patient-find.component';
+import { PatientSearchComponent } from './component/patient-search/patient-search.component';
+import {PatientItemComponent} from "./component/patient-search/patient-item.component";
 
 
 
@@ -25,7 +28,10 @@ import { ViewDocumentSectionComponent } from './component/view-document-section/
     NavComponent,
     LoadDocumentFileComponent,
     ViewDocumentComponent,
-    ViewDocumentSectionComponent
+    ViewDocumentSectionComponent,
+    PatientFindComponent,
+    PatientSearchComponent,
+    PatientItemComponent
   ],
   imports: [
     BrowserModule,

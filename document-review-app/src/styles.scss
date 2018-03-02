@@ -1,1 +1,78 @@
-/* You can add global styles to this file, and also import other style files */
+/* Master Styles */
+
+@import '~bootstrap/scss/bootstrap.scss';
+/* @import "~font-awesome/css/font-awesome.css"; */
+
+
+body { color: #000000; font-size: 10pt; line-height: normal; font-family: Verdana, Arial, sans-serif; margin: 10px; }
+h1 { font-size: 14pt; text-decoration: underline; font-weight: bold; color: #000000; margin-top: 25px; margin-bottom: 15px;}
+h2 { font-size: 12pt; text-decoration: underline; font-weight: bold; color: #000000; margin-top: 25px; margin-bottom: 15px; }
+h3 { font-size: 10pt; font-weight: bold; color: #000000; margin-top: 5px; margin-bottom: 15px; }
+h4 { font-size: 10pt; font-weight: bold; text-decoration: underline; color: #000000; margin-top: 5px; margin-bottom: 15px; }
+h5 { font-size: 10pt; font-weight: normal; text-decoration: underline;  color: #000000; margin-top: 5px; margin-bottom: 15px; }
+h6 { font-size: 10pt; font-weight: normal; color: #000000; margin-top: 5px; margin-bottom: 15px; }
+table { border: none;   table-layout: fixed; text-align: left; width: 100%;}
+th.default {padding: 3px; color: #000000; background-color: #eeeeee; text-align: left;}
+th {padding: 3px; font-size: 10pt;}
+td {padding: 3px; font-size: 10pt;}
+h1 {
+  color: #369;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 150%;
+}
+h2, h3 {
+  color: #444;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: lighter;
+}
+body {
+  margin: 2em;
+}
+body, input[text], button {
+  color: #888;
+  font-family: Cambria, Georgia;
+}
+a {
+  cursor: pointer;
+  cursor: hand;
+}
+body {
+  margin: 2em;
+}
+body, input[text], button {
+  color: #888;
+  font-family: Cambria, Georgia;
+}
+a {
+  cursor: pointer;
+  cursor: hand;
+}
+button {
+  font-family: Arial, Helvetica;
+  background-color: #eee;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  cursor: hand;
+}
+button:hover {
+  background-color: #cfd8dc;
+}
+button:disabled {
+  background-color: #eee;
+  color: #aaa;
+  cursor: auto;
+}
+body {
+  padding-top: 5rem;
+}
+.starter-template {
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+
+/* everywhere else */
+* {
+  font-family: Arial, Helvetica, sans-serif;
+}

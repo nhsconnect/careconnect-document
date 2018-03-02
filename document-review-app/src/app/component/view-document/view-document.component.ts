@@ -20,9 +20,11 @@ export class ViewDocumentComponent implements OnInit {
   composition : fhir.Composition = undefined;
   patient : fhir.Patient = undefined;
   sections : fhir.CompositionSection[] = [];
+  docId : string;
 
   getDocument(): void {
     let id = this.route.snapshot.paramMap.get('docid');
+    this.docId = id;
     console.log("docid = "+id);
 
     this.fhirService.getCompositionDocument(id).subscribe( document => {
@@ -42,5 +44,38 @@ export class ViewDocumentComponent implements OnInit {
 
     }
       });
+  }
+  downloadPDF() {
+    console.log("Download PDF");
+
+    let thefile = {};
+    this.fhirService.getCompositionDocumentPDF(this.docId)
+      .subscribe(data => {
+            thefile = new Blob([data], {type: "application/pdf"});
+          },
+          error => {
+            console.log("Error downloading the file." + error);
+          },
+        () => {
+                console.log('Completed file download.');
+          }
+        );
+
+   // let url = window.URL.createObjectURL(thefile);
+   // window.open(url);
+
+  }
+  downloadHTML() {
+    console.log("Download HTML");
+
+    let thefile = {};
+    this.fhirService.getCompositionDocumentHTML(this.docId)
+      .subscribe(data => thefile = new Blob([data], { type: "application/octet-stream" }), //console.log(data),
+        error => console.log("Error downloading the file." + error),
+        () => console.log('Completed file download.'));
+
+   // let url = window.URL.createObjectURL(thefile);
+   // window.open(url);
+
   }
 }

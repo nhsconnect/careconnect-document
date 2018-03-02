@@ -1,0 +1,11 @@
+
+  <div ng-if="patient" class="d-flex w-100 justify-content-between">
+      <h6>{{ getFirstName() }}<small> ({{ patient.gender }})</small></h6>
+    <small *ngIf="patient.telecom"><i class="fa fa-phone" aria-hidden="true"></i> {{ getFirstTelecom() }} </small>
+    <small>NHS Number: {{ getNHSIdentifier() }}</small>
+  </div>
+  <div  class="d-flex w-100 justify-content-between">
+    <small>{{ getFirstAddress() }} </small>
+    <small>Date of Birth: {{patient.birthDate | date: 'dd/MM/yyyy'}}</small>
+  </div>
+
