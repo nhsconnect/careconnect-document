@@ -4,7 +4,7 @@
 
   <p>{{composition.date | date: 'dd MMM yyyy HH:mm' }}</p>
 
-  <div *ngIf="patient!=undefined" [innerHTML]="patient.text.div"></div>
+  <div *ngIf="patient!=undefined && patient.text !=undefined" [innerHTML]="patient.text.div"></div>
 
   <ul class="list-group">
     <li *ngFor="let section of sections" class="list-group-item ">

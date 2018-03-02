@@ -47,7 +47,9 @@ export class LoadDocumentFileComponent implements OnInit {
         let resJson :fhir.OperationOutcome = JSON.parse(res);
 
         this.response = res;
-        router.navigate(['doc/'+resJson.id ] );
+        if (resJson.id !=undefined) {
+          router.navigate(['doc/'+resJson.id ] );
+        }
       },
         err => {
           console.log("oopsie");

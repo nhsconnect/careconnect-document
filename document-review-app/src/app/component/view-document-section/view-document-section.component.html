@@ -1,5 +1,7 @@
-<h5>
-  {{section.title}}
-</h5>
+<div class="d-flex w-100 justify-content-between">
+  <h5>{{section.title}}</h5>
+  <button class="btn-info">View Structured Content</button>
+</div>
+
 <div [innerHTML]="section.text.div"></div>
 
