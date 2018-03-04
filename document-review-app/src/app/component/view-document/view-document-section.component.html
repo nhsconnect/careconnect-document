@@ -1,7 +1,12 @@
-<div class="d-flex w-100 justify-content-between">
-  <h5>{{section.title}}</h5>
-  <button class="btn-info">View Structured Content</button>
+<div class="card card-default">
+  <div class="card-header">
+    <div class="d-flex w-100 justify-content-between">
+      <h5>{{section.title}}</h5>
+      <button class="btn-info" placement="left" ngbPopover="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." popoverTitle="Stuctured view of section">
+        View Structured Content</button>
+    </div>
+  </div>
+  <div class="card-body">
+    <div [innerHTML]="section.text.div"></div>
+  </div>
 </div>
-
-<div [innerHTML]="section.text.div"></div>
-

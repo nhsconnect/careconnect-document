@@ -1,18 +1,17 @@
 <div id="search-results">
 
 
-  <div class="input-group input-group-lg">
-    <span class="input-group-addon" id="sizing-addon1">Find</span>
+  <div class="form-group">
+    <label for="search-box" >Find</label>
     <input type="text" #searchBox id="search-box" class="form-control" (keyup)="search(searchBox.value)" placeholder="Find" aria-label="Fine" aria-describedby="sizing-addon1">
   </div>
 
 
-  <ul class="list-group">
-    <li *ngFor="let patient of patients$ | async" class="list-group-item ">
-      <a (click)="selectPatient(patient.id)" class="flex-column align-items-start list-group-item-action ">
-
-     <app-patient-item [patient] = "patient"></app-patient-item>
-      </a>
-    </li>
-  </ul>
+  <div *ngFor="let patient of patients$ | async" >
+    <a (click)="selectPatient(patient.id)">
+        <app-patient-item [patient] = "patient"></app-patient-item>
+    </a>
+  </div>
 </div>
+
+

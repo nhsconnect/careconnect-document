@@ -51,18 +51,24 @@ export class ViewDocumentComponent implements OnInit {
     let thefile = {};
     this.fhirService.getCompositionDocumentPDF(this.docId)
       .subscribe(data => {
-            thefile = new Blob([data], {type: "application/pdf"});
+
+        thefile = new Blob([data], {type: "application/pdf"});
           },
           error => {
-            console.log("Error downloading the file." + error);
+            console.log("Error downloading the file." ,error);
           },
         () => {
-                console.log('Completed file download.');
+
+          let a = window.document.createElement("a");
+          a.href = window.URL.createObjectURL(thefile);
+          a.download = "composition.pdf";
+          document.body.appendChild(a);
+          a.click();  // IE: "Access is denied"; see: https://connect.microsoft.com/IE/feedback/details/797361/ie-10-treats-blob-url-as-cross-origin-and-denies-access
+          document.body.removeChild(a);
           }
         );
 
-   // let url = window.URL.createObjectURL(thefile);
-   // window.open(url);
+
 
   }
   downloadHTML() {
@@ -70,12 +76,23 @@ export class ViewDocumentComponent implements OnInit {
 
     let thefile = {};
     this.fhirService.getCompositionDocumentHTML(this.docId)
-      .subscribe(data => thefile = new Blob([data], { type: "application/octet-stream" }), //console.log(data),
-        error => console.log("Error downloading the file." + error),
-        () => console.log('Completed file download.'));
+      .subscribe(data => {
 
-   // let url = window.URL.createObjectURL(thefile);
-   // window.open(url);
+        thefile = new Blob([data], { type: "application/octet-stream" });
+      },
+        error => console.log("Error downloading the file.", error),
+        () => {
+
+          let a = window.document.createElement("a");
+          a.href = window.URL.createObjectURL(thefile);
+          a.download = "composition.html";
+          document.body.appendChild(a);
+          a.click();  // IE: "Access is denied"; see: https://connect.microsoft.com/IE/feedback/details/797361/ie-10-treats-blob-url-as-cross-origin-and-denies-access
+          document.body.removeChild(a);
+        }
+        );
+
+
 
   }
 }

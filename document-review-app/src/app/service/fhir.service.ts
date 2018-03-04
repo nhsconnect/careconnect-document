@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {Observable} from "rxjs/Observable";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {ResponseContentType} from "@angular/http";
 
 @Injectable()
 export class FhirService {
@@ -40,28 +41,34 @@ export class FhirService {
 
   }
 
-  getCompositionDocument(id: string): Observable<fhir.Bundle> {
+  getCompositionDocument(id: string,): Observable<fhir.Bundle> {
 
     const url = this.getEDMSUrl() + this.path +`/${id}/$document`;
 
     return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getHeaders()});
 
   }
-  getCompositionDocumentHTML(id: string): Observable<fhir.Bundle> {
+  getCompositionDocumentHTML(id: string): Observable<any> {
 
     const url = this.getEDMSUrl() + this.path +`/${id}/$document`;
 
     let headers = new HttpHeaders(
       { 'Content-Type' : 'text/html' });
-    return this.http.get<fhir.Bundle>(url,{ 'headers' : headers});
+
+
+    return this.http
+      .get(url, {  headers , responseType : 'text' as 'text'});
   }
-  getCompositionDocumentPDF(id: string): Observable<fhir.Bundle> {
+
+  getCompositionDocumentPDF(id: string): Observable<any> {
 
     const url = this.getEDMSUrl() + this.path +`/${id}/$document`;
 
     let headers = new HttpHeaders(
       { 'Content-Type' : 'application/pdf' });
-    return this.http.get<fhir.Bundle>(url,{ 'headers' : headers});
+
+    return this.http
+      .get(url, { headers, responseType : 'blob' as 'blob'} );
   }
 
   postEDMSDocument(document: fhir.Bundle) : Observable<any> {
