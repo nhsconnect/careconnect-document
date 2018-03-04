@@ -1,8 +1,10 @@
 <div id="search-results">
 
 
-  <div class="form-group">
-    <label for="search-box" >Find</label>
+  <div class="input-group mb-3">
+    <div class="input-group-prepend">
+      <span class="input-group-text" id="basic-addon1">Find</span>
+    </div>
     <input type="text" #searchBox id="search-box" class="form-control" (keyup)="search(searchBox.value)" placeholder="Find" aria-label="Fine" aria-describedby="sizing-addon1">
   </div>
 
