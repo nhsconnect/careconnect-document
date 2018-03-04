@@ -19,7 +19,10 @@ import { PatientSearchComponent } from './component/patient-search/patient-searc
 import {PatientItemComponent} from "./component/patient-search/patient-item.component";
 import { FindDocumentComponent } from './component/find-document/find-document.component';
 import { FindDocumentItemComponent } from './component/find-document/find-document-item.component';
+import { SectionReferencesModalComponent } from './component/section-references-modal/section-references-modal.component';
 
+import { ModalModule } from 'ngx-modialog';
+// MIssing bootstrap module
 
 
 
@@ -35,14 +38,17 @@ import { FindDocumentItemComponent } from './component/find-document/find-docume
     PatientSearchComponent,
     PatientItemComponent,
     FindDocumentComponent,
-    FindDocumentItemComponent
+    FindDocumentItemComponent,
+    SectionReferencesModalComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FileUploadModule,
     HttpClientModule,
-    NgbModule.forRoot()
+    NgbModule.forRoot(),
+    ModalModule.forRoot()
+    //, BootstrapModalModule
 
   ],
   providers: [
