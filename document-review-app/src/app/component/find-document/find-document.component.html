@@ -1,0 +1,8 @@
+<ul class="list-group">
+  <li *ngFor="let composition of compositions" class="list-group-item ">
+    <a (click)="selectComposition(composition.id)" class="flex-column align-items-start list-group-item-action ">
+
+      <app-find-document-item [composition] = "composition"></app-find-document-item>
+    </a>
+  </li>
+</ul>

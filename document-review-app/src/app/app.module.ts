@@ -17,6 +17,8 @@ import { ViewDocumentSectionComponent } from './component/view-document/view-doc
 import { PatientFindComponent } from './component/patient-find/patient-find.component';
 import { PatientSearchComponent } from './component/patient-search/patient-search.component';
 import {PatientItemComponent} from "./component/patient-search/patient-item.component";
+import { FindDocumentComponent } from './component/find-document/find-document.component';
+import { FindDocumentItemComponent } from './component/find-document/find-document-item.component';
 
 
 
@@ -31,7 +33,9 @@ import {PatientItemComponent} from "./component/patient-search/patient-item.comp
     ViewDocumentSectionComponent,
     PatientFindComponent,
     PatientSearchComponent,
-    PatientItemComponent
+    PatientItemComponent,
+    FindDocumentComponent,
+    FindDocumentItemComponent
   ],
   imports: [
     BrowserModule,

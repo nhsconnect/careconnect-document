@@ -65,6 +65,17 @@ export class PatientSearchComponent implements OnInit {
 
   }
 
+
+  selectPatient(patientId : number) {
+    console.log("Patient clicked = " + patientId);
+    if (patientId !=undefined) {
+      this.router.navigate(['docs/'+patientId ] );
+    }
+  }
+  /*
+
+  EPR Version
+
   selectPatient(patientId : number) {
     console.log("Patient clickec = " + patientId);
     let scrDocument: fhir.Bundle = undefined;
@@ -90,6 +101,7 @@ export class PatientSearchComponent implements OnInit {
       );
 
   }
+  */
 
   logError(title : string) {
       return (message :any) => {
