@@ -9,13 +9,17 @@ export class FhirService {
 
   private EDMSbase: string = 'http://localhost:8181/STU3';
 
-  //private TIEbase: string = 'http://localhost:8182/STU3';
+  private TIEbase: string = 'http://localhost:8182/STU3';
 
 
   public path = '/Composition';
 
   getEDMSUrl(): string {
     return this.EDMSbase;
+  }
+
+  getTIEUrl(): string {
+    return this.TIEbase;
   }
 
 
@@ -71,6 +75,7 @@ export class FhirService {
       .get(url, { headers, responseType : 'blob' as 'blob'} );
   }
 
+  /*
   postEDMSDocument(document: fhir.Bundle) : Observable<any> {
 
     const url = this.getEDMSUrl() + `/Bundle`;
@@ -78,21 +83,33 @@ export class FhirService {
     return this.http.post<fhir.Bundle>(url,document,{ 'headers' : this.getHeaders()});
 
   }
+*/
 
-  /*
-  getEPRSCRDocument(id: number): Observable<fhir.Bundle> {
+  getEPRSCRDocument(patientId: string): Observable<fhir.Bundle> {
 
-    const url = this.getEPRUrl()  + `/Patient/${id}/$document`;
+    const url = this.getTIEUrl()  + `/Patient/${patientId}/$document`;
 
     return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getHeaders()});
 
   }
-*/
+
+  getEPREncounters(patientId: string): Observable<fhir.Bundle> {
+
+    const url = this.getTIEUrl()  + `/Encounter?patient=${patientId}`;
+
+    return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getHeaders()});
+
+  }
+
 
   /* GET patients whose name contains search term */
-  searchPatients(term: string): Observable<fhir.Bundle> {
+  searchPatients(term: string, systemType : string): Observable<fhir.Bundle> {
 
-    return this.http.get<fhir.Bundle>(this.getEDMSUrl() + `/Patient?name=${term}`, { 'headers' : this.getHeaders() });
+    let url =  this.getEDMSUrl();
+    if (systemType === 'EPR') {
+      url =  this.getTIEUrl();
+    }
+    return this.http.get<fhir.Bundle>(url + `/Patient?name=${term}`, { 'headers' : this.getHeaders() });
   }
 
 }

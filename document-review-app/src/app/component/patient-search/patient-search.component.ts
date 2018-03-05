@@ -1,6 +1,6 @@
 /// <reference path="../../../../node_modules/@types/fhir/index.d.ts" />
 
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 
 import { Observable } from 'rxjs/Observable';
 import { Subject }    from 'rxjs/Subject';
@@ -24,12 +24,18 @@ import { Router} from "@angular/router";
   styleUrls: [ './patient-search.component.css' ]
 })
 export class PatientSearchComponent implements OnInit {
+
+  @Input() systemType : string;
+
+
   patients$: Observable<fhir.Patient[]>;
   private searchTerms = new Subject<string>();
 
   constructor(private fhirService: FhirService,
               private router: Router
   ) {}
+
+
 
   // Push a search term into the observable stream.
   search(term: string): void {
@@ -48,7 +54,8 @@ export class PatientSearchComponent implements OnInit {
 
       // switch to new search observable each time the term changes
       switchMap((term: string) => {
-         return this.fhirService.searchPatients(term);
+        console.log(this.systemType);
+         return this.fhirService.searchPatients(term, this.systemType);
       }),
       map(bundle  => {
         var pat$: fhir.Patient[] = [];
@@ -69,39 +76,15 @@ export class PatientSearchComponent implements OnInit {
   selectPatient(patientId : number) {
     console.log("Patient clicked = " + patientId);
     if (patientId !=undefined) {
-      this.router.navigate(['docs/'+patientId ] );
+      if (this.systemType === 'EPR') {
+        this.router.navigate(['epr/'+patientId ] );
+      } else {
+        this.router.navigate(['docs/'+patientId ] );
+      }
     }
   }
-  /*
 
-  EPR Version
 
-  selectPatient(patientId : number) {
-    console.log("Patient clickec = " + patientId);
-    let scrDocument: fhir.Bundle = undefined;
-
-    this.fhirService.getEPRSCRDocument(patientId).subscribe( document => {
-        scrDocument = document;
-      }, err=>{},
-      ()=> {
-          this.fhirService.postEDMSDocument(scrDocument).subscribe(
-             opOutcome => {
-
-              console.log(opOutcome);
-
-              if (opOutcome.id !=undefined) {
-                this.router.navigate(['doc/'+opOutcome.id ] );
-              }
-            }, err=>{},
-          ()=> {
-
-            }
-          )
-        }
-      );
-
-  }
-  */
 
   logError(title : string) {
       return (message :any) => {

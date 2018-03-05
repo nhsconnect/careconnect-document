@@ -20,9 +20,13 @@ import {PatientItemComponent} from "./component/patient-search/patient-item.comp
 import { FindDocumentComponent } from './component/find-document/find-document.component';
 import { FindDocumentItemComponent } from './component/find-document/find-document-item.component';
 import { SectionReferencesModalComponent } from './component/section-references-modal/section-references-modal.component';
+import { PatientEprFindComponent } from './component/patient-epr-find/patient-epr-find.component';
+import { PatientEprPatientRecordComponent } from './component/patient-epr-patient-record/patient-epr-patient-record.component';
+import { PatientEprEncounterComponent } from './component/patient-epr-encounter/patient-epr-encounter.component';
 
-import { ModalModule } from 'ngx-modialog';
-// MIssing bootstrap module
+// import { ModalModule } from 'ngx-modialog';
+//import {BootstrapModalModule} from "ngx-modialog/plugins/bootstrap";
+
 
 
 
@@ -39,7 +43,10 @@ import { ModalModule } from 'ngx-modialog';
     PatientItemComponent,
     FindDocumentComponent,
     FindDocumentItemComponent,
-    SectionReferencesModalComponent
+    SectionReferencesModalComponent,
+    PatientEprFindComponent,
+    PatientEprPatientRecordComponent,
+    PatientEprEncounterComponent
   ],
   imports: [
     BrowserModule,
@@ -47,8 +54,9 @@ import { ModalModule } from 'ngx-modialog';
     FileUploadModule,
     HttpClientModule,
     NgbModule.forRoot(),
-    ModalModule.forRoot()
-    //, BootstrapModalModule
+    //ModalModule.forRoot()
+    //  ,BootstrapModalModule
+
 
   ],
   providers: [

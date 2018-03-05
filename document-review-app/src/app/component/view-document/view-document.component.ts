@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {FhirService} from "../../service/fhir.service";
 
@@ -9,42 +9,59 @@ import {FhirService} from "../../service/fhir.service";
 })
 export class ViewDocumentComponent implements OnInit {
 
+  @Input() document : fhir.Bundle;
+  @Input() systemType : string;
+
   constructor(private route: ActivatedRoute
   , private fhirService : FhirService ) { }
 
   ngOnInit() {
-    this.getDocument();
+
+
+    if (this.systemType != "EPR") {
+      let id = this.route.snapshot.paramMap.get('docid');
+      this.getDocument(id);
+    } else {
+      if (this.document!=null) {
+        this.getComposition();
+      }
+    }
   }
 
-  document : fhir.Bundle = undefined;
+
   composition : fhir.Composition = undefined;
   patient : fhir.Patient = undefined;
   sections : fhir.CompositionSection[] = [];
   docId : string;
 
-  getDocument(): void {
-    let id = this.route.snapshot.paramMap.get('docid');
+  getDocument(id : string): void {
+
     this.docId = id;
-    console.log("docid = "+id);
+
 
     this.fhirService.getCompositionDocument(id).subscribe( document => {
       this.document = document;
     }, err=>{},
       ()=> {
+        this.getComposition();
+      }
 
-        for (let entry of this.document.entry) {
-          if (entry.resource.resourceType === "Composition") {
-            this.composition = <fhir.Composition>entry.resource;
-            for (let section of this.composition.section) {
-              this.sections.push(section);
-            }
-          } else if (entry.resource.resourceType === "Patient") {
-            this.patient = <fhir.Patient> entry.resource;
-          }
-
-    }
-      });
+      );
   }
+
+  getComposition() {
+    for (let entry of this.document.entry) {
+      if (entry.resource.resourceType === "Composition") {
+        this.composition = <fhir.Composition>entry.resource;
+        for (let section of this.composition.section) {
+          this.sections.push(section);
+        }
+      } else if (entry.resource.resourceType === "Patient") {
+        this.patient = <fhir.Patient> entry.resource;
+      }
+    }
+  }
+
   downloadPDF() {
     console.log("Download PDF");
 

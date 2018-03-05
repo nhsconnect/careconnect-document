@@ -1,0 +1,22 @@
+<ngb-tabset #t="ngbTabset">
+  <ngb-tab id="tab-selectbyid1" title="Summary Record">
+    <ng-template ngbTabContent>
+    <div *ngIf="composition != undefined">
+
+      <app-view-document [systemType]="'EPR'" [document]="composition"></app-view-document>
+    </div>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab id="tab-selectbyid2" title="Encounters">
+    <ng-template ngbTabContent>
+      <div class="">
+        <h5>Encounters</h5>
+        <div *ngFor="let encounter of encounters">
+          <app-patient-epr-encounter [encounter]="encounter"></app-patient-epr-encounter>
+        </div>
+      </div>
+    </ng-template>
+  </ngb-tab>
+</ngb-tabset>
+
+
