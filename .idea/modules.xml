@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/careconnect-dotnet-examples.iml" filepath="$PROJECT_DIR$/careconnect-dotnet-examples.iml" />
+      <module fileurl="file://$PROJECT_DIR$/careconnect-angular2-examples.iml" filepath="$PROJECT_DIR$/careconnect-angular2-examples.iml" />
     </modules>
   </component>
 </project>

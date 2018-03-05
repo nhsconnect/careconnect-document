@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {FhirService} from "../../service/fhir.service";
 import {ActivatedRoute, Router} from "@angular/router";
+import {NgbTabset} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: 'app-patient-epr-patient-record',
@@ -15,6 +16,9 @@ export class PatientEprPatientRecordComponent implements OnInit {
 
   encounters: fhir.Encounter[];
 
+  @ViewChild('tabs')
+  private tabs:NgbTabset;
+
   constructor(private fhirService: FhirService,
               private route: ActivatedRoute) { }
 
@@ -28,6 +32,7 @@ export class PatientEprPatientRecordComponent implements OnInit {
     this.fhirService.getEPREncounter(encounter.id).subscribe(
       document => {
         this.encounterdoc = document;
+        this.tabs.select("tab-encounterdoc");
 
       }
     )
@@ -46,6 +51,7 @@ export class PatientEprPatientRecordComponent implements OnInit {
     this.fhirService.getEPRSCRDocument(patientId).subscribe( document => {
         this.composition = document;
         console.log("Bundle Retrieved");
+
       }, err=>{}
 
 );
