@@ -101,6 +101,13 @@ export class FhirService {
 
   }
 
+  getEPREncounter(encounterId: string): Observable<fhir.Bundle> {
+
+    const url = this.getTIEUrl()  + `/Encounter/${encounterId}/$document`;
+
+    return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getHeaders()});
+
+  }
 
   /* GET patients whose name contains search term */
   searchPatients(term: string, systemType : string): Observable<fhir.Bundle> {

@@ -1,10 +1,10 @@
 <div class="card">
   <div class="card-header d-flex justify-content-between">
-    <div>{{encounter.period.start | date: 'dd MMM yyyy HH:mm' }}</div>
+    <div>{{encounter.period?.start | date: 'dd MMM yyyy HH:mm' }}</div>
     <div>{{getType()}}</div>
   </div>
   <div class="card-body">
-    <div>{{encounter.class.display}}</div>
+    <div >{{encounter.class?.display}}</div>
     <div>{{getProvider()}}</div>
     <div>{{getParticipant()}}</div>
   </div>

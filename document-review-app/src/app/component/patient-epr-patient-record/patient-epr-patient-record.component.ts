@@ -11,6 +11,8 @@ export class PatientEprPatientRecordComponent implements OnInit {
 
   composition : fhir.Bundle = undefined;
 
+  encounterdoc : fhir.Bundle = undefined;
+
   encounters: fhir.Encounter[];
 
   constructor(private fhirService: FhirService,
@@ -22,6 +24,14 @@ export class PatientEprPatientRecordComponent implements OnInit {
     this.selectPatientEPR(id);
   }
 
+  selectEncounter(encounter : fhir.Encounter) {
+    this.fhirService.getEPREncounter(encounter.id).subscribe(
+      document => {
+        this.encounterdoc = document;
+
+      }
+    )
+  }
   selectPatientEPR(patientId : string) {
   //  console.log("Patient clicked = " + patientId);
   //  let scrDocument: fhir.Bundle = undefined;

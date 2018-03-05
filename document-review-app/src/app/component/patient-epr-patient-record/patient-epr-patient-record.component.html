@@ -12,8 +12,18 @@
       <div class="">
         <h5>Encounters</h5>
         <div *ngFor="let encounter of encounters">
-          <app-patient-epr-encounter [encounter]="encounter"></app-patient-epr-encounter>
+          <a (click)="selectEncounter(encounter)">
+            <app-patient-epr-encounter [encounter]="encounter"></app-patient-epr-encounter>
+          </a>
         </div>
+      </div>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab id="tab-encounterdoc" title="Encounter">
+    <ng-template ngbTabContent>
+      <div *ngIf="encounterdoc != undefined">
+
+        <app-view-document [systemType]="'EPR'" [document]="encounterdoc"></app-view-document>
       </div>
     </ng-template>
   </ngb-tab>
