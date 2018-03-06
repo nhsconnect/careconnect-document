@@ -7,7 +7,7 @@
     </div>
     </ng-template>
   </ngb-tab>
-  <ngb-tab id="tab-selectbyid2" title="Encounters">
+  <ngb-tab [disabled]="encounterEnabled" id="tab-selectbyid2" title="Encounters">
     <ng-template ngbTabContent>
       <div class="">
         <h5>Encounters</h5>
@@ -19,10 +19,11 @@
       </div>
     </ng-template>
   </ngb-tab>
-  <ngb-tab id="tab-encounterdoc" title="Encounter">
+  <ngb-tab [disabled]="encounterEnabled" id="tab-encounterdoc" title="Encounter">
     <ng-template ngbTabContent>
       <div *ngIf="encounterdoc != undefined">
-
+      <!-- TODO  <button class="btn-info" (click)="backClick()">Back</button> -->
+        <br>
         <app-view-document [systemType]="'EPR'" [document]="encounterdoc"></app-view-document>
       </div>
     </ng-template>

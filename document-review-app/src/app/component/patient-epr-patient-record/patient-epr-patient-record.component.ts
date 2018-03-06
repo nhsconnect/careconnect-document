@@ -16,6 +16,8 @@ export class PatientEprPatientRecordComponent implements OnInit {
 
   encounters: fhir.Encounter[];
 
+  encounterEnabled = false;
+
   @ViewChild('tabs')
   private tabs:NgbTabset;
 
@@ -33,9 +35,14 @@ export class PatientEprPatientRecordComponent implements OnInit {
       document => {
         this.encounterdoc = document;
         this.tabs.select("tab-encounterdoc");
+      //  this.encounterEnabled = true;
 
       }
     )
+  }
+
+  backClick() {
+    this.encounterEnabled = false;
   }
   selectPatientEPR(patientId : string) {
   //  console.log("Patient clicked = " + patientId);

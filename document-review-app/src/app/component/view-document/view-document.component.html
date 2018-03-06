@@ -7,8 +7,10 @@
   {{composition.date | date: 'dd MMM yyyy HH:mm' }}
       </div>
       <div>
-    <button class="btn-info" (click)="downloadPDF()">Export PDF</button>
-    <button class="btn-info" (click)="downloadHTML()">Export html</button>
+        <div *ngIf="systemType!='EPR'">
+          <button class="btn-info" (click)="downloadPDF()">Export PDF</button>
+          <button class="btn-info" (click)="downloadHTML()">Export html</button>
+        </div>
       </div>
     </div>
   </div>
@@ -23,7 +25,7 @@
     <div class="card-body" [innerHTML]="patient.text.div"></div>
   </div>
       <div *ngFor="let section of sections" >
-          <app-view-document-section [section] = "section"></app-view-document-section>
+          <app-view-document-section [section] = "section" [structuredText]="getPopover(section)"></app-view-document-section>
       </div>
 
 </div>

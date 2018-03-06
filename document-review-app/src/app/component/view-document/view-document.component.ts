@@ -49,6 +49,53 @@ export class ViewDocumentComponent implements OnInit {
       );
   }
 
+  getPopover(section : fhir.CompositionSection) : string {
+    let structuredText=""
+    if (section.entry != undefined) {
+      let count = section.entry.length;
+      for (let entry  of section.entry) {
+        structuredText = structuredText + '<br>';
+        for (let resource of this.document.entry) {
+          if (resource.fullUrl === entry.reference) {
+            //structuredText = structuredText + resource.resource.resourceType;
+            switch(resource.resource.resourceType) {
+              case "AllergyIntolerance" :
+                let allergyIntolerance :fhir.AllergyIntolerance = <fhir.AllergyIntolerance> resource.resource;
+                structuredText += " SNOMED "+allergyIntolerance.code.coding[0].code;
+                break;
+              case "Condition" :
+                let condition :fhir.Condition = <fhir.Condition> resource.resource;
+                structuredText += " SNOMED "+condition.code.coding[0].code;
+                break;
+              case "Encounter" :
+                let encounter :fhir.Encounter = <fhir.Encounter> resource.resource;
+                structuredText += " SNOMED "+encounter.type[0].coding[0].code;
+                break;
+              case "MedicationRequest" :
+                let medicationRequest :fhir.MedicationRequest = <fhir.MedicationRequest> resource.resource;
+                structuredText += " Reference "+medicationRequest.medicationReference.reference;
+                break;
+              case "MedicationStatement" :
+                let medicationStatement :fhir.MedicationStatement = <fhir.MedicationStatement> resource.resource;
+                structuredText += " Reference "+medicationStatement.medicationReference.reference;
+                break;
+              case "Observation" :
+                let observation :fhir.Observation = <fhir.Observation> resource.resource;
+                structuredText += " SNOMED "+observation.code.coding[0].code;
+                break;
+              case "Procedure" :
+                let procedure :fhir.Procedure = <fhir.Procedure> resource.resource;
+                structuredText += " SNOMED "+procedure.code.coding[0].code;
+                break;
+            }
+          }
+        }
+      }
+      return "This section has referenced "+count+" items." +structuredText;
+    }
+    return "No entries referenced.";
+  }
+
   getComposition() {
     for (let entry of this.document.entry) {
       if (entry.resource.resourceType === "Composition") {

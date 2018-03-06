@@ -12,6 +12,8 @@ export class ViewDocumentSectionComponent implements OnInit {
 
   @Input() section : fhir.CompositionSection;
 
+  @Input() structuredText : string;
+
   constructor(
     //public modal: Modal
   ) { }
@@ -40,4 +42,5 @@ export class ViewDocumentSectionComponent implements OnInit {
     dialogRef.result
       .then( result => alert(`The result is: ${result}`) );
   }*/
+
 }
