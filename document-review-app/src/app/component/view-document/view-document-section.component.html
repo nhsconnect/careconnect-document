@@ -3,7 +3,8 @@
     <div class="d-flex w-100 justify-content-between">
       <h5>{{section.title}}</h5>
       <ng-template #popContent><div [innerHtml]=structuredText></div></ng-template>
-      <button class="btn-info" placement="left" [ngbPopover]="popContent" popoverTitle="Stuctured view of section {{section.code.coding[0].code}}">
+
+      <button class="btn-info" placement="left" [ngbPopover]="popContent" popoverTitle="{{structuredTitle}}">
         View Structured Content</button>
     </div>
   </div>

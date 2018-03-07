@@ -35,25 +35,23 @@ export class PatientEprPatientRecordComponent implements OnInit {
       document => {
         this.encounterdoc = document;
         this.tabs.select("tab-encounterdoc");
-      //  this.encounterEnabled = true;
+
 
       }
     )
   }
 
-  backClick() {
-    this.encounterEnabled = false;
-  }
   selectPatientEPR(patientId : string) {
-  //  console.log("Patient clicked = " + patientId);
-  //  let scrDocument: fhir.Bundle = undefined;
 
     this.fhirService.getEPREncounters(patientId).subscribe( data=> {
-      this.encounters = [];
-       for (let entNo =0; entNo < data.entry.length; entNo++) {
-          this.encounters.push(<fhir.Encounter>data.entry[entNo].resource);
-       }
-    } );
+        this.encounters = [];
+        if (data.entry != undefined) {
+          for (let entNo = 0; entNo < data.entry.length; entNo++) {
+            this.encounters.push(<fhir.Encounter>data.entry[entNo].resource);
+          }
+        }
+      }
+    );
 
     this.fhirService.getEPRSCRDocument(patientId).subscribe( document => {
         this.composition = document;

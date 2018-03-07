@@ -75,7 +75,7 @@ export class FhirService {
       .get(url, { headers, responseType : 'blob' as 'blob'} );
   }
 
-  /*
+
   postEDMSDocument(document: fhir.Bundle) : Observable<any> {
 
     const url = this.getEDMSUrl() + `/Bundle`;
@@ -83,7 +83,7 @@ export class FhirService {
     return this.http.post<fhir.Bundle>(url,document,{ 'headers' : this.getHeaders()});
 
   }
-*/
+
 
   getEPRSCRDocument(patientId: string): Observable<fhir.Bundle> {
 

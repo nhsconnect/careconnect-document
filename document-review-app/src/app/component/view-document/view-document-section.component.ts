@@ -14,6 +14,8 @@ export class ViewDocumentSectionComponent implements OnInit {
 
   @Input() structuredText : string;
 
+  @Input() structuredTitle : string;
+
   constructor(
     //public modal: Modal
   ) { }

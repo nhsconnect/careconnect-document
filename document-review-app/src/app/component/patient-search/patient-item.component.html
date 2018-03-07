@@ -6,7 +6,7 @@
     <div>NHS Number: {{ getNHSIdentifier() }}</div>
   </div>
   <div class="card-body">
-    <div ng-if="patient" class="d-flex w-100 justify-content-right">
+    <div ng-if="patient" class="d-flex w-100 justify-content-between">
       <small *ngIf="patient.telecom"><i class="fa fa-phone" aria-hidden="true"></i> {{ getFirstTelecom() }} </small>
       <small> {{ patient.gender }}</small>
     </div>

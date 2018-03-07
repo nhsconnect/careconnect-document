@@ -62,7 +62,7 @@ export class PatientSearchComponent implements OnInit {
         var i;
         if (bundle != undefined && bundle.hasOwnProperty("entry")) {
           for (i = 0; i < bundle.entry.length && i < 10; i++) {
-            console.log("Entry="+i);
+            //console.log("Entry="+i);
             pat$[i] = <fhir.Patient>bundle.entry[i].resource;
           }
         }
