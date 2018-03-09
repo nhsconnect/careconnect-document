@@ -12,13 +12,18 @@ import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.Resource;
+import uk.nhs.careconnect.nosql.entities.PatientEntity;
 
 import java.util.List;
 import java.util.Set;
 
 public interface IPatient {
 
-    ObjectId findInsert(FhirContext ctx, Patient patient);
+    Patient create(FhirContext ctx, Patient patient);
+
+    PatientEntity createEntity(FhirContext ctx, Patient patient);
+
+    Patient read(FhirContext ctx, IdType theId);
 
     List<Resource> search (FhirContext ctx,
 

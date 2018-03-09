@@ -76,24 +76,26 @@ export class ViewDocumentComponent implements OnInit {
         //structuredText = structuredText + resource.resource.resourceType;
         switch(resource.resource.resourceType) {
           case "AllergyIntolerance" :
-            let allergyIntolerance :fhir.AllergyIntolerance = <fhir.AllergyIntolerance> resource.resource;
+            let allergyIntolerance: fhir.AllergyIntolerance = <fhir.AllergyIntolerance> resource.resource;
             structuredText += "AllergyIntolerance ";
-            if (allergyIntolerance.code != null && allergyIntolerance.code.coding.length>0) structuredText += this.getSNOMEDLink(allergyIntolerance.code.coding[0].code);
+            if (allergyIntolerance.code != null && allergyIntolerance.code.coding.length > 0) structuredText += this.getSNOMEDLink(allergyIntolerance.code.coding[0].code);
             break;
           case "Condition" :
-            let condition :fhir.Condition = <fhir.Condition> resource.resource;
-            structuredText += "Condition "+this.getSNOMEDLink(condition.code.coding[0].code);
+            let condition: fhir.Condition = <fhir.Condition> resource.resource;
+            structuredText += "Condition " + this.getSNOMEDLink(condition.code.coding[0].code);
             break;
           case "Encounter" :
-            let encounter :fhir.Encounter = <fhir.Encounter> resource.resource;
-            structuredText += "Encounter "+this.getSNOMEDLink(encounter.type[0].coding[0].code);
+            let encounter: fhir.Encounter = <fhir.Encounter> resource.resource;
+            structuredText += "Encounter " + this.getSNOMEDLink(encounter.type[0].coding[0].code);
             break;
           case "List" :
-            let list :fhir.List = <fhir.List> resource.resource;
-            structuredText += "List with "+ list.entry.length +" entries: <br>";
+            let list: fhir.List = <fhir.List> resource.resource;
+            if (list.entry != undefined) {
+              structuredText += "List with " + list.entry.length + " entries: <br>";
             for (let entry of list.entry) {
-              if (entry.item != undefined && entry.item.reference != undefined) structuredText += "<br>"+this.getReferencedItem(entry.item.reference);
+              if (entry.item != undefined && entry.item.reference != undefined) structuredText += "<br>" + this.getReferencedItem(entry.item.reference);
             }
+        }
             break;
           case "Medication" :
             let medication :fhir.Medication = <fhir.Medication> resource.resource;

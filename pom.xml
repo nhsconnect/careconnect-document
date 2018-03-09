@@ -9,6 +9,13 @@
     <version>3.5.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
+    <repositories>
+        <repository>
+            <id>bintray-kevinmayfield-careconnect</id>
+            <name>kevinmayfield-careconnect</name>
+            <url>https://dl.bintray.com/kevinmayfield/careconnect</url>
+        </repository>
+    </repositories>
     
     <properties>
         <care-connect-version>3.5.0</care-connect-version>

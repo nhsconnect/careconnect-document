@@ -2,13 +2,16 @@
 package uk.nhs.careconnect.nosql.entities;
 
 import org.bson.types.ObjectId;
+import org.hl7.fhir.dstu3.model.Enumerations;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.LinkedHashSet;
 
 
-@Document(collection = "docPatient")
+@Document(collection = "idxPatient")
 public class PatientEntity  {
 
     @Id
@@ -16,13 +19,15 @@ public class PatientEntity  {
 
     private Date dateOfBirth;
 
-    private String gender;
+    private Enumerations.AdministrativeGender gender;
 
     private Collection<Identifier> identifiers  = new LinkedHashSet<>();
 
     private Collection<Telecom> telecoms = new LinkedHashSet<>();
 
     private Collection<Name> names = new LinkedHashSet<>();
+
+    private Collection<Address> addresses = new LinkedHashSet<>();
 
     public ObjectId getId() {
         return id;
@@ -40,11 +45,11 @@ public class PatientEntity  {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public String getGender() {
+    public Enumerations.AdministrativeGender getGender() {
         return gender;
     }
 
-    public void setGender(String gender) {
+    public void setGender(Enumerations.AdministrativeGender gender) {
         this.gender = gender;
     }
 
@@ -70,5 +75,13 @@ public class PatientEntity  {
 
     public void setNames(Collection<Name> names) {
         this.names = names;
+    }
+
+    public Collection<Address> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(Collection<Address> addresses) {
+        this.addresses = addresses;
     }
 }

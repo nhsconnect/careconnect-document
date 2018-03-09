@@ -34,12 +34,14 @@ export class FindDocumentComponent implements OnInit {
         this.document = document;
       }, err=>{},
       ()=> {
+        if (this.document != undefined && this.document.entry != undefined) {
 
         for (let entry of this.document.entry) {
           if (entry.resource.resourceType === "Composition") {
             this.compositions.push(<fhir.Composition>entry.resource);
           }
         }
+      }
       });
   }
 

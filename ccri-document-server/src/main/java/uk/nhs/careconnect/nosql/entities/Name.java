@@ -8,11 +8,9 @@ public class Name {
 
     private String prefix;
 
-
     private String givenName;
 
     private String familyName;
-
 
     private String suffix;
 

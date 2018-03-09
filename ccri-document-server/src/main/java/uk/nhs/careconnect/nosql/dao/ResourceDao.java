@@ -28,14 +28,14 @@ public class ResourceDao implements IResource {
 
 
     @Override
-    public ObjectId save(FhirContext ctx, Resource resource) {
+    public DBObject save(FhirContext ctx, Resource resource) {
 
         Document doc = Document.parse(ctx.newJsonParser().encodeResourceToString(resource));
         // Convert to BasicDBObject to get object id
         DBObject mObj = new BasicDBObject(doc);
         mongoTemplate.insert(mObj, resource.getResourceType().name());
-
-        return (ObjectId) mObj.get("_id");
+    // (ObjectId) mObj.get("_id")
+        return mObj;
     }
 
     @Override
