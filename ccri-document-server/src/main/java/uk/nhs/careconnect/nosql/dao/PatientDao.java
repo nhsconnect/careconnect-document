@@ -44,7 +44,7 @@ public class PatientDao implements IPatient {
     }
 
     @Override
-    public Patient create(FhirContext ctx, Patient patient) {
+    public PatientEntity createEntity(FhirContext ctx, Patient patient) {
 
         // TODO This is a basic patient find and would need extending for a real implementtion.
 
@@ -54,7 +54,7 @@ public class PatientDao implements IPatient {
 
             PatientEntity patientE = mongo.findOne(qry, PatientEntity.class);
             // Patient found, quit and do not add new record.
-            if (patientE!=null) return patientEntityToFHIRPatient.transform(patientE);
+            if (patientE!=null) return patientE;
         }
 
         PatientEntity patientEntity = new PatientEntity();
@@ -118,9 +118,12 @@ public class PatientDao implements IPatient {
         }
         mongo.save(patientEntity);
 
-        ObjectId bundleId = patientEntity.getId();
+       return patientEntity;
+    }
 
-        return patientEntityToFHIRPatient.transform(patientEntity);
+    @Override
+    public Patient create(FhirContext ctx, Patient patient) {
+        return patientEntityToFHIRPatient.transform(createEntity(ctx,patient));
     }
 
     @Override

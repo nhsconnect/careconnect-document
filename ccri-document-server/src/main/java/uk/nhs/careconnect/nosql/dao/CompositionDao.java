@@ -3,15 +3,12 @@ package uk.nhs.careconnect.nosql.dao;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.TokenParam;
-import com.fasterxml.jackson.databind.util.JSONPObject;
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mongodb.DBObject;
-import com.mongodb.util.JSON;
-import uk.nhs.careconnect.nosql.entities.BundleEntity;
+
+import uk.nhs.careconnect.nosql.entities.CompositionEntity;
 import uk.nhs.careconnect.nosql.entities.Entry;
-import uk.nhs.careconnect.nosql.entities.PatientEntity;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.hl7.fhir.dstu3.model.Bundle;
@@ -61,17 +58,17 @@ public class CompositionDao implements IComposition {
         if (patient != null) {
             //log.info("Patient = "+patient.getValue());
             if (criteria == null) {
-                criteria = Criteria.where("patient").is(converToObjectId(patient.getValue()));
+                criteria = Criteria.where("idxPatient._id").is(converToObjectId(patient.getValue()));
             } else {
-                criteria = criteria.and("patient").is(converToObjectId(patient.getValue()));
+                criteria = criteria.and("idxPatient._id").is(converToObjectId(patient.getValue()));
             }
         }
         if (criteria != null) {
             Query qry = Query.query(criteria);
 
-            List<BundleEntity> results = mongo.find(qry, BundleEntity.class);
+            List<CompositionEntity> results = mongo.find(qry, CompositionEntity.class);
            // log.info("Bundle size = "+results.size());
-            for (BundleEntity bundleEntity : results) {
+            for (CompositionEntity bundleEntity : results) {
              //   log.info("Found Entry "+bundleEntity.getPatient().toString());
                 for (Entry entry : bundleEntity.getEntry()) {
                     if (entry.getResourceType().equals("Composition")) {
@@ -88,7 +85,7 @@ public class CompositionDao implements IComposition {
     public Composition read(FhirContext ctx, IdType theId) {
         Query qry = Query.query(Criteria.where("entry.originalId").is(theId.getIdPart()).and("entry.resourceType").is("Composition"));
         System.out.println(qry.toString());
-        BundleEntity document = mongo.findOne(qry, BundleEntity.class);
+        CompositionEntity document = mongo.findOne(qry, CompositionEntity.class);
         if (document!=null) {
             log.info("Found = "+document.getEntry().size());
             Composition composition = null;
@@ -134,7 +131,7 @@ public class CompositionDao implements IComposition {
 
         Query qry = Query.query(Criteria.where("entry.originalId").is(theId.getIdPart()).and("entry.resourceType").is("Composition"));
         System.out.println(qry.toString());
-        BundleEntity document = mongo.findOne(qry, BundleEntity.class);
+        CompositionEntity document = mongo.findOne(qry, CompositionEntity.class);
         if (document!=null) {
             log.info(document.toString());
             for (Entry entry :document.getEntry()) {

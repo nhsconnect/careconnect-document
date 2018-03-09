@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.LinkedHashSet;
 
 
-@Document(collection = "docPatient")
+@Document(collection = "idxPatient")
 public class PatientEntity  {
 
     @Id
