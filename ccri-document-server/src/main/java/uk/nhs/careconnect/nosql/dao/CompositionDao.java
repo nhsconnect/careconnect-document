@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mongodb.DBObject;
 
+import com.mongodb.DBRef;
 import uk.nhs.careconnect.nosql.entities.CompositionEntity;
 import uk.nhs.careconnect.nosql.entities.Entry;
 import org.apache.commons.lang3.StringUtils;
@@ -24,6 +25,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
+import uk.nhs.careconnect.nosql.entities.PatientEntity;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -50,29 +52,30 @@ public class CompositionDao implements IComposition {
 
         if (resid != null) {
             if (criteria == null) {
-                criteria = Criteria.where("entry.originalId").is(resid.getValue()).and("entry.resourceType").is("Composition");
+                criteria = Criteria.where("entry.objectId").is(resid.getValue());//.and("entry.resourceType").is("Composition");
             } else {
-                criteria = criteria.and("entry.originalId").is(resid.getValue()).and("entry.resourceType").is("Composition");
+                criteria = criteria.and("entry.objectId").is(resid.getValue());//.and("entry.resourceType").is("Composition");
             }
         }
         if (patient != null) {
-            //log.info("Patient = "+patient.getValue());
+
             if (criteria == null) {
-                criteria = Criteria.where("idxPatient._id").is(converToObjectId(patient.getValue()));
+                criteria = Criteria.where("idxPatient").is(new DBRef("idxPatient", patient.getValue()));
             } else {
-                criteria = criteria.and("idxPatient._id").is(converToObjectId(patient.getValue()));
+                criteria = criteria.and("idxPatient").is(new DBRef("idxPatient", patient.getValue()));
             }
         }
         if (criteria != null) {
             Query qry = Query.query(criteria);
-
+            log.info("qry = " + qry.toString());
             List<CompositionEntity> results = mongo.find(qry, CompositionEntity.class);
-           // log.info("Bundle size = "+results.size());
+            log.info("Found = "+results.size());
             for (CompositionEntity bundleEntity : results) {
-             //   log.info("Found Entry "+bundleEntity.getPatient().toString());
+
                 for (Entry entry : bundleEntity.getEntry()) {
-                    if (entry.getResourceType().equals("Composition")) {
-                        resources.add(read(ctx,new IdType().setValue(entry.getOriginalId())));
+                    if (entry.getObject().getCollectionName().equals("Composition")) {
+                        log.info(entry.getObject().getId().toString());
+                        resources.add(read(ctx,new IdType().setValue(entry.getObject().getId().toString())));
                     }
                 }
             }
@@ -83,38 +86,30 @@ public class CompositionDao implements IComposition {
 
     @Override
     public Composition read(FhirContext ctx, IdType theId) {
-        Query qry = Query.query(Criteria.where("entry.originalId").is(theId.getIdPart()).and("entry.resourceType").is("Composition"));
-        System.out.println(qry.toString());
-        CompositionEntity document = mongo.findOne(qry, CompositionEntity.class);
-        if (document!=null) {
-            log.info("Found = "+document.getEntry().size());
-            Composition composition = null;
-            for (Entry entry : document.getEntry()) {
-                if (entry.getOriginalId().equals(theId.getIdPart())) {
 
 
-                    qry = Query.query(Criteria.where("_id").is(entry.getObjectId()));
-                    DBObject resourceObj = mongo.findOne(qry,DBObject.class,entry.getResourceType());
-                    if (resourceObj != null) {
+        Composition composition = null;
 
-                        // Remove Mongo Elements
-                        JsonParser jsonParser = new JsonParser();
-                        JsonObject jo = (JsonObject)jsonParser.parse(resourceObj.toString());
-                        jo.remove("_class");
-                        jo.remove("_id");
+        Query qry = Query.query(Criteria.where("_id").is(new ObjectId(theId.getValue())));
+        log.info("qry = " + qry.toString());
+        DBObject resourceObj =  mongo.findOne(qry,DBObject.class,"Composition");
+        if (resourceObj != null) {
 
-                        IBaseResource resource = ctx.newJsonParser().parseResource(jo.toString());
-                        resource.setId(StringUtils.remove(entry.getOriginalId(),"urn:uuid:"));
+            // Remove Mongo Elements
+            JsonParser jsonParser = new JsonParser();
+            JsonObject jo = (JsonObject)jsonParser.parse(resourceObj.toString());
+            jo.remove("_class");
+            jo.remove("_id");
 
-                        if (resource instanceof  Composition) composition = (Composition) resource;
-                    }
+            IBaseResource resource = ctx.newJsonParser().parseResource(jo.toString());
+            resource.setId(theId.getValue());
 
-                }
-            }
-            return composition;
-        } else {
-            return null;
+            if (resource instanceof  Composition) composition = (Composition) resource;
         }
+
+
+        return composition;
+
     }
 
     private ObjectId converToObjectId(String id) {
@@ -129,24 +124,24 @@ public class CompositionDao implements IComposition {
         Bundle bundle = new Bundle();
         bundle.setType(Bundle.BundleType.DOCUMENT);
 
-        Query qry = Query.query(Criteria.where("entry.originalId").is(theId.getIdPart()).and("entry.resourceType").is("Composition"));
+        Query qry = Query.query(Criteria.where("entry.objectId").is( theId.getIdPart()) );
+
         System.out.println(qry.toString());
         CompositionEntity document = mongo.findOne(qry, CompositionEntity.class);
         if (document!=null) {
             log.info(document.toString());
             for (Entry entry :document.getEntry()) {
-               // System.out.println(entry.getObjectId());
 
-                qry = Query.query(Criteria.where("_id").is(entry.getObjectId()));
-                DBObject resourceObj = mongo.findOne(qry,DBObject.class,entry.getResourceType());
+                qry = Query.query(Criteria.where("_id").is(entry.getObject().getId()));
+                log.info("qry = " + qry.toString());
+                DBObject resourceObj =  mongo.findOne(qry,DBObject.class,entry.getObject().getCollectionName());
                 if (resourceObj != null) {
-                    //System.out.println("DBO-"+resourceObj.toString());
 
                     JsonParser jsonParser = new JsonParser();
                     JsonObject jo = (JsonObject)jsonParser.parse(resourceObj.toString());
                     jo.remove("_class");
                     jo.remove("_id");
-                    //System.out.println("JO-"+jo.toString());
+
                     IBaseResource resource = ctx.newJsonParser().parseResource(jo.toString());
                     resource.setId(StringUtils.remove(entry.getOriginalId(),"urn:uuid:"));
                     bundle.addEntry().setResource((Resource) resource).setFullUrl("urn:uuid:"+((Resource) resource).getId());

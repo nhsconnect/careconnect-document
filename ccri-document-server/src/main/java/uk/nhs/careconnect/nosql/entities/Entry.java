@@ -1,25 +1,23 @@
 package uk.nhs.careconnect.nosql.entities;
 
 
-import org.bson.types.ObjectId;
-
 public class Entry {
 
     String fullUrl;
 
-    ObjectId objectId;
+    com.mongodb.DBRef object;
+
+    String objectId;
 
     String originalId;
 
-    public String getResourceType() {
-        return resourceType;
+    public String getObjectId() {
+        return objectId;
     }
 
-    public void setResourceType(String resourceType) {
-        this.resourceType = resourceType;
+    public void setObjectId(String objectId) {
+        this.objectId = objectId;
     }
-
-    String resourceType;
 
     public String getFullUrl() {
         return fullUrl;
@@ -29,12 +27,12 @@ public class Entry {
         this.fullUrl = fullUrl;
     }
 
-    public ObjectId getObjectId() {
-        return objectId;
+    public com.mongodb.DBRef getObject() {
+        return object;
     }
 
-    public void setObjectId(ObjectId objectId) {
-        this.objectId = objectId;
+    public void setObject(com.mongodb.DBRef object) {
+        this.object = object;
     }
 
     public String getOriginalId() {

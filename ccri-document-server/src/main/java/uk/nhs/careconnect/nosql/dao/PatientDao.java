@@ -37,7 +37,7 @@ public class PatientDao implements IPatient {
     public Patient read(FhirContext ctx, IdType theId) {
         ObjectId objectId = new ObjectId(theId.getIdPart());
         Query qry = Query.query(Criteria.where("_id").is(objectId));
-
+        System.out.println(qry.toString());
         PatientEntity patientEntity = mongo.findOne(qry, PatientEntity.class);
         if (patientEntity == null) return null;
         return patientEntityToFHIRPatient.transform(patientEntity);
@@ -168,6 +168,8 @@ public class PatientDao implements IPatient {
 
         if (criteria != null) {
             Query qry = Query.query(criteria);
+
+            System.out.println(qry.toString());
 
             List<PatientEntity> patientResults = mongo.find(qry, PatientEntity.class);
 

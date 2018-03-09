@@ -36,6 +36,7 @@ public class CompositionEntity {
 
     private Collection<Entry> entry = new LinkedHashSet<>();
 
+    @DBRef
     private PatientEntity idxPatient;
 
     private Identifier identifier;

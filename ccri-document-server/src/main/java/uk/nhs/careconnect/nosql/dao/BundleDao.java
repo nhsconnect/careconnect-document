@@ -4,6 +4,7 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.server.exceptions.ResourceVersionConflictException;
 
 import com.mongodb.DBObject;
+import com.mongodb.DBRef;
 import uk.nhs.careconnect.nosql.entities.CompositionEntity;
 import uk.nhs.careconnect.nosql.entities.Entry;
 import org.apache.commons.lang3.StringUtils;
@@ -63,11 +64,11 @@ public class BundleDao implements IBundle {
             if (entry.hasResource()) {
 
                 DBObject mObj = resourceDao.save(ctx,entry.getResource());
-                entry1.setObjectId((ObjectId) mObj.get("_id"));
-                entry1.setResourceType(entry.getResource().getResourceType().name());
+                entry1.setObject(new DBRef(entry.getResource().getResourceType().name(),mObj.get("_id")));
+                entry1.setObjectId(mObj.get("_id").toString());
                 entry1.setOriginalId(StringUtils.remove(entry.getResource().getId(),"urn:uuid:"));
                 if (entry.getResource() instanceof Composition) {
-                    operationOutcome.setId("Composition/"+StringUtils.remove(entry.getResource().getId(),"urn:uuid:"));
+                    operationOutcome.setId("Composition/"+mObj.get("_id"));
                 }
                 if (entry.getResource() instanceof Patient) {
                     // TODO ensure this is the correcct Patient (one referred to in the Composition)
