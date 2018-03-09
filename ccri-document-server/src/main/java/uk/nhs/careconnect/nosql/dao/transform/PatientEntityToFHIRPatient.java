@@ -8,7 +8,7 @@ import uk.nhs.careconnect.nosql.entities.Identifier;
 import uk.nhs.careconnect.nosql.entities.Name;
 import uk.nhs.careconnect.nosql.entities.PatientEntity;
 import uk.nhs.careconnect.nosql.entities.Telecom;
-import uk.org.hl7.fhir.core.Stu3.CareConnectProfile;
+
 
 @Component
 public class PatientEntityToFHIRPatient implements Transformer<PatientEntity, Patient> {
@@ -16,7 +16,7 @@ public class PatientEntityToFHIRPatient implements Transformer<PatientEntity, Pa
     public Patient transform(PatientEntity patientEntity) {
         final Patient patient = new Patient();
 
-        Meta meta = new Meta().addProfile(CareConnectProfile.Patient_1);
+        Meta meta = new Meta().addProfile("https://fhir.hl7.org.uk/STU3/StructureDefinition/CareConnect-Patient-1");
 
         patient.setMeta(meta);
 
