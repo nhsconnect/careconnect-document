@@ -18,8 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-import uk.org.hl7.fhir.core.Stu3.CareConnectProfile;
-import uk.org.hl7.fhir.core.Stu3.CareConnectSystem;
+
 
 
 import java.text.DateFormat;
