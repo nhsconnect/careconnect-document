@@ -60,7 +60,8 @@ public class BundleDao implements IBundle {
             if (entry.hasResource()) {
                 if (entry.getResource() instanceof Patient) {
                     // TODO ensure this is the correcct Patient (one referred to in the Composition)
-                    bundleEntity.setPatient(patientDao.findInsert(ctx,(Patient) entry.getResource()));
+                    Patient mpiPatient = patientDao.create(ctx,(Patient) entry.getResource());
+                    bundleEntity.setPatient(new ObjectId(mpiPatient.getId()));
                 }
 
                 entry1.setObjectId(resourceDao.save(ctx,entry.getResource()));

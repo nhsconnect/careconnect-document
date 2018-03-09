@@ -18,7 +18,9 @@ import java.util.Set;
 
 public interface IPatient {
 
-    ObjectId findInsert(FhirContext ctx, Patient patient);
+    Patient create(FhirContext ctx, Patient patient);
+
+    Patient read(FhirContext ctx, IdType theId);
 
     List<Resource> search (FhirContext ctx,
 

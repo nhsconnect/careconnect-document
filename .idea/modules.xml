@@ -5,7 +5,6 @@
       <module fileurl="file://$PROJECT_DIR$/careconnect-document.iml" filepath="$PROJECT_DIR$/careconnect-document.iml" />
       <module fileurl="file://$PROJECT_DIR$/ccri-document-gateway/ccri-document-gateway.iml" filepath="$PROJECT_DIR$/ccri-document-gateway/ccri-document-gateway.iml" />
       <module fileurl="file://$PROJECT_DIR$/ccri-document-server/ccri-document-server.iml" filepath="$PROJECT_DIR$/ccri-document-server/ccri-document-server.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ccri-document-server/src/main/main.iml" filepath="$PROJECT_DIR$/ccri-document-server/src/main/main.iml" />
     </modules>
   </component>
 </project>

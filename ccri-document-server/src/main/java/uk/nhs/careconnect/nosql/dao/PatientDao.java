@@ -4,21 +4,19 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenParam;
+import org.hl7.fhir.dstu3.model.*;
 import uk.nhs.careconnect.nosql.dao.transform.PatientEntityToFHIRPatient;
 
 import uk.nhs.careconnect.nosql.entities.Name;
 import uk.nhs.careconnect.nosql.entities.PatientEntity;
 import org.bson.types.ObjectId;
-import org.hl7.fhir.dstu3.model.HumanName;
-import org.hl7.fhir.dstu3.model.Identifier;
-import org.hl7.fhir.dstu3.model.Patient;
-import org.hl7.fhir.dstu3.model.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
+import uk.nhs.careconnect.nosql.entities.Telecom;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -36,7 +34,17 @@ public class PatientDao implements IPatient {
             patientEntityToFHIRPatient;
 
     @Override
-    public ObjectId findInsert(FhirContext ctx, Patient patient) {
+    public Patient read(FhirContext ctx, IdType theId) {
+        ObjectId objectId = new ObjectId(theId.getIdPart());
+        Query qry = Query.query(Criteria.where("_id").is(objectId));
+
+        PatientEntity patientEntity = mongo.findOne(qry, PatientEntity.class);
+        if (patientEntity == null) return null;
+        return patientEntityToFHIRPatient.transform(patientEntity);
+    }
+
+    @Override
+    public Patient create(FhirContext ctx, Patient patient) {
 
         // TODO This is a basic patient find and would need extending for a real implementtion.
 
@@ -46,34 +54,73 @@ public class PatientDao implements IPatient {
 
             PatientEntity patientE = mongo.findOne(qry, PatientEntity.class);
             // Patient found, quit and do not add new record.
-            if (patientE!=null) return patientE.getId();
+            if (patientE!=null) return patientEntityToFHIRPatient.transform(patientE);
         }
 
-        PatientEntity patientE = new PatientEntity();
+        PatientEntity patientEntity = new PatientEntity();
 
         for (Identifier identifier : patient.getIdentifier()) {
             uk.nhs.careconnect.nosql.entities.Identifier identifierE = new uk.nhs.careconnect.nosql.entities.Identifier();
             identifierE.setSystem(identifier.getSystem());
-            identifierE.setValue(identifier.getValue());
+            identifierE.setValue(identifier.getValue().replaceAll(" ",""));
 
-            patientE.getIdentifiers().add(identifierE);
+            patientEntity.getIdentifiers().add(identifierE);
         }
         for (HumanName name : patient.getName()) {
             Name nameE = new Name();
             nameE.setFamilyName(name.getFamily());
             nameE.setGivenName(name.getGivenAsSingleString());
-
-            patientE.getNames().add(nameE);
+            if (name.hasPrefix()) {
+                nameE.setPrefix(name.getPrefix().get(0).getValue());
+            }
+            if (name.hasUse()) {
+                nameE.setNameUse(name.getUse());
+            }
+            patientEntity.getNames().add(nameE);
         }
         if (patient.hasBirthDate()) {
-            patientE.setDateOfBirth(patient.getBirthDate());
+            patientEntity.setDateOfBirth(patient.getBirthDate());
         }
-        mongo.save(patientE);
+        if (patient.hasGender()) {
+            patientEntity.setGender(patient.getGender());
+        }
+        for (ContactPoint contactPoint : patient.getTelecom()) {
+            Telecom telecom = new Telecom();
+            telecom.setValue(contactPoint.getValue());
+            if (contactPoint.hasSystem()) {
+                telecom.setSystem(contactPoint.getSystem());
+            }
+            if (contactPoint.hasUse()) telecom.setTelecomUse(contactPoint.getUse());
 
+            patientEntity.getTelecoms().add(telecom);
+        }
+        for (Address address : patient.getAddress()) {
+            uk.nhs.careconnect.nosql.entities.Address addressEntity = new uk.nhs.careconnect.nosql.entities.Address();
 
-        ObjectId bundleId = patientE.getId();
+            for (StringType line : address.getLine()) {
+                addressEntity.getLines().add(line.toString());
+            }
 
-        return bundleId;
+            if (address.hasCity()) {
+                addressEntity.setCity(address.getCity());
+            }
+            if (address.hasPostalCode()) {
+                addressEntity.setPostcode(address.getPostalCode());
+            }
+            if (address.hasDistrict()) {
+                addressEntity.setCounty(address.getDistrict());
+            }
+            if (address.hasUse()) {
+                addressEntity.setUse(address.getUse());
+            }
+
+            patientEntity.getAddresses().add(addressEntity);
+        }
+        mongo.save(patientEntity);
+
+        ObjectId bundleId = patientEntity.getId();
+
+        return patientEntityToFHIRPatient.transform(patientEntity);
     }
 
     @Override
