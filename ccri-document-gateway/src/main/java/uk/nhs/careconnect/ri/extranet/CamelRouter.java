@@ -22,8 +22,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-import uk.nhs.careconnect.ri.gatewaylib.interceptor.GatewayCamelPostProcessor;
-import uk.nhs.careconnect.ri.gatewaylib.interceptor.GatewayCamelProcessor;
+import uk.nhs.careconnect.ri.extranet.providers.GatewayCamelPostProcessor;
+import uk.nhs.careconnect.ri.extranet.providers.GatewayCamelProcessor;
+
 
 import java.io.InputStream;
 
