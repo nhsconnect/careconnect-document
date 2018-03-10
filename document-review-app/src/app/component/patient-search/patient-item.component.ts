@@ -23,20 +23,28 @@ export class PatientItemComponent implements OnInit {
     if (this.patient == undefined) return "";
     if (this.patient.address == undefined || this.patient.address.length == 0)
       return "";
-    // Move to address
     return this.patient.address[0].line.join(", ")+", "+this.patient.address[0].city+", "+this.patient.address[0].postalCode;
 
   }
+  getLastName() : String {
+    if (this.patient == undefined) return "";
+    if (this.patient.name == undefined || this.patient.name.length == 0)
+      return "";
 
+    let name = "";
+    if (this.patient.name[0].family != undefined) name += this.patient.name[0].family.toUpperCase();
+   return name;
+
+  }
   getFirstName() : String {
     if (this.patient == undefined) return "";
     if (this.patient.name == undefined || this.patient.name.length == 0)
       return "";
     // Move to address
-    var name = "";
-    if (this.patient.name[0].prefix != undefined && this.patient.name[0].prefix.length>0) name = this.patient.name[0].prefix[0] +" ";
-    if (this.patient.name[0].given != undefined && this.patient.name[0].given.length>0) name = name + this.patient.name[0].given[0] +" ";
-    if (this.patient.name[0].family != undefined) name = name + this.patient.name[0].family;
+    let name = "";
+    if (this.patient.name[0].given != undefined && this.patient.name[0].given.length>0) name += ", "+ this.patient.name[0].given[0];
+
+    if (this.patient.name[0].prefix != undefined && this.patient.name[0].prefix.length>0) name += " (" + this.patient.name[0].prefix[0] +")" ;
     return name;
 
   }

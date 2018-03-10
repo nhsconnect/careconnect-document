@@ -1,12 +1,17 @@
 <div class="card">
   <div class="card-header d-flex justify-content-between">
-    <div>{{composition.date | date: 'dd MMM yyyy HH:mm'}}</div>
     <div>{{composition.title}}</div>
+    <div>{{composition.date | date: 'dd MMM yyyy HH:mm'}}</div>
   </div>
 
   <div class="card-body">
+    <div>Specialty : {{getService(composition.extension)}}</div>
+    <div>Custodian : {{composition.custodian.display}}</div>
+    <div *ngFor="let author of composition.author">
+      <div>Authour: {{author.display}}</div>
+    </div>
+    <div>Status: {{composition. status}}</div>
 
-    {{composition.status}}
   </div>
 </div>
 

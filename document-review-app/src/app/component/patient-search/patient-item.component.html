@@ -1,18 +1,50 @@
 <div class="card card-default">
   <div class="card-header d-flex w-100 justify-content-between">
     <div>
-    {{ getFirstName() }}
+    <b>{{ getLastName() }}</b>
+      {{ getFirstName() }}
     </div>
-    <div>NHS Number: {{ getNHSIdentifier() }}</div>
+    <div><i>Born: </i><b>{{patient.birthDate | date: 'dd-MMM-yyyy'}}</b></div>
+    <div><i>Gender: </i><b>{{ patient.gender }}</b></div>
+    <div><i>NHS No: </i><b>{{ getNHSIdentifier() }}</b></div>
   </div>
   <div class="card-body">
-    <div ng-if="patient" class="d-flex w-100 justify-content-between">
-      <small *ngIf="patient.telecom"><i class="fa fa-phone" aria-hidden="true"></i> {{ getFirstTelecom() }} </small>
-      <small> {{ patient.gender }}</small>
-    </div>
-    <div  class="d-flex w-100 justify-content-between">
-      <small>{{ getFirstAddress() }} </small>
-      <small>Date of Birth: {{patient.birthDate | date: 'dd/MM/yyyy'}}</small>
-    </div>
+    <table>
+      <tr>
+        <td>
+          <div  class="d-flex w-100 justify-content-between">
+            <div *ngIf="patient.address.length>0">
+              <i>{{patient.address[0].use}}</i>
+              <div *ngFor="let line of patient.address[0].line">
+                <div>{{line}}</div>
+              </div>
+              <div>{{patient.address[0].city}}</div>
+              <div>{{patient.address[0].district}}</div>
+              <div>{{patient.address[0].postalCode}}</div>
+            </div>
+          </div>
+        </td>
+        <td>
+          <div *ngFor="let telecom of patient.telecom">
+            <div><i>{{telecom.use}}</i>
+            <i>{{telecom.system}}</i>
+              <b>{{telecom.value}}</b></div>
+          </div>
+        </td>
+        <td>
+
+          <div *ngIf="patient.contact !=undefined && patient.contact.length>0">
+            <i>{{patient.contact[0].relationship[0].coding[0].display}}</i>
+            <div><b>{{patient.contact[0].name.family}}</b>, {{patient.contact[0].name.given}}</div>
+            <div *ngFor="let telecom of patient.contact[0].telecom">
+              <div><i>{{telecom.use}}</i>
+                <i>{{telecom.system}}</i>
+                <b>{{telecom.value}}</b></div>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </table>
+
   </div>
 </div>

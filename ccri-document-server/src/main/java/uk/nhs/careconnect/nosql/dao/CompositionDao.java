@@ -8,13 +8,10 @@ import com.google.gson.JsonParser;
 import com.mongodb.DBObject;
 
 import com.mongodb.DBRef;
+import org.hl7.fhir.dstu3.model.*;
 import uk.nhs.careconnect.nosql.entities.CompositionEntity;
 import org.bson.types.ObjectId;
-import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.Composition;
-import org.hl7.fhir.dstu3.model.IdType;
 
-import org.hl7.fhir.dstu3.model.Resource;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,6 +76,7 @@ public class CompositionDao implements IComposition {
 
                     if (entry.getResource() instanceof Composition) {
                         // Replace Bundle Composition Id with Composition Entity id
+                        resolveCompositionReferences((Composition) entry.getResource(), bundle);
                         entry.getResource().setId(compositionEntity.getId().toString());
                         resources.add(entry.getResource());
                     }
@@ -106,6 +104,7 @@ public class CompositionDao implements IComposition {
 
                     if (entry.getResource() instanceof Composition) {
                         // Replace Bundle Composition Id with Composition Entity id
+                        resolveCompositionReferences((Composition) entry.getResource(), bundle);
                         entry.getResource().setId(compositionEntity.getId().toString());
                         composition = (Composition) entry.getResource();
                     }
@@ -116,6 +115,49 @@ public class CompositionDao implements IComposition {
 
         return composition;
 
+    }
+
+    private Composition resolveCompositionReferences(Composition composition, Bundle bundle) {
+
+        for (Extension extension : composition.getExtension()) {
+            if (extension.getValue() instanceof Reference) {
+                Reference reference = (Reference) extension.getValue();
+                resolveReference(reference,bundle);
+            }
+        }
+        if (composition.hasCustodian()) resolveReference(composition.getCustodian(),bundle);
+        if (composition.hasAuthor() && composition.getAuthor().size()>0) resolveReference(composition.getAuthorFirstRep(),bundle);
+        if (composition.hasAttester() && composition.getAttester().size()>0) resolveReference(composition.getAttesterFirstRep().getParty(),bundle);
+
+        return composition;
+    }
+
+    private Reference resolveReference(Reference reference, Bundle bundle) {
+        if (!reference.hasDisplay() || reference.getDisplay().isEmpty()) {
+            reference.setDisplay(getDisplayReference(bundle, reference.getReference()));
+        }
+        return reference;
+    }
+
+    private String getDisplayReference(Bundle bundle, String reference) {
+        String display = "Some Ref "+reference;
+        for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
+            IBaseResource resource = null;
+            if (entry.hasFullUrl() && entry.getFullUrl().equals(reference)) resource = entry.getResource();
+            if (entry.hasResource() && entry.getResource().getId().equals(reference)) resource = entry.getResource();
+            if (resource !=null) {
+                display = resource.getClass().getCanonicalName();
+                if (resource instanceof Practitioner) {
+                    Practitioner practitioner = (Practitioner) resource;
+                    if (practitioner.getNameFirstRep() != null) display = practitioner.getNameFirstRep().getNameAsSingleString();
+                }
+                if (resource instanceof Organization) {
+                    Organization organization = (Organization) resource;
+                    if (organization.hasName()) display = organization.getName();
+                }
+            }
+        }
+        return display;
     }
 
     private ObjectId converToObjectId(String id) {
@@ -154,7 +196,14 @@ public class CompositionDao implements IComposition {
         if (document!=null) {
            if (document.getFhirDocument() !=null) {
                 bundle = getFhirDocument(ctx, (ObjectId) document.getFhirDocument().getId());
+               for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
 
+                   if (entry.getResource() instanceof Composition) {
+                       // Replace Bundle Composition Id with Composition Entity id
+                       resolveCompositionReferences((Composition) entry.getResource(), bundle);
+
+                   }
+               }
             }
         }
 

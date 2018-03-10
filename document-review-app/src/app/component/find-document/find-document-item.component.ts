@@ -14,4 +14,15 @@ export class FindDocumentItemComponent implements OnInit {
   ngOnInit() {
   }
 
+  getService(service : fhir.Extension[]) :string {
+    let display : string = "";
+    for( let extension of service) {
+      if (extension.url === "https://fhir.nhs.uk/STU3/StructureDefinition/Extension-ITK-CareSettingType-1") {
+        display = extension.valueCodeableConcept.coding[0].display;
+      }
+    }
+    return display;
+  }
+
+
 }
