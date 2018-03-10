@@ -1,5 +1,5 @@
 {
-  "name": "document-review-app",
+  "name": "FHIR Document App",
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
