@@ -6,9 +6,6 @@ import ca.uhn.fhir.rest.server.exceptions.ResourceVersionConflictException;
 import com.mongodb.DBObject;
 import com.mongodb.DBRef;
 import uk.nhs.careconnect.nosql.entities.CompositionEntity;
-import uk.nhs.careconnect.nosql.entities.Entry;
-import org.apache.commons.lang3.StringUtils;
-import org.bson.types.ObjectId;
 import org.hl7.fhir.dstu3.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +15,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 import uk.nhs.careconnect.nosql.entities.PatientEntity;
-import uk.nhs.careconnect.nosql.entities.Reference;
 
 import javax.transaction.Transactional;
 
@@ -29,7 +25,8 @@ public class BundleDao implements IBundle {
     @Autowired
     MongoOperations mongo;
 
-    @Autowired IResource resourceDao;
+    @Autowired
+    IFHIRResource fhirDocumentDao;
 
     @Autowired IPatient patientDao;
 
@@ -41,15 +38,14 @@ public class BundleDao implements IBundle {
         log.debug("BundleDao.save");
         OperationOutcome operationOutcome = new OperationOutcome();
 
-        CompositionEntity bundleEntity = new CompositionEntity();
-
+        CompositionEntity compositionEntity = new CompositionEntity();
 
 
        if (bundle.hasIdentifier()) {
            uk.nhs.careconnect.nosql.entities.Identifier identifierE = new uk.nhs.careconnect.nosql.entities.Identifier();
            identifierE.setValue(bundle.getIdentifier().getValue());
            identifierE.setSystem(bundle.getIdentifier().getSystem());
-           bundleEntity.setIdentifier(identifierE);
+           compositionEntity.setIdentifier(identifierE);
 
            Query qry = Query.query(Criteria.where("identifier.system").is(bundle.getIdentifier().getSystem()).and("identifier.value").is(bundle.getIdentifier().getValue()));
 
@@ -57,34 +53,24 @@ public class BundleDao implements IBundle {
            if (bundleE!=null) throw new ResourceVersionConflictException("FHIR Document already exists");
        }
 
+        DBObject mObj = fhirDocumentDao.save(ctx,bundle);
+        compositionEntity.setFhirDocument(new DBRef("Bundle",mObj.get("_id")));
+        compositionEntity.setFhirDocumentlId(mObj.get("_id").toString());
+
         for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
-            Entry entry1 = new Entry();
-            if (entry.hasFullUrl()) entry1.setFullUrl(entry.getFullUrl());
-
-            if (entry.hasResource()) {
-
-                DBObject mObj = resourceDao.save(ctx,entry.getResource());
-                entry1.setObject(new DBRef(entry.getResource().getResourceType().name(),mObj.get("_id")));
-                entry1.setObjectId(mObj.get("_id").toString());
-                entry1.setOriginalId(StringUtils.remove(entry.getResource().getId(),"urn:uuid:"));
-                if (entry.getResource() instanceof Composition) {
-                    operationOutcome.setId("Composition/"+mObj.get("_id"));
-                }
-                if (entry.getResource() instanceof Patient) {
+            if (entry.hasResource() && entry.getResource() instanceof Patient) {
                     // TODO ensure this is the correcct Patient (one referred to in the Composition)
                     PatientEntity mpiPatient = patientDao.createEntity(ctx,(Patient) entry.getResource());
-                    bundleEntity.setIdxPatient(mpiPatient);
-                    Reference ref = new Reference();
-                    // TODO add in direct document link
-                    bundleEntity.setSubject(ref);
-                }
+                    compositionEntity.setIdxPatient(mpiPatient);
+
+
             }
-
-
-            bundleEntity.getEntry().add(entry1);
         }
 
-        mongo.save(bundleEntity);
+        mongo.save(compositionEntity);
+
+        operationOutcome.setId("Composition/"+compositionEntity.getId());
+
 
         return operationOutcome;
     }

@@ -1,5 +1,11 @@
-<div *ngIf="composition!=undefined" class="container-fluid">
 
+ <div *ngIf="patient!=undefined" class="container-fluid">
+   <div class="card card-default">
+       <app-patient-item [patient] = "patient"></app-patient-item>
+   </div>
+ </div>
+
+ <div *ngIf="composition!=undefined" class="container-fluid">
   <div class="alert alert-info">
     <div class="d-flex justify-content-between">
       <div>

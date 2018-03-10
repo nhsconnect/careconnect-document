@@ -9,7 +9,7 @@ import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Resource;
 
 
-public interface IResource {
+public interface IFHIRResource {
 
     DBObject save(FhirContext ctx, Resource resource);
 

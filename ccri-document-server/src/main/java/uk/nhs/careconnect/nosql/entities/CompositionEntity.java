@@ -1,6 +1,7 @@
 package uk.nhs.careconnect.nosql.entities;
 
 
+import com.mongodb.BasicDBObject;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -34,23 +35,38 @@ public class CompositionEntity {
 
     private Reference custodian;
 
-    private Collection<Entry> entry = new LinkedHashSet<>();
-
     @DBRef
     private PatientEntity idxPatient;
+
+
+    com.mongodb.DBRef fhirDocument;
+
+    String fhirDocumentlId;
 
     private Identifier identifier;
 
     String originalId;
 
-
-    public Collection<Entry> getEntry() {
-        return entry;
+    public com.mongodb.DBRef getFhirDocument() {
+        return fhirDocument;
     }
 
-    public void setEntry(Collection<Entry> entry) {
-        this.entry = entry;
+    public void setFhirDocument(com.mongodb.DBRef fhirDocument) {
+        this.fhirDocument = fhirDocument;
     }
+
+
+
+
+    public String getFhirDocumentlId() {
+        return fhirDocumentlId;
+    }
+
+    public void setFhirDocumentlId(String fhirDocumentlId) {
+        this.fhirDocumentlId = fhirDocumentlId;
+    }
+
+
 
     public PatientEntity getIdxPatient() {
         return idxPatient;

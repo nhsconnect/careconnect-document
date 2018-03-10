@@ -4,7 +4,6 @@ import ca.uhn.fhir.context.FhirContext;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import org.bson.Document;
-import org.bson.types.ObjectId;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Resource;
 import org.slf4j.Logger;
@@ -17,14 +16,14 @@ import javax.transaction.Transactional;
 
 @Transactional
 @Repository
-public class ResourceDao implements IResource {
+public class FHIRResourceDao implements IFHIRResource {
 
     @Autowired
     protected MongoTemplate mongoTemplate;
 
 
 
-    private static final Logger log = LoggerFactory.getLogger(ResourceDao.class);
+    private static final Logger log = LoggerFactory.getLogger(FHIRResourceDao.class);
 
 
     @Override
