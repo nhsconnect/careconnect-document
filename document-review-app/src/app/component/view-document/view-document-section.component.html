@@ -5,16 +5,19 @@
 
       <ng-template #modalContent let-c="close" let-d="dismiss">
           <div class="modal-header">
-            <h4>Section Code <a href="{{getSNOMEDLink(section.code.coding[0].code)}}">{{section.code.coding[0].code}}</a></h4>
+            <h4>{{section.code.coding[0].display}}</h4>
+
+
             <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body">
-
+              <div class="modal-body">
+               SNOMED CT Code <a href="{{getSNOMEDLink(section.code.coding[0].code)}}">{{section.code.coding[0].code}}</a>
+  <br><br>
             <div *ngIf="section.entry != undefined">
               References {{section.entry.length}} entries
-              <br>
+              <br><br>
               <table>
                 <div *ngFor="let ent of entries">
                   <tr>
@@ -40,9 +43,10 @@
               No structured content referenced
             </div>
           </div>
+        <!--
           <div class="modal-footer">
             <button type="button" class="btn btn-outline-light" (click)="c('Close click')">Close</button>
-          </div>
+          </div> -->
         </ng-template>
 
       <button class="btn-info"  placement="top" (click)="open(modalContent)">

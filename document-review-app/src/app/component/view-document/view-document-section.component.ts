@@ -43,11 +43,10 @@ export class ViewDocumentSectionComponent implements OnInit {
     this.modalService.open(content, { windowClass: 'dark-modal' });
   }
 
-  getReferencedItem(reference : string) : string {
-    let structuredText = "";
+  getReferencedItem(reference : string)  {
 
     for (let resource of this.document.entry) {
-      if (resource.fullUrl === reference) {
+      if (resource.fullUrl === reference || resource.resource.id === reference ) {
 
         switch(resource.resource.resourceType) {
           case "AllergyIntolerance" :
@@ -80,13 +79,31 @@ export class ViewDocumentSectionComponent implements OnInit {
           case "List" :
             let list: fhir.List = <fhir.List> resource.resource;
             if (list.entry != undefined) {
-              this.entries.push({
-                "resource": "List"
-                , "display" : "Entries "+list.entry.length
-              });
+              if (list.code != undefined && list.code.coding.length > 0) {
+                this.entries.push({
+                  "resource": "List"
+                  , "code" : list.code.coding[0].code
+                  , "display" : "Entries "+list.entry.length
+                });
+              } else {
+                this.entries.push({
+                  "resource": "List"
+                  , "display" : "Entries "+list.entry.length
+                });
+              }
 
               for (let entry of list.entry) {
-                if (entry.item != undefined && entry.item.reference != undefined) this.getReferencedItem(entry.item.reference);
+
+                if (entry.item != undefined && entry.item.reference != undefined) {
+                  console.log(entry.item.reference);
+                  this.getReferencedItem(entry.item.reference);
+                }
+                else {
+                  this.entries.push({
+                    "resource": "Error"
+                    , "display" : "Missing Reference"
+                  });
+                }
               }
             }
             break;
@@ -110,7 +127,14 @@ export class ViewDocumentSectionComponent implements OnInit {
               });
              this.getReferencedItem(medicationRequest.medicationReference.reference);
             }
-            if (medicationRequest.medicationCodeableConcept != undefined) structuredText += " MedicationRequest "+this.getSNOMEDLink(medicationRequest.medicationCodeableConcept.coding[0].code);
+            if (medicationRequest.medicationCodeableConcept != undefined) {
+              this.entries.push({
+                "resource": "MedicationRequest",
+                "code" : medicationRequest.medicationCodeableConcept.coding[0].code,
+                "display" : medicationRequest.medicationCodeableConcept.coding[0].display
+              });
+             // structuredText += " MedicationRequest " + this.getSNOMEDLink(medicationRequest.medicationCodeableConcept.coding[0].code);
+            }
             break;
           case "MedicationStatement" :
             let medicationStatement :fhir.MedicationStatement = <fhir.MedicationStatement> resource.resource;
@@ -122,13 +146,19 @@ export class ViewDocumentSectionComponent implements OnInit {
 
               this.getReferencedItem(medicationStatement.medicationReference.reference);
             }
-            if (medicationStatement.medicationCodeableConcept != undefined) structuredText += " MedicationStatement "+this.getSNOMEDLink(medicationStatement.medicationCodeableConcept.coding[0].code);
+            if (medicationStatement.medicationCodeableConcept != undefined) {
+              this.entries.push({
+                "resource": "MedicationStatement",
+                "code" : medicationStatement.medicationCodeableConcept.coding[0].code,
+                "display" : medicationStatement.medicationCodeableConcept.coding[0].display
+              });
+            }
             break;
           case "Observation" :
             let observation :fhir.Observation = <fhir.Observation> resource.resource;
             this.entries.push({
               "resource": "Observation",
-              "code": observation.code.coding[0],"link": this.getSNOMEDLink(observation.code.coding[0].code)
+              "code": observation.code.coding[0]
               , "display" : observation.code.coding[0].display
             });
 
@@ -137,16 +167,20 @@ export class ViewDocumentSectionComponent implements OnInit {
             let procedure :fhir.Procedure = <fhir.Procedure> resource.resource;
             this.entries.push({
               "resource": "Procedure",
-              "code": procedure.code.coding[0].code,
-              "link": this.getSNOMEDLink(procedure.code.coding[0].code)
+              "code": procedure.code.coding[0].code
+
               , "display" : procedure.code.coding[0].display
             });
 
             break;
+          default : this.entries.push({
+            "resource": resource.resource.resourceType
+
+          });
         }
       }
     }
-    return structuredText;
+
   }
 
   getSNOMEDLink(code : string) {
