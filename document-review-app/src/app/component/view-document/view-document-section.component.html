@@ -19,12 +19,17 @@
               References {{section.entry.length}} entries
               <br><br>
               <table>
-                <div *ngFor="let ent of entries">
+                <div *ngFor="let ent of entries" >
                   <tr>
                     <td>{{ent.resource}}</td>
 
-                    <td *ngIf="ent.code!=undefined">
-                      <a href="{{getSNOMEDLink(ent.code)}}">{{ent.code}}</a>
+                    <td *ngIf="ent.code!=undefined" [ngSwitch]="ent.resource">
+
+                      <span *ngSwitchCase="'Medication'"><a href="{{getDMDLink(ent.code)}}" target="_blank">DM+D</a> <a href="{{getSNOMEDLink(ent.code)}}" target="_blank">SCT</a></span>
+                      <span *ngSwitchCase="'MedicationStatement'"><a href="{{getDMDLink(ent.code)}}" target="_blank">DM+D</a> <a href="{{getSNOMEDLink(ent.code)}}" target="_blank">SCT</a></span>
+                      <span *ngSwitchCase="'MedicationRequest'"><a href="{{getDMDLink(ent.code)}}" target="_blank">DM+D</a> <a href="{{getSNOMEDLink(ent.code)}}" target="_blank">SCT</a></span>
+                      <span *ngSwitchDefault><a href="{{getSNOMEDLink(ent.code)}}" target="_blank">SCT</a></span>
+
                     </td>
                     <td *ngIf="ent.code==undefined"></td>
 

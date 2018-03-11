@@ -13,7 +13,6 @@ export class ViewDocumentSectionComponent implements OnInit {
 
   @Input() document : fhir.Bundle;
 
-  structuredText : string;
 
   entries : any[];
 
@@ -183,6 +182,9 @@ export class ViewDocumentSectionComponent implements OnInit {
 
   }
 
+  getDMDLink(code : string) {
+    return "http://dmd.medicines.org.uk/DesktopDefault.aspx?VMP="+code+"&toc=nofloat";
+  }
   getSNOMEDLink(code : string) {
     return "https://termbrowser.nhs.uk/?perspective=full&conceptId1="+code+"&edition=uk-edition&release=v20171001";
   }
