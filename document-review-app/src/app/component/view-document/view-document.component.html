@@ -48,7 +48,7 @@
     <div class="card-body" [innerHTML]="patient.text.div"></div>
   </div>
       <div *ngFor="let section of sections" >
-          <app-view-document-section [section] = "section" [structuredText]="getPopover(section)" [structuredTitle]="getPopoverTitle(section)"></app-view-document-section>
+          <app-view-document-section [section] = "section" [document]="document"></app-view-document-section>
       </div>
 
 </div>

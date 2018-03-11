@@ -49,94 +49,6 @@ export class ViewDocumentComponent implements OnInit {
       );
   }
 
-  getPopoverTitle(section : fhir.CompositionSection) :string {
-    return "Structured view of section"; //+section.code.coding[0];
-  }
-  getPopover(section : fhir.CompositionSection) : string {
-
-    let structuredText="Section "+this.getSNOMEDLink(section.code.coding[0].code);
-    if (section.entry != undefined) {
-      structuredText += " has referenced "+section.entry.length+" items.<br>";
-      let count = section.entry.length;
-      for (let entry  of section.entry) {
-        structuredText = structuredText + '<br>';
-        structuredText += this.getReferencedItem(entry.reference);
-      }
-
-    } else {
-      structuredText += "<br>No entries referenced.";
-    }
-    return structuredText;
-  }
-
-  getReferencedItem(reference : string) : string {
-    let structuredText = "";
-    for (let resource of this.document.entry) {
-      if (resource.fullUrl === reference) {
-        //structuredText = structuredText + resource.resource.resourceType;
-        switch(resource.resource.resourceType) {
-          case "AllergyIntolerance" :
-            let allergyIntolerance: fhir.AllergyIntolerance = <fhir.AllergyIntolerance> resource.resource;
-            structuredText += "AllergyIntolerance ";
-            if (allergyIntolerance.code != null && allergyIntolerance.code.coding.length > 0) structuredText += this.getSNOMEDLink(allergyIntolerance.code.coding[0].code);
-            break;
-          case "Condition" :
-            let condition: fhir.Condition = <fhir.Condition> resource.resource;
-            structuredText += "Condition " + this.getSNOMEDLink(condition.code.coding[0].code);
-            break;
-          case "Encounter" :
-            let encounter: fhir.Encounter = <fhir.Encounter> resource.resource;
-            structuredText += "Encounter " + this.getSNOMEDLink(encounter.type[0].coding[0].code);
-            break;
-          case "List" :
-            let list: fhir.List = <fhir.List> resource.resource;
-            if (list.entry != undefined) {
-              structuredText += "List with " + list.entry.length + " entries: <br>";
-            for (let entry of list.entry) {
-              if (entry.item != undefined && entry.item.reference != undefined) structuredText += "<br>" + this.getReferencedItem(entry.item.reference);
-            }
-        }
-            break;
-          case "Medication" :
-            let medication :fhir.Medication = <fhir.Medication> resource.resource;
-            if (medication.code != undefined) {
-              structuredText += "Medication "+this.getSNOMEDLink(medication.code.coding[0].code);
-            }
-            break;
-          case "MedicationRequest" :
-            let medicationRequest :fhir.MedicationRequest = <fhir.MedicationRequest> resource.resource;
-            if (medicationRequest.medicationReference != undefined) {
-               structuredText += " MedicationRequest Reference "+medicationRequest.medicationReference.reference;
-               structuredText += this.getReferencedItem(medicationRequest.medicationReference.reference);
-            }
-            if (medicationRequest.medicationCodeableConcept != undefined) structuredText += " MedicationRequest "+this.getSNOMEDLink(medicationRequest.medicationCodeableConcept.coding[0].code);
-            break;
-          case "MedicationStatement" :
-            let medicationStatement :fhir.MedicationStatement = <fhir.MedicationStatement> resource.resource;
-            if (medicationStatement.medicationReference != undefined) {
-              structuredText += " MedicationStatement Reference <br>" + medicationStatement.medicationReference.reference;
-              structuredText += "<br>"+this.getReferencedItem(medicationStatement.medicationReference.reference);
-            }
-            if (medicationStatement.medicationCodeableConcept != undefined) structuredText += " MedicationStatement "+this.getSNOMEDLink(medicationStatement.medicationCodeableConcept.coding[0].code);
-            break;
-          case "Observation" :
-            let observation :fhir.Observation = <fhir.Observation> resource.resource;
-            structuredText += "Observation " +this.getSNOMEDLink(observation.code.coding[0].code);
-            break;
-          case "Procedure" :
-            let procedure :fhir.Procedure = <fhir.Procedure> resource.resource;
-            structuredText += "Procedure "+this.getSNOMEDLink(procedure.code.coding[0].code);
-            break;
-        }
-      }
-    }
-    return structuredText;
-  }
-
-  getSNOMEDLink(code : string) {
-    return "<a href='https://termbrowser.nhs.uk/?perspective=full&conceptId1="+code+"&edition=uk-edition&release=v20171001'>"+code+"</a>";
-  }
-
   getComposition() {
     for (let entry of this.document.entry) {
       if (entry.resource.resourceType === "Composition") {
@@ -149,6 +61,7 @@ export class ViewDocumentComponent implements OnInit {
       }
     }
   }
+
 
   downloadPDFActual(documentid : string) {
     let thefile = {};
