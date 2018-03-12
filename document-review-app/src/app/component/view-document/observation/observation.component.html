@@ -1,0 +1,30 @@
+<table class="table">
+  <thead>
+  <tr>
+    <th scope="col" width="30%">Date</th>
+    <th scope="col" width="60%">Condition</th>
+    <th scope="col"></th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let observation of observations">
+    <td>
+      {{observation.effectiveDateTime | date: 'dd-MMM-yyyy'}}
+    </td>
+    <td>
+      <b>{{observation.code.coding[0].display}}</b>
+
+
+    </td>
+    <td>
+      <div ngbDropdown class="d-inline-block" >
+        <button class="btn btn-info btn-sm" id="dropdownBasic1" ngbDropdownToggle> </button>
+        <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+          <button class="dropdown-item" (click)="getSNOMEDLink(observation.code.coding[0].code)">NHSD SCT</button>
+        </div>
+      </div>
+    </td>
+
+  </tr>
+  </tbody>
+</table>

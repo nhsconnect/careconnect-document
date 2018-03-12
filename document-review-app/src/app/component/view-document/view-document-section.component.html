@@ -18,18 +18,20 @@
             <div *ngIf="section.entry != undefined">
               References {{section.entry.length}} entries
               <br><br>
-              <table>
+              <table >
                 <div *ngFor="let ent of entries" >
                   <tr>
                     <td>{{ent.resource}}</td>
 
                     <td *ngIf="ent.code!=undefined" [ngSwitch]="ent.resource">
-
-                      <span *ngSwitchCase="'Medication'"><a href="{{getDMDLink(ent.code)}}" target="_blank">DM+D</a> <a href="{{getSNOMEDLink(ent.code)}}" target="_blank">SCT</a></span>
-                      <span *ngSwitchCase="'MedicationStatement'"><a href="{{getDMDLink(ent.code)}}" target="_blank">DM+D</a> <a href="{{getSNOMEDLink(ent.code)}}" target="_blank">SCT</a></span>
-                      <span *ngSwitchCase="'MedicationRequest'"><a href="{{getDMDLink(ent.code)}}" target="_blank">DM+D</a> <a href="{{getSNOMEDLink(ent.code)}}" target="_blank">SCT</a></span>
-                      <span *ngSwitchDefault><a href="{{getSNOMEDLink(ent.code)}}" target="_blank">SCT</a></span>
-
+                      <span *ngIf="isSNOMED(ent.code)">
+                        <span *ngSwitchCase="'Medication'"><a href="{{getDMDLink(ent.code)}}" target="_blank">dm+d</a> <a href="{{getSNOMEDLink(ent.code)}}" target="_blank">SCT</a></span>
+                        <span *ngSwitchCase="'MedicationRequest'"><a href="{{getDMDLink(ent.code)}}" target="_blank">dm+d</a> <a href="{{getSNOMEDLink(ent.code)}}" target="_blank">SCT</a></span>
+                        <span *ngSwitchDefault><a href="{{getSNOMEDLink(ent.code)}}" target="_blank">SCT</a></span>
+                      </span>
+                      <span *ngIf="!isSNOMED(ent.code)">
+                        code=<i>{{ent.code}}</i>
+                      </span>
                     </td>
                     <td *ngIf="ent.code==undefined"></td>
 
@@ -42,7 +44,18 @@
                   </tr>
                 </div>
              </table>
-
+              <span *ngIf="medicationStatements.length>0">
+               <app-medication-statement [medicationStatements]="medicationStatements"></app-medication-statement>
+              </span>
+              <span *ngIf="conditions.length>0">
+               <app-condition [conditions]="conditions"></app-condition>
+              </span>
+              <span *ngIf="procedures.length>0">
+               <app-procedure [procedures]="procedures"></app-procedure>
+              </span>
+              <span *ngIf="observations.length>0">
+               <app-observation [observations]="observations"></app-observation>
+              </span>
             </div>
             <div *ngIf="section.entry == undefined">
               No structured content referenced
@@ -55,7 +68,7 @@
         View Structured Content</button>
     </div>
   </div>
-  <div class="card-body">
+  <div class="card-body" >
     <div [innerHTML]="section.text.div"></div>
   </div>
 </div>

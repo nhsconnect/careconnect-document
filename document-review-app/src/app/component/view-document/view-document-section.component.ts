@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 
 import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
+import {isNumber} from "util";
 
 @Component({
   selector: 'app-view-document-section',
@@ -16,6 +17,11 @@ export class ViewDocumentSectionComponent implements OnInit {
 
   entries : any[];
 
+  medicationStatements : fhir.MedicationStatement[];
+  conditions : fhir.Condition[];
+  procedures : fhir.Procedure[];
+  observations : fhir.Observation[];
+
 
   constructor(private modalService: NgbModal
 
@@ -23,6 +29,11 @@ export class ViewDocumentSectionComponent implements OnInit {
 
   ngOnInit() {
     this.entries = [];
+    this.medicationStatements =[];
+    this.conditions=[];
+    this.procedures=[];
+    this.observations=[];
+
     this.getPopover(this.section);
 
   }
@@ -60,10 +71,13 @@ export class ViewDocumentSectionComponent implements OnInit {
             break;
           case "Condition" :
             let condition: fhir.Condition = <fhir.Condition> resource.resource;
+            this.conditions.push(condition);
+            /*
             this.entries.push( { "resource" : "Condition"
               , "code" : condition.code.coding[0].code
 
               , "display" : condition.code.coding[0].display});
+              */
             break;
           case "Encounter" :
             let encounter: fhir.Encounter = <fhir.Encounter> resource.resource;
@@ -137,40 +151,49 @@ export class ViewDocumentSectionComponent implements OnInit {
             break;
           case "MedicationStatement" :
             let medicationStatement :fhir.MedicationStatement = <fhir.MedicationStatement> resource.resource;
+            this.medicationStatements.push(medicationStatement);
             if (medicationStatement.medicationReference != undefined) {
+              /*
               this.entries.push({
                 "resource": "MedicationStatement",
                 "display" : "Medication Reference"
               });
-
+*/
               this.getReferencedItem(medicationStatement.medicationReference.reference);
             }
+            /*
             if (medicationStatement.medicationCodeableConcept != undefined) {
+
               this.entries.push({
                 "resource": "MedicationStatement",
                 "code" : medicationStatement.medicationCodeableConcept.coding[0].code,
                 "display" : medicationStatement.medicationCodeableConcept.coding[0].display
               });
-            }
+
+            }*/
             break;
           case "Observation" :
             let observation :fhir.Observation = <fhir.Observation> resource.resource;
+            this.observations.push(observation);
+            /*
             this.entries.push({
               "resource": "Observation",
               "code": observation.code.coding[0]
               , "display" : observation.code.coding[0].display
             });
-
+*/
             break;
           case "Procedure" :
             let procedure :fhir.Procedure = <fhir.Procedure> resource.resource;
+            this.procedures.push(procedure)
+            /*
             this.entries.push({
               "resource": "Procedure",
               "code": procedure.code.coding[0].code
 
               , "display" : procedure.code.coding[0].display
             });
-
+*/
             break;
           default : this.entries.push({
             "resource": resource.resource.resourceType
@@ -179,6 +202,17 @@ export class ViewDocumentSectionComponent implements OnInit {
         }
       }
     }
+
+  }
+
+  isSNOMED(code: string) : boolean {
+    if (code == undefined) return false;
+    if (!((+code).toString() === code)) {
+      //console.log("Not a number = "+code);
+      return false;
+    }
+    if (code.length<6) return false;
+    return true;
 
   }
 

@@ -20,8 +20,14 @@ start FHIR Server
 
 - mvn spring-boot:run
 
-
 Using a tool such as [Postman(https://www.getpostman.com/)] POST FHIR Documents to:
 
 - http://127.0.0.1:8181/STU3/Bundle
 
+# FHIR Document App
+
+in the document-review-app folder
+
+ng serve --open
+
+Which starts the app within your browser.

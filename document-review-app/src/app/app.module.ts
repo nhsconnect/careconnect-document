@@ -19,13 +19,16 @@ import { PatientSearchComponent } from './component/patient-search/patient-searc
 import {PatientItemComponent} from "./component/patient-search/patient-item.component";
 import { FindDocumentComponent } from './component/find-document/find-document.component';
 import { FindDocumentItemComponent } from './component/find-document/find-document-item.component';
-import { SectionReferencesModalComponent } from './component/section-references-modal/section-references-modal.component';
+
 import { PatientEprFindComponent } from './component/patient-epr-find/patient-epr-find.component';
 import { PatientEprPatientRecordComponent } from './component/patient-epr-patient-record/patient-epr-patient-record.component';
 import { PatientEprEncounterComponent } from './component/patient-epr-encounter/patient-epr-encounter.component';
+import { MedicationStatementComponent } from './component/view-document/medication-statement/medication-statement.component';
+import { ConditionComponent } from './component/view-document/condition/condition.component';
+import { ProcedureComponent } from './component/view-document/procedure/procedure.component';
+import { ObservationComponent } from './component/view-document/observation/observation.component';
 
-// import { ModalModule } from 'ngx-modialog';
-//import {BootstrapModalModule} from "ngx-modialog/plugins/bootstrap";
+
 
 
 
@@ -43,10 +46,13 @@ import { PatientEprEncounterComponent } from './component/patient-epr-encounter/
     PatientItemComponent,
     FindDocumentComponent,
     FindDocumentItemComponent,
-    SectionReferencesModalComponent,
     PatientEprFindComponent,
     PatientEprPatientRecordComponent,
-    PatientEprEncounterComponent
+    PatientEprEncounterComponent,
+    MedicationStatementComponent,
+    ConditionComponent,
+    ProcedureComponent,
+    ObservationComponent
   ],
   imports: [
     BrowserModule,
