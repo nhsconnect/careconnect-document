@@ -1,0 +1,37 @@
+<table class="table">
+  <thead>
+  <tr>
+    <th scope="col" width="30%">Date</th>
+    <th scope="col" width="60%">Allergy</th>
+    <th scope="col"></th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let allergy of allergies">
+    <td>
+      {{allergy.assertedDate | date: 'dd-MMM-yyyy'}}
+
+      {{allergy.onsetDateTime | date: 'dd-MMM-yyyy'}}
+    </td>
+    <td>
+      <div *ngFor="let reaction of allergy.reaction">
+        <b *ngIf="reaction.substance != undefined>0">{{reaction.substance.coding[0].display}}</b>
+        <span *ngFor="let manifestation of reaction.manifestation">
+          {{manifestation.coding[0].display}}
+        </span>
+      </div>
+      <i *ngIf="allergy.clinicalStatus!=undefined">{{allergy.clinicalStatus}}</i>
+      <i *ngIf="allergy.verificationStatus!=undefined">{{allergy.verificationStatus}}</i>
+    </td>
+    <td>
+      <div ngbDropdown class="d-inline-block" *ngIf="allergy.code != undefined && allergy.code.coding.length>0" >
+        <button class="btn btn-info btn-sm" id="dropdownBasic1" ngbDropdownToggle> </button>
+        <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+          <button class="dropdown-item" (click)="getSNOMEDLink(allergy.code.coding[0].code)">NHSD SCT</button>
+        </div>
+      </div>
+    </td>
+
+  </tr>
+  </tbody>
+</table>

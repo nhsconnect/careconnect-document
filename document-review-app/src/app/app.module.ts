@@ -27,6 +27,8 @@ import { MedicationStatementComponent } from './component/view-document/medicati
 import { ConditionComponent } from './component/view-document/condition/condition.component';
 import { ProcedureComponent } from './component/view-document/procedure/procedure.component';
 import { ObservationComponent } from './component/view-document/observation/observation.component';
+import { AllergyIntolleranceComponent } from './component/view-document/allergy-intollerance/allergy-intollerance.component';
+import { EncounterComponent } from './component/view-document/encounter/encounter.component';
 
 
 
@@ -52,7 +54,9 @@ import { ObservationComponent } from './component/view-document/observation/obse
     MedicationStatementComponent,
     ConditionComponent,
     ProcedureComponent,
-    ObservationComponent
+    ObservationComponent,
+    AllergyIntolleranceComponent,
+    EncounterComponent
   ],
   imports: [
     BrowserModule,

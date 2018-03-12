@@ -21,6 +21,8 @@ export class ViewDocumentSectionComponent implements OnInit {
   conditions : fhir.Condition[];
   procedures : fhir.Procedure[];
   observations : fhir.Observation[];
+  allergies : fhir.AllergyIntolerance[];
+  encounters : fhir.Encounter[];
 
 
   constructor(private modalService: NgbModal
@@ -33,6 +35,8 @@ export class ViewDocumentSectionComponent implements OnInit {
     this.conditions=[];
     this.procedures=[];
     this.observations=[];
+    this.encounters=[];
+    this.allergies=[];
 
     this.getPopover(this.section);
 
@@ -61,33 +65,16 @@ export class ViewDocumentSectionComponent implements OnInit {
         switch(resource.resource.resourceType) {
           case "AllergyIntolerance" :
             let allergyIntolerance: fhir.AllergyIntolerance = <fhir.AllergyIntolerance> resource.resource;
-            if (allergyIntolerance.code != null && allergyIntolerance.code.coding.length > 0) {
-              this.entries.push( { "resource" : "AllergyIntolerance"
-                , "code" : allergyIntolerance.code.coding[0].code
-                , "display" : allergyIntolerance.code.coding[0].display});
-            } else {
-              this.entries.push( { "resource" : "AllergyIntolerance"});
-            }
+            this.allergies.push(allergyIntolerance);
             break;
           case "Condition" :
             let condition: fhir.Condition = <fhir.Condition> resource.resource;
             this.conditions.push(condition);
-            /*
-            this.entries.push( { "resource" : "Condition"
-              , "code" : condition.code.coding[0].code
 
-              , "display" : condition.code.coding[0].display});
-              */
             break;
           case "Encounter" :
             let encounter: fhir.Encounter = <fhir.Encounter> resource.resource;
-            if (encounter.type != undefined && encounter.type[0].coding != null) {
-              this.entries.push({
-                "resource": "Encounter",
-                "code": encounter.type[0].coding[0].code
-                , "display" : encounter.type[0].coding[0].display
-              });
-            }
+            this.encounters.push(encounter);
             break;
           case "List" :
             let list: fhir.List = <fhir.List> resource.resource;
@@ -153,47 +140,18 @@ export class ViewDocumentSectionComponent implements OnInit {
             let medicationStatement :fhir.MedicationStatement = <fhir.MedicationStatement> resource.resource;
             this.medicationStatements.push(medicationStatement);
             if (medicationStatement.medicationReference != undefined) {
-              /*
-              this.entries.push({
-                "resource": "MedicationStatement",
-                "display" : "Medication Reference"
-              });
-*/
               this.getReferencedItem(medicationStatement.medicationReference.reference);
             }
-            /*
-            if (medicationStatement.medicationCodeableConcept != undefined) {
-
-              this.entries.push({
-                "resource": "MedicationStatement",
-                "code" : medicationStatement.medicationCodeableConcept.coding[0].code,
-                "display" : medicationStatement.medicationCodeableConcept.coding[0].display
-              });
-
-            }*/
             break;
           case "Observation" :
             let observation :fhir.Observation = <fhir.Observation> resource.resource;
             this.observations.push(observation);
-            /*
-            this.entries.push({
-              "resource": "Observation",
-              "code": observation.code.coding[0]
-              , "display" : observation.code.coding[0].display
-            });
-*/
+
             break;
           case "Procedure" :
             let procedure :fhir.Procedure = <fhir.Procedure> resource.resource;
             this.procedures.push(procedure)
-            /*
-            this.entries.push({
-              "resource": "Procedure",
-              "code": procedure.code.coding[0].code
 
-              , "display" : procedure.code.coding[0].display
-            });
-*/
             break;
           default : this.entries.push({
             "resource": resource.resource.resourceType

@@ -1,0 +1,28 @@
+<table class="table">
+  <thead>
+  <tr>
+    <th scope="col" width="30%">Date</th>
+    <th scope="col" width="60%">Encounter</th>
+    <th scope="col"></th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let encounter of encounters">
+    <td>
+      {{encounter.period.start | date: 'dd-MMM-yyyy HH:mm'}}
+    </td>
+    <td>
+      <b *ngIf="encounter.type.length>0 && encounter.type[0].coding.length >0 ">{{encounter.type[0].coding[0].display}}</b>
+    </td>
+    <td>
+      <div ngbDropdown class="d-inline-block" *ngIf="encounter.type.length>0 && encounter.type[0].coding.length >0 " >
+        <button class="btn btn-info btn-sm" id="dropdownBasic1" ngbDropdownToggle> </button>
+        <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+          <button class="dropdown-item" (click)="getSNOMEDLink(encounter.type[0].coding[0].code)">NHSD SCT</button>
+        </div>
+      </div>
+    </td>
+
+  </tr>
+  </tbody>
+</table>

@@ -1,8 +1,9 @@
 <table class="table">
   <thead>
   <tr>
-    <th scope="col" width="30%">Date</th>
-    <th scope="col" width="60%">Condition</th>
+    <th scope="col" width="20%">Date</th>
+    <th scope="col" width="40%">Observation</th>
+    <th scope="col">Value</th>
     <th scope="col"></th>
   </tr>
   </thead>
@@ -13,8 +14,9 @@
     </td>
     <td>
       <b>{{observation.code.coding[0].display}}</b>
-
-
+    </td>
+    <td>
+      {{getValue(observation)}}
     </td>
     <td>
       <div ngbDropdown class="d-inline-block" >

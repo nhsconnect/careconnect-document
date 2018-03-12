@@ -56,6 +56,12 @@
               <span *ngIf="observations.length>0">
                <app-observation [observations]="observations"></app-observation>
               </span>
+              <span *ngIf="encounters.length>0">
+               <app-encounter [encounters]="encounters"></app-encounter>
+              </span>
+              <span *ngIf="allergies.length>0">
+               <app-allergy-intollerance [allergies]="allergies"></app-allergy-intollerance>
+              </span>
             </div>
             <div *ngIf="section.entry == undefined">
               No structured content referenced
