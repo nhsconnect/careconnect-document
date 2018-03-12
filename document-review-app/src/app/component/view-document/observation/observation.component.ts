@@ -20,7 +20,7 @@ export class ObservationComponent implements OnInit {
     if (observation == undefined) return "";
 
     if (observation.valueQuantity != undefined ) {
-      console.log(observation.valueQuantity.value);
+      //console.log(observation.valueQuantity.value);
       return observation.valueQuantity.value.toPrecision(4) + " " + observation.valueQuantity.unit;
     }
 
