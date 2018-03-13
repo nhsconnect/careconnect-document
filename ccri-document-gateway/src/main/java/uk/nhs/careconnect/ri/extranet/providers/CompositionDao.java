@@ -286,6 +286,22 @@ public class CompositionDao implements IComposition {
         composition.addSection(getMedicationStatementSection(medicationStatementBundle));
 
 
+        /* MEDICATION REQUEST */
+
+        Bundle medicationRequestBundle = getMedicationRequestBundle(client,patientId.getIdPart());
+
+        for (Bundle.BundleEntryComponent entry : medicationRequestBundle.getEntry()) {
+            if (entry.getResource() instanceof MedicationRequest) {
+                MedicationRequest medicationRequest = (MedicationRequest) entry.getResource();
+
+                medicationRequest.setId(getNewReferenceUri(medicationRequest));
+                medicationRequest.setSubject(new Reference(uuidtag+patient.getId()));
+                fhirDocument.addEntry().setResource(entry.getResource()).setFullUrl(uuidtag + medicationRequest.getId());
+                //Date date = medicationStatement.getEffectiveDateTimeType().getValue()
+            }
+        }
+        composition.addSection(getMedicationRequestSection(medicationRequestBundle));
+
         /* ALLERGY INTOLERANCE */
 
         Bundle allergyBundle = getAllergyBundle(client,patientId.getIdPart());
@@ -425,6 +441,35 @@ public class CompositionDao implements IComposition {
         ctxThymeleaf.setVariable("medicationStatements", medicationStatements);
 
         section.getText().setDiv(getDiv("medicationStatement")).setStatus(Narrative.NarrativeStatus.GENERATED);
+
+        return section;
+    }
+
+    private Composition.SectionComponent getMedicationRequestSection(Bundle bundle) {
+        Composition.SectionComponent section = new Composition.SectionComponent();
+
+        ArrayList<MedicationRequest>  medicationRequests = new ArrayList<>();
+
+        section.getCode().addCoding()
+                .setSystem(CareConnectSystem.SNOMEDCT)
+                .setCode("933361000000108")
+                .setDisplay("Medications and medical devices");
+        section.setTitle("Medications and medical devices");
+
+        for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
+            if (entry.getResource() instanceof MedicationRequest) {
+                MedicationRequest medicationRequest = (MedicationRequest) entry.getResource();
+                //medicationStatement.getMedicationReference().getDisplay();
+                section.getEntry().add(new Reference("urn:uuid:"+medicationRequest.getId()));
+                medicationRequest.getAuthoredOn();
+                medicationRequests.add(medicationRequest);
+
+            }
+        }
+        ctxThymeleaf.clearVariables();
+        ctxThymeleaf.setVariable("medicationRequests", medicationRequests);
+
+        section.getText().setDiv(getDiv("medicationRequest")).setStatus(Narrative.NarrativeStatus.GENERATED);
 
         return section;
     }
@@ -582,6 +627,17 @@ public class CompositionDao implements IComposition {
                 .forResource(MedicationStatement.class)
                 .where(MedicationStatement.PATIENT.hasId(patientId))
                 .and(MedicationStatement.STATUS.exactly().code("active"))
+                .returnBundle(Bundle.class)
+                .execute();
+    }
+
+    private Bundle getMedicationRequestBundle(IGenericClient client,String patientId) {
+
+        return client
+                .search()
+                .forResource(MedicationStatement.class)
+                .where(MedicationRequest.PATIENT.hasId(patientId))
+                .and(MedicationRequest.STATUS.exactly().code("active"))
                 .returnBundle(Bundle.class)
                 .execute();
     }

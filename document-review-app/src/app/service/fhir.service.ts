@@ -87,7 +87,7 @@ export class FhirService {
 
   getEPRSCRDocument(patientId: string): Observable<fhir.Bundle> {
 
-    const url = this.getTIEUrl()  + `/Patient/${patientId}/$document`;
+    const url = this.getTIEUrl()  + `/Patient/${patientId}/$document?_count=50`;
 
     return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getHeaders()});
 
@@ -117,7 +117,7 @@ export class FhirService {
 
   getEPREncounter(encounterId: string): Observable<fhir.Bundle> {
 
-    const url = this.getTIEUrl()  + `/Encounter/${encounterId}/$document`;
+    const url = this.getTIEUrl()  + `/Encounter/${encounterId}/$document?_count=50`;
 
     return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getHeaders()});
 
