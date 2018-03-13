@@ -2,9 +2,9 @@
   <thead>
   <tr>
     <th scope="col" width="20%">Date</th>
-    <th scope="col" width="40%">Observation</th>
+    <th scope="col" width="60%">Observation</th>
     <th scope="col">Value</th>
-    <th scope="col"></th>
+
   </tr>
   </thead>
   <tbody>
@@ -14,6 +14,10 @@
     </td>
     <td>
       <a (click)="getSNOMEDLink(observation.code.coding[0].code)"> <b>{{observation.code.coding[0].display}}</b></a>
+      <span *ngIf="observation.category != undefined">
+        <i *ngFor="let category of observation.category">{{category.coding[0].display}}</i>
+      </span>
+      - {{observation.status}}
     </td>
     <td>
       {{getValue(observation)}}

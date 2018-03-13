@@ -25,6 +25,40 @@
 </form>
 </div>
 -->
+<br>
 
+<form class="form-inline">
+  <div class="form-row">
+    <div class="form-group col-5">
+
+        <input id="date1" class="form-control form-control-sm" placeholder="From"
+               name="dpFm" ngbDatepicker #d="ngbDatepicker">
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary btn-sm"  (click)="d.toggle()" type="button">
+            <img src="assets/img/calendar-icon.svg" style="width: 0.8rem; height: 0.8rem; cursor: pointer;"/>
+          </button>
+        </div>
+    </div>
+    <div class="form-group col-5">
+      <input id="date2" class="form-control form-control-sm" placeholder="To"
+             name="dpFm" ngbDatepicker #e="ngbDatepicker">
+      <div class="input-group-append">
+        <button class="btn btn-outline-secondary btn-sm" (click)="e.toggle()" type="button">
+          <img src="assets/img/calendar-icon.svg" style="width: 0.8rem; height: 0.8rem; cursor: pointer;"/>
+        </button>
+      </div>
+    </div>
+    <div class="form-group col-2">
+      <select class="form-control form-control-sm" formControlName="category">
+        <option value="">Category</option>
+        <option value="vital-signs">Vital Signs</option>
+        <option value="laboratory">Laboratory</option>
+      </select>
+    </div>
+    <div class="form-group col-2">
+        <ngb-pagination [collectionSize]="obsTotal" [(page)]="page" aria-label="Default pagination"></ngb-pagination>
+    </div>
+  </div>
+</form>
+<br>
 <app-observation [observations]="observations"></app-observation>
-<ngb-pagination [collectionSize]="obsTotal" [(page)]="page" aria-label="Default pagination"></ngb-pagination>

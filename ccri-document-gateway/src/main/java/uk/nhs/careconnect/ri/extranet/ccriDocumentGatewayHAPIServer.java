@@ -70,6 +70,7 @@ public class ccriDocumentGatewayHAPIServer extends RestfulServer {
 				,applicationContext.getBean(PatientExtranetProvider.class)
 				,applicationContext.getBean(ObservationExtranetProvider.class)
 				,applicationContext.getBean(MedicationRequestExtranetProvider.class)
+				,applicationContext.getBean(ProcedureExtranetProvider.class)
 		));
 
 		// Replace built in conformance provider (CapabilityStatement)
