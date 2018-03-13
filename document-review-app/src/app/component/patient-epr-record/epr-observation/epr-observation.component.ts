@@ -7,6 +7,8 @@ import {Component, Input, OnInit} from '@angular/core';
 })
 export class EprObservationComponent implements OnInit {
 
+  model;
+
   @Input() observations :fhir.Observation[];
 
   @Input() obsTotal :number;

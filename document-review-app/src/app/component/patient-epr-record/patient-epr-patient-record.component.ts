@@ -26,6 +26,7 @@ export class PatientEprPatientRecordComponent implements OnInit {
   patient : fhir.Patient;
 
   encounterEnabled = false;
+  encounterDate = undefined;
 
 
 
@@ -42,6 +43,9 @@ export class PatientEprPatientRecordComponent implements OnInit {
   }
 
   selectEncounter(encounter : fhir.Encounter) {
+    this.encounterEnabled = true;
+    this.encounterDate = encounter.period.start;
+
     this.fhirService.getEPREncounter(encounter.id).subscribe(
       document => {
         this.encounterdoc = document;

@@ -1,0 +1,25 @@
+<table class="table">
+  <thead>
+  <tr>
+    <th scope="col" width="30%">Date</th>
+    <th scope="col" width="60%">Condition</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let condition of conditions">
+    <td>
+      {{condition.assertedDate | date: 'dd-MMM-yyyy'}}
+
+      {{condition.onsetDateTime | date: 'dd-MMM-yyyy'}}
+    </td>
+    <td>
+      <a (click)="getSNOMEDLink(condition.code.coding[0].code)"> <b>{{condition.code.coding[0].display}}</b></a>
+
+      <i *ngIf="condition.clinicalStatus!=undefined">{{condition.clinicalStatus}}</i>
+      <i *ngIf="condition.verificationStatus!=undefined">{{condition.verificationStatus}}</i>
+    </td>
+
+  </tr>
+  </tbody>
+</table>
+

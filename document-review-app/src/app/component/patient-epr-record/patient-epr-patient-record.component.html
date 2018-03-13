@@ -1,6 +1,7 @@
 <app-patient-item [patient]="patient"></app-patient-item>
-<ngb-tabset #tabs>
-  <ngb-tab id="tab-selectbyid1" title="Summary Record">
+<ngb-tabset #tabs type="pills">
+  <ngb-tab id="tab-selectbyid1">
+    <ng-template ngbTabTitle><b>Summary</b></ng-template>
     <ng-template ngbTabContent>
     <div *ngIf="composition != undefined">
 
@@ -8,7 +9,21 @@
     </div>
     </ng-template>
   </ngb-tab>
-  <ngb-tab [disabled]="encounterEnabled" id="tab-selectbyid2" title="Encounters">
+
+  <ngb-tab  id="tab-observations" >
+    <ng-template ngbTabTitle><b>Observations</b></ng-template>
+    <ng-template ngbTabContent>
+        <app-epr-observation [observations]="observations" [obsTotal]="obsTotal"></app-epr-observation>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab  id="tab-prescriptions">
+    <ng-template ngbTabTitle><b>Prescriptions</b></ng-template>
+    <ng-template ngbTabContent>
+      <app-epr-prescription [prescriptions]="prescriptions" [presTotal]="presTotal"></app-epr-prescription>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab id="tab-selectbyid2" >
+    <ng-template ngbTabTitle><b>Encounters</b></ng-template>
     <ng-template ngbTabContent>
       <table class="table">
         <thead>
@@ -42,17 +57,8 @@
 
     </ng-template>
   </ngb-tab>
-  <ngb-tab  id="tab-observations" title="Observations">
-    <ng-template ngbTabContent>
-        <app-epr-observation [observations]="observations" [obsTotal]="obsTotal"></app-epr-observation>
-    </ng-template>
-  </ngb-tab>
-  <ngb-tab  id="tab-prescriptions" title="Prescriptions">
-    <ng-template ngbTabContent>
-      <app-epr-prescription [prescriptions]="prescriptions" [presTotal]="presTotal"></app-epr-prescription>
-    </ng-template>
-  </ngb-tab>
-  <ngb-tab [disabled]="encounterEnabled" id="tab-encounterdoc" title="">
+  <ngb-tab [disabled]="!encounterEnabled" id="tab-encounterdoc" >
+    <ng-template ngbTabTitle><b>Consultation</b> {{encounterDate | date: 'dd-MMM-yyyy HH:mm' }}</ng-template>
     <ng-template ngbTabContent>
       <div *ngIf="encounterdoc != undefined">
         <!-- TODO  <button class="btn-info" (click)="backClick()">Back</button> -->
