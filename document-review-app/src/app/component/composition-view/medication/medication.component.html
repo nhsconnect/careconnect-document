@@ -1,0 +1,26 @@
+<table class="table">
+  <thead>
+  <tr>
+    <th scope="col" width="50%">Medication</th>
+    <th scope="col">Status</th>
+
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let medication of medications">
+    <td>
+      <div ngbDropdown class="d-inline-block" *ngIf="medication.code !=undefined">
+        <b *ngIf="medication.code !=undefined" ngbDropdownToggle>{{medication.code.coding[0].display}}</b>
+        <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+          <button class="dropdown-item" (click)="getSNOMEDLink(medication.code.coding[0].code)" >NHSD SNOMED CT</button>
+          <button class="dropdown-item" (click)="getDMDLink(medication.code.coding[0].code)" >dm+d</button>
+        </div>
+      </div>
+
+    </td>
+    <td>
+      {{medication.status}}
+    </td>
+  </tr>
+  </tbody>
+</table>

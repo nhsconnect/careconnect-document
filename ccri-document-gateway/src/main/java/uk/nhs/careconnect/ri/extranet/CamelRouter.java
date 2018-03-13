@@ -64,6 +64,10 @@ public class CamelRouter extends RouteBuilder {
                 .routeId("Extranet Observation")
                 .to("direct:HAPIServer");
 
+        from("direct:FHIRMedicationRequest")
+                .routeId("Extranet MedicationRequest")
+                .to("direct:HAPIServer");
+
         from("direct:FHIRCapabilityStatement")
                 .routeId("Extranet CapabilityStatement")
                 .to("direct:HAPIServer");

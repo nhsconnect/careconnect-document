@@ -13,8 +13,12 @@
     </td>
     <td>
       <a *ngIf="encounter.type != undefined && encounter.type.length>0 && encounter.type[0].coding.length >0 " (click)="getSNOMEDLink(encounter.type[0].coding[0].code)">
-        <b>{{encounter.type[0].coding[0].display}}</b>
-      </a>
+        <b>{{encounter.type[0].coding[0].display}}</b>    </a>
+      <span *ngFor="let participant of encounter.participant">
+          <span *ngIf="participant.individual != undefined"><i>{{participant.individual.display}}</i></span>
+      </span>
+      <span *ngIf="encounter.serviceProvider!=undefined"> {{encounter.serviceProvider.display}}</span>
+
     </td>
 
   </tr>

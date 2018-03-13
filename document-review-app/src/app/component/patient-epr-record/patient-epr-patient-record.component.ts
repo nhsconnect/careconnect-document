@@ -20,6 +20,11 @@ export class PatientEprPatientRecordComponent implements OnInit {
   observations: fhir.Observation[];
   obsTotal : number;
 
+  prescriptions : fhir.MedicationRequest[];
+  presTotal : number;
+
+  patient : fhir.Patient;
+
   encounterEnabled = false;
 
 
@@ -63,8 +68,14 @@ export class PatientEprPatientRecordComponent implements OnInit {
     this.fhirService.getEPRSCRDocument(patientId).subscribe(document => {
         this.composition = document;
         console.log("Bundle Retrieved");
+        if (document.entry != undefined) {
 
-      }, err => {
+          for (let entNo = 0; entNo < document.entry.length; entNo++) {
+            if (document.entry[entNo].resource.resourceType==="Patient")
+                this.patient = <fhir.Patient> document.entry[entNo].resource;
+          }
+        }
+          }, err => {
       }
     );
 
@@ -74,6 +85,17 @@ export class PatientEprPatientRecordComponent implements OnInit {
           this.obsTotal = data.total;
           for (let entNo = 0; entNo < data.entry.length; entNo++) {
             this.observations.push(<fhir.Observation>data.entry[entNo].resource);
+          }
+        }
+      }
+    );
+
+    this.fhirService.getEPRMedicationRequests(patientId).subscribe(data => {
+        this.prescriptions = [];
+        if (data.entry != undefined) {
+          this.presTotal = data.total;
+          for (let entNo = 0; entNo < data.entry.length; entNo++) {
+            this.prescriptions.push(<fhir.MedicationRequest>data.entry[entNo].resource);
           }
         }
       }

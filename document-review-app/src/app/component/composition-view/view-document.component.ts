@@ -19,9 +19,11 @@ export class ViewDocumentComponent implements OnInit {
 
 
     if (this.systemType != "EPR") {
+      this.systemType="EDMS";
       let id = this.route.snapshot.paramMap.get('docid');
       this.getDocument(id);
     } else {
+
       if (this.document!=null) {
         this.getComposition();
       }

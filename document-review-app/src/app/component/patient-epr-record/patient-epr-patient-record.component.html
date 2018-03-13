@@ -1,3 +1,4 @@
+<app-patient-item [patient]="patient"></app-patient-item>
 <ngb-tabset #tabs>
   <ngb-tab id="tab-selectbyid1" title="Summary Record">
     <ng-template ngbTabContent>
@@ -25,9 +26,14 @@
             </a>
           </td>
           <td >
-            <a *ngIf="encounter.type != undefined && encounter.type.length>0 && encounter.type[0].coding.length >0 " (click)="selectEncounter(encounter)" >
-              <b>{{encounter.type[0].coding[0].display}}</b>
+            <a (click)="selectEncounter(encounter)">
+              <b *ngIf="encounter.type != undefined && encounter.type.length>0 && encounter.type[0].coding.length >0 ">{{encounter.type[0].coding[0].display}}</b>
+              <span *ngFor="let participant of encounter.participant">
+                <span *ngIf="participant.individual != undefined"><i>{{participant.individual.display}}</i></span>
+              </span>
+              <span *ngIf="encounter.serviceProvider!=undefined"> {{encounter.serviceProvider.display}}</span>
             </a>
+
           </td>
         </tr>
         </tbody>
@@ -41,8 +47,12 @@
         <app-epr-observation [observations]="observations" [obsTotal]="obsTotal"></app-epr-observation>
     </ng-template>
   </ngb-tab>
-
-  <ngb-tab [disabled]="encounterEnabled" id="tab-encounterdoc" title="Encounter">
+  <ngb-tab  id="tab-prescriptions" title="Prescriptions">
+    <ng-template ngbTabContent>
+      <app-epr-prescription [prescriptions]="prescriptions" [presTotal]="presTotal"></app-epr-prescription>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab [disabled]="encounterEnabled" id="tab-encounterdoc" title="">
     <ng-template ngbTabContent>
       <div *ngIf="encounterdoc != undefined">
         <!-- TODO  <button class="btn-info" (click)="backClick()">Back</button> -->

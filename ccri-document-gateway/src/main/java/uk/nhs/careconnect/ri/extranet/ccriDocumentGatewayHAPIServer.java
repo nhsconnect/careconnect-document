@@ -14,10 +14,7 @@ import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import uk.nhs.careconnect.ri.extranet.providers.ConformanceExtranetProvider;
-import uk.nhs.careconnect.ri.extranet.providers.EncounterExtranetProvider;
-import uk.nhs.careconnect.ri.extranet.providers.ObservationExtranetProvider;
-import uk.nhs.careconnect.ri.extranet.providers.PatientExtranetProvider;
+import uk.nhs.careconnect.ri.extranet.providers.*;
 
 
 import javax.servlet.ServletException;
@@ -72,6 +69,7 @@ public class ccriDocumentGatewayHAPIServer extends RestfulServer {
 				applicationContext.getBean(EncounterExtranetProvider.class)
 				,applicationContext.getBean(PatientExtranetProvider.class)
 				,applicationContext.getBean(ObservationExtranetProvider.class)
+				,applicationContext.getBean(MedicationRequestExtranetProvider.class)
 		));
 
 		// Replace built in conformance provider (CapabilityStatement)

@@ -327,6 +327,7 @@ public class CompositionDao implements IComposition {
                 .forResource(Encounter.class)
                 .where(Patient.RES_ID.exactly().code(encouterId))
                 .revInclude(new Include("*"))
+                .count(50) // be careful of this TODO
                 .returnBundle(Bundle.class)
                 .execute();
         return bundle;

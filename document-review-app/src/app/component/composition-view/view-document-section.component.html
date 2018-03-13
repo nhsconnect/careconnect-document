@@ -12,11 +12,12 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-              <div class="modal-body">
+           <div class="modal-body">
                SNOMED CT Code <a href="{{getSNOMEDLink(section.code.coding[0].code)}}">{{section.code.coding[0].code}}</a>
   <br><br>
             <div *ngIf="section.entry != undefined">
               References {{section.entry.length}} entries
+
               <br><br>
               <table >
                 <div *ngFor="let ent of entries" >
@@ -44,6 +45,16 @@
                   </tr>
                 </div>
              </table>
+
+              <span *ngIf="allergies.length>0">
+               <app-allergy-intollerance [allergies]="allergies"></app-allergy-intollerance>
+              </span>
+              <span *ngIf="observations.length>0">
+               <app-observation [observations]="observations"></app-observation>
+              </span>
+              <span *ngIf="encounters.length>0">
+               <app-encounter [encounters]="encounters"></app-encounter>
+              </span>
               <span *ngIf="medicationStatements.length>0">
                <app-medication-statement [medicationStatements]="medicationStatements"></app-medication-statement>
               </span>
@@ -53,15 +64,14 @@
               <span *ngIf="procedures.length>0">
                <app-procedure [procedures]="procedures"></app-procedure>
               </span>
-              <span *ngIf="observations.length>0">
-               <app-observation [observations]="observations"></app-observation>
+              <span *ngIf="medications.length > 0">
+               <app-medication [medications]="medications"></app-medication>
               </span>
-              <span *ngIf="encounters.length>0">
-               <app-encounter [encounters]="encounters"></app-encounter>
+              <span *ngIf="prescriptions.length>0">
+               <app-medication-request [medicationRequests]="prescriptions"></app-medication-request>
               </span>
-              <span *ngIf="allergies.length>0">
-               <app-allergy-intollerance [allergies]="allergies"></app-allergy-intollerance>
-              </span>
+
+
             </div>
             <div *ngIf="section.entry == undefined">
               No structured content referenced

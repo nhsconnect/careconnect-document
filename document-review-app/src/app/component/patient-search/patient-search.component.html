@@ -11,7 +11,7 @@
 
   <div *ngFor="let patient of patients$ | async" >
     <a (click)="selectPatient(patient.id)">
-        <app-patient-item [patient] = "patient"></app-patient-item>
+        <app-patient-item [patient] = "patient" [detail]="true"></app-patient-item>
     </a>
   </div>
 </div>

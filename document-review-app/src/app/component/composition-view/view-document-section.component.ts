@@ -18,6 +18,8 @@ export class ViewDocumentSectionComponent implements OnInit {
   entries : any[];
 
   medicationStatements : fhir.MedicationStatement[];
+  prescriptions : fhir.MedicationRequest[];
+  medications : fhir.Medication[];
   conditions : fhir.Condition[];
   procedures : fhir.Procedure[];
   observations : fhir.Observation[];
@@ -32,6 +34,8 @@ export class ViewDocumentSectionComponent implements OnInit {
   ngOnInit() {
     this.entries = [];
     this.medicationStatements =[];
+    this.prescriptions =[];
+    this.medications=[];
     this.conditions=[];
     this.procedures=[];
     this.observations=[];
@@ -54,11 +58,13 @@ export class ViewDocumentSectionComponent implements OnInit {
   }
 
   open(content) {
+    console.log("In getReferenced and medications count = "+this.medications.length);
+    console.log("Encounters count = "+this.encounters.length);
     this.modalService.open(content, { windowClass: 'dark-modal' });
   }
 
   getReferencedItem(reference : string)  {
-
+    console.log("In getReferenced and medications count = "+this.medications.length);
     for (let resource of this.document.entry) {
       if (resource.fullUrl === reference || resource.resource.id === reference ) {
 
@@ -109,32 +115,17 @@ export class ViewDocumentSectionComponent implements OnInit {
             break;
           case "Medication" :
             let medication :fhir.Medication = <fhir.Medication> resource.resource;
-            if (medication.code != undefined) {
-              this.entries.push({
-                "resource": "Medication",
-                "code": medication.code.coding[0].code,
 
-                "display" : medication.code.coding[0].display
-              });
-            }
+              this.medications.push(medication);
+
             break;
           case "MedicationRequest" :
             let medicationRequest :fhir.MedicationRequest = <fhir.MedicationRequest> resource.resource;
+            this.prescriptions.push(medicationRequest);
             if (medicationRequest.medicationReference != undefined) {
-              this.entries.push({
-                "resource": "MedicationRequest",
-                 "display" : "Medication Reference"
-              });
              this.getReferencedItem(medicationRequest.medicationReference.reference);
             }
-            if (medicationRequest.medicationCodeableConcept != undefined) {
-              this.entries.push({
-                "resource": "MedicationRequest",
-                "code" : medicationRequest.medicationCodeableConcept.coding[0].code,
-                "display" : medicationRequest.medicationCodeableConcept.coding[0].display
-              });
-             // structuredText += " MedicationRequest " + this.getSNOMEDLink(medicationRequest.medicationCodeableConcept.coding[0].code);
-            }
+
             break;
           case "MedicationStatement" :
             let medicationStatement :fhir.MedicationStatement = <fhir.MedicationStatement> resource.resource;

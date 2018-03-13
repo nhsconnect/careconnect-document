@@ -1,4 +1,3 @@
-/// <reference path="../../../../node_modules/@types/fhir/index.d.ts" />
 
 import { Component, OnInit, Input } from '@angular/core';
 
@@ -6,10 +5,12 @@ import { Component, OnInit, Input } from '@angular/core';
 @Component({
   selector: 'app-patient-item',
   templateUrl: './patient-item.component.html',
-  styleUrls: ['../../app.component.css']
+  styleUrls: ['../../../app.component.css']
 })
 export class PatientItemComponent implements OnInit {
   @Input() patient : fhir.Patient;
+
+  @Input() detail : boolean;
 
   constructor() {
 
