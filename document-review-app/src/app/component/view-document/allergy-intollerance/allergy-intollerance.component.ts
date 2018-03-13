@@ -13,5 +13,7 @@ export class AllergyIntolleranceComponent implements OnInit {
 
   ngOnInit() {
   }
-
+  getSNOMEDLink(code : string) {
+    window.open("https://termbrowser.nhs.uk/?perspective=full&conceptId1="+code+"&edition=uk-edition&release=v20171001", "_blank");
+  }
 }

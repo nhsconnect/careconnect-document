@@ -4,17 +4,23 @@
     <th scope="col" width="50%">Drug</th>
     <th scope="col">Status</th>
     <th scope="col">Start</th>
-    <th scope="col">-</th>
   </tr>
   </thead>
   <tbody>
   <tr *ngFor="let medication of medicationStatements">
     <td>
-        <b *ngIf="medication.medicationCodeableConcept !=undefined">{{medication.medicationCodeableConcept.coding[0].display}}</b>
-        <b *ngIf="medication.medicationReference !=undefined">{{medication.medicationReference.display}}</b>
+      <div ngbDropdown class="d-inline-block" *ngIf="medication.medicationCodeableConcept !=undefined">
+        <b *ngIf="medication.medicationCodeableConcept !=undefined" ngbDropdownToggle>{{medication.medicationCodeableConcept.coding[0].display}}</b>
+        <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+           <button class="dropdown-item" (click)="getSNOMEDLink(medication.medicationCodeableConcept.coding[0].code)" >NHSD SNOMED CT</button>
+          <button class="dropdown-item" (click)="getDMDLink(medication.medicationCodeableConcept.coding[0].code)" >dm+d</button>
+        </div>
+      </div>
+      <span *ngIf="medication.medicationReference !=undefined"><b>{{medication.medicationReference.display}}</b></span>
         -
         <span *ngFor="let dosage of medication.dosage"> <i>DOSE</i>
-            <span *ngIf="dosage.doseQuantity!=undefined">{{dosage.doseQuantity.value}} {{dosage.doseQuantity.unit}}</span> - {{dosage.route.coding[0].display}} -
+            <span *ngIf="dosage.doseQuantity!=undefined">{{dosage.doseQuantity.value}} {{dosage.doseQuantity.unit}}</span>
+          - <span *ngIf="dosage.route!=undefined && dosage.route.coding.length>0">{{dosage.route.coding[0].display}}</span> -
             <span *ngIf="dosage.maxDosePerPeriod != undefined"> {{dosage.maxDosePerPeriod.numerator.value}}
              {{dosage.maxDosePerPeriod.numerator.unit}} {{dosage.maxDosePerPeriod.denominator.value}}{{dosage.maxDosePerPeriod.denominator.code}}
             </span>
@@ -27,16 +33,6 @@
     <td>
         {{medication.dateAsserted}}
       </td>
-    <td>
-      <div ngbDropdown class="d-inline-block" *ngIf="medication.medicationCodeableConcept !=undefined">
-        <button class="btn btn-info btn-sm" id="dropdownBasic1" ngbDropdownToggle> </button>
-        <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-          <button class="dropdown-item" (click)="getDMDLink(medication.medicationCodeableConcept.coding[0].code)" >dm+d</button>
-          <button class="dropdown-item" (click)="getSNOMEDLink(medication.medicationCodeableConcept.coding[0].code)">NHSD SCT</button>
-
-        </div>
-      </div>
-    </td>
   </tr>
   </tbody>
 </table>

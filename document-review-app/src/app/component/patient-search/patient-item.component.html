@@ -13,7 +13,7 @@
       <tr>
         <td>
           <div  class="d-flex w-100 justify-content-between">
-            <div *ngIf="patient.address.length>0">
+            <div *ngIf="patient.address != undefined && patient.address.length>0">
               <i>{{patient.address[0].use}}</i>
               <div *ngFor="let line of patient.address[0].line">
                 <div>{{line}}</div>

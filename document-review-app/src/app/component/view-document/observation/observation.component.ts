@@ -36,4 +36,22 @@ export class ObservationComponent implements OnInit {
 
   }
 
+  isSNOMED(code: string) : boolean {
+    if (code == undefined) return false;
+    if (!((+code).toString() === code)) {
+      //console.log("Not a number = "+code);
+      return false;
+    }
+    if (code.length<6) return false;
+    return true;
+
+  }
+
+
+  getSNOMEDLink(code : string) {
+    if (this.isSNOMED(code)) {
+      window.open("https://termbrowser.nhs.uk/?perspective=full&conceptId1=" + code + "&edition=uk-edition&release=v20171001", "_blank");
+    }
+  }
+
 }

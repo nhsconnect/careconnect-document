@@ -9,23 +9,16 @@
   <tbody>
   <tr *ngFor="let condition of conditions">
     <td>
-       {{condition.onsetDateTime | date: 'dd-MMM-yyyy'}}
+      <div *ngIf="condition.onsetDateTime!=undefined"> {{condition.onsetDateTime | date: 'dd-MMM-yyyy'}}<small> <i>onset</i></small></div>
+      <div *ngIf="condition.assertedDate!=undefined">{{condition.assertedDate | date: 'dd-MMM-yyyy'}}<small> <i>asserted</i></small></div>
     </td>
     <td>
-      <b>{{condition.code.coding[0].display}}</b>
+      <a (click)="getSNOMEDLink(condition.code.coding[0].code)">
+        <b>{{condition.code.coding[0].display}}</b> </a>
       <i *ngIf="condition.clinicalStatus!=undefined">{{condition.clinicalStatus}}</i>
       <i *ngIf="condition.verificationStatus!=undefined">{{condition.verificationStatus}}</i>
 
     </td>
-    <td>
-      <div ngbDropdown class="d-inline-block" >
-        <button class="btn btn-info btn-sm" id="dropdownBasic1" ngbDropdownToggle> </button>
-        <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-          <button class="dropdown-item" (click)="getSNOMEDLink(condition.code.coding[0].code)">NHSD SCT</button>
-        </div>
-      </div>
-    </td>
-
   </tr>
   </tbody>
 </table>
