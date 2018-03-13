@@ -134,6 +134,9 @@ public class CompositionDao implements IComposition {
         section = getMedicationStatementSection(fhirDocument);
         if (section.getEntry().size()>0) composition.addSection(section);
 
+        section = getMedicationRequestSection(fhirDocument);
+        if (section.getEntry().size()>0) composition.addSection(section);
+
         section = getAllergySection(fhirDocument);
         if (section.getEntry().size()>0) composition.addSection(section);
 
@@ -343,7 +346,7 @@ public class CompositionDao implements IComposition {
                 .forResource(Encounter.class)
                 .where(Patient.RES_ID.exactly().code(encouterId))
                 .revInclude(new Include("*"))
-                .count(50) // be careful of this TODO
+                .count(100) // be careful of this TODO
                 .returnBundle(Bundle.class)
                 .execute();
         return bundle;
