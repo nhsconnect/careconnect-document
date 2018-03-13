@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ConditionComponent } from './condition.component';
+import { EprObservationComponent } from './epr-observation.component';
 
-describe('ConditionComponent', () => {
-  let component: ConditionComponent;
-  let fixture: ComponentFixture<ConditionComponent>;
+describe('EprObservationComponent', () => {
+  let component: EprObservationComponent;
+  let fixture: ComponentFixture<EprObservationComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ConditionComponent ]
+      declarations: [ EprObservationComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ConditionComponent);
+    fixture = TestBed.createComponent(EprObservationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

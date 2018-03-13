@@ -1,0 +1,56 @@
+<ngb-tabset #tabs>
+  <ngb-tab id="tab-selectbyid1" title="Summary Record">
+    <ng-template ngbTabContent>
+    <div *ngIf="composition != undefined">
+
+      <app-view-document [systemType]="'EPR'" [document]="composition"></app-view-document>
+    </div>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab [disabled]="encounterEnabled" id="tab-selectbyid2" title="Encounters">
+    <ng-template ngbTabContent>
+      <table class="table">
+        <thead>
+        <tr>
+          <th scope="col" width="30%">Date</th>
+          <th scope="col" width="60%">Encounter</th>
+          <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let encounter of encounters" >
+          <td >
+            <a (click)="selectEncounter(encounter)">
+              {{encounter.period.start | date: 'dd-MMM-yyyy HH:mm'}}
+            </a>
+          </td>
+          <td >
+            <a *ngIf="encounter.type != undefined && encounter.type.length>0 && encounter.type[0].coding.length >0 " (click)="selectEncounter(encounter)" >
+              <b>{{encounter.type[0].coding[0].display}}</b>
+            </a>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      <ngb-pagination [collectionSize]="encTotal" [(page)]="page" aria-label="Default pagination"></ngb-pagination>
+
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab  id="tab-observations" title="Observations">
+    <ng-template ngbTabContent>
+        <app-epr-observation [observations]="observations" [obsTotal]="obsTotal"></app-epr-observation>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab [disabled]="encounterEnabled" id="tab-encounterdoc" title="Encounter">
+    <ng-template ngbTabContent>
+      <div *ngIf="encounterdoc != undefined">
+        <!-- TODO  <button class="btn-info" (click)="backClick()">Back</button> -->
+        <br>
+        <app-view-document [systemType]="'EPR'" [document]="encounterdoc"></app-view-document>
+      </div>
+    </ng-template>
+  </ngb-tab>
+</ngb-tabset>
+
+

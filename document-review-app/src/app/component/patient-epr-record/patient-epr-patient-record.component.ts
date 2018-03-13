@@ -15,8 +15,14 @@ export class PatientEprPatientRecordComponent implements OnInit {
   encounterdoc : fhir.Bundle = undefined;
 
   encounters: fhir.Encounter[];
+  encTotal : number;
+
+  observations: fhir.Observation[];
+  obsTotal : number;
 
   encounterEnabled = false;
+
+
 
   @ViewChild('tabs')
   private tabs:NgbTabset;
@@ -43,9 +49,10 @@ export class PatientEprPatientRecordComponent implements OnInit {
 
   selectPatientEPR(patientId : string) {
 
-    this.fhirService.getEPREncounters(patientId).subscribe( data=> {
+    this.fhirService.getEPREncounters(patientId).subscribe(data => {
         this.encounters = [];
         if (data.entry != undefined) {
+          this.encTotal = data.total;
           for (let entNo = 0; entNo < data.entry.length; entNo++) {
             this.encounters.push(<fhir.Encounter>data.entry[entNo].resource);
           }
@@ -53,14 +60,23 @@ export class PatientEprPatientRecordComponent implements OnInit {
       }
     );
 
-    this.fhirService.getEPRSCRDocument(patientId).subscribe( document => {
+    this.fhirService.getEPRSCRDocument(patientId).subscribe(document => {
         this.composition = document;
         console.log("Bundle Retrieved");
 
-      }, err=>{}
+      }, err => {
+      }
+    );
 
-);
-
-}
-
+    this.fhirService.getEPRObservations(patientId).subscribe(data => {
+        this.observations = [];
+        if (data.entry != undefined) {
+          this.obsTotal = data.total;
+          for (let entNo = 0; entNo < data.entry.length; entNo++) {
+            this.observations.push(<fhir.Observation>data.entry[entNo].resource);
+          }
+        }
+      }
+    );
+  }
 }
