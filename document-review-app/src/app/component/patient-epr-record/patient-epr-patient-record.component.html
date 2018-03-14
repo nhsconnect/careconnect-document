@@ -17,6 +17,12 @@
         <app-epr-observation [observations]="observations" [obsTotal]="obsTotal"></app-epr-observation>
     </ng-template>
   </ngb-tab>
+  <ngb-tab  id="tab-procedures" >
+    <ng-template ngbTabTitle><b>Procedures</b></ng-template>
+    <ng-template ngbTabContent>
+      <app-epr-procedure [procedures]="procedures" [procTotal]="procTotal"></app-epr-procedure>
+    </ng-template>
+  </ngb-tab>
   <ngb-tab  id="tab-prescriptions">
     <ng-template ngbTabTitle><b>Prescriptions</b></ng-template>
     <ng-template ngbTabContent>

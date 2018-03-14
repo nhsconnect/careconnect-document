@@ -23,6 +23,10 @@ export class PatientEprPatientRecordComponent implements OnInit {
   prescriptions : fhir.MedicationRequest[];
   presTotal : number;
 
+  procedures : fhir.Procedure[];
+  procTotal : number;
+
+
   patient : fhir.Patient;
 
   encounterEnabled = false;
@@ -89,6 +93,17 @@ export class PatientEprPatientRecordComponent implements OnInit {
           this.obsTotal = data.total;
           for (let entNo = 0; entNo < data.entry.length; entNo++) {
             this.observations.push(<fhir.Observation>data.entry[entNo].resource);
+          }
+        }
+      }
+    );
+
+    this.fhirService.getEPRProcedures(patientId).subscribe(data => {
+        this.procedures = [];
+        if (data.entry != undefined) {
+          this.procTotal = data.total;
+          for (let entNo = 0; entNo < data.entry.length; entNo++) {
+            this.procedures.push(<fhir.Procedure>data.entry[entNo].resource);
           }
         }
       }

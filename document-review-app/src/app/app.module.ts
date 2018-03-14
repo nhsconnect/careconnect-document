@@ -33,6 +33,7 @@ import { EprObservationComponent } from './component/patient-epr-record/epr-obse
 import { MedicationRequestComponent } from './component/composition-view/medication-request/medication-request.component';
 import { MedicationComponent } from './component/composition-view/medication/medication.component';
 import { EprPrescriptionComponent } from './component/patient-epr-record/epr-prescription/epr-prescription.component';
+import { EprProcedureComponent } from './component/patient-epr-record/epr-procedure/epr-procedure.component';
 
 
 
@@ -64,7 +65,8 @@ import { EprPrescriptionComponent } from './component/patient-epr-record/epr-pre
     EprObservationComponent,
     MedicationRequestComponent,
     MedicationComponent,
-    EprPrescriptionComponent
+    EprPrescriptionComponent,
+    EprProcedureComponent
   ],
   imports: [
     BrowserModule,

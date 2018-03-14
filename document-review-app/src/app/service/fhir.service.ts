@@ -107,6 +107,15 @@ export class FhirService {
     return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getHeaders()});
 
   }
+
+  getEPRProcedures(patientId: string): Observable<fhir.Bundle> {
+
+    const url = this.getTIEUrl()  + `/Procedure?patient=${patientId}`;
+
+    return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getHeaders()});
+
+  }
+
   getEPRMedicationRequests(patientId: string): Observable<fhir.Bundle> {
 
     const url = this.getTIEUrl()  + `/MedicationRequest?patient=${patientId}`;
