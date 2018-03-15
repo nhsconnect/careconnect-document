@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {Router} from "@angular/router";
 import {FileUploader} from "ng2-file-upload";
 
-const URL = 'http://localhost:8182/STU3/Bundle/$validate';
+const URL = 'http://localhost:8182/STU3/';
 
 
 @Component({
@@ -25,17 +25,20 @@ export class LoadFileComponent implements OnInit {
   hasAnotherDropZoneOver:boolean;
   response: any;
   resJson : fhir.OperationOutcome;
+  profiles = ["Bundle","Patient","Encounter"];
+  profile="Bundle";
 
   constructor (private router: Router){
 
     this.uploader = new FileUploader({
-      url: URL,
+      url: URL+this.profile+'/$validate',
       disableMultipart: true, // 'DisableMultipart' must be 'true' for formatDataFunction to be called.
 
 
     });
 
     this.uploader.onBeforeUploadItem = (item) => {
+      item.url = URL+this.profile+'/$validate';
       item.withCredentials = false;
       item.headers=  [{ name: 'Content-Type', value : this.getContentType(item) }  ,{ name: 'Accept', value : 'application/fhir+json' }]
 //
@@ -55,6 +58,11 @@ export class LoadFileComponent implements OnInit {
       err => {
         console.log("oopsie");
       });
+  }
+
+  onChange(deviceValue) {
+    this.profile=deviceValue;
+    console.log(deviceValue);
   }
 
   public getContentType(item) {

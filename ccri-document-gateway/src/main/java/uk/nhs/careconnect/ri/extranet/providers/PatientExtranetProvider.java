@@ -6,6 +6,8 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.model.valueset.BundleTypeEnum;
 import ca.uhn.fhir.rest.annotation.*;
 import ca.uhn.fhir.rest.api.EncodingEnum;
+import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.api.ValidationModeEnum;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.StringParam;
@@ -55,6 +57,17 @@ public class PatientExtranetProvider implements IResourceProvider {
         return Patient.class;
     }
 
+    @Validate
+    public MethodOutcome validate(@ResourceParam Patient patient,
+                                  @Validate.Mode ValidationModeEnum theMode,
+                                  @Validate.Profile String theProfile) {
+
+        MethodOutcome retVal = new MethodOutcome();
+        OperationOutcome outcome = ValidationFactory.validateResource(patient);
+
+        retVal.setOperationOutcome(outcome);
+        return retVal;
+    }
     @Search
     public List<Resource> searchPatient(HttpServletRequest request,
 
