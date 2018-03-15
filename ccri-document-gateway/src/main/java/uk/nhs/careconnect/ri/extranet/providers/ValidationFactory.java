@@ -62,7 +62,7 @@ public class ValidationFactory {
         ValidationResult result = validator.validateWithResult(resourceStr);
         for (SingleValidationMessage next : result.getMessages()) {
             OperationOutcome.OperationOutcomeIssueComponent issue = outcome.addIssue();
-            issue.setDiagnostics(next.getLocationString() + " - " + next.getMessage()).addLocation(resource.getClass().getSimpleName() + "/"+ resource.getIdElement().toString());
+            issue.setDiagnostics(next.getLocationString() + " - " + next.getMessage()).addLocation(resource.getClass().getSimpleName() + "/"+ resource.getIdElement().getIdPart());
             switch (next.getSeverity()) {
                 case ERROR:
                     issue.setSeverity(OperationOutcome.IssueSeverity.ERROR);
