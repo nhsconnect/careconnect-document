@@ -5,6 +5,8 @@ import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.valueset.BundleTypeEnum;
 import ca.uhn.fhir.rest.annotation.*;
 import ca.uhn.fhir.rest.api.EncodingEnum;
+import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.api.ValidationModeEnum;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
@@ -65,7 +67,17 @@ public class EncounterExtranetProvider implements IResourceProvider {
         return compositionDao.buildEncounterDocument(client,encounterId);
 
     }
+    @Validate
+    public MethodOutcome validate(@ResourceParam Encounter encounter,
+                                         @Validate.Mode ValidationModeEnum theMode,
+                                         @Validate.Profile String theProfile) {
 
+        MethodOutcome retVal = new MethodOutcome();
+        OperationOutcome outcome = ValidationFactory.validateResource(encounter);
+
+        retVal.setOperationOutcome(outcome);
+        return retVal;
+    }
 
 
     @Search

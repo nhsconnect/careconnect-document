@@ -4,6 +4,8 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.model.valueset.BundleTypeEnum;
 import ca.uhn.fhir.rest.annotation.*;
 
+import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.api.ValidationModeEnum;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
@@ -55,7 +57,7 @@ public class CompositionExtranetProvider implements IResourceProvider {
 
 
     @Search
-    public List<Resource> searchComposition(HttpServletRequest theRequest
+    public List<Resource> search(HttpServletRequest theRequest
             , @OptionalParam(name = Composition.SP_RES_ID) TokenParam resid
             , @OptionalParam(name = Composition.SP_PATIENT) ReferenceParam patient
      //       , @OptionalParam(name = Composition.SP_DATE) DateRangeParam date
@@ -68,5 +70,17 @@ public class CompositionExtranetProvider implements IResourceProvider {
 
         return results;
 
+    }
+
+    @Validate
+    public MethodOutcome validate(@ResourceParam Composition composition,
+                                         @Validate.Mode ValidationModeEnum theMode,
+                                         @Validate.Profile String theProfile) {
+
+        MethodOutcome retVal = new MethodOutcome();
+        OperationOutcome outcome = ValidationFactory.validateResource(composition);
+
+        retVal.setOperationOutcome(outcome);
+        return retVal;
     }
 }

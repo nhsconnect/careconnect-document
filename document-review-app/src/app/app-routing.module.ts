@@ -6,6 +6,7 @@ import {PatientFindComponent} from "./component/patient-edms-find/patient-find.c
 import {FindDocumentComponent} from "./component/composition-find/find-document.component";
 import {PatientEprFindComponent} from "./component/patient-epr-find/patient-epr-find.component";
 import {PatientEprPatientRecordComponent} from "./component/patient-epr-record/patient-epr-patient-record.component";
+import {ValidationLoadComponent} from "./component/validation-load/validation-load.component";
 
 const routes: Routes = [
   { path: '', component: PatientFindComponent },
@@ -14,7 +15,8 @@ const routes: Routes = [
   { path: 'findEPR', component: PatientEprFindComponent },
   { path: 'epr/:docid', component: PatientEprPatientRecordComponent},
   { path: 'doc/:docid', component: ViewDocumentComponent},
-  { path: 'docs/:patientId', component: FindDocumentComponent}
+  { path: 'docs/:patientId', component: FindDocumentComponent},
+  { path: 'load', component: ValidationLoadComponent }
 ];
 
 @NgModule({

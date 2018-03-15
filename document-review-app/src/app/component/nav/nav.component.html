@@ -15,7 +15,12 @@
       <button class="dropdown-item" routerLink="/findEPR"><i aria-hidden="false"></i> Find Patient</button>
     </div>
   </div>
-
+  <div  ngbDropdown class="d-inline-block">
+    <button class="btn btn-outline-secondary" id="dropdown3" ngbDropdownToggle><i class="fa fa-check" aria-hidden="false"></i> Validation</button>
+    <div ngbDropdownMenu aria-labelledby="dropdown3">
+      <button class="dropdown-item" routerLink="/load" ><i aria-hidden="false"></i> Open FHIR Resource/Bundle</button>
+    </div>
+  </div>
 </nav>
 </div>
 
