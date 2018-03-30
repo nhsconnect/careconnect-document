@@ -1,0 +1,87 @@
+<style>
+  .my-drop-zone { border: dotted 3px lightgray; text-align: center; }
+  html, body { height: 100%; }
+</style>
+
+<div class="container-fluid">
+
+  <div class="row">
+
+    <div class="col-md-4">
+      <h3>Upload</h3>
+
+
+
+      <div ng2FileDrop
+           [ngClass]="{'nv-file-over': hasBaseDropZoneOver}"
+           (fileOver)="fileOverBase($event)"
+           [uploader]="uploader"
+           class="well my-drop-zone">
+        <br>Drop document here<br>
+        .
+      </div>
+      <br>
+      <label class="btn-primary" ngbButtonLabel>
+        <input type="file" ng2FileSelect [uploader]="uploader" />
+      </label>
+        <select (change)="onChange($event.target.value)">
+          <option *ngFor="let i of profiles">{{i}}</option>
+        </select>
+
+
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12" style="margin-bottom: 40px">
+
+
+      <table class="table">
+        <thead>
+        <tr>
+          <th width="70%">Name</th>
+
+          <th width="30%">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let item of uploader.queue">
+          <td><strong>{{ item?.file?.name }}</strong></td>
+
+          <td nowrap>
+            <button type="button" class="btn btn-success btn-xs"
+                    (click)="item.upload()" [disabled]="item.isReady || item.isUploading || item.isSuccess">
+              <span class="glyphicon glyphicon-upload"></span> Validate
+            </button>
+            <button type="button" class="btn btn-danger btn-xs"
+                    (click)="item.remove()">
+              <span class="glyphicon glyphicon-trash"></span> Remove
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+
+  <div class="row">
+    <div *ngIf="resJson!=undefined" class="col-md-12">
+
+          <table class="table">
+            <thead>
+            <tr>
+              <th scope="col" width="10%">Severity</th>
+              <th scope="col" width="35%">Resource</th>
+              <th scope="col" width="55%">Diagnositc</th>
+            </tr>
+            </thead>
+            <tr *ngFor="let issue of resJson.issue">
+              <td>{{issue.severity}}</td>
+              <td><span *ngFor="let location of issue.location">{{location}}</span></td>
+              <td>{{issue.diagnostics}}</td>
+
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>

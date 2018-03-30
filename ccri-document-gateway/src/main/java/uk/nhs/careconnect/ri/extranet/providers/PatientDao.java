@@ -1,10 +1,16 @@
 package uk.nhs.careconnect.ri.extranet.providers;
 
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.rest.annotation.ResourceParam;
+import ca.uhn.fhir.rest.annotation.Validate;
+import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.api.ValidationModeEnum;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 
+import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.OperationOutcome;
 import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.Resource;
 
@@ -34,5 +40,17 @@ public class PatientDao implements IPatient {
 
 
         return resources;
+    }
+
+    @Validate
+    public MethodOutcome validate(@ResourceParam Patient patient,
+                                         @Validate.Mode ValidationModeEnum theMode,
+                                         @Validate.Profile String theProfile) {
+
+        MethodOutcome retVal = new MethodOutcome();
+        OperationOutcome outcome = ValidationFactory.validateResource(patient);
+
+        retVal.setOperationOutcome(outcome);
+        return retVal;
     }
 }
