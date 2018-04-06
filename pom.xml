@@ -34,6 +34,7 @@
 
     <modules>
         <module>ccri-document-server</module>
+        <module>ccri-edms-server</module>
         <module>ccri-document-gateway</module>
     </modules>
 
