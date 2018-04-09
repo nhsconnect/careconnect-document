@@ -30,9 +30,6 @@ public class BinaryProvider implements IResourceProvider {
     @Autowired
     FhirContext ctx;
 
-    private Session cmisSession;
-
-    public static final String CMIS_URL = "/public/cmis/versions/1.1/atom";
 
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(BinaryProvider.class);
 
