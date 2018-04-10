@@ -7,12 +7,12 @@ import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 
-import org.apache.chemistry.opencmis.client.api.CmisObject;
-import org.apache.chemistry.opencmis.client.api.Document;
+import org.apache.chemistry.opencmis.client.api.*;
 import org.apache.chemistry.opencmis.client.api.Property;
-import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
 import org.apache.chemistry.opencmis.commons.data.Properties;
+import org.apache.chemistry.opencmis.commons.data.RepositoryInfo;
+import org.apache.chemistry.opencmis.commons.enums.CapabilityQuery;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
 import org.hl7.fhir.dstu3.model.*;
 import org.hl7.fhir.instance.model.api.IBaseResource;
@@ -75,6 +75,10 @@ public class DocumentReferenceProvider implements IResourceProvider {
 
                 for (Property property : docMetadata.getProperties()) {
                     switch (property.getQueryName()) {
+                        case "cmis:createdBy" :
+                            documentReference.addAuthor().setDisplay(property.getValueAsString());
+                            break;
+
                         case "fhir:patientNumber" :
                             documentReference.setSubject(new Reference("Patient/"+property.getValueAsString()));
                             break;
@@ -87,6 +91,24 @@ public class DocumentReferenceProvider implements IResourceProvider {
                                 case "Discharge letter":
                                     code.setCode("823701000000103").setDisplay(property.getValueAsString());
                                     break;
+                            }
+                            break;
+                        case "fhir:careSetting" :
+                            Coding setting = documentReference.getContext().getPracticeSetting().addCoding().setSystem("http://snomed.info/sct");
+                            switch (property.getValueAsString()) {
+                                case "General surgical service" :
+                                    setting.setCode("310156009").setDisplay(property.getValueAsString());
+                                    break;
+                                case "Breast screening service":
+                                    setting.setCode("310126000").setDisplay(property.getValueAsString());
+                                    break;
+                                case "Urology service":
+                                    setting.setCode("310167005").setDisplay(property.getValueAsString());
+                                    break;
+                                case "Orthopedic service":
+                                    setting.setCode("310161006").setDisplay(property.getValueAsString());
+                                    break;
+
                             }
                             break;
                     }
@@ -109,6 +131,23 @@ public class DocumentReferenceProvider implements IResourceProvider {
     ) {
 
         List<Resource> results =  null; //compositionDao.search(ctx,resid,patient);
+
+        OpenCMIS openCMIS = new OpenCMIS();
+        session = openCMIS.getSession("fhir","test","test");
+
+        RepositoryInfo repoInfo = session.getRepositoryInfo();
+        if (repoInfo.getCapabilities().getQueryCapability().equals(CapabilityQuery.METADATAONLY)) {
+            log.warn("Repository does not support FTS [repoName=" + repoInfo.getProductName() +
+                    "][repoVersion=" + repoInfo.getProductVersion() + "]");
+        } else {
+            String query = "SELECT * FROM cmis:document WHERE cmis:name LIKE 'Screen%'";
+            ItemIterable<QueryResult> searchResult = session.query(query, false);
+            openCMIS.logSearchResult(query, searchResult);
+
+            query = "SELECT * FROM cmis:document WHERE cmis:name LIKE 'OpenCMIS%' AND CONTAINS('testing')";
+            searchResult = session.query(query, false);
+            openCMIS.logSearchResult(query, searchResult);
+        }
 
 
         return results;

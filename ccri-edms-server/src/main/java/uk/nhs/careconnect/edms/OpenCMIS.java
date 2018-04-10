@@ -267,7 +267,7 @@ public class OpenCMIS {
         }
     }
 
-    private void logSearchResult(String query, ItemIterable<QueryResult> searchResult) {
+    public void logSearchResult(String query, ItemIterable<QueryResult> searchResult) {
         logger.info("Results from query " + query);
         int i = 1;
         for (QueryResult resultRow : searchResult) {
