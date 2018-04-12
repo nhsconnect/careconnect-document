@@ -32,6 +32,10 @@ export class PatientEprPatientRecordComponent implements OnInit {
   allergies : fhir.AllergyIntolerance[];
   allergiesTotal : number;
 
+  documents : fhir.DocumentReference[];
+  documentsTotal : number;
+
+
   patient : fhir.Patient;
 
   encounterEnabled = false;
@@ -151,6 +155,17 @@ export class PatientEprPatientRecordComponent implements OnInit {
           this.allergiesTotal = data.total;
           for (let entNo = 0; entNo < data.entry.length; entNo++) {
             this.allergies.push(<fhir.AllergyIntolerance>data.entry[entNo].resource);
+          }
+        }
+      }
+    );
+
+    this.fhirService.getEPRDocuments(patientId).subscribe(data => {
+        this.documents = [];
+        if (data.entry != undefined) {
+          this.documentsTotal = data.total;
+          for (let entNo = 0; entNo < data.entry.length; entNo++) {
+            this.documents.push(<fhir.DocumentReference>data.entry[entNo].resource);
           }
         }
       }

@@ -13,21 +13,27 @@
   </ngb-tab>
   -->
   <ngb-tab  id="tab-conditions" >
-    <ng-template ngbTabTitle><b>Conditions</b></ng-template>
+    <ng-template ngbTabTitle><b>Summary</b></ng-template>
     <ng-template ngbTabContent>
+      <br>
+      <b>Conditions</b>
         <app-epr-condition [conditions]="conditions" [conditionTotal]="conditionTotal"></app-epr-condition>
-    </ng-template>
-  </ngb-tab>
-  <ngb-tab  id="tab-allergies" >
-    <ng-template ngbTabTitle><b>Allergies</b></ng-template>
-    <ng-template ngbTabContent>
+      <br>
+      <b>Allergies</b>
       <app-epr-allergy-intollerance [allergies]="allergies" [allergiesTotal]="allergiesTotal"></app-epr-allergy-intollerance>
     </ng-template>
   </ngb-tab>
+
   <ngb-tab  id="tab-procedures" >
     <ng-template ngbTabTitle><b>Procedures</b></ng-template>
     <ng-template ngbTabContent>
       <app-epr-procedure [procedures]="procedures" [procTotal]="procTotal"></app-epr-procedure>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab  id="tab-documents" >
+    <ng-template ngbTabTitle><b>Documents</b></ng-template>
+    <ng-template ngbTabContent>
+      <app-epr-document-reference [documents]="documents" [documentsTotal]="documentsTotal"></app-epr-document-reference>
     </ng-template>
   </ngb-tab>
   <ngb-tab  id="tab-observations" >

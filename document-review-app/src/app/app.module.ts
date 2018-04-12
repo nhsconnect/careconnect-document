@@ -38,6 +38,8 @@ import { ValidationLoadComponent } from './component/validation-load/validation-
 import { LoadFileComponent } from './component/validation-load/load-file/load-file.component';
 import { EprConditionComponent } from './component/patient-epr-record/epr-condition/epr-condition.component';
 import { EprAllergyIntolleranceComponent } from './component/patient-epr-record/epr-allergy-intollerance/epr-allergy-intollerance.component';
+import { DocumentReferenceComponent } from './component/composition-view/document-reference/document-reference.component';
+import { EprDocumentReferenceComponent } from './component/patient-epr-record/epr-document-reference/epr-document-reference.component';
 
 
 
@@ -74,7 +76,9 @@ import { EprAllergyIntolleranceComponent } from './component/patient-epr-record/
     ValidationLoadComponent,
     LoadFileComponent,
     EprConditionComponent,
-    EprAllergyIntolleranceComponent
+    EprAllergyIntolleranceComponent,
+    DocumentReferenceComponent,
+    EprDocumentReferenceComponent
   ],
   imports: [
     BrowserModule,
