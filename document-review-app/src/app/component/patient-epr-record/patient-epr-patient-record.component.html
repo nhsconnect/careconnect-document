@@ -1,6 +1,7 @@
 <app-patient-item [patient]="patient"></app-patient-item>
 <br>
 <ngb-tabset #tabs type="pills">
+  <!--
   <ngb-tab id="tab-selectbyid1">
     <ng-template ngbTabTitle><b>Summary</b></ng-template>
     <ng-template ngbTabContent>
@@ -10,17 +11,29 @@
     </div>
     </ng-template>
   </ngb-tab>
-
-  <ngb-tab  id="tab-observations" >
-    <ng-template ngbTabTitle><b>Observations</b></ng-template>
+  -->
+  <ngb-tab  id="tab-conditions" >
+    <ng-template ngbTabTitle><b>Conditions</b></ng-template>
     <ng-template ngbTabContent>
-        <app-epr-observation [observations]="observations" [obsTotal]="obsTotal"></app-epr-observation>
+        <app-epr-condition [conditions]="conditions" [conditionTotal]="conditionTotal"></app-epr-condition>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab  id="tab-allergies" >
+    <ng-template ngbTabTitle><b>Allergies</b></ng-template>
+    <ng-template ngbTabContent>
+      <app-epr-allergy-intollerance [allergies]="allergies" [allergiesTotal]="allergiesTotal"></app-epr-allergy-intollerance>
     </ng-template>
   </ngb-tab>
   <ngb-tab  id="tab-procedures" >
     <ng-template ngbTabTitle><b>Procedures</b></ng-template>
     <ng-template ngbTabContent>
       <app-epr-procedure [procedures]="procedures" [procTotal]="procTotal"></app-epr-procedure>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab  id="tab-observations" >
+    <ng-template ngbTabTitle><b>Observations</b></ng-template>
+    <ng-template ngbTabContent>
+      <app-epr-observation [observations]="observations" [obsTotal]="obsTotal"></app-epr-observation>
     </ng-template>
   </ngb-tab>
   <ngb-tab  id="tab-prescriptions">
@@ -93,16 +106,17 @@
 
     </ng-template>
   </ngb-tab>
+  <!--
   <ngb-tab [disabled]="!encounterEnabled" id="tab-encounterdoc" >
     <ng-template ngbTabTitle><b>Consultation</b> {{encounterDate | date: 'dd-MMM-yyyy HH:mm' }}</ng-template>
     <ng-template ngbTabContent>
       <div *ngIf="encounterdoc != undefined">
-        <!-- TODO  <button class="btn-info" (click)="backClick()">Back</button> -->
+
         <br>
         <app-view-document [systemType]="'EPR'" [document]="encounterdoc"></app-view-document>
       </div>
     </ng-template>
-  </ngb-tab>
+  </ngb-tab> -->
 </ngb-tabset>
 
 

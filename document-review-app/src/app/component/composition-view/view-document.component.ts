@@ -19,7 +19,7 @@ export class ViewDocumentComponent implements OnInit {
 
 
     if (this.systemType != "EPR") {
-      this.systemType="EDMS";
+      this.systemType="FDMS";
       let id = this.route.snapshot.paramMap.get('docid');
       this.getDocument(id);
     } else {
@@ -93,9 +93,9 @@ export class ViewDocumentComponent implements OnInit {
 
     if (this.systemType === "EPR") {
 
-      // EPR doesn't convert document so upload to EDMS and retrieve it as PDF
+      // EPR doesn't convert document so upload to FDMS and retrieve it as PDF
       let operation : fhir.OperationDefinition = undefined;
-      this.fhirService.postEDMSDocument(this.document).subscribe(data => {
+      this.fhirService.postFDMSDocument(this.document).subscribe(data => {
           console.log(data);
           operation = data;
           // thefile = new Blob([data], { type: "application/octet-stream" });
@@ -120,7 +120,7 @@ export class ViewDocumentComponent implements OnInit {
       // EPR doesn't convert document so upload to EDMS and retrieve it as HTML
 
       let operation : fhir.OperationDefinition = undefined;
-      this.fhirService.postEDMSDocument(this.document).subscribe(data => {
+      this.fhirService.postFDMSDocument(this.document).subscribe(data => {
           console.log(data);
           operation = data;
          // thefile = new Blob([data], { type: "application/octet-stream" });

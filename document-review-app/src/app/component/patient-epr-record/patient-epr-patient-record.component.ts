@@ -26,6 +26,11 @@ export class PatientEprPatientRecordComponent implements OnInit {
   procedures : fhir.Procedure[];
   procTotal : number;
 
+  conditions : fhir.Condition[];
+  conditionTotal : number;
+
+  allergies : fhir.AllergyIntolerance[];
+  allergiesTotal : number;
 
   patient : fhir.Patient;
 
@@ -73,6 +78,14 @@ export class PatientEprPatientRecordComponent implements OnInit {
       }
     );
 
+    this.fhirService.getEPRPatient(patientId).subscribe(document => {
+        this.patient = document;
+      }
+    );
+    /*
+
+    Needs a Composition creation service which has currently been disabled 12/Apr/2018
+
     this.fhirService.getEPRSCRDocument(patientId).subscribe(document => {
         this.composition = document;
         console.log("Bundle Retrieved");
@@ -86,6 +99,7 @@ export class PatientEprPatientRecordComponent implements OnInit {
           }, err => {
       }
     );
+    */
 
     this.fhirService.getEPRObservations(patientId).subscribe(data => {
         this.observations = [];
@@ -115,6 +129,28 @@ export class PatientEprPatientRecordComponent implements OnInit {
           this.presTotal = data.total;
           for (let entNo = 0; entNo < data.entry.length; entNo++) {
             this.prescriptions.push(<fhir.MedicationRequest>data.entry[entNo].resource);
+          }
+        }
+      }
+    );
+
+    this.fhirService.getEPRConditions(patientId).subscribe(data => {
+        this.conditions = [];
+        if (data.entry != undefined) {
+          this.conditionTotal = data.total;
+          for (let entNo = 0; entNo < data.entry.length; entNo++) {
+            this.conditions.push(<fhir.Condition>data.entry[entNo].resource);
+          }
+        }
+      }
+    );
+
+    this.fhirService.getEPRAllergies(patientId).subscribe(data => {
+        this.allergies = [];
+        if (data.entry != undefined) {
+          this.allergiesTotal = data.total;
+          for (let entNo = 0; entNo < data.entry.length; entNo++) {
+            this.allergies.push(<fhir.AllergyIntolerance>data.entry[entNo].resource);
           }
         }
       }

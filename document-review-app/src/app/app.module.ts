@@ -14,7 +14,7 @@ import { ViewDocumentComponent } from './component/composition-view/view-documen
 import {FhirService} from "./service/fhir.service";
 import {HttpClientModule} from "@angular/common/http";
 import { ViewDocumentSectionComponent } from './component/composition-view/view-document-section.component';
-import { PatientFindComponent } from './component/patient-edms-find/patient-find.component';
+import { PatientFindComponent } from './component/patient-fdms-find/patient-find.component';
 import { PatientSearchComponent } from './component/patient-search/patient-search.component';
 import {PatientItemComponent} from "./component/composition-view/patient/patient-item.component";
 import { FindDocumentComponent } from './component/composition-find/find-document.component';
@@ -36,6 +36,8 @@ import { EprPrescriptionComponent } from './component/patient-epr-record/epr-pre
 import { EprProcedureComponent } from './component/patient-epr-record/epr-procedure/epr-procedure.component';
 import { ValidationLoadComponent } from './component/validation-load/validation-load.component';
 import { LoadFileComponent } from './component/validation-load/load-file/load-file.component';
+import { EprConditionComponent } from './component/patient-epr-record/epr-condition/epr-condition.component';
+import { EprAllergyIntolleranceComponent } from './component/patient-epr-record/epr-allergy-intollerance/epr-allergy-intollerance.component';
 
 
 
@@ -70,7 +72,9 @@ import { LoadFileComponent } from './component/validation-load/load-file/load-fi
     EprPrescriptionComponent,
     EprProcedureComponent,
     ValidationLoadComponent,
-    LoadFileComponent
+    LoadFileComponent,
+    EprConditionComponent,
+    EprAllergyIntolleranceComponent
   ],
   imports: [
     BrowserModule,
