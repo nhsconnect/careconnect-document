@@ -27,7 +27,7 @@ public class CcriEDMSServer {
 
     @Bean
     public ServletRegistrationBean ServletRegistrationBean() {
-        ServletRegistrationBean registration = new ServletRegistrationBean(new CCRIRestfulServer(context), "/STU3/*");
+        ServletRegistrationBean registration = new ServletRegistrationBean(new CCRIEDMSServerHAPIConfig(context), "/STU3/*");
         registration.setName("FhirServlet");
         return registration;
     }

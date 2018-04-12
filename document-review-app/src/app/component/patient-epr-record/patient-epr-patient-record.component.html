@@ -1,7 +1,7 @@
 <app-patient-item [patient]="patient"></app-patient-item>
 <br>
 <ngb-tabset #tabs type="pills">
-  <!--
+  <!-- Needs a summary care record endpoint ... a getall operation
   <ngb-tab id="tab-selectbyid1">
     <ng-template ngbTabTitle><b>Summary</b></ng-template>
     <ng-template ngbTabContent>
@@ -106,7 +106,7 @@
 
     </ng-template>
   </ngb-tab>
-  <!--
+
   <ngb-tab [disabled]="!encounterEnabled" id="tab-encounterdoc" >
     <ng-template ngbTabTitle><b>Consultation</b> {{encounterDate | date: 'dd-MMM-yyyy HH:mm' }}</ng-template>
     <ng-template ngbTabContent>
@@ -116,7 +116,7 @@
         <app-view-document [systemType]="'EPR'" [document]="encounterdoc"></app-view-document>
       </div>
     </ng-template>
-  </ngb-tab> -->
+  </ngb-tab>
 </ngb-tabset>
 
 

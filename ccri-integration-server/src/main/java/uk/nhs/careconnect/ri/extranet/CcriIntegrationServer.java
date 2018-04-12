@@ -1,5 +1,9 @@
-package uk.nhs.careconnect.nosql;
+package uk.nhs.careconnect.ri.extranet;
 
+import ca.uhn.fhir.context.FhirContext;
+import org.apache.camel.CamelContext;
+import org.apache.camel.impl.DefaultCamelContextNameStrategy;
+import org.apache.camel.spring.boot.CamelContextConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,24 +16,29 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @SpringBootApplication
-@ComponentScan("uk.nhs.careconnect.nosql")
-public class CCRINoSQLApplication {
+@ComponentScan("uk.nhs.careconnect.ri.extranet")
+public class CcriIntegrationServer {
 
     @Autowired
     ApplicationContext context;
 
     public static void main(String[] args) {
         //System.setProperty(AuthenticationFilter.HAWTIO_AUTHENTICATION_ENABLED, "false");
-        System.setProperty("server.port", "8181");
-        SpringApplication.run(CCRINoSQLApplication.class, args);
+        System.setProperty("server.port", "8182");
+        SpringApplication.run(CcriIntegrationServer.class, args);
 
     }
 
     @Bean
     public ServletRegistrationBean ServletRegistrationBean() {
-        ServletRegistrationBean registration = new ServletRegistrationBean(new CCRIRestfulServer(context), "/STU3/*");
+        ServletRegistrationBean registration = new ServletRegistrationBean(new CcriIntegrationServerHAPIConfig(context), "/STU3/*");
         registration.setName("FhirServlet");
         return registration;
+    }
+
+    @Bean
+    public FhirContext getFhirContext() {
+        return FhirContext.forDstu3();
     }
 
     @Bean
@@ -38,6 +47,25 @@ public class CCRINoSQLApplication {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
         return source;
+    }
+
+
+    @Bean
+    CamelContextConfiguration contextConfiguration() {
+        return new CamelContextConfiguration() {
+
+            @Override
+            public void beforeApplicationStart(CamelContext camelContext) {
+
+                camelContext.setNameStrategy(new DefaultCamelContextNameStrategy("CcriTIE"));
+
+            }
+
+            @Override
+            public void afterApplicationStart(CamelContext camelContext) {
+
+            }
+        };
     }
 
 

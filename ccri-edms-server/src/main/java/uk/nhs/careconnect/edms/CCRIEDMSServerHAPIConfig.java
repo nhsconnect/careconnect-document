@@ -3,14 +3,12 @@ package uk.nhs.careconnect.edms;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.FhirVersionEnum;
 import ca.uhn.fhir.rest.api.EncodingEnum;
-import ca.uhn.fhir.rest.server.FifoMemoryPagingProvider;
 import ca.uhn.fhir.rest.server.HardcodedServerAddressStrategy;
 import ca.uhn.fhir.rest.server.RestfulServer;
 import ca.uhn.fhir.rest.server.interceptor.IServerInterceptor;
 import ca.uhn.fhir.rest.server.interceptor.ResponseHighlighterInterceptor;
 import ca.uhn.fhir.util.VersionUtil;
 
-import org.hl7.fhir.dstu3.model.DocumentReference;
 import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -25,14 +23,14 @@ import java.util.Arrays;
 import java.util.TimeZone;
 
 
-public class CCRIRestfulServer extends RestfulServer {
+public class CCRIEDMSServerHAPIConfig extends RestfulServer {
 
 	private static final long serialVersionUID = 1L;
-	private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(CCRIRestfulServer.class);
+	private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(CCRIEDMSServerHAPIConfig.class);
 
 	private ApplicationContext applicationContext;
 
-	CCRIRestfulServer(ApplicationContext context) {
+	CCRIEDMSServerHAPIConfig(ApplicationContext context) {
 		this.applicationContext = context;
 	}
 

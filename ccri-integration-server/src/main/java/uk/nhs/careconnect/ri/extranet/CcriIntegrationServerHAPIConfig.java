@@ -1,4 +1,4 @@
-package uk.nhs.careconnect.nosql;
+package uk.nhs.careconnect.ri.extranet;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.FhirVersionEnum;
@@ -9,13 +9,12 @@ import ca.uhn.fhir.rest.server.RestfulServer;
 import ca.uhn.fhir.rest.server.interceptor.IServerInterceptor;
 import ca.uhn.fhir.rest.server.interceptor.ResponseHighlighterInterceptor;
 import ca.uhn.fhir.util.VersionUtil;
-import uk.nhs.careconnect.nosql.providers.CompositionProvider;
-import uk.nhs.careconnect.nosql.providers.PatientProvider;
+
 import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import uk.nhs.careconnect.nosql.providers.BundleProvider;
+import uk.nhs.careconnect.ri.extranet.providers.*;
 
 
 import javax.servlet.ServletException;
@@ -24,14 +23,14 @@ import java.util.Arrays;
 import java.util.TimeZone;
 
 
-public class CCRIRestfulServer extends RestfulServer {
+public class CcriIntegrationServerHAPIConfig extends RestfulServer {
 
 	private static final long serialVersionUID = 1L;
-	private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(CCRIRestfulServer.class);
+	private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(CcriIntegrationServerHAPIConfig.class);
 
 	private ApplicationContext applicationContext;
 
-	CCRIRestfulServer(ApplicationContext context) {
+	CcriIntegrationServerHAPIConfig(ApplicationContext context) {
 		this.applicationContext = context;
 	}
 
@@ -67,13 +66,16 @@ public class CCRIRestfulServer extends RestfulServer {
         if (applicationContext == null ) log.info("Context is null");
 
 		setResourceProviders(Arrays.asList(
-				applicationContext.getBean(BundleProvider.class)
-				,applicationContext.getBean(CompositionProvider.class)
-				,applicationContext.getBean(PatientProvider.class)
+				applicationContext.getBean(EncounterExtranetProvider.class)
+				,applicationContext.getBean(PatientExtranetProvider.class)
+				,applicationContext.getBean(ObservationExtranetProvider.class)
+				,applicationContext.getBean(MedicationRequestExtranetProvider.class)
+				,applicationContext.getBean(ProcedureExtranetProvider.class)
+				,applicationContext.getBean(BundleExtranetProvider.class)
 		));
 
-
-		registerInterceptor(new mimeInterceptor());
+		// Replace built in conformance provider (CapabilityStatement)
+		setServerConformanceProvider(new ConformanceExtranetProvider(applicationContext ));
 
         setServerName(serverName);
         setServerVersion(serverVersion);
