@@ -2,7 +2,7 @@
     <div *ngFor="let composition of compositions">
         <a (click)="selectComposition(composition.id)" >
 
-          <app-find-document-item [composition] = "composition"></app-find-document-item>
+          <app-composition [composition] = "composition"></app-composition>
         </a>
     </div>
 </div>

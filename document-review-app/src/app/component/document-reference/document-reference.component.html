@@ -1,0 +1,17 @@
+<div class="card">
+  <div class="card-header d-flex justify-content-between">
+    <div>{{document.description}}</div>
+    <div>{{document.created | date: 'dd MMM yyyy HH:mm'}}</div>
+  </div>
+
+  <div class="card-body">
+    <div>Type : {{document.type.coding[0].display}}</div>
+    <div *ngIf="document.context != undefined">Specialty : {{getService()}}</div>
+    <div *ngIf="document.custodian!=undefined">Custodian : {{document.custodian.display}}</div>
+    <div *ngFor="let author of document.author">
+      <div>Author: {{author.display}}</div>
+    </div>
+    <div>Status: {{document.status}}</div>
+
+  </div>
+</div>

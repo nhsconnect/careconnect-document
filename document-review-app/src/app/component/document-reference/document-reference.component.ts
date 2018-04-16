@@ -7,7 +7,7 @@ import {Component, Input, OnInit} from '@angular/core';
 })
 export class DocumentReferenceComponent implements OnInit {
 
-  @Input() documents : fhir.DocumentReference[];
+  @Input() document : fhir.DocumentReference;
 
   constructor() { }
 
@@ -16,5 +16,12 @@ export class DocumentReferenceComponent implements OnInit {
   getSNOMEDLink(code : string) {
     window.open("https://termbrowser.nhs.uk/?perspective=full&conceptId1="+code+"&edition=uk-edition&release=v20171001", "_blank");
   }
+  getService() :string {
+    if (this.document.context == undefined || this.document.context.practiceSetting == undefined ) return "";
+    let display : string = "";
 
+    if (this.document.context.practiceSetting.coding.length > 0) display = this.document.context.practiceSetting.coding[0].display;
+
+    return display;
+  }
 }

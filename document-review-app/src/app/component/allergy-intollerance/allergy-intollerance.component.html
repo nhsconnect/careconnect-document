@@ -14,7 +14,7 @@
     </td>
     <td>
       <div *ngFor="let reaction of allergy.reaction">
-        <a *ngIf="reaction.substance != undefined>0" (click)="getSNOMEDLink(reaction.substance.coding[0].code)">
+        <a *ngIf="reaction.substance != undefined" (click)="getSNOMEDLink(reaction.substance.coding[0].code)">
           <b>{{reaction.substance.coding[0].display}}</b>
         </a>
         <span *ngFor="let manifestation of reaction.manifestation">

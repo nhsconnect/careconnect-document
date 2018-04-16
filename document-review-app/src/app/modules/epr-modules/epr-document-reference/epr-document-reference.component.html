@@ -1,0 +1,8 @@
+<div class="container-fluid">
+  <div *ngFor="let document of documents">
+    <a (click)="selectDocument(document.id)" >
+
+      <app-document-reference [document] = "document"></app-document-reference>
+    </a>
+  </div>
+</div>

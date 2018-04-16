@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FindDocumentItemComponent } from './find-document-item.component';
+import { FindDocumentItemComponent } from './composition.component';
 
 describe('FindDocumentItemComponent', () => {
   let component: FindDocumentItemComponent;

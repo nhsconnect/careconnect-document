@@ -1,11 +1,11 @@
 import {Component, Input, OnInit} from '@angular/core';
 
 @Component({
-  selector: 'app-find-document-item',
-  templateUrl: './find-document-item.component.html',
-  styleUrls: ['./find-document-item.component.css']
+  selector: 'app-composition',
+  templateUrl: './composition.component.html',
+  styleUrls: ['./composition.component.css']
 })
-export class FindDocumentItemComponent implements OnInit {
+export class CompositionComponent implements OnInit {
 
   @Input() composition : fhir.Composition;
 

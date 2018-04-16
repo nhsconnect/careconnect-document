@@ -5,10 +5,11 @@
   </div>
 
   <div class="card-body">
+    <div>Type : {{composition.type.coding[0].display}}</div>
     <div>Specialty : {{getService(composition.extension)}}</div>
     <div *ngIf="composition.custodian!=undefined">Custodian : {{composition.custodian.display}}</div>
     <div *ngFor="let author of composition.author">
-      <div>Authour: {{author.display}}</div>
+      <div>Author: {{author.display}}</div>
     </div>
     <div>Status: {{composition. status}}</div>
 
