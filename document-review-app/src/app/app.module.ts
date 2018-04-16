@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
+import {FormsModule} from "@angular/forms";
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './/app-routing.module';
@@ -17,7 +17,7 @@ import { ViewDocumentSectionComponent } from './modules/composition-view/view-do
 import { PatientFindComponent } from './modules/patient-fdms-find/patient-find.component';
 import { PatientSearchComponent } from './modules/patient-search/patient-search.component';
 import {PatientItemComponent} from "./component/patient/patient-item.component";
-import { FindDocumentComponent } from './component/composition-find/find-document.component';
+import { FindDocumentComponent } from './modules/composition-find/find-document.component';
 import { CompositionComponent } from './component/composition/composition.component';
 
 import { PatientEprFindComponent } from './modules/patient-epr-find/patient-epr-find.component';
@@ -40,6 +40,14 @@ import { EprConditionComponent } from './modules/epr-modules/epr-condition/epr-c
 import { EprAllergyIntolleranceComponent } from './modules/epr-modules/epr-allergy-intollerance/epr-allergy-intollerance.component';
 import { DocumentReferenceComponent } from './component/document-reference/document-reference.component';
 import { EprDocumentReferenceComponent } from './modules/epr-modules/epr-document-reference/epr-document-reference.component';
+import {AuthService} from "./service/auth.service";
+import {LoginComponent} from "./modules/login/login.component";
+import {AngularFireModule} from "angularfire2";
+import {AngularFireDatabaseModule} from "angularfire2/database";
+import {AngularFireAuthModule} from "angularfire2/auth";
+import {environment} from "../environments/environment";
+import {AuthoriseComponent} from "./modules/authorise/authorise.component";
+
 
 
 
@@ -78,21 +86,26 @@ import { EprDocumentReferenceComponent } from './modules/epr-modules/epr-documen
     EprConditionComponent,
     EprAllergyIntolleranceComponent,
     DocumentReferenceComponent,
-    EprDocumentReferenceComponent
+    EprDocumentReferenceComponent,
+    LoginComponent,
+    AuthoriseComponent
   ],
   imports: [
     BrowserModule,
+    FormsModule,
     AppRoutingModule,
     FileUploadModule,
     HttpClientModule,
     NgbModule.forRoot(),
-    //ModalModule.forRoot()
-    //  ,BootstrapModalModule
+    AngularFireModule.initializeApp(environment.firebase, 'ccri-angular'),
+    AngularFireDatabaseModule,
+    AngularFireAuthModule
 
 
   ],
   providers: [
     FhirService
+    , AuthService
   ],
   bootstrap: [AppComponent]
 })

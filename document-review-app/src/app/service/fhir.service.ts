@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {Observable} from "rxjs/Observable";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {ResponseContentType} from "@angular/http";
+import {Oauth2token} from "../model/oauth2token";
 
 @Injectable()
 export class FhirService {
@@ -11,7 +12,9 @@ export class FhirService {
 
   private TIEbase: string = 'http://localhost:8182/STU3';
 
-  private EPRbase: string = 'http://purple.testlab.nhs.uk/careconnect-ri/STU3';
+  private EPRbase: string = 'https://purple.testlab.nhs.uk/careconnect-ri/STU3';
+
+  private authoriseUrl: string = 'http://purple.testlab.nhs.uk:20080/token?grant_type=client_credentials&client_id=';
 
   public path = '/Composition';
 
@@ -34,14 +37,39 @@ export class FhirService {
   getHeaders(): HttpHeaders {
 
     let headers = new HttpHeaders(
-      { 'Content-Type' : 'application/json' });
-    headers.append('Accept' , 'application/json' );
-    headers.append('Cache-control', 'no-cache');
-    headers.append('Cache-control', 'no-store');
-    headers.append('Expires', '0');
-    headers.append('Pragma', 'no-cache');
+      { 'Content-Type' : 'application/fhir+json' });
+    headers = headers.append('Accept' , 'application/fhir+json' );
+
+
+
     return headers;
   }
+
+  getEPRHeaders(): HttpHeaders {
+
+    let headers = this.getHeaders();
+    if (localStorage.getItem("access_token") != undefined) {
+    
+      headers = headers.append('Authorization' , 'bearer '+localStorage.getItem("access_token"));
+    } else {
+      console.log('Access Token missing!');
+    }
+    return headers;
+  }
+
+  authorise(clientId : string, clientSecret :string) :Observable<Oauth2token>  {
+    const url = this.authoriseUrl + clientId;
+
+    var bearerToken = 'Basic '+btoa(clientId+":"+clientSecret);
+    //  this.messageService.add('FhirService: OAuth2 '+url+' Authorization='+bearerToken);
+    let headers = new HttpHeaders( {'Authorization' : bearerToken});
+    headers.append('Content-Type' , 'application/json' );
+    headers.append('Accept' , 'application/json' );
+    console.log(headers);
+    return this.http.post<Oauth2token>(url,'', { 'headers' : headers } );
+
+  }
+
 
   getSearchCompositions(patientId : string) : Observable<fhir.Bundle> {
 
@@ -104,7 +132,7 @@ export class FhirService {
 
     const url = this.getEPRUrl()  + `/Encounter?patient=${patientId}`;
 
-    return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getHeaders()});
+    return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getEPRHeaders()});
 
   }
 
@@ -112,7 +140,7 @@ export class FhirService {
 
     const url = this.getEPRUrl()  + `/Condition?patient=${patientId}`;
 
-    return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getHeaders()});
+    return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getEPRHeaders()});
 
   }
 
@@ -120,7 +148,7 @@ export class FhirService {
 
     const url = this.getEPRUrl()  + `/AllergyIntolerance?patient=${patientId}`;
 
-    return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getHeaders()});
+    return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getEPRHeaders()});
 
   }
 
@@ -128,7 +156,7 @@ export class FhirService {
 
     const url = this.getEPRUrl()  + `/DocumentReference?patient=${patientId}`;
 
-    return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getHeaders()});
+    return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getEPRHeaders()});
 
   }
 
@@ -136,7 +164,7 @@ export class FhirService {
 
     const url = this.getEPRUrl()  + `/Patient/${patientId}`;
 
-    return this.http.get<fhir.Patient>(url,{ 'headers' : this.getHeaders()});
+    return this.http.get<fhir.Patient>(url,{ 'headers' : this.getEPRHeaders()});
 
   }
 
@@ -144,7 +172,7 @@ export class FhirService {
 
     const url = this.getEPRUrl()  + `/Observation?patient=${patientId}`;
 
-    return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getHeaders()});
+    return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getEPRHeaders()});
 
   }
 
@@ -152,7 +180,7 @@ export class FhirService {
 
     const url = this.getEPRUrl()  + `/Procedure?patient=${patientId}`;
 
-    return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getHeaders()});
+    return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getEPRHeaders()});
 
   }
 
@@ -160,7 +188,7 @@ export class FhirService {
 
     const url = this.getEPRUrl()  + `/MedicationRequest?patient=${patientId}`;
 
-    return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getHeaders()});
+    return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getEPRHeaders()});
 
   }
 
@@ -168,7 +196,7 @@ export class FhirService {
 
     const url = this.getTIEUrl()  + `/Encounter/${encounterId}/$document?_count=50`;
 
-    return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getHeaders()});
+    return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getEPRHeaders()});
 
   }
 
@@ -178,8 +206,11 @@ export class FhirService {
     let url =  this.getFDMSUrl();
     if (systemType === 'EPR') {
       url =  this.getEPRUrl();
+      return this.http.get<fhir.Bundle>(url + `/Patient?name=${term}`, { 'headers' : this.getEPRHeaders() });
+    } else {
+      return this.http.get<fhir.Bundle>(url + `/Patient?name=${term}`, { 'headers' : this.getHeaders() });
     }
-    return this.http.get<fhir.Bundle>(url + `/Patient?name=${term}`, { 'headers' : this.getHeaders() });
+
   }
 
 }

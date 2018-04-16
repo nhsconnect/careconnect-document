@@ -1,0 +1,86 @@
+<div class="container-fluid">
+  <div class="row"> <h6>Select scope</h6></div>
+  <div class="row">
+    <div  class="d-inline-block">
+      <button class="btn btn-primary" id="patientAccess" (click)="onSelect('Patient Access')">Patient Access</button>
+    </div>
+  </div>
+  <br>
+  <div class="row">
+    <div  class="d-inline-block">
+      <button class="btn btn-primary" id="patientConditionMedicationAccess" (click)="onSelect('Patient, Condition & Medication Access')">Patient, Condition & Medication Access</button>
+    </div>
+  </div>
+  <br>
+<div class="row">
+  <div  class="d-inline-block">
+  <button class="btn btn-primary" id="limtedAccess" (click)="onSelect('Limited Access')">Limited Access</button>
+</div>
+</div>
+
+
+  <div *ngIf="selectedToken.clientid">
+    <br>
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            Token Request Parameters ({{ selectedToken.type}})
+          </div>
+          <div class="card-body justify-content-between">
+            <h6>Client ID</h6><h6><span class="badge badge-success">{{ selectedToken.clientid}}</span></h6>
+          </div>
+          <div class="card-body justify-content-between">
+            <h6>Client Secret</h6>
+            <h6><span class="badge badge-success">{{ selectedToken.clientsecret}}</span></h6>
+          </div>
+          <div class="card-body justify-content-between">
+            <h6>grant</h6>
+            <h6><span class="badge badge-success">client_credentials</span></h6>
+            <button type="label" class="btn btn-outline-danger">This grant is used for demonstration purposes. Browser based application should normally use implicit grant</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br>
+    <!--
+    <div class="row">
+
+    <button type="submit" (click)="onAuthorise()" class="btn btn-primary">Authorise</button>
+    </div>
+    -->
+  </div>
+
+  <div *ngIf="oauth2token.expires_in">
+    <br>
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            Token Request Response
+          </div>
+          <div class="card-body justify-content-between">
+            <h6>Expires</h6>
+            <h6><span class="badge badge-success">{{ oauth2token.expires_in }}</span></h6>
+          </div>
+          <div class="card-body justify-content-between">
+            <h6>Token Type</h6>
+            <h6><span class="badge badge-success">{{ oauth2token.token_type }}</span></h6>
+          </div>
+          <div class="card-body justify-content-between">
+            <h6>Scope</h6>
+            <h6 *ngFor="let scope of scopes">
+              <span class="badge badge-success">{{ scope }} </span>
+            </h6>
+          </div>
+          <div class="card-body justify-content-between">
+            <h6>Access Token</h6>
+            <h6><span class="badge badge-success">{{ oauth2token.access_token }}</span></h6>
+          </div>
+        </div>
+      </div>
+    </div>
+
+   </div>
+</div>
+
