@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {FileUploader} from "ng2-file-upload";
 import {Router} from "@angular/router";
+import {FhirService} from "../../../service/fhir.service";
 
-
-
-const URL = 'http://localhost:8181/STU3/Bundle?_format=application/json';
 
 // https://github.com/valor-software/ng2-file-upload
 
@@ -18,15 +16,19 @@ export class LoadDocumentFileComponent implements OnInit {
   ngOnInit() {
   }
 
+  URL : string;
+
   uploader:FileUploader;
   hasBaseDropZoneOver:boolean;
   hasAnotherDropZoneOver:boolean;
   response: fhir.OperationOutcome;
 
-  constructor (private router: Router){
+  constructor (private router: Router, private FhirService : FhirService){
+
+    this.URL = this.FhirService.getEPRUrl()+'/Bundle?_format=application/json';
 
     this.uploader = new FileUploader({
-      url: URL,
+      url: this.URL,
       disableMultipart: true, // 'DisableMultipart' must be 'true' for formatDataFunction to be called.
 
 

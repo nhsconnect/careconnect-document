@@ -9,6 +9,7 @@ import ca.uhn.fhir.rest.server.RestfulServer;
 import ca.uhn.fhir.rest.server.interceptor.IServerInterceptor;
 import ca.uhn.fhir.rest.server.interceptor.ResponseHighlighterInterceptor;
 import ca.uhn.fhir.util.VersionUtil;
+import uk.nhs.careconnect.nosql.providers.BinaryProvider;
 import uk.nhs.careconnect.nosql.providers.CompositionProvider;
 import uk.nhs.careconnect.nosql.providers.PatientProvider;
 import org.springframework.beans.factory.annotation.Autowire;
@@ -70,6 +71,7 @@ public class CcriFHIRDocumentServerHAPIConfig extends RestfulServer {
 				applicationContext.getBean(BundleProvider.class)
 				,applicationContext.getBean(CompositionProvider.class)
 				,applicationContext.getBean(PatientProvider.class)
+				,applicationContext.getBean(BinaryProvider.class)
 		));
 
 

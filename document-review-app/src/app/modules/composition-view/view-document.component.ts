@@ -41,7 +41,7 @@ export class ViewDocumentComponent implements OnInit {
     this.docId = id;
 
 
-    this.fhirService.getCompositionDocument(id).subscribe( document => {
+    this.fhirService.getBinary(id).subscribe( document => {
       this.document = document;
     }, err=>{},
       ()=> {

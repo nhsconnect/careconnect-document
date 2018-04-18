@@ -40,46 +40,49 @@ public class mimeInterceptor extends InterceptorAdapter {
 
     @Override
     public boolean outgoingResponse(RequestDetails theRequestDetails, IBaseResource resource, HttpServletRequest theServletRequest, HttpServletResponse response) {
+
         log.info("oR Content-Type = "+theRequestDetails.getHeader("Content-Type"));
         String contentType = theRequestDetails.getHeader("Content-Type");
-        if (contentType==null || contentType.equals("text/html")) {
-            try {
+        if (contentType != null) {
+            if (contentType.equals("text/html")) {
+                try {
 
-                response.setStatus(200);
-                response.setContentType("text/html");
+                    response.setStatus(200);
+                    response.setContentType("text/html");
 
-                performTransform(response.getOutputStream() ,resource,"XML/DocumentToHTML.xslt");
+                    performTransform(response.getOutputStream(), resource, "XML/DocumentToHTML.xslt");
 
-            } catch (Exception ex) {
-                ex.printStackTrace();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                return false;
+            } else if (contentType.equals("application/pdf")) {
+                try {
+
+                    response.setStatus(200);
+                    response.setContentType("application/pdf");
+
+                    // TODO Remove file and convert to plain streams
+
+                    File fileHtml = File.createTempFile("pdf", ".tmp");
+                    FileOutputStream fos = new FileOutputStream(fileHtml);
+                    performTransform(fos, resource, "XML/DocumentToHTML.xslt");
+
+
+                    String processedHtml = org.apache.commons.io.IOUtils.toString(new InputStreamReader(new FileInputStream(fileHtml), "UTF-8"));
+
+                    ITextRenderer renderer = new ITextRenderer();
+                    renderer.setDocumentFromString(processedHtml);
+                    renderer.layout();
+                    renderer.createPDF(response.getOutputStream(), false);
+                    renderer.finishPDF();
+                    fos.flush();
+
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                return false;
             }
-            return false;
-        } else if (contentType.equals("application/pdf")) {
-            try {
-
-                response.setStatus(200);
-                response.setContentType("application/pdf");
-
-                // TODO Remove file and convert to plain streams
-
-                File fileHtml = File.createTempFile("pdf",".tmp");
-                FileOutputStream fos = new FileOutputStream(fileHtml);
-                performTransform(fos ,resource,"XML/DocumentToHTML.xslt");
-
-
-                String processedHtml = org.apache.commons.io.IOUtils.toString(new InputStreamReader(new FileInputStream(fileHtml), "UTF-8"));
-
-                ITextRenderer renderer = new ITextRenderer();
-                renderer.setDocumentFromString(processedHtml);
-                renderer.layout();
-                renderer.createPDF(response.getOutputStream(), false);
-                renderer.finishPDF();
-                fos.flush();
-
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            return false;
         }
         return true;
     }

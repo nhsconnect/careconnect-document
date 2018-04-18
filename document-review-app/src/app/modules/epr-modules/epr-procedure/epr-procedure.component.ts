@@ -11,6 +11,8 @@ export class EprProcedureComponent implements OnInit {
 
   @Input() procTotal :number;
 
+  page : number;
+
   constructor() { }
 
   ngOnInit() {

@@ -14,6 +14,7 @@ export class EprObservationComponent implements OnInit {
   @Input() obsTotal :number;
   constructor() { }
 
+  page : number;
   ngOnInit() {
   }
 

@@ -12,7 +12,7 @@ import {AuthoriseComponent} from "./modules/authorise/authorise.component";
 
 const routes: Routes = [
   { path: '', component: LoginComponent },
-  { path: 'home', component: PatientFindComponent },
+  { path: 'home', component: PatientEprFindComponent },
   { path: 'open', component: LoadDocumentComponent },
   { path: 'find', component: PatientFindComponent },
   { path: 'findEPR', component: PatientEprFindComponent },

@@ -13,6 +13,8 @@ export class EprPrescriptionComponent implements OnInit {
 
   constructor() { }
 
+  page : number;
+
   ngOnInit() {
   }
 

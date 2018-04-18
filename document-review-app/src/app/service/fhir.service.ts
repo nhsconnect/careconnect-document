@@ -8,25 +8,11 @@ import {Oauth2token} from "../model/oauth2token";
 export class FhirService {
 
 
-  private FDMSbase: string = 'http://localhost:8181/STU3';
+  private EPRbase: string = 'http://127.0.0.1:8080/careconnect-gateway/STU3';
 
-  private TIEbase: string = 'http://localhost:8182/STU3';
-
-  private EPRbase: string = 'https://purple.testlab.nhs.uk/careconnect-ri/STU3';
-
-  private authoriseUrl: string = 'http://purple.testlab.nhs.uk:20080/token?grant_type=client_credentials&client_id=';
+  private authoriseUrl: string = 'https://purple.testlab.nhs.uk/careconnect-ri/oauth2/token?grant_type=client_credentials&client_id=';
 
   public path = '/Composition';
-
-  getFDMSUrl(): string {
-    return this.FDMSbase;
-  }
-
-
-  getTIEUrl(): string {
-    return this.TIEbase;
-  }
-
 
   getEPRUrl(): string {
     return this.EPRbase;
@@ -34,22 +20,22 @@ export class FhirService {
 
   constructor(  private http: HttpClient ) { }
 
-  getHeaders(): HttpHeaders {
+  getHeaders(contentType : boolean = true ): HttpHeaders {
 
     let headers = new HttpHeaders(
-      { 'Content-Type' : 'application/fhir+json' });
-    headers = headers.append('Accept' , 'application/fhir+json' );
-
-
-
+      );
+    if (contentType) {
+      headers = headers.append( 'Content-Type',  'application/fhir+json' );
+      headers = headers.append('Accept', 'application/fhir+json');
+    }
     return headers;
   }
 
-  getEPRHeaders(): HttpHeaders {
+  getEPRHeaders(contentType : boolean = true ): HttpHeaders {
 
-    let headers = this.getHeaders();
+    let headers = this.getHeaders(contentType);
     if (localStorage.getItem("access_token") != undefined) {
-    
+
       headers = headers.append('Authorization' , 'bearer '+localStorage.getItem("access_token"));
     } else {
       console.log('Access Token missing!');
@@ -63,8 +49,8 @@ export class FhirService {
     var bearerToken = 'Basic '+btoa(clientId+":"+clientSecret);
     //  this.messageService.add('FhirService: OAuth2 '+url+' Authorization='+bearerToken);
     let headers = new HttpHeaders( {'Authorization' : bearerToken});
-    headers.append('Content-Type' , 'application/json' );
-    headers.append('Accept' , 'application/json' );
+    //headers = headers.append('Content-Type' , 'application/json' );
+    //headers = headers.append('Accept' , 'application/json' );
     console.log(headers);
     return this.http.post<Oauth2token>(url,'', { 'headers' : headers } );
 
@@ -73,22 +59,32 @@ export class FhirService {
 
   getSearchCompositions(patientId : string) : Observable<fhir.Bundle> {
 
-    const url = this.getFDMSUrl() + this.path +`?patient=${patientId}`;
+    const url = this.getEPRUrl() + this.path +`?patient=${patientId}`;
 
     return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getHeaders()});
 
   }
 
+  /*
   getCompositionDocument(id: string,): Observable<fhir.Bundle> {
 
-    const url = this.getFDMSUrl() + this.path +`/${id}/$document`;
+    const url = this.getEPRUrl() + this.path +`/${id}/$document`;
 
     return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getHeaders()});
 
   }
+  */
+  getBinary(id: string,): Observable<fhir.Bundle> {
+
+    const url = this.getEPRUrl() + `/Binary/${id}`;
+
+    return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getEPRHeaders(false)});
+
+  }
+
   getCompositionDocumentHTML(id: string): Observable<any> {
 
-    const url = this.getFDMSUrl() + this.path +`/${id}/$document`;
+    const url = this.getEPRUrl() + this.path +`/${id}/$document`;
 
     let headers = new HttpHeaders(
       { 'Content-Type' : 'text/html' });
@@ -100,7 +96,7 @@ export class FhirService {
 
   getCompositionDocumentPDF(id: string): Observable<any> {
 
-    const url = this.getFDMSUrl() + this.path +`/${id}/$document`;
+    const url = this.getEPRUrl() + this.path +`/${id}/$document`;
 
     let headers = new HttpHeaders(
       { 'Content-Type' : 'application/pdf' });
@@ -112,7 +108,7 @@ export class FhirService {
 
   postFDMSDocument(document: fhir.Bundle) : Observable<any> {
 
-    const url = this.getFDMSUrl() + `/Bundle`;
+    const url = this.getEPRUrl() + `/Bundle`;
 
     return this.http.post<fhir.Bundle>(url,document,{ 'headers' : this.getHeaders()});
 
@@ -194,7 +190,7 @@ export class FhirService {
 
   getEPREncounter(encounterId: string): Observable<fhir.Bundle> {
 
-    const url = this.getTIEUrl()  + `/Encounter/${encounterId}/$document?_count=50`;
+    const url = this.getEPRUrl()  + `/Encounter/${encounterId}/$document?_count=50`;
 
     return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getEPRHeaders()});
 
@@ -203,7 +199,7 @@ export class FhirService {
   /* GET patients whose name contains search term */
   searchPatients(term: string, systemType : string): Observable<fhir.Bundle> {
 
-    let url =  this.getFDMSUrl();
+    let url =  this.getEPRUrl();
     if (systemType === 'EPR') {
       url =  this.getEPRUrl();
       return this.http.get<fhir.Bundle>(url + `/Patient?name=${term}`, { 'headers' : this.getEPRHeaders() });

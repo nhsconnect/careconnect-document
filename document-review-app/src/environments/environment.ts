@@ -6,11 +6,11 @@
 export const environment = {
   production: false,
   firebase: {
-    apiKey: "AIzaSyB0ESSRGC9CI3ZnHWKkU65NC6aN30ImLT8",
-    authDomain: "ccri-e00b4.firebaseapp.com",
-    databaseURL: "https://ccri-e00b4.firebaseio.com",
-    projectId: "ccri-e00b4",
-    storageBucket: "ccri-e00b4.appspot.com",
+    apiKey: "AIzaSyDOZAaiv8VP7i4IfViF_u5fEhgL1sjGSCQ",
+    authDomain: "ccri-f0694.firebaseapp.com",
+    databaseURL: "https://ccri-f0694.firebaseio.com",
+    projectId: "ccri-f0694",
+    storageBucket: "ccri-f0694.appspot.com",
     messagingSenderId: "1022563482363"
   }
 };
