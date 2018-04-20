@@ -36,7 +36,8 @@ export class LoadDocumentFileComponent implements OnInit {
 
     this.uploader.onBeforeUploadItem = (item) => {
       item.withCredentials = false;
-      item.headers=  [{ name: 'Content-Type', value : this.getContentType(item) } ]
+      item.headers=  [{ name: 'Content-Type', value : this.getContentType(item) },
+        { name: 'Authorization', value : 'bearer '+localStorage.getItem("access_token") }]
     }
 
     this.hasBaseDropZoneOver = true;
