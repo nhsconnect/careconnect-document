@@ -27,6 +27,11 @@ export class LoadDocumentFileComponent implements OnInit {
 
     this.URL = this.FhirService.getEPRUrl()+'/Bundle?_format=application/json';
 
+    this.hasBaseDropZoneOver = true;
+    this.hasAnotherDropZoneOver = false;
+
+    this.response = undefined;
+
     this.uploader = new FileUploader({
       url: this.URL,
       disableMultipart: true, // 'DisableMultipart' must be 'true' for formatDataFunction to be called.
@@ -34,16 +39,12 @@ export class LoadDocumentFileComponent implements OnInit {
 
     });
 
+
     this.uploader.onBeforeUploadItem = (item) => {
       item.withCredentials = false;
       item.headers=  [{ name: 'Content-Type', value : this.getContentType(item) },
         { name: 'Authorization', value : 'bearer '+localStorage.getItem("access_token") }]
     }
-
-    this.hasBaseDropZoneOver = true;
-    this.hasAnotherDropZoneOver = false;
-
-    this.response = undefined;
 
     this.uploader.response.subscribe( res => {
 
