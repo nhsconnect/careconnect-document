@@ -40,16 +40,26 @@ public class BinaryProvider implements IResourceProvider {
     @Read
     public Binary getBinaryById(HttpServletRequest request, @IdParam IdType internalId) {
 
+        // Assume this is a file
         Binary binary = binaryResource.read(ctx,internalId);
 
         if (binary == null) {
-            Bundle bundle = compositionDao.readDocument(ctx,internalId);
+
+            // if no file return check it is not a composition
+
+            Bundle bundle = compositionDao.readDocument(ctx, internalId);
+            binary = new Binary();
+            String resource = ctx.newXmlParser().encodeResourceToString(bundle);
+            log.debug("Resource returned from composition.readDocument as " + resource);
+            binary.setId(internalId.getIdPart());
             binary.setContentType("application/fhir+xml");
-            binary.setContent(ctx.newXmlParser().encodeResourceToString(bundle).getBytes());
+            binary.setContent(resource.getBytes());
+
         } else {
             String resource = ctx.newXmlParser().encodeResourceToString(binary);
             log.debug("Resource returned from binary.read as " + resource);
         }
+
         return binary;
     }
 
