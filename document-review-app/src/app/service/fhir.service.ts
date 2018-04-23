@@ -82,6 +82,14 @@ export class FhirService {
     return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getEPRHeaders(false)});
 
   }
+  getBinaryRaw(id: string,): Observable<any> {
+
+    const url = this.getEPRUrl() + `/Binary/${id}`;
+
+    return this.http.get(url,{ 'headers' : this.getEPRHeaders(false) , responseType : 'blob' });
+
+  }
+
 
   getCompositionDocumentHTML(id: string): Observable<any> {
 

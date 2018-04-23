@@ -29,7 +29,7 @@ export class EprDocumentReferenceComponent implements OnInit {
     if (documentId !=undefined && document.content[0].attachment.contentType == 'application/fhir+xml' ) {
       this.router.navigate(['doc/'+documentId ] );
     } else {
-      this.FhirService.getBinary(documentId).subscribe(
+      this.FhirService.getBinaryRaw(documentId).subscribe(
         (res) => {
           var fileURL = URL.createObjectURL(res);
           window.open(fileURL);
