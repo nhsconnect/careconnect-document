@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
+import {FhirService} from "../../../service/fhir.service";
 
 @Component({
   selector: 'app-epr-document-reference',
@@ -13,7 +14,7 @@ export class EprDocumentReferenceComponent implements OnInit {
   @Input() documentsTotal :number;
 
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private FhirService : FhirService) { }
 
   ngOnInit() {
   }
@@ -25,8 +26,15 @@ export class EprDocumentReferenceComponent implements OnInit {
     let documentId :string = array[array.length-1];
    // console.log("Document Id = "+documentId);
 
-    if (documentId !=undefined) {
+    if (documentId !=undefined && document.content[0].attachment.contentType == 'application/fhir+xml' ) {
       this.router.navigate(['doc/'+documentId ] );
+    } else {
+      this.FhirService.getBinary(documentId).subscribe(
+        (res) => {
+          var fileURL = URL.createObjectURL(res);
+          window.open(fileURL);
+        }
+      );
     }
   }
 }
