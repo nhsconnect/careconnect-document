@@ -28,6 +28,9 @@ public class BinaryProvider implements IResourceProvider {
     @Autowired
     IBinaryResource binaryResource;
 
+    @Autowired
+    IComposition compositionDao;
+
     public Class<? extends IBaseResource> getResourceType() {
         return Binary.class;
     }
@@ -39,9 +42,14 @@ public class BinaryProvider implements IResourceProvider {
 
         Binary binary = binaryResource.read(ctx,internalId);
 
-        String resource = ctx.newXmlParser().encodeResourceToString(binary);
-        log.debug("Resource returned from binary.read as "+resource);
-
+        if (binary == null) {
+            Bundle bundle = compositionDao.readDocument(ctx,internalId);
+            binary.setContentType("application/fhir+xml");
+            binary.setContent(ctx.newXmlParser().encodeResourceToString(bundle).getBytes());
+        } else {
+            String resource = ctx.newXmlParser().encodeResourceToString(binary);
+            log.debug("Resource returned from binary.read as " + resource);
+        }
         return binary;
     }
 
