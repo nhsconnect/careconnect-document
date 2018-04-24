@@ -41,7 +41,7 @@ public class CamelRouter extends RouteBuilder {
     protected Environment env;
 
     @Value("${fhir.restserver.serverBase}")
-    private String serverBase;
+    private String eprBase;
 
     @Override
     public void configure()
@@ -80,7 +80,7 @@ public class CamelRouter extends RouteBuilder {
                 .routeId("INT FHIR Server")
                 .process(camelProcessor)
                 .to("log:uk.nhs.careconnect.extranet.start?level=INFO&showHeaders=true&showExchangeId=true")
-                .to(serverBase)
+                .to(eprBase)
                 .process(camelPostProcessor)
                 .to("log:uk.nhs.careconnect.extranet.complete?level=INFO&showHeaders=true&showExchangeId=true")
                 .convertBodyTo(InputStream.class);

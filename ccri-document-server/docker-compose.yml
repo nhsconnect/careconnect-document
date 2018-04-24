@@ -72,10 +72,31 @@ services:
         # Define an alias to loop back for REST Connections
         - "${FHIR_SERVER_BASE_HOST}:127.0.0.1"
       volumes:
-        - tomcat-log-volume:/usr/local/tomcat/logs
+        - mongo-log-volume:/usr/local/tomcat/logs
       networks:
         ccri_net:
           ipv4_address: 172.168.240.11
+
+  ccritie:
+      container_name: ccritie
+      image: thorlogic/ccri-tie:latest
+      depends_on:
+        - ccri
+      environment:
+        - fhir.restserver.serverBase=http4://ccri:8080/careconnect-ri/STU3?throwExceptionOnFailure=false&bridgeEndpoint=true
+        - fhir.restserver.eprBase=http://ccri:8080/careconnect-ri/STU3
+        - fhir.resource.serverName=Care Connect TIE FHIR Server
+        - fhir.resource.serverVersion=3.5.1-SNAPSHOT
+      ports:
+        - 8182:8182
+      extra_hosts:
+        # Define an alias to loop back for REST Connections
+        - "${FHIR_SERVER_BASE_HOST}:172.168.240.10"
+      volumes:
+        - tie-log-volume:/usr/local/tomcat/logs
+      networks:
+        ccri_net:
+          ipv4_address: 172.168.240.12
 
   ccrigateway:
     container_name: ccrigateway
@@ -85,6 +106,7 @@ services:
       - fhir.resource.serverBase=http://${FHIR_SERVER_BASE_HOST}/careconnect-ri/STU3
       - fhir.restserver.serverBase=http4://ccri:8080/careconnect-ri/STU3?throwExceptionOnFailure=false&bridgeEndpoint=true
       - fhir.restserver.edmsBase=http4://ccridocument:8181/STU3?throwExceptionOnFailure=false&bridgeEndpoint=true
+      - fhir.restserver.tieBase=http4://ccritie:8182/STU3?throwExceptionOnFailure=false&bridgeEndpoint=true
     depends_on:
       - ccri
     ports:
@@ -104,6 +126,7 @@ services:
       - fhir.resource.serverBase=http://${FHIR_SERVER_BASE_HOST}/careconnect-ri/STU3
       - fhir.restserver.serverBase=http4://${FHIR_SERVER_BASE_HOST}/careconnect-ri/STU3?throwExceptionOnFailure=false&bridgeEndpoint=true
       - fhir.restserver.edmsBase=http4://ccridocument:8181/STU3?throwExceptionOnFailure=false&bridgeEndpoint=true
+      - fhir.restserver.tieBase=http4://ccritie:8182/STU3?throwExceptionOnFailure=false&bridgeEndpoint=true
     depends_on:
       - ccri
     ports:
@@ -122,7 +145,8 @@ volumes:
   tomcat-log-volume:
   gateway-log-volume:
   gatewayssl-log-volume:
-
+  tie-log-volume:
+  mongo-log-volume:
 
 networks:
   ccri_net:

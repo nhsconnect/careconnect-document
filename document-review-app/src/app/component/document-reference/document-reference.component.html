@@ -1,17 +1,56 @@
 <div class="card">
   <div class="card-header d-flex justify-content-between">
-    <div>{{document.description}}</div>
+    <div>
+      <div *ngIf="document.description!=undefined">{{document.description}}</div>
+      <div *ngIf="document.description==undefined && document.type !=undefined" >{{document.type.coding[0].display}}</div>
+    </div>
     <div>{{document.created | date: 'dd MMM yyyy HH:mm'}}</div>
   </div>
 
   <div class="card-body">
-    <div *ngIf="document.type != undefined">Type : {{document.type.coding[0].display}}</div>
-    <div *ngIf="document.context != undefined">Specialty : {{getService()}}</div>
-    <div *ngIf="document.custodian!=undefined">Custodian : {{document.custodian.display}}</div>
-    <div *ngFor="let author of document.author">
-      <div>Author: {{author.display}}</div>
+
+    <div class="row">
+      <div class="col-sm">
+          <div *ngIf="document.description!=undefined && document.type != undefined" class="card-title">{{document.type.coding[0].display}}</div>
+      </div>
+      <div class="col-sm">
+        &nbsp;
+      </div>
+      <div class="col-sm">
+        <span *ngIf="document.content != undefined" class="badge badge-info">{{document.content[0].attachment.contentType}}</span>
+      </div>
     </div>
-    <div>Status: {{document.status}}</div>
+
+    <div class="row">
+      <div class="col-sm">
+        <div *ngIf="document.context != undefined">Specialty : {{getService()}}</div>
+
+      </div>
+      <div class="col-sm">
+        <div>Status: {{document.status}}</div>
+      </div>
+      <div class="col-sm">
+        <div *ngIf="document.custodian!=undefined">Custodian : {{document.custodian.display}}</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm">
+
+        <div *ngFor="let author of document.author">
+          <div>Author: {{author.display}}</div>
+        </div>
+
+      </div>
+      <div class="col-sm">
+        &nbsp;
+      </div>
+      <div class="col-sm">
+
+      </div>
+    </div>
+
+
 
   </div>
 </div>

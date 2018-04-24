@@ -41,7 +41,7 @@ export class PatientEprPatientRecordComponent implements OnInit {
   encounterEnabled = false;
   encounterDate = undefined;
 
-
+  page : number;
 
   @ViewChild('tabs')
   private tabs:NgbTabset;

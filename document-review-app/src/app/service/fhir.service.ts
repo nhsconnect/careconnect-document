@@ -8,8 +8,8 @@ import {Oauth2token} from "../model/oauth2token";
 export class FhirService {
 
 
-  private EPRbase: string = 'http://127.0.0.1:8080/careconnect-gateway/STU3';
-  //private EPRbase: string = 'https://purple.testlab.nhs.uk/careconnect-ri/STU3';
+  //private EPRbase: string = 'http://127.0.0.1:8080/careconnect-gateway/STU3';
+  private EPRbase: string = 'https://purple.testlab.nhs.uk/careconnect-ri/STU3';
 
   private authoriseUrl: string = 'https://purple.testlab.nhs.uk/careconnect-ri/oauth2/token?grant_type=client_credentials&client_id=';
 
@@ -93,11 +93,10 @@ export class FhirService {
 
   getCompositionDocumentHTML(id: string): Observable<any> {
 
-    const url = this.getEPRUrl() + this.path +`/${id}/$document`;
+    const url = this.getEPRUrl() + `/Binary/${id}`;
 
-    let headers = new HttpHeaders(
-      { 'Content-Type' : 'text/html' });
-
+    let headers = this.getEPRHeaders(false);
+    headers = headers.append('Content-Type', 'text/html' );
 
     return this.http
       .get(url, {  headers , responseType : 'text' as 'text'});
@@ -105,10 +104,11 @@ export class FhirService {
 
   getCompositionDocumentPDF(id: string): Observable<any> {
 
-    const url = this.getEPRUrl() + this.path +`/${id}/$document`;
+    const url = this.getEPRUrl() + this.path +`/Binary/${id}`;
 
-    let headers = new HttpHeaders(
-      { 'Content-Type' : 'application/pdf' });
+    let headers = this.getEPRHeaders(false);
+    headers = headers.append(
+       'Content-Type', 'application/pdf' );
 
     return this.http
       .get(url, { headers, responseType : 'blob' as 'blob'} );

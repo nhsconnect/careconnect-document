@@ -19,6 +19,7 @@ import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,6 +42,9 @@ public class EncounterExtranetProvider implements IResourceProvider {
     @Autowired
     IComposition compositionDao;
 
+    @Value("${fhir.restserver.eprBase}")
+    private String eprBase;
+
     private static final Logger log = LoggerFactory.getLogger(EncounterExtranetProvider.class);
 
     @Override
@@ -58,7 +62,7 @@ public class EncounterExtranetProvider implements IResourceProvider {
 
         HttpServletRequest request =  null;
 
-        IGenericClient client = FhirContext.forDstu3().newRestfulGenericClient("http://purple.testlab.nhs.uk/careconnect-ri/STU3/");
+        IGenericClient client = FhirContext.forDstu3().newRestfulGenericClient(eprBase);
 
         log.info("Build client");
         client.setEncoding(EncodingEnum.XML);

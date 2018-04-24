@@ -23,6 +23,7 @@ import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 
@@ -49,6 +50,9 @@ public class PatientExtranetProvider implements IResourceProvider {
 
     @Autowired
     CamelContext context;
+
+    @Value("${fhir.restserver.serverBase}")
+    private String eprBase;
 
     private static final Logger log = LoggerFactory.getLogger(PatientExtranetProvider.class);
 
@@ -130,7 +134,7 @@ public class PatientExtranetProvider implements IResourceProvider {
 
         HttpServletRequest request =  null;
 
-        IGenericClient client = FhirContext.forDstu3().newRestfulGenericClient("http://purple.testlab.nhs.uk/careconnect-ri/STU3/");
+        IGenericClient client = FhirContext.forDstu3().newRestfulGenericClient(eprBase);
 
         log.info("Build client");
         client.setEncoding(EncodingEnum.XML);
