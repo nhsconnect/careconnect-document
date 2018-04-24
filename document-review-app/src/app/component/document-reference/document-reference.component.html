@@ -8,29 +8,16 @@
   </div>
 
   <div class="card-body">
-
     <div class="row">
       <div class="col-sm">
-          <div *ngIf="document.description!=undefined && document.type != undefined" class="card-title">{{document.type.coding[0].display}}</div>
-      </div>
-      <div class="col-sm">
-        &nbsp;
-      </div>
-      <div class="col-sm">
-        <span *ngIf="document.content != undefined" class="badge badge-info">{{document.content[0].attachment.contentType}}</span>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-sm">
+        <div *ngIf="document.description!=undefined && document.type != undefined" class="card-title">{{document.type.coding[0].display}}</div>
         <div *ngIf="document.context != undefined">Specialty : {{getService()}}</div>
-
       </div>
       <div class="col-sm">
         <div>Status: {{document.status}}</div>
       </div>
       <div class="col-sm">
-        <div *ngIf="document.custodian!=undefined">Custodian : {{document.custodian.display}}</div>
+        <span *ngIf="document.content != undefined" class="badge badge-info">{{document.content[0].attachment.contentType}}</span>
       </div>
     </div>
 
@@ -43,7 +30,7 @@
 
       </div>
       <div class="col-sm">
-        &nbsp;
+        <div *ngIf="document.custodian!=undefined">Custodian : {{document.custodian.display}}</div>
       </div>
       <div class="col-sm">
 
