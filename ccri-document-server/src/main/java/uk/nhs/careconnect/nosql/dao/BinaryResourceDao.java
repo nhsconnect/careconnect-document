@@ -34,7 +34,6 @@ public class BinaryResourceDao implements IBinaryResource {
     protected MongoTemplate mongoTemplate;
 
 
-
     private static final Logger log = LoggerFactory.getLogger(BinaryResourceDao.class);
 
 
@@ -58,12 +57,15 @@ public class BinaryResourceDao implements IBinaryResource {
         GridFSDBFile gridFSDBFile = gridFS.find(new ObjectId(theId.getIdPart()));
 
         Binary binary = null;
-        try {
-            binary = new Binary();
-            binary.setContentType(gridFSDBFile.getContentType());
-            binary.setContent(IOUtils.toByteArray(gridFSDBFile.getInputStream()));
-        } catch (Exception ex) {
-            log.info(ex.getMessage());
+        if (gridFSDBFile != null) {
+            try {
+                binary = new Binary();
+                binary.setContentType(gridFSDBFile.getContentType());
+                binary.setContent(IOUtils.toByteArray(gridFSDBFile.getInputStream()));
+            } catch(
+            Exception ex) {
+                log.info(ex.getMessage());
+            }
         }
         return binary;
     }
