@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {LinksService} from "../../service/links.service";
 
 @Component({
   selector: 'app-condition',
@@ -9,11 +10,21 @@ export class ConditionComponent implements OnInit {
 
   @Input() conditions : fhir.Condition[];
 
-  constructor() { }
+  constructor(private linksService : LinksService) { }
 
   ngOnInit() {
   }
-  getSNOMEDLink(code : string) {
-    window.open("https://termbrowser.nhs.uk/?perspective=full&conceptId1="+code+"&edition=uk-edition&release=v20171001", "_blank");
+  getCodeSystem(system : string) : string {
+    return this.linksService.getCodeSystem(system);
+  }
+
+  isSNOMED(system: string) : boolean {
+    return this.linksService.isSNOMED(system);
+  }
+
+  getSNOMEDLink(code : fhir.Coding) {
+    if (this.linksService.isSNOMED(code.system)) {
+      window.open(this.linksService.getSNOMEDLink(code), "_blank");
+    }
   }
 }

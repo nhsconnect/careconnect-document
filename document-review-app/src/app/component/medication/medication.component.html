@@ -9,14 +9,12 @@
   <tbody>
   <tr *ngFor="let medication of medications">
     <td>
-      <div ngbDropdown class="d-inline-block" *ngIf="medication.code !=undefined">
-        <b *ngIf="medication.code !=undefined" ngbDropdownToggle>{{medication.code.coding[0].display}}</b>
-        <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-          <button class="dropdown-item" (click)="getSNOMEDLink(medication.code.coding[0].code)" >NHSD SNOMED CT</button>
-          <button class="dropdown-item" (click)="getDMDLink(medication.code.coding[0].code)" >dm+d</button>
-        </div>
-      </div>
 
+      <div *ngIf="medication.code !=undefined" ngbTooltip="{{getCodeSystem(medication.code.coding[0].system)}} {{medication.code.coding[0].code}}">
+        <b *ngIf="medication.code !=undefined">{{medication.code.coding[0].display}}</b>
+        <a (click)="getSNOMEDLink(medication.code.coding[0])"><span class="badge badge-info">NHSD SNOMED CT</span></a>
+        <a (click)="getDMDLink(medication.code.coding[0])"><span class="badge badge-info">dm+d</span></a>
+      </div>
     </td>
     <td>
       {{medication.status}}

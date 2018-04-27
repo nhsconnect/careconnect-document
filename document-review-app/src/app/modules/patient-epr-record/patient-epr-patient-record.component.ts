@@ -2,6 +2,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {FhirService} from "../../service/fhir.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {NgbTabset} from "@ng-bootstrap/ng-bootstrap";
+import {LinksService} from "../../service/links.service";
 
 @Component({
   selector: 'app-patient-epr-patient-record',
@@ -47,7 +48,8 @@ export class PatientEprPatientRecordComponent implements OnInit {
   private tabs:NgbTabset;
 
   constructor(private fhirService: FhirService,
-              private route: ActivatedRoute) { }
+              private route: ActivatedRoute,
+              private linksService : LinksService) { }
 
 
   ngOnInit() {
@@ -67,6 +69,28 @@ export class PatientEprPatientRecordComponent implements OnInit {
 
       }
     )
+  }
+
+  isSNOMED(system: string) : boolean {
+    if (system == undefined) return false;
+    if (system == "http://snomed.info/sct")
+      return true;
+
+  }
+
+  getCodeSystem(system : string) : string {
+    switch(system) {
+      case "http://snomed.info/sct": return "SNOMED";
+      case "http://loinc.org": return "LOINC";
+      default: return system;
+    }
+  }
+
+
+  getSNOMEDLink(code : fhir.Coding) {
+    if (this.isSNOMED(code.system)) {
+      window.open("https://termbrowser.nhs.uk/?perspective=full&conceptId1=" + code.code + "&edition=uk-edition&release=v20180401", "_blank");
+    }
   }
 
   selectPatientEPR(patientId : string) {

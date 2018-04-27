@@ -13,8 +13,13 @@
       {{condition.onsetDateTime | date: 'dd-MMM-yyyy'}}
     </td>
     <td>
-      <a (click)="getSNOMEDLink(condition.code.coding[0].code)"> <b>{{condition.code.coding[0].display}}</b></a>
-
+      <b>{{condition.code.coding[0].display}}</b>
+      <span *ngIf="isSNOMED(condition.code.coding[0].system)">
+        <a (click)="getSNOMEDLink(condition.code.coding[0])"> <span *ngIf="condition.code.coding[0].code != undefined" class="badge badge-info" ngbTooltip="{{getCodeSystem(condition.code.coding[0].system)}} {{condition.code.coding[0].code}}">code</span> </a>
+      </span>
+      <span *ngIf="!isSNOMED(condition.code.coding[0].system)">
+        <span *ngIf="condition.code.coding[0].code != undefined" class="badge badge-info" ngbTooltip="{{getCodeSystem(condition.code.coding[0].system)}} {{condition.code.coding[0].code}}">code</span>
+      </span>
       <i *ngIf="condition.clinicalStatus!=undefined">{{condition.clinicalStatus}}</i>
       <i *ngIf="condition.verificationStatus!=undefined">{{condition.verificationStatus}}</i>
     </td>

@@ -47,11 +47,7 @@ import {AngularFireDatabaseModule} from "angularfire2/database";
 import {AngularFireAuthModule} from "angularfire2/auth";
 import {environment} from "../environments/environment";
 import {AuthoriseComponent} from "./modules/authorise/authorise.component";
-
-
-
-
-
+import {LinksService} from "./service/links.service";
 
 
 @NgModule({
@@ -106,6 +102,7 @@ import {AuthoriseComponent} from "./modules/authorise/authorise.component";
   providers: [
     FhirService
     , AuthService
+    ,LinksService
   ],
   bootstrap: [AppComponent]
 })

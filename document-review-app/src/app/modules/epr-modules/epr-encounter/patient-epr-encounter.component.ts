@@ -19,7 +19,7 @@ export class PatientEprEncounterComponent implements OnInit {
   }
 
   getSNOMEDLink(code : string) {
-    window.open("https://termbrowser.nhs.uk/?perspective=full&conceptId1="+code+"&edition=uk-edition&release=v20171001", "_blank");
+    window.open("https://termbrowser.nhs.uk/?perspective=full&conceptId1="+code+"&edition=uk-edition&release=v20180401", "_blank");
   }
 
   getParticipant() : String {

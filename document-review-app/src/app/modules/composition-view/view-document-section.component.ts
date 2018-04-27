@@ -169,7 +169,7 @@ export class ViewDocumentSectionComponent implements OnInit {
     return "http://dmd.medicines.org.uk/DesktopDefault.aspx?VMP="+code+"&toc=nofloat";
   }
   getSNOMEDLink(code : string) {
-    return "https://termbrowser.nhs.uk/?perspective=full&conceptId1="+code+"&edition=uk-edition&release=v20171001";
+    return "https://termbrowser.nhs.uk/?perspective=full&conceptId1="+code+"&edition=uk-edition&release=v20180401";
   }
 
 

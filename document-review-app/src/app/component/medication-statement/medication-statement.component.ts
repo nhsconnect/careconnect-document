@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {LinksService} from "../../service/links.service";
 
 @Component({
   selector: 'app-medication-statement',
@@ -8,15 +9,20 @@ import {Component, Input, OnInit} from '@angular/core';
 export class MedicationStatementComponent implements OnInit {
 
   @Input() medicationStatements : fhir.MedicationStatement[];
-  constructor() { }
+  constructor(private linksService : LinksService) { }
 
   ngOnInit() {
   }
 
-  getDMDLink(code : string) {
-    window.open('http://dmd.medicines.org.uk/DesktopDefault.aspx?VMP='+code+'&toc=nofloat', "_blank");
+  getCodeSystem(system : string) : string {
+    return this.linksService.getCodeSystem(system);
   }
-  getSNOMEDLink(code : string) {
-    window.open("https://termbrowser.nhs.uk/?perspective=full&conceptId1="+code+"&edition=uk-edition&release=v20171001", "_blank");
+
+  getDMDLink(code : fhir.Coding) {
+    window.open(this.linksService.getDMDLink(code), "_blank");
+  }
+  getSNOMEDLink(code : fhir.Coding) {
+    window.open(this.linksService.getSNOMEDLink(code), "_blank");
+
   }
 }

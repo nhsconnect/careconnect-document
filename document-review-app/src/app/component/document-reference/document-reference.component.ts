@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {LinksService} from "../../service/links.service";
 
 @Component({
   selector: 'app-document-reference',
@@ -9,12 +10,18 @@ export class DocumentReferenceComponent implements OnInit {
 
   @Input() document : fhir.DocumentReference;
 
-  constructor() { }
+  constructor(private linksService : LinksService) { }
 
   ngOnInit() {
   }
-  getSNOMEDLink(code : string) {
-    window.open("https://termbrowser.nhs.uk/?perspective=full&conceptId1="+code+"&edition=uk-edition&release=v20171001", "_blank");
+  getCodeSystem(system : string) : string {
+    return this.linksService.getCodeSystem(system);
+  }
+
+  getSNOMEDLink(code : fhir.Coding) {
+    if (this.linksService.isSNOMED(code.system)) {
+      window.open(this.linksService.getSNOMEDLink(code), "_blank");
+    }
   }
   getService() :string {
     if (this.document.context == undefined || this.document.context.practiceSetting == undefined ) return "";

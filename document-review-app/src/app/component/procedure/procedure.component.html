@@ -12,7 +12,13 @@
       {{procedure.performedDateTime | date: 'dd-MMM-yyyy'}}
     </td>
     <td>
-      <a (click)="getSNOMEDLink(procedure.code.coding[0].code)"> <b>{{procedure.code.coding[0].display}}</b></a>
+       <b>{{procedure.code.coding[0].display}}</b>
+      <span *ngIf="isSNOMED(procedure.code.coding[0].system)">
+        <a (click)="getSNOMEDLink(procedure.code.coding[0])"> <span *ngIf="procedure.code.coding[0].code != undefined" class="badge badge-info" ngbTooltip="{{getCodeSystem(procedure.code.coding[0].system)}} {{procedure.code.coding[0].code}}">code</span> </a>
+      </span>
+      <span *ngIf="!isSNOMED(procedure.code.coding[0].system)">
+        <span *ngIf="procedure.code.coding[0].code != undefined" class="badge badge-info" ngbTooltip="{{getCodeSystem(procedure.code.coding[0].system)}} {{procedure.code.coding[0].code}}">code</span>
+      </span>
       <i>{{procedure.status}}</i>
     </td>
 

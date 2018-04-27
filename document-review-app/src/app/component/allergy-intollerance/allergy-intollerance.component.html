@@ -14,12 +14,14 @@
     </td>
     <td>
       <div *ngFor="let reaction of allergy.reaction">
-        <a *ngIf="reaction.substance != undefined" (click)="getSNOMEDLink(reaction.substance.coding[0].code)">
+        <span *ngIf="reaction.substance != undefined">
           <b>{{reaction.substance.coding[0].display}}</b>
-        </a>
+          <a (click)="getSNOMEDLink(reaction.substance.coding[0])"> <span class="badge badge-info" ngbTooltip="{{getCodeSystem(reaction.substance.coding[0].system)}} {{reaction.substance.coding[0].code}}">code</span> </a>
+        </span>
         <span *ngFor="let manifestation of reaction.manifestation">
-          <a (click)="getSNOMEDLink(manifestation.coding[0].code)">
-            {{manifestation.coding[0].display}}
+          {{manifestation.coding[0].display}}
+          <a (click)="getSNOMEDLink(manifestation.coding[0])">
+            <span class="badge badge-info" ngbTooltip="{{getCodeSystem(manifestation.coding[0].system)}} {{manifestation.coding[0].code}}">code</span>
           </a>
         </span>
       </div>

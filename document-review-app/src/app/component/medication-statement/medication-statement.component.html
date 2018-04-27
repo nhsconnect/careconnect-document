@@ -9,12 +9,10 @@
   <tbody>
   <tr *ngFor="let medication of medicationStatements">
     <td>
-      <div ngbDropdown class="d-inline-block" *ngIf="medication.medicationCodeableConcept !=undefined">
-        <b *ngIf="medication.medicationCodeableConcept !=undefined" ngbDropdownToggle>{{medication.medicationCodeableConcept.coding[0].display}}</b>
-        <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-           <button class="dropdown-item" (click)="getSNOMEDLink(medication.medicationCodeableConcept.coding[0].code)" >NHSD SNOMED CT</button>
-          <button class="dropdown-item" (click)="getDMDLink(medication.medicationCodeableConcept.coding[0].code)" >dm+d</button>
-        </div>
+      <div *ngIf="medication.medicationCodeableConcept !=undefined" ngbTooltip="{{getCodeSystem(medication.medicationCodeableConcept.coding[0].system)}} {{medication.medicationCodeableConcept.coding[0].code}}">
+        <b *ngIf="medication.medicationCodeableConcept !=undefined">{{medication.medicationCodeableConcept.coding[0].display}}</b>
+        <a (click)="getSNOMEDLink(medication.medicationCodeableConcept.coding[0])"><span class="badge badge-info">NHSD SNOMED CT</span></a>
+        <a (click)="getDMDLink(medication.medicationCodeableConcept.coding[0])"><span class="badge badge-info">dm+d</span></a>
       </div>
       <span *ngIf="medication.medicationReference !=undefined"><b>{{medication.medicationReference.display}}</b></span>
         -

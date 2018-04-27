@@ -95,15 +95,23 @@
             </a>
           </td>
           <td >
-            <a (click)="selectEncounter(encounter)">
-              <b *ngIf="encounter.type != undefined && encounter.type.length>0 && encounter.type[0].coding.length >0 ">{{encounter.type[0].coding[0].display}}</b>
+             <span *ngIf="encounter.type != undefined && encounter.type.length>0 && encounter.type[0].coding.length >0">
+                  <b>{{encounter.type[0].coding[0].display}}</b>
+                  <span *ngIf="isSNOMED(encounter.type[0].coding[0].system)">
+                    <a (click)="getSNOMEDLink(encounter.type[0].coding[0])"><span *ngIf="encounter.type[0].coding[0].code != undefined" class="badge badge-info" ngbTooltip="{{getCodeSystem(encounter.type[0].coding[0].system)}} {{encounter.type[0].coding[0].code}}">code</span> </a>
+                  </span>
+                  <span *ngIf="!isSNOMED(encounter.type[0].coding[0].system)">
+                    <span *ngIf="encounter.type[0].coding[0].code != undefined" class="badge badge-info" ngbTooltip="{{getCodeSystem(encounter.type[0].coding[0].system)}} {{encounter.type[0].coding[0].code}}">code</span>
+                  </span>
+             </span>
+
               <span *ngFor="let participant of encounter.participant">
                 <span *ngIf="participant.individual != undefined"><i>{{participant.individual.display}}</i></span>
               </span>
               <span *ngIf="encounter.serviceProvider!=undefined"> {{encounter.serviceProvider.display}}</span>
-            </a>
 
           </td>
+          <td><a (click)="selectEncounter(encounter)"> <span class="badge badge-success">view consultation</span></a> </td>
         </tr>
         </tbody>
       </table>

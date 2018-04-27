@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {LinksService} from "../../service/links.service";
 
 @Component({
   selector: 'app-observation',
@@ -8,7 +9,7 @@ import {Component, Input, OnInit} from '@angular/core';
 export class ObservationComponent implements OnInit {
 
   @Input() observations : fhir.Observation[];
-  constructor() { }
+  constructor(private linksService : LinksService) { }
 
   ngOnInit() {
   }
@@ -36,21 +37,17 @@ export class ObservationComponent implements OnInit {
 
   }
 
-  isSNOMED(code: string) : boolean {
-    if (code == undefined) return false;
-    if (!((+code).toString() === code)) {
-      //console.log("Not a number = "+code);
-      return false;
-    }
-    if (code.length<6) return false;
-    return true;
-
+  getCodeSystem(system : string) : string {
+     return this.linksService.getCodeSystem(system);
   }
 
+  isSNOMED(system: string) : boolean {
+    return this.linksService.isSNOMED(system);
+  }
 
-  getSNOMEDLink(code : string) {
-    if (this.isSNOMED(code)) {
-      window.open("https://termbrowser.nhs.uk/?perspective=full&conceptId1=" + code + "&edition=uk-edition&release=v20171001", "_blank");
+  getSNOMEDLink(code : fhir.Coding) {
+    if (this.linksService.isSNOMED(code.system)) {
+      window.open(this.linksService.getSNOMEDLink(code), "_blank");
     }
   }
 
