@@ -1,4 +1,4 @@
-package uk.nhs.careconnect.ri.extranet.providers;
+package uk.nhs.careconnect.ri.extranet.camel;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;

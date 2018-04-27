@@ -1,5 +1,7 @@
 In this directory
 
+mvn install 
+
 docker build . -t ccri-tie
 
 docker tag ccri-tie thorlogic/ccri-tie

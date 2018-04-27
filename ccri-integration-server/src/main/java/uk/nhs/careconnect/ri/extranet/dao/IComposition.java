@@ -1,4 +1,4 @@
-package uk.nhs.careconnect.ri.extranet.providers;
+package uk.nhs.careconnect.ri.extranet.dao;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
@@ -18,7 +18,7 @@ public interface IComposition {
     List<Resource> search(FhirContext ctx, TokenParam resid
             ,ReferenceParam patient);
 
-    Bundle buildSummaryCareDocument(IGenericClient client, IdType patientId);
+    Bundle buildSummaryCareDocument(IGenericClient client, IdType patientId) throws Exception;
 
-    Bundle buildEncounterDocument(IGenericClient client, IdType encounterId);
+    Bundle buildEncounterDocument(IGenericClient client, IdType encounterId) throws Exception;
 }

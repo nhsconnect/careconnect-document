@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import uk.nhs.careconnect.ri.extranet.dao.IComposition;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.InputStream;
@@ -68,7 +69,13 @@ public class EncounterExtranetProvider implements IResourceProvider {
         client.setEncoding(EncodingEnum.XML);
 
         log.info("calling composition");
-        return compositionDao.buildEncounterDocument(client,encounterId);
+        Bundle fhirDocument = null;
+        try {
+            fhirDocument = compositionDao.buildEncounterDocument(client,encounterId);
+        } catch (Exception ex) {
+            throw new InternalErrorException(ex.getMessage());
+        }
+        return fhirDocument;
 
     }
     @Validate
@@ -84,65 +91,6 @@ public class EncounterExtranetProvider implements IResourceProvider {
     }
 
 
-    @Search
-    public List<Resource> searchEncounter(HttpServletRequest httpRequest,
-                                           @OptionalParam(name = Encounter.SP_PATIENT) ReferenceParam patient
-            ,@OptionalParam(name = Encounter.SP_DATE) DateRangeParam date
-            , @OptionalParam(name = Encounter.SP_RES_ID) TokenParam resid
-            , @IncludeParam(reverse=true, allow = {"*"}) Set<Include> reverseIncludes
-         //   , @IncludeParam(allow = { "Encounter:diagnosis" }) Set<Include> includes
-
-                                       ) {
-
-        List<Resource> results = new ArrayList<>();
-
-        ProducerTemplate template = context.createProducerTemplate();
-
-        InputStream inputStream = null;
-        if (httpRequest != null) {
-            inputStream = (InputStream) template.sendBody("direct:FHIREncounter",
-                ExchangePattern.InOut,httpRequest);
-        } else {
-            Exchange exchange = template.send("direct:FHIREncounter",ExchangePattern.InOut, new Processor() {
-                public void process(Exchange exchange) throws Exception {
-                    exchange.getIn().setHeader(Exchange.HTTP_QUERY, "?patient="+patient.getIdPart());
-                    exchange.getIn().setHeader(Exchange.HTTP_METHOD, "GET");
-                    exchange.getIn().setHeader(Exchange.HTTP_PATH, "Encounter");
-                }
-            });
-            inputStream = (InputStream) exchange.getIn().getBody();
-        }
-        Bundle bundle = null;
-
-        Reader reader = new InputStreamReader(inputStream);
-        IBaseResource resource = null;
-        try {
-            resource = ctx.newJsonParser().parseResource(reader);
-        } catch(Exception ex) {
-            log.error("JSON Parse failed " + ex.getMessage());
-            throw new InternalErrorException(ex.getMessage());
-        }
-        if (resource instanceof Bundle) {
-            bundle = (Bundle) resource;
-            for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
-                //Encounter resourceEntry = (Resource) entry.getResource();
-                results.add(entry.getResource());
-            }
-        }
-        else if (resource instanceof OperationOutcome)
-        {
-
-            OperationOutcome operationOutcome = (OperationOutcome) resource;
-            log.info("Sever Returned: "+ctx.newJsonParser().encodeResourceToString(operationOutcome));
-
-            OperationOutcomeFactory.convertToException(operationOutcome);
-        } else {
-            throw new InternalErrorException("Server Error",(OperationOutcome) resource);
-        }
-
-        return results;
-
-    }
 
 
 

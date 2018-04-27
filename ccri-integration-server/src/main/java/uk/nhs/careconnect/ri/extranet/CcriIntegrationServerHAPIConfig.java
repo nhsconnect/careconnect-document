@@ -67,10 +67,6 @@ public class CcriIntegrationServerHAPIConfig extends RestfulServer {
 
 		setResourceProviders(Arrays.asList(
 				applicationContext.getBean(EncounterExtranetProvider.class)
-				//,applicationContext.getBean(PatientExtranetProvider.class)
-				//,applicationContext.getBean(ObservationExtranetProvider.class)
-				//,applicationContext.getBean(MedicationRequestExtranetProvider.class)
-				//,applicationContext.getBean(ProcedureExtranetProvider.class)
 				,applicationContext.getBean(BundleExtranetProvider.class)
 		));
 
