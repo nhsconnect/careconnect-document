@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {AuthService} from "../../service/auth.service";
 import {Router} from "@angular/router";
+import {PatientChangeService} from "../../service/patient-change.service";
 
 @Component({
   selector: 'app-nav',
@@ -10,10 +11,14 @@ import {Router} from "@angular/router";
 export class NavComponent implements OnInit {
 
   constructor(private authService: AuthService,
+              public patientChange : PatientChangeService,
+              private router : Router) {
 
-              private router : Router) { }
+  }
 
   title="FHIR Document Viewer";
+
+  patient : fhir.Patient;
 
   ngOnInit() {
   }
@@ -24,7 +29,12 @@ export class NavComponent implements OnInit {
   isLoggedIn(){
     return this.authService.isLoggedIn()
   }
-
+  hasPatient() : boolean {
+    if (this.patientChange.messages != undefined) {
+      this.patient = this.patientChange.messages;
+    }
+    return false;
+  }
   hasAuthorised() : boolean {
     if (localStorage.getItem('access_token') != undefined && localStorage.getItem('access_token') != null) return true;
     return false;

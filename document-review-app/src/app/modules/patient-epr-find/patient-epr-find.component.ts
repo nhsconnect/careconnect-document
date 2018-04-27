@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {PatientChangeService} from "../../service/patient-change.service";
 
 @Component({
   selector: 'app-patient-epr-find',
@@ -7,9 +8,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PatientEprFindComponent implements OnInit {
 
-  constructor() { }
+  constructor(private patientChange : PatientChangeService) { }
 
   ngOnInit() {
+    this.patientChange.clear();
   }
 
 }

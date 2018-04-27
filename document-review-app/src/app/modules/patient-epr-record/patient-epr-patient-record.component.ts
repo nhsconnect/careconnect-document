@@ -3,6 +3,7 @@ import {FhirService} from "../../service/fhir.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {NgbTabset} from "@ng-bootstrap/ng-bootstrap";
 import {LinksService} from "../../service/links.service";
+import {PatientChangeService} from "../../service/patient-change.service";
 
 @Component({
   selector: 'app-patient-epr-patient-record',
@@ -49,7 +50,8 @@ export class PatientEprPatientRecordComponent implements OnInit {
 
   constructor(private fhirService: FhirService,
               private route: ActivatedRoute,
-              private linksService : LinksService) { }
+              private linksService : LinksService,
+              private patientChange : PatientChangeService) { }
 
 
   ngOnInit() {
@@ -108,6 +110,7 @@ export class PatientEprPatientRecordComponent implements OnInit {
 
     this.fhirService.getEPRPatient(patientId).subscribe(document => {
         this.patient = document;
+        this.patientChange.set(document);
       }
     );
     /*
