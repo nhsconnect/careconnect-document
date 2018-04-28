@@ -181,6 +181,18 @@ export class FhirService {
 
   }
 
+
+  getEPRObservationsByCode(id: number, code:string, date : string): Observable<fhir.Bundle> {
+
+    let url = this.getEPRUrl()  + `/Observation?patient=${id}`+`&code=${code}&_count=20`;
+    if (date != undefined) {
+      url = url + '&date=ge' + date;
+    }
+
+    return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getEPRHeaders()});
+
+  }
+
   getEPRProcedures(patientId: string): Observable<fhir.Bundle> {
 
     const url = this.getEPRUrl()  + `/Procedure?patient=${patientId}`;

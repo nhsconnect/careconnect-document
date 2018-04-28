@@ -1,3 +1,15 @@
+<ng-template #modalContent let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4>Observation</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+
+ <app-observation-detail [code]="selectedObs.code.coding[0].code" [patientId]="getPatientId(selectedObs)"></app-observation-detail>
+  </div>
+</ng-template>
 <table class="table" >
   <thead>
   <tr>
@@ -27,6 +39,7 @@
     </td>
     <td>
       {{getValue(observation)}}
+      <a (click)="onClick(modalContent, observation)"> <span *ngIf="observation.code.coding[0].code != undefined" class="badge badge-success" >detail</span></a>
     </td>
 
   </tr>

@@ -49,6 +49,9 @@ import {environment} from "../environments/environment";
 import {AuthoriseComponent} from "./modules/authorise/authorise.component";
 import {LinksService} from "./service/links.service";
 import {PatientChangeService} from "./service/patient-change.service";
+import {ObservationDetailComponent} from "./component/observation-detail/observation-detail.component";
+import {Ng2GoogleChartsModule} from "ng2-google-charts";
+import {CareGoogleChartComponent} from "./component/care-google-chart/care-google-chart.component";
 
 
 @NgModule({
@@ -85,7 +88,9 @@ import {PatientChangeService} from "./service/patient-change.service";
     DocumentReferenceComponent,
     EprDocumentReferenceComponent,
     LoginComponent,
-    AuthoriseComponent
+    AuthoriseComponent,
+    CareGoogleChartComponent,
+    ObservationDetailComponent
   ],
   imports: [
     BrowserModule,
@@ -93,6 +98,7 @@ import {PatientChangeService} from "./service/patient-change.service";
     AppRoutingModule,
     FileUploadModule,
     HttpClientModule,
+    Ng2GoogleChartsModule,
     NgbModule.forRoot(),
     AngularFireModule.initializeApp(environment.firebase, 'ccri-angular'),
     AngularFireDatabaseModule,

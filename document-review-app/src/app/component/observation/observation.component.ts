@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {LinksService} from "../../service/links.service";
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: 'app-observation',
@@ -9,7 +10,12 @@ import {LinksService} from "../../service/links.service";
 export class ObservationComponent implements OnInit {
 
   @Input() observations : fhir.Observation[];
-  constructor(private linksService : LinksService) { }
+
+
+
+  selectedObs : fhir.Observation;
+
+  constructor(private linksService : LinksService,private modalService: NgbModal) { }
 
   ngOnInit() {
   }
@@ -43,6 +49,17 @@ export class ObservationComponent implements OnInit {
 
   isSNOMED(system: string) : boolean {
     return this.linksService.isSNOMED(system);
+  }
+
+  getPatientId(observation : fhir.Observation) : string {
+    return '1177';
+  }
+
+  onClick(content , observation : fhir.Observation) {
+    console.log("Clicked - "+ observation.id);
+    this.selectedObs = observation;
+    //this.router.navigate(['./medicalrecord/'+this.getPatientId(this.observation.subject.reference)+'/observation/'+this.observation.code.coding[0].code ] );
+    this.modalService.open(content, { windowClass: 'dark-modal' });
   }
 
   getSNOMEDLink(code : fhir.Coding) {

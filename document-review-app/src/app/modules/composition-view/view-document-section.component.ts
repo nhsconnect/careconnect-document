@@ -58,8 +58,8 @@ export class ViewDocumentSectionComponent implements OnInit {
   }
 
   open(content) {
-    console.log("In getReferenced and medications count = "+this.medications.length);
-    console.log("Encounters count = "+this.encounters.length);
+   // console.log("In getReferenced and medications count = "+this.medications.length);
+   // console.log("Encounters count = "+this.encounters.length);
     this.modalService.open(content, { windowClass: 'dark-modal' });
   }
 
