@@ -33,7 +33,7 @@
   </div>
 </form>
 <br>
-<app-observation [observations]="observations"></app-observation>
+<app-observation [showDetail]="true" [observations]="observations"></app-observation>
 <div class="form-group col-2">
   <ngb-pagination [collectionSize]="obsTotal" [(page)]="page" aria-label="Default pagination"></ngb-pagination>
 </div>

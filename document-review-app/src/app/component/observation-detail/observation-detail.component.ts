@@ -42,7 +42,10 @@ export class ObservationDetailComponent implements OnInit {
 
     let tempChartOptions = new ChartOptions();
     let tempChartData  = new Array();
+    console.log("Width = "+(window.screen.width));
     tempChartOptions.width = 450;
+    if ((window.screen.width) < 450) tempChartOptions.width = 350;
+
     tempChartOptions.height = 300;
     tempChartOptions.vAxis = new ChartOptionsAxis();
     tempChartOptions.xAxis = new ChartOptionsAxis();

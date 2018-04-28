@@ -11,7 +11,7 @@ export class ObservationComponent implements OnInit {
 
   @Input() observations : fhir.Observation[];
 
-
+ @Input() showDetail : boolean = false;
 
   selectedObs : fhir.Observation;
 
