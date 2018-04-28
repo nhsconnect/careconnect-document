@@ -58,6 +58,7 @@ import { ImmunisationComponent } from './component/immunisation/immunisation.com
 import { TimelineGraphComponent } from './component/timeline-graph/timeline-graph.component';
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -110,8 +111,6 @@ import { TimelineGraphComponent } from './component/timeline-graph/timeline-grap
     AngularFireModule.initializeApp(environment.firebase, 'ccri-angular'),
     AngularFireDatabaseModule,
     AngularFireAuthModule
-
-
   ],
   providers: [
     FhirService

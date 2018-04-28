@@ -37,6 +37,7 @@
     "ngx-modialog": "^5.0.0",
     "popper.js": "^1.12.9",
     "rxjs": "^5.5.6",
+    "vis": "^4.21.0",
     "zone.js": "^0.8.19"
   },
   "devDependencies": {
@@ -46,6 +47,7 @@
     "@types/jasmine": "~2.8.3",
     "@types/jasminewd2": "~2.0.2",
     "@types/node": "~6.0.60",
+    "@types/vis": "^4.21.3",
     "codelyzer": "^4.0.1",
     "jasmine-core": "~2.8.0",
     "jasmine-spec-reporter": "~4.2.1",

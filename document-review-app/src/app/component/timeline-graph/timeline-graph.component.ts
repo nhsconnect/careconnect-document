@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {DataSet, Edge, Network, Timeline} from "vis";
+import {DataSet, Timeline} from "vis";
+
+declare var vis;
 
 @Component({
   selector: 'app-timeline-graph',
@@ -14,9 +16,7 @@ export class TimelineGraphComponent implements OnInit {
 
   public ngOnInit(): void {
 
-
-
-    var items = new DataSet([
+    var items  = new DataSet([
       {id: 1, content: 'item 1', start: '2017-04-20'},
       {id: 2, content: 'item 2', start: '2017-04-14'},
       {id: 3, content: 'item 3', start: '2017-04-18'},
@@ -25,12 +25,14 @@ export class TimelineGraphComponent implements OnInit {
       {id: 6, content: 'item 6', start: '2017-04-27'}
     ]);
     // create a network
-    let container = document.getElementById('timelinevis');
+    var container = document.getElementById('visualisation');
 
-    let options  = { rollingMode: undefined };
-    options.rollingMode = { follow : false };
-   // this.network = new Network(container, data, options);
-    this.timeline = new Timeline(container, items, options);
+    var options : vis.TimelineOptions = {};
+    options.rollingMode = {};
+    options.rollingMode.follow = true;
+    options.rollingMode.offset = 0.5 ;
+
+    var timeline = new Timeline(container, items, options);
   }
 
 }
