@@ -16,6 +16,7 @@ export class LinksService {
     switch(system) {
       case "http://snomed.info/sct": return "SNOMED";
       case "http://loinc.org": return "LOINC";
+      case "http://hl7.org/fhir/sid/cvx": return "CVX (vaccine administered)";
       default: return system;
     }
   }

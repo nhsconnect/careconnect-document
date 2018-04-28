@@ -1,0 +1,27 @@
+<table class="table">
+  <thead>
+  <tr>
+    <th scope="col" width="30%">Date</th>
+    <th scope="col" width="60%">Immunisation</th>
+
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let immunisation of immunisations">
+    <td>
+      {{immunisation.date | date: 'dd-MMM-yyyy'}}
+    </td>
+    <td>
+      <b>{{immunisation.vaccineCode.coding[0].display}}</b>
+      <span *ngIf="isSNOMED(immunisation.vaccineCode.coding[0].system)">
+        <a (click)="getSNOMEDLink(immunisation.vaccineCode.coding[0])"> <span *ngIf="immunisation.vaccineCode.coding[0].code != undefined" class="badge badge-info" ngbTooltip="{{getCodeSystem(immunisation.vaccineCode.coding[0].system)}} {{immunisation.vaccineCode.coding[0].code}}">code</span> </a>
+      </span>
+      <span *ngIf="!isSNOMED(immunisation.vaccineCode.coding[0].system)">
+        <span *ngIf="immunisation.vaccineCode.coding[0].code != undefined" class="badge badge-info" ngbTooltip="{{getCodeSystem(immunisation.vaccineCode.coding[0].system)}} {{immunisation.vaccineCode.coding[0].code}}">code</span>
+      </span>
+      <i>{{immunisation.status}}</i>
+    </td>
+
+  </tr>
+  </tbody>
+</table>

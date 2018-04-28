@@ -4,6 +4,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {NgbTabset} from "@ng-bootstrap/ng-bootstrap";
 import {LinksService} from "../../service/links.service";
 import {PatientChangeService} from "../../service/patient-change.service";
+import {DataSet} from "vis";
 
 @Component({
   selector: 'app-patient-epr-patient-record',
@@ -37,6 +38,8 @@ export class PatientEprPatientRecordComponent implements OnInit {
   documents : fhir.DocumentReference[];
   documentsTotal : number;
 
+  immunisations : fhir.Immunization[];
+  immsTotal : number;
 
   patient : fhir.Patient;
 
@@ -45,18 +48,41 @@ export class PatientEprPatientRecordComponent implements OnInit {
 
   page : number;
 
+  graphData = {};
+
   @ViewChild('tabs')
   private tabs:NgbTabset;
 
   constructor(private fhirService: FhirService,
               private route: ActivatedRoute,
               private linksService : LinksService,
-              private patientChange : PatientChangeService) { }
+              private patientChange : PatientChangeService,
+              ) { }
 
 
   ngOnInit() {
     let id = this.route.snapshot.paramMap.get('docid');
     this.selectPatientEPR(id);
+
+    var nodes = new DataSet([
+      {id: 1, label: 'Node 1'},
+      {id: 2, label: 'Node 2'},
+      {id: 3, label: 'Node 3'},
+      {id: 4, label: 'Node 4'},
+      {id: 5, label: 'Node 5'}
+    ]);
+
+    // create an array with edges
+    var edges = new DataSet([
+      {from: 1, to: 3},
+      {from: 1, to: 2},
+      {from: 2, to: 4},
+      {from: 2, to: 5}
+    ]);
+
+    // provide the data in the vis format
+    this.graphData["nodes"] = nodes;
+    this.graphData["edges"] = edges;
   }
 
   selectEncounter(encounter : fhir.Encounter) {
@@ -176,6 +202,16 @@ export class PatientEprPatientRecordComponent implements OnInit {
       }
     );
 
+    this.fhirService.getEPRImmunisations(patientId).subscribe(data => {
+        this.immunisations = [];
+        if (data.entry != undefined) {
+          this.immsTotal = data.total;
+          for (let entNo = 0; entNo < data.entry.length; entNo++) {
+            this.immunisations.push(<fhir.Immunization>data.entry[entNo].resource);
+          }
+        }
+      }
+    );
     this.fhirService.getEPRAllergies(patientId).subscribe(data => {
         this.allergies = [];
         if (data.entry != undefined) {

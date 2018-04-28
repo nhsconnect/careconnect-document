@@ -3,6 +3,7 @@ import {AuthService} from '../../service/auth.service';
 import {Router} from '@angular/router';
 import {FhirService} from "../../service/fhir.service";
 import {Oauth2token} from "../../model/oauth2token";
+import {PatientChangeService} from "../../service/patient-change.service";
 
 @Component({
   selector: 'app-login',
@@ -20,7 +21,10 @@ export class LoginComponent implements OnInit {
 
   smartToken : Oauth2token;
 
-  constructor(private authService: AuthService, private router: Router, private  fhirService : FhirService) {
+  constructor(private authService: AuthService,
+              private router: Router,
+              private  fhirService : FhirService,
+              private patientMessage : PatientChangeService) {
   }
 
 
@@ -99,6 +103,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     this.authService.logout();
+    this.patientMessage.clear();
   }
 
   oauth2token() :void {

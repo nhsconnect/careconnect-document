@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import {Observable} from "rxjs/Observable";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {ResponseContentType} from "@angular/http";
 import {Oauth2token} from "../model/oauth2token";
 
 @Injectable()
@@ -47,7 +46,7 @@ export class FhirService {
   authorise(clientId : string, clientSecret :string) :Observable<Oauth2token>  {
     const url = this.authoriseUrl + clientId;
 
-    var bearerToken = 'Basic '+btoa(clientId+":"+clientSecret);
+    let bearerToken = 'Basic '+btoa(clientId+":"+clientSecret);
     //  this.messageService.add('FhirService: OAuth2 '+url+' Authorization='+bearerToken);
     let headers = new HttpHeaders( {'Authorization' : bearerToken});
     //headers = headers.append('Content-Type' , 'application/json' );
@@ -160,6 +159,14 @@ export class FhirService {
   getEPRDocuments(patientId: string): Observable<fhir.Bundle> {
 
     const url = this.getEPRUrl()  + `/DocumentReference?patient=${patientId}`;
+
+    return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getEPRHeaders()});
+
+  }
+
+  getEPRImmunisations(patientId: string): Observable<fhir.Bundle> {
+
+    const url = this.getEPRUrl()  + `/Immunization?patient=${patientId}`;
 
     return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getEPRHeaders()});
 

@@ -25,36 +25,11 @@
       <app-epr-allergy-intollerance [allergies]="allergies" [allergiesTotal]="allergiesTotal"></app-epr-allergy-intollerance>
     </ng-template>
   </ngb-tab>
-
-  <ngb-tab  id="tab-procedures" >
-    <ng-template ngbTabTitle><b>Procedures</b></ng-template>
-    <ng-template ngbTabContent>
-      <app-epr-procedure [procedures]="procedures" [procTotal]="procTotal"></app-epr-procedure>
-    </ng-template>
-  </ngb-tab>
-  <ngb-tab  id="tab-documents" >
-    <ng-template ngbTabTitle><b>Documents</b></ng-template>
-    <ng-template ngbTabContent>
-      <app-epr-document-reference [documents]="documents" [documentsTotal]="documentsTotal"></app-epr-document-reference>
-    </ng-template>
-  </ngb-tab>
-  <ngb-tab  id="tab-observations" >
-    <ng-template ngbTabTitle><b>Observations</b></ng-template>
-    <ng-template ngbTabContent>
-      <app-epr-observation [observations]="observations" [obsTotal]="obsTotal"></app-epr-observation>
-    </ng-template>
-  </ngb-tab>
-  <ngb-tab  id="tab-prescriptions">
-    <ng-template ngbTabTitle><b>Prescriptions</b></ng-template>
-    <ng-template ngbTabContent>
-      <app-epr-prescription [prescriptions]="prescriptions" [presTotal]="presTotal"></app-epr-prescription>
-    </ng-template>
-  </ngb-tab>
   <ngb-tab id="tab-selectbyid2" >
     <ng-template ngbTabTitle><b>Encounters</b></ng-template>
     <ng-template ngbTabContent>
       <br>
-
+     <app-timeline-graph></app-timeline-graph>
       <form class="form-inline">
         <div class="form-row">
           <div class="form-group col-6">
@@ -107,10 +82,10 @@
                   </span>
              </span>
 
-              <span *ngFor="let participant of encounter.participant">
+            <span *ngFor="let participant of encounter.participant">
                 <span *ngIf="participant.individual != undefined"><i>{{participant.individual.display}}</i></span>
               </span>
-              <span *ngIf="encounter.serviceProvider!=undefined"> {{encounter.serviceProvider.display}}</span>
+            <span *ngIf="encounter.serviceProvider!=undefined"> {{encounter.serviceProvider.display}}</span>
 
           </td>
           <td><a (click)="selectEncounter(encounter)"> <span class="badge badge-success">view consultation</span></a> </td>
@@ -122,6 +97,37 @@
       </div>
     </ng-template>
   </ngb-tab>
+  <ngb-tab  id="tab-procedures" >
+    <ng-template ngbTabTitle><b>Procedures</b></ng-template>
+    <ng-template ngbTabContent>
+      <app-epr-procedure [procedures]="procedures" [procTotal]="procTotal"></app-epr-procedure>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab  id="tab-documents" >
+    <ng-template ngbTabTitle><b>Documents</b></ng-template>
+    <ng-template ngbTabContent>
+      <app-epr-document-reference [documents]="documents" [documentsTotal]="documentsTotal"></app-epr-document-reference>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab  id="tab-observations" >
+    <ng-template ngbTabTitle><b>Observations</b></ng-template>
+    <ng-template ngbTabContent>
+      <app-epr-observation [observations]="observations" [obsTotal]="obsTotal"></app-epr-observation>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab  id="tab-immunisation" >
+    <ng-template ngbTabTitle><b>Immunisation</b></ng-template>
+    <ng-template ngbTabContent>
+      <app-epr-immunisation [immunisations]="immunisations" [immsTotal]="immsTotal"></app-epr-immunisation>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab  id="tab-prescriptions">
+    <ng-template ngbTabTitle><b>Prescriptions</b></ng-template>
+    <ng-template ngbTabContent>
+      <app-epr-prescription [prescriptions]="prescriptions" [presTotal]="presTotal"></app-epr-prescription>
+    </ng-template>
+  </ngb-tab>
+
 
   <ngb-tab [disabled]="!encounterEnabled" id="tab-encounterdoc" >
     <ng-template ngbTabTitle><b>Consultation</b> {{encounterDate | date: 'dd-MMM-yyyy HH:mm' }}</ng-template>

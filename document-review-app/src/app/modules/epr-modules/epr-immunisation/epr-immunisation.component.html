@@ -1,8 +1,8 @@
-
 <br>
+
 <form class="form-inline">
   <div class="form-row">
-    <div class="form-group col-4">
+    <div class="form-group col-6">
 
       <input id="date1" class="form-control form-control-sm" placeholder="From"
              name="dpFm" ngbDatepicker #d="ngbDatepicker">
@@ -12,7 +12,7 @@
         </button>
       </div>
     </div>
-    <div class="form-group col-4">
+    <div class="form-group col-6">
       <input id="date2" class="form-control form-control-sm" placeholder="To"
              name="dpFm" ngbDatepicker #e="ngbDatepicker">
       <div class="input-group-append">
@@ -21,32 +21,11 @@
         </button>
       </div>
     </div>
-    <div class="form-group col-3">
 
-      <select class="form-control form-control-sm" >
-        <option value="">Type</option>
-        <option value="discharge">Discharge Letter</option>
-        <option value="outpatient">Outpatient Letter</option>
-        <option value="careplan">Care Plans</option>
-      </select>
-    </div>
-    <div class="form-group col-1">
-
-      <select class="form-control form-control-sm" >
-        <option value="">Specialty</option>
-        <option value="maternity">Maternity</option>
-        <option value="mentalheath">Mental Health</option>
-        <option value="paediatric">Paediatric</option>
-      </select>
-    </div>
   </div>
 </form>
 <br>
-
-  <div *ngFor="let document of documents">
-    <a (click)="selectDocument(document)" >
-
-      <app-document-reference [document] = "document"></app-document-reference>
-    </a>
-  </div>
-
+<app-immunisation [immunisations]="immunisations"></app-immunisation>
+<div class="form-group col-2">
+  <ngb-pagination [collectionSize]="immsTotal" [(page)]="page" aria-label="Default pagination"></ngb-pagination>
+</div>

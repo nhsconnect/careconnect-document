@@ -52,6 +52,10 @@ import {PatientChangeService} from "./service/patient-change.service";
 import {ObservationDetailComponent} from "./component/observation-detail/observation-detail.component";
 import {Ng2GoogleChartsModule} from "ng2-google-charts";
 import {CareGoogleChartComponent} from "./component/care-google-chart/care-google-chart.component";
+import { EprImmunisationComponent } from './modules/epr-modules/epr-immunisation/epr-immunisation.component';
+import { ImmunisationComponent } from './component/immunisation/immunisation.component';
+
+import { TimelineGraphComponent } from './component/timeline-graph/timeline-graph.component';
 
 
 @NgModule({
@@ -90,7 +94,10 @@ import {CareGoogleChartComponent} from "./component/care-google-chart/care-googl
     LoginComponent,
     AuthoriseComponent,
     CareGoogleChartComponent,
-    ObservationDetailComponent
+    ObservationDetailComponent,
+    EprImmunisationComponent,
+    ImmunisationComponent,
+    TimelineGraphComponent
   ],
   imports: [
     BrowserModule,
