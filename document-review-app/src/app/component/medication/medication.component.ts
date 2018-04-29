@@ -24,4 +24,7 @@ export class MedicationComponent implements OnInit {
     window.open(this.linksService.getSNOMEDLink(code), "_blank");
 
   }
+  isSNOMED(system: string) : boolean {
+    return this.linksService.isSNOMED(system);
+  }
 }

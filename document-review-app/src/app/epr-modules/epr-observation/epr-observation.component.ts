@@ -11,6 +11,8 @@ export class EprObservationComponent implements OnInit {
 
   @Input() observations :fhir.Observation[];
 
+  @Input() patient : fhir.Patient;
+
   @Input() obsTotal :number;
   constructor() { }
 

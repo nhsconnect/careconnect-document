@@ -17,7 +17,10 @@ export class LinksService {
       case "http://snomed.info/sct": return "SNOMED";
       case "http://loinc.org": return "LOINC";
       case "http://hl7.org/fhir/sid/cvx": return "CVX (vaccine administered)";
-      default: return system;
+      case "http://www.nlm.nih.gov/research/umls/rxnorm": return "RxNorm (USA Drug CodeSystem)"
+      default:
+        console.log(system);
+        return system;
     }
   }
 

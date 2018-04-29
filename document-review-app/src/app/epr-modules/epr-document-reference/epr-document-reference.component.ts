@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
-import {FhirService} from "../../../service/fhir.service";
+import {FhirService} from "../../service/fhir.service";
 
 @Component({
   selector: 'app-epr-document-reference',

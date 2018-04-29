@@ -164,6 +164,15 @@ export class FhirService {
 
   }
 
+
+  getEPREncounter(encounterId: string): Observable<fhir.Bundle> {
+
+    const url = this.getEPRUrl()  + `/Encounter/${encounterId}/$document?_count=50`;
+
+    return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getEPRHeaders()});
+
+  }
+
   getEPRImmunisations(patientId: string): Observable<fhir.Bundle> {
 
     const url = this.getEPRUrl()  + `/Immunization?patient=${patientId}`;
@@ -172,13 +181,22 @@ export class FhirService {
 
   }
 
-  getEPRPatient(patientId: string): Observable<fhir.Patient> {
+  getEPRMedicationRequests(patientId: string): Observable<fhir.Bundle> {
 
-    const url = this.getEPRUrl()  + `/Patient/${patientId}`;
+    const url = this.getEPRUrl()  + `/MedicationRequest?patient=${patientId}`;
 
-    return this.http.get<fhir.Patient>(url,{ 'headers' : this.getEPRHeaders()});
+    return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getEPRHeaders()});
 
   }
+
+  getEPRMedication(medicationId: string): Observable<fhir.Medication> {
+
+    const url = this.getEPRUrl()  + `/Medication/${medicationId}`;
+
+    return this.http.get<fhir.Medication>(url,{ 'headers' : this.getEPRHeaders()});
+
+  }
+
 
   getEPRObservations(patientId: string): Observable<fhir.Bundle> {
 
@@ -200,6 +218,13 @@ export class FhirService {
 
   }
 
+  getEPRPatient(patientId: string): Observable<fhir.Patient> {
+
+    const url = this.getEPRUrl()  + `/Patient/${patientId}`;
+
+    return this.http.get<fhir.Patient>(url,{ 'headers' : this.getEPRHeaders()});
+
+  }
   getEPRProcedures(patientId: string): Observable<fhir.Bundle> {
 
     const url = this.getEPRUrl()  + `/Procedure?patient=${patientId}`;
@@ -208,21 +233,8 @@ export class FhirService {
 
   }
 
-  getEPRMedicationRequests(patientId: string): Observable<fhir.Bundle> {
 
-    const url = this.getEPRUrl()  + `/MedicationRequest?patient=${patientId}`;
 
-    return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getEPRHeaders()});
-
-  }
-
-  getEPREncounter(encounterId: string): Observable<fhir.Bundle> {
-
-    const url = this.getEPRUrl()  + `/Encounter/${encounterId}/$document?_count=50`;
-
-    return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getEPRHeaders()});
-
-  }
 
   /* GET patients whose name contains search term */
   searchPatients(term: string, systemType : string): Observable<fhir.Bundle> {

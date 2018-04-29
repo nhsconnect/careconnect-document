@@ -7,7 +7,7 @@
   </div>
   <div class="modal-body">
 
-    <app-observation-detail [code]="selectedObs.code.coding[0].code" [patientId]="getPatientId(selectedObs)"></app-observation-detail>
+    <app-observation-detail [code]="selectedObs.code.coding[0].code" [patientId]="patient.id"></app-observation-detail>
   </div>
 </ng-template>
 <table class="table" >

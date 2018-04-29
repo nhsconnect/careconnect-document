@@ -11,7 +11,9 @@ export class ObservationComponent implements OnInit {
 
   @Input() observations : fhir.Observation[];
 
- @Input() showDetail : boolean = false;
+  @Input() showDetail : boolean = false;
+
+  @Input() patient : fhir.Patient;
 
   selectedObs : fhir.Observation;
 
