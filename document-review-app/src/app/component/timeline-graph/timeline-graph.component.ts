@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {DataSet, Network, Timeline} from "vis";
+import {DataGroup, DataItem, DataSet, Network, Timeline} from "vis";
 
 declare var vis: any;
 
@@ -19,22 +19,28 @@ export class TimelineGraphComponent implements OnInit {
     var container = document.getElementById('timeline');
 
 
-    var items  = new DataSet([
-      {id: 1, content: 'item 1', start: '2017-04-02'},
-      {id: 2, content: 'item 2', start: '2017-04-07'},
+    var items :vis.DataSet<DataItem> = new DataSet([
+      {id: 1, content: 'item 1', start: '2017-04-02'}
+     /* {id: 2, content: 'item 2', start: '2017-04-07'},
       {id: 3, content: 'item 3', start: '2017-04-08'},
       {id: 4, content: 'item 4', start: '2017-05-02', end: '2017-05-10'},
       {id: 5, content: 'item 5', start: '2017-05-08'},
-      {id: 6, content: 'item 6', start: '2017-05-12'}
+      {id: 6, content: 'item 6', start: '2017-05-12'}*/
     ]);
 
 
-    var optiont : vis.TimelineOptions = {};
+    var optiont : vis.TimelineOptions = {
+      width: '100%',
+      height: '200px',
+      start: '2017-02-02',
+      end :'2017-08-08'
+
+    };
     optiont.rollingMode = {};
-    optiont.rollingMode.follow = true;
+    optiont.rollingMode.follow = false;
     optiont.rollingMode.offset = 0.5 ;
 
-    var timeline = new Timeline(container, items);
+    var timeline = new Timeline(container, items, optiont);
 
     var nodes = new DataSet([
       {id: 1, label: 'Node 1'},
