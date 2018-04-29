@@ -69,8 +69,8 @@ export class TimelineGraphComponent implements OnInit {
     var optiont : vis.TimelineOptions = {
       width: '100%',
       height: '300px',
-      start: '2017-02-02',
-      end :'2017-08-08'
+      start: '2016-05-02',
+      end :'2018-08-08'
 
     };
     optiont.rollingMode = {};
