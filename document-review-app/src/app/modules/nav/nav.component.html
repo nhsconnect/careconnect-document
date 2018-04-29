@@ -3,8 +3,8 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
 
-      <li *ngIf="isLoggedIn()" class="nav-item active"><a class="nav-link" routerLink="/find"><i class="fa fa-hospital-o" aria-hidden="false"></i> Find</a></li>
-      <li *ngIf="isLoggedIn()" class="nav-item active"><a class="nav-link" routerLink="/open"><i class="fa fa-file-o" aria-hidden="false"></i> Load Document</a></li>
+      <li *ngIf="isLoggedIn()" class="nav-item active"><a class="nav-link" routerLink="/find"><i class="fa fa-hospital-o" style="color:lightskyblue" aria-hidden="false"></i> Swap Patient</a></li>
+      <li *ngIf="isLoggedIn()" class="nav-item "><a class="nav-link" routerLink="/open"><i class="fa fa-file-o" aria-hidden="false"></i> Load Document</a></li>
 
      <!-- <li *ngIf="isLoggedIn()" ngbDropdown class="nav-item dropdown">
         <span ngbDropdownToggle id="dropdownBasic1"><i class="fa fa-file" aria-hidden="false"></i> Documents</span>
@@ -15,7 +15,7 @@
 
     </ul>
     <ul class="navbar-nav ml-auto">
-      <li *ngIf="isLoggedIn()" class="nav-item active"><a class="nav-link" (click)="logout()"><i class="fa fa-sign-out" aria-hidden="false"></i> Logout</a></li>
+      <li *ngIf="isLoggedIn()" class="nav-item active"><a class="nav-link" (click)="logout()"><i class="fa fa-sign-out" style="color:lightskyblue" aria-hidden="false"></i> Logout</a></li>
   </ul>
     </div>
 

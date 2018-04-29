@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {DataGroup, DataItem, DataSet, Network, Timeline} from "vis";
+import {Component, Input, OnInit} from '@angular/core';
+import { DataSet, Network, Timeline} from "vis";
 
 declare var vis: any;
 
@@ -10,6 +10,10 @@ declare var vis: any;
 })
 export class TimelineGraphComponent implements OnInit {
 
+  @Input() encounters : fhir.Encounter[];
+
+  @Input() conditions : fhir.Condition[];
+
   constructor() { }
 
 
@@ -19,19 +23,52 @@ export class TimelineGraphComponent implements OnInit {
     var container = document.getElementById('timeline');
 
 
-    var items :vis.DataSet<DataItem> = new DataSet([
-      {id: 1, content: 'item 1', start: '2017-04-02'}
-     /* {id: 2, content: 'item 2', start: '2017-04-07'},
-      {id: 3, content: 'item 3', start: '2017-04-08'},
-      {id: 4, content: 'item 4', start: '2017-05-02', end: '2017-05-10'},
-      {id: 5, content: 'item 5', start: '2017-05-08'},
-      {id: 6, content: 'item 6', start: '2017-05-12'}*/
-    ]);
+    var names = ['Encounter', 'Condition'];
+    var groups = new DataSet();
+    let g= 0;
+    for (let name of names) {
+      groups.add({id: g, content: name});
+      g++;
+    }
 
+    var items = new DataSet([]);
+    for (let encounter of this.encounters) {
+      if (encounter.type != undefined && encounter.type.length>0) {
+        items.add({
+          id: encounter.id,
+          group : 0,
+          content: encounter.type[0].coding[0].display, start: encounter.period.start
+        });
+      } else {
+        items.add({
+          id: encounter.id,
+          group : 0,
+          content: 'nos', start: encounter.period.start
+        });
+      }
+    }
+    for (let condition of this.conditions) {
+      if (condition.code != undefined && condition.code.coding.length>0) {
+        items.add({
+          id: condition.id,
+          group : 1,
+          content: condition.code.coding[0].display,
+          start: this.getConditionDate(condition),
+          className: 'green'
+        });
+      } else {
+        items.add({
+          id: condition.id,
+          group : 1,
+          content: 'nos',
+          start: this.getConditionDate(condition)
+        });
+      }
+    }
 
     var optiont : vis.TimelineOptions = {
       width: '100%',
-      height: '200px',
+      height: '300px',
       start: '2017-02-02',
       end :'2017-08-08'
 
@@ -40,32 +77,16 @@ export class TimelineGraphComponent implements OnInit {
     optiont.rollingMode.follow = false;
     optiont.rollingMode.offset = 0.5 ;
 
-    var timeline = new Timeline(container, items, optiont);
+    var timeline = new Timeline(container, items, groups , optiont);
 
-    var nodes = new DataSet([
-      {id: 1, label: 'Node 1'},
-      {id: 2, label: 'Node 2'},
-      {id: 3, label: 'Node 3'},
-      {id: 4, label: 'Node 4'},
-      {id: 5, label: 'Node 5'}
-    ]);
-    // create an array with edges
-    var edges = new DataSet([
-      {from: 1, to: 3},
-      {from: 1, to: 2},
-      {from: 2, to: 4},
-      {from: 2, to: 5},
-      {from: 3, to: 3}
-    ]);
-    // create a network
-    var containern = document.getElementById('mynetwork');
-    var data = {
-      nodes: nodes,
-      edges: edges
-    };
-    var options  = {};
 
-    var network = new Network(containern, data, options);
+
+
+  }
+
+  getConditionDate(condition : fhir.Condition) {
+    if (condition.onsetDateTime != undefined) return condition.onsetDateTime;
+    if (condition.assertedDate !=undefined) return condition.assertedDate;
   }
 
 }

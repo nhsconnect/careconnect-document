@@ -15,7 +15,7 @@
     <ng-template ngbTabTitle><b>Summary</b></ng-template>
     <ng-template ngbTabContent>
       <br>
-      <b>Conditions</b>
+     <b>Conditions</b>
         <app-epr-condition [conditions]="conditions" [conditionTotal]="conditionTotal"></app-epr-condition>
       <br>
       <b>Allergies</b>
@@ -26,7 +26,7 @@
     <ng-template ngbTabTitle><b>Encounters</b></ng-template>
     <ng-template ngbTabContent>
       <br>
-     <app-timeline-graph id="visualisationtg"></app-timeline-graph>
+      <app-timeline-graph [conditions]="conditions" [encounters]="encounters"></app-timeline-graph>
       <form class="form-inline">
         <div class="form-row">
           <div class="form-group col-6">
