@@ -1,33 +1,23 @@
 <div class="container-fluid fixed-top">
 <nav class="navbar navbar-expand navbar-dark bg-dark ">
-<!--
-  <div *ngIf="isLoggedIn()" ngbDropdown class="d-inline-block">
-    <button class="btn btn-outline-secondary" id="dropdownBasic1" ngbDropdownToggle><i class="fa fa-book" aria-hidden="false"></i> FHIR DMS</button>
-    <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-      <button class="dropdown-item" routerLink="/find"><i aria-hidden="false"></i> Find Patient</button>
-      <button class="dropdown-item" routerLink="/open" ><i aria-hidden="false"></i> Open FHIR Document</button>
-    </div>
-  </div>
--->
-  <div *ngIf="isLoggedIn()" ngbDropdown class="d-inline-block">
-    <button class="btn btn-outline-secondary" id="dropdownBasic2" ngbDropdownToggle><i class="fa fa-hospital-o" aria-hidden="false"></i> EPR (CCRI)</button>
-    <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-      <button class="dropdown-item" routerLink="/findEPR"><i aria-hidden="false"></i> Find Patient</button>
-      <button class="dropdown-item" routerLink="/open" ><i aria-hidden="false"></i> Import FHIR Document</button>
-    </div>
-  </div>
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
 
-  <div *ngIf="isLoggedIn()" ngbDropdown class="d-inline-block">
-    <button class="btn btn-outline-secondary" id="dropdownBasicLog" ngbDropdownToggle><i class="fa fa-user" aria-hidden="false"></i></button>
-    <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-      <!--
-      <button *ngIf="hasAuthorised()&&isLoggedIn()" class="dropdown-item"  (click)="deAuthorise()"><i class="fa fa-sign-out" aria-hidden="false"></i> De-Authorise
-      </button>
-      <button *ngIf="!hasAuthorised()&&isLoggedIn()" class="dropdown-item" (click)="Authorise()"><i class="fa fa-sign-in" aria-hidden="false"></i> Authorise</button>
-      -->
-      <button *ngIf="isLoggedIn()" class="dropdown-item" (click)="logout()"><i class="fa fa-sign-out" aria-hidden="false"></i> Logout</button>
+      <li *ngIf="isLoggedIn()" class="nav-item active"><a class="nav-link" routerLink="/find"><i class="fa fa-hospital-o" aria-hidden="false"></i> Find</a></li>
+      <li *ngIf="isLoggedIn()" class="nav-item active"><a class="nav-link" routerLink="/open"><i class="fa fa-file-o" aria-hidden="false"></i> Load Document</a></li>
+
+     <!-- <li *ngIf="isLoggedIn()" ngbDropdown class="nav-item dropdown">
+        <span ngbDropdownToggle id="dropdownBasic1"><i class="fa fa-file" aria-hidden="false"></i> Documents</span>
+        <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+          <span class="dropdown-item" routerLink="/open"> Import Document</span>
+        </div>
+      </li> -->
+
+    </ul>
+    <ul class="navbar-nav ml-auto">
+      <li *ngIf="isLoggedIn()" class="nav-item active"><a class="nav-link" (click)="logout()"><i class="fa fa-sign-out" aria-hidden="false"></i> Logout</a></li>
+  </ul>
     </div>
-  </div>
 
 </nav>
   <span *ngIf="patientChange.messages != undefined">
