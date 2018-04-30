@@ -34,7 +34,7 @@
         <td>
 
           <div *ngIf="patient.contact !=undefined && patient.contact.length>0">
-            <i>{{patient.contact[0].relationship[0].coding[0].display}}</i>
+            <i *ngIf="patient.contact[0].relationship != undefined && patient.contact[0].relationship.length>0">{{patient.contact[0].relationship[0].coding[0].display}}</i>
             <div><b>{{patient.contact[0].name.family}}</b>, {{patient.contact[0].name.given}}</div>
             <div *ngFor="let telecom of patient.contact[0].telecom">
               <div><i>{{telecom.use}}</i>
