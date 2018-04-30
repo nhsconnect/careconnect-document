@@ -3,7 +3,7 @@ import {AuthService} from '../../service/auth.service';
 import {Router} from '@angular/router';
 import {FhirService} from "../../service/fhir.service";
 import {Oauth2token} from "../../model/oauth2token";
-import {PatientChangeService} from "../../service/patient-change.service";
+import {PatientEprService} from "../../service/patient-epr.service";
 
 @Component({
   selector: 'app-login',
@@ -24,7 +24,7 @@ export class LoginComponent implements OnInit {
   constructor(private authService: AuthService,
               private router: Router,
               private  fhirService : FhirService,
-              private patientMessage : PatientChangeService) {
+              private patientMessage : PatientEprService) {
   }
 
 

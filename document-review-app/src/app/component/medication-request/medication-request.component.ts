@@ -51,6 +51,8 @@ export class MedicationRequestComponent implements OnInit {
         error1 => {
         },
         () => {
+        console.log("Content = ");
+          console.log(content);
           this.modalService.open(content, {windowClass: 'dark-modal'});
         }
       );

@@ -64,7 +64,7 @@ export class ViewDocumentSectionComponent implements OnInit {
   }
 
   getReferencedItem(reference : string)  {
-    console.log("In getReferenced and medications count = "+this.medications.length);
+    //console.log("In getReferenced and medications count = "+this.medications.length);
     for (let resource of this.document.entry) {
       if (resource.fullUrl === reference || resource.resource.id === reference ) {
 

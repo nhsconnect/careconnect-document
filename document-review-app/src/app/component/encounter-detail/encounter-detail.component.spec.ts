@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TimelineGraphComponent } from './timeline-graph.component';
+import { EncounterDetailComponent } from './encounter-detail.component';
 
-describe('TimelineGraphComponent', () => {
-  let component: TimelineGraphComponent;
-  let fixture: ComponentFixture<TimelineGraphComponent>;
+describe('EncounterDetailComponent', () => {
+  let component: EncounterDetailComponent;
+  let fixture: ComponentFixture<EncounterDetailComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TimelineGraphComponent ]
+      declarations: [ EncounterDetailComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TimelineGraphComponent);
+    fixture = TestBed.createComponent(EncounterDetailComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

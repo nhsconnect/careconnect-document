@@ -172,6 +172,13 @@ export class FhirService {
     return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getEPRHeaders()});
 
   }
+  getEPREncounterInclude(encounterId: string): Observable<fhir.Bundle> {
+
+    const url = this.getEPRUrl()  + `/Encounter?_id=${encounterId}&_revinclude=*&_count=50`;
+
+    return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getEPRHeaders()});
+
+  }
 
   getEPRImmunisations(patientId: string): Observable<fhir.Bundle> {
 

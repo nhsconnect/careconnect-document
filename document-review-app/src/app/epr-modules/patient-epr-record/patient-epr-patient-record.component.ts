@@ -3,7 +3,8 @@ import {FhirService} from "../../service/fhir.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {NgbTabset} from "@ng-bootstrap/ng-bootstrap";
 import {LinksService} from "../../service/links.service";
-import {PatientChangeService} from "../../service/patient-change.service";
+import {PatientEprService} from "../../service/patient-epr.service";
+
 
 
 @Component({
@@ -15,7 +16,7 @@ export class PatientEprPatientRecordComponent implements OnInit {
 
   composition : fhir.Bundle = undefined;
 
-  encounterdoc : fhir.Bundle = undefined;
+//  encounterdoc : fhir.Bundle = undefined;
 
   encounters: fhir.Encounter[];
   encTotal : number;
@@ -56,7 +57,7 @@ export class PatientEprPatientRecordComponent implements OnInit {
   constructor(private fhirService: FhirService,
               private route: ActivatedRoute,
               private linksService : LinksService,
-              private patientChange : PatientChangeService,
+              private patientEprService : PatientEprService,
               ) { }
 
 
@@ -66,7 +67,7 @@ export class PatientEprPatientRecordComponent implements OnInit {
 
 
   }
-
+/*
   selectEncounter(encounter : fhir.Encounter) {
     this.encounterEnabled = true;
     this.encounterDate = encounter.period.start;
@@ -80,7 +81,7 @@ export class PatientEprPatientRecordComponent implements OnInit {
       }
     )
   }
-
+*/
   isSNOMED(system: string) : boolean {
     if (system == undefined) return false;
     if (system == "http://snomed.info/sct")
@@ -118,7 +119,7 @@ export class PatientEprPatientRecordComponent implements OnInit {
 
     this.fhirService.getEPRPatient(patientId).subscribe(document => {
         this.patient = document;
-        this.patientChange.set(document);
+        this.patientEprService.set(document);
       }
     );
     /*

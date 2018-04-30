@@ -1,0 +1,35 @@
+
+<br>
+
+<form class="form-inline">
+  <div class="form-row">
+    <div class="form-group col-6">
+
+      <input id="date1" class="form-control form-control-sm" placeholder="From"
+             name="dpFm" ngbDatepicker #d="ngbDatepicker">
+      <div class="input-group-append">
+        <button class="btn btn-outline-secondary btn-sm"  (click)="d.toggle()" type="button">
+          <img src="assets/img/calendar-icon.svg" style="width: 0.8rem; height: 0.8rem; cursor: pointer;"/>
+        </button>
+      </div>
+    </div>
+    <div class="form-group col-6">
+      <input id="date2" class="form-control form-control-sm" placeholder="To"
+             name="dpFm" ngbDatepicker #e="ngbDatepicker">
+      <div class="input-group-append">
+        <button class="btn btn-outline-secondary btn-sm" (click)="e.toggle()" type="button">
+          <img src="assets/img/calendar-icon.svg" style="width: 0.8rem; height: 0.8rem; cursor: pointer;"/>
+        </button>
+      </div>
+    </div>
+
+
+  </div>
+</form>
+<br>
+<app-encounter [showDetail]="true" [encounters]="encounters" [patient]="patientEprService.patient"></app-encounter>
+
+<div class="form-group col-2">
+  <ngb-pagination [collectionSize]="encTotal" [(page)]="page" aria-label="Default pagination"></ngb-pagination>
+</div>
+

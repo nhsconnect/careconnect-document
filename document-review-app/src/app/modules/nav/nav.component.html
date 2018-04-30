@@ -20,8 +20,8 @@
     </div>
 
 </nav>
-  <span *ngIf="patientChange.messages != undefined">
-  <app-patient-item [patient]="patientChange.messages"></app-patient-item>
+  <span *ngIf="patientEprService.patient != undefined">
+  <app-patient-item [patient]="patientEprService.patient"></app-patient-item>
     </span>
 </div>
 

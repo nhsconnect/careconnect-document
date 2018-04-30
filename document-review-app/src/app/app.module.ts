@@ -21,8 +21,8 @@ import { FindDocumentComponent } from './modules/composition-find/find-document.
 import { CompositionComponent } from './component/composition/composition.component';
 
 import { PatientEprFindComponent } from './modules/patient-epr-find/patient-epr-find.component';
-import { PatientEprPatientRecordComponent } from './modules/patient-epr-record/patient-epr-patient-record.component';
-import { PatientEprEncounterComponent } from './epr-modules/epr-encounter/patient-epr-encounter.component';
+import { PatientEprPatientRecordComponent } from './epr-modules/patient-epr-record/patient-epr-patient-record.component';
+import { EprEncounterComponent } from './epr-modules/epr-encounter/epr-encounter.component';
 import { MedicationStatementComponent } from './component/medication-statement/medication-statement.component';
 import { ConditionComponent } from './component/condition/condition.component';
 import { ProcedureComponent } from './component/procedure/procedure.component';
@@ -48,14 +48,15 @@ import {AngularFireAuthModule} from "angularfire2/auth";
 import {environment} from "../environments/environment";
 import {AuthoriseComponent} from "./modules/authorise/authorise.component";
 import {LinksService} from "./service/links.service";
-import {PatientChangeService} from "./service/patient-change.service";
+import {PatientEprService} from "./service/patient-epr.service";
 import {ObservationDetailComponent} from "./component/observation-detail/observation-detail.component";
 import {Ng2GoogleChartsModule} from "ng2-google-charts";
 import {CareGoogleChartComponent} from "./component/care-google-chart/care-google-chart.component";
 import { EprImmunisationComponent } from './epr-modules/epr-immunisation/epr-immunisation.component';
 import { ImmunisationComponent } from './component/immunisation/immunisation.component';
 
-import { TimelineGraphComponent } from './component/timeline-graph/timeline-graph.component';
+import { PatientTimelineComponent } from './epr-modules/patient-timeline/patient-timeline.component';
+import { EncounterDetailComponent } from './component/encounter-detail/encounter-detail.component';
 
 
 
@@ -74,7 +75,7 @@ import { TimelineGraphComponent } from './component/timeline-graph/timeline-grap
     CompositionComponent,
     PatientEprFindComponent,
     PatientEprPatientRecordComponent,
-    PatientEprEncounterComponent,
+    EprEncounterComponent,
     MedicationStatementComponent,
     ConditionComponent,
     ProcedureComponent,
@@ -98,7 +99,8 @@ import { TimelineGraphComponent } from './component/timeline-graph/timeline-grap
     ObservationDetailComponent,
     EprImmunisationComponent,
     ImmunisationComponent,
-    TimelineGraphComponent
+    PatientTimelineComponent,
+    EncounterDetailComponent
   ],
   imports: [
     BrowserModule,
@@ -116,7 +118,7 @@ import { TimelineGraphComponent } from './component/timeline-graph/timeline-grap
     FhirService
     , AuthService
     ,LinksService
-    ,PatientChangeService
+    ,PatientEprService
   ],
   bootstrap: [AppComponent]
 })

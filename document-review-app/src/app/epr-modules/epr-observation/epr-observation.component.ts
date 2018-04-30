@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {PatientEprService} from "../../service/patient-epr.service";
 
 @Component({
   selector: 'app-epr-observation',
@@ -11,10 +12,8 @@ export class EprObservationComponent implements OnInit {
 
   @Input() observations :fhir.Observation[];
 
-  @Input() patient : fhir.Patient;
-
-  @Input() obsTotal :number;
-  constructor() { }
+    @Input() obsTotal :number;
+  constructor(public patientEprService : PatientEprService) { }
 
   page : number;
   ngOnInit() {

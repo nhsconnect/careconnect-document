@@ -65,3 +65,13 @@ body {
 * {
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.vis-item.green {
+  background-color: limegreen;
+  border-color: darkgreen;
+}
+
+.vis-item.red {
+  background-color: salmon;
+  border-color: saddlebrown;
+}

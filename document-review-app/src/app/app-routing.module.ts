@@ -5,7 +5,7 @@ import {ViewDocumentComponent} from "./modules/composition-view/view-document.co
 import {PatientFindComponent} from "./modules/patient-fdms-find/patient-find.component";
 import {FindDocumentComponent} from "./modules/composition-find/find-document.component";
 import {PatientEprFindComponent} from "./modules/patient-epr-find/patient-epr-find.component";
-import {PatientEprPatientRecordComponent} from "./modules/patient-epr-record/patient-epr-patient-record.component";
+import {PatientEprPatientRecordComponent} from "./epr-modules/patient-epr-record/patient-epr-patient-record.component";
 import {ValidationLoadComponent} from "./modules/validation-load/validation-load.component";
 import {LoginComponent} from "./modules/login/login.component";
 import {AuthoriseComponent} from "./modules/authorise/authorise.component";

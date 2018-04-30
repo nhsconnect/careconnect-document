@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {AuthService} from "../../service/auth.service";
 import {Router} from "@angular/router";
-import {PatientChangeService} from "../../service/patient-change.service";
+import {PatientEprService} from "../../service/patient-epr.service";
 
 @Component({
   selector: 'app-nav',
@@ -11,7 +11,7 @@ import {PatientChangeService} from "../../service/patient-change.service";
 export class NavComponent implements OnInit {
 
   constructor(private authService: AuthService,
-              public patientChange : PatientChangeService,
+              public patientEprService : PatientEprService,
               private router : Router) {
 
   }
@@ -30,8 +30,8 @@ export class NavComponent implements OnInit {
     return this.authService.isLoggedIn()
   }
   hasPatient() : boolean {
-    if (this.patientChange.messages != undefined) {
-      this.patient = this.patientChange.messages;
+    if (this.patientEprService.patient != undefined) {
+      this.patient = this.patientEprService.patient;
     }
     return false;
   }

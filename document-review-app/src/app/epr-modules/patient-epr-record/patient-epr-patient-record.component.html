@@ -1,0 +1,73 @@
+
+<ngb-tabset #tabs type="pills">
+
+  <ngb-tab  id="tab-conditions" >
+    <ng-template ngbTabTitle><b>Summary</b></ng-template>
+    <ng-template ngbTabContent>
+      <br>
+     <b>Conditions</b>
+        <app-epr-condition [conditions]="conditions" [conditionTotal]="conditionTotal"></app-epr-condition>
+      <br>
+      <b>Allergies</b>
+      <app-epr-allergy-intollerance [allergies]="allergies" [allergiesTotal]="allergiesTotal"></app-epr-allergy-intollerance>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab  id="tab-timeline" >
+    <ng-template ngbTabTitle><b>Timeline</b></ng-template>
+    <ng-template ngbTabContent>
+      <br>
+      <app-patient-timeline [patient]="patient" [conditions]="conditions" [procedures]="procedures" [encounters]="encounters"></app-patient-timeline>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab  id="tab-prescriptions">
+    <ng-template ngbTabTitle><b>Prescriptions</b></ng-template>
+    <ng-template ngbTabContent>
+      <app-epr-prescription [prescriptions]="prescriptions" [presTotal]="presTotal"></app-epr-prescription>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab  id="tab-procedures" >
+    <ng-template ngbTabTitle><b>Procedures</b></ng-template>
+    <ng-template ngbTabContent>
+      <app-epr-procedure [procedures]="procedures" [procTotal]="procTotal"></app-epr-procedure>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab  id="tab-observations" >
+    <ng-template ngbTabTitle><b>Observations</b></ng-template>
+    <ng-template ngbTabContent>
+      <app-epr-observation [observations]="observations" [obsTotal]="obsTotal"></app-epr-observation>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab  id="tab-immunisation" >
+    <ng-template ngbTabTitle><b>Immunisation</b></ng-template>
+    <ng-template ngbTabContent>
+      <app-epr-immunisation [immunisations]="immunisations" [immsTotal]="immsTotal"></app-epr-immunisation>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab  id="tab-documents" >
+    <ng-template ngbTabTitle><b>Documents</b></ng-template>
+    <ng-template ngbTabContent>
+      <app-epr-document-reference [documents]="documents" [documentsTotal]="documentsTotal"></app-epr-document-reference>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab id="tab-selectbyid2" >
+    <ng-template ngbTabTitle><b>Encounters</b></ng-template>
+    <ng-template ngbTabContent>
+      <app-epr-encounter [encounters]="encounters"></app-epr-encounter>
+    </ng-template>
+  </ngb-tab>
+<!--
+  <ngb-tab [disabled]="!encounterEnabled" id="tab-encounterdoc" >
+    <ng-template ngbTabTitle><b>Consultation</b> {{encounterDate | date: 'dd-MMM-yyyy HH:mm' }}</ng-template>
+    <ng-template ngbTabContent>
+      <div *ngIf="encounterdoc != undefined">
+
+        <br>
+        <app-view-document [systemType]="'EPR'" [document]="encounterdoc"></app-view-document>
+      </div>
+    </ng-template>
+  </ngb-tab> -->
+</ngb-tabset>
+
+

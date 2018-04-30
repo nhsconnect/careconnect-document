@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {LinksService} from "../../service/links.service";
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: 'app-encounter',
@@ -9,7 +10,15 @@ import {LinksService} from "../../service/links.service";
 export class EncounterComponent implements OnInit {
 
   @Input() encounters : fhir.Encounter[];
-  constructor(private linksService : LinksService) { }
+
+  @Input() showDetail : boolean = false;
+
+  @Input() patient : fhir.Patient;
+
+  encounterId : string;
+
+  constructor(private linksService : LinksService
+    ,private modalService: NgbModal) { }
 
   ngOnInit() {
   }
@@ -26,5 +35,9 @@ export class EncounterComponent implements OnInit {
     if (this.linksService.isSNOMED(code.system)) {
       window.open(this.linksService.getSNOMEDLink(code), "_blank");
     }
+  }
+  onClick(content ,encounter : fhir.Encounter) {
+    this.encounterId = encounter.id;
+    this.modalService.open(content,{ windowClass: 'dark-modal' });
   }
 }
