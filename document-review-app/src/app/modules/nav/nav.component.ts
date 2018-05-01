@@ -51,7 +51,8 @@ export class NavComponent implements OnInit {
     this.router.navigate(['authorise']);
   }
   smartApp() {
-    window.open("http://127.0.0.1:9000/launch.html?fhirServiceUrl=https://purple.testlab.nhs.uk/careconnect-ri/STU3/metadata&patientId=1&launch=https://purple.testlab.nhs.uk/careconnect-ri/STU3/&iss=123", "_blank");
+    window.open("http://127.0.0.1:9000/launch.html?fhirServiceUrl=http://purple.testlab.nhs.uk/careconnect-ri/STU3&patientId="+this.patientEprService.patient.id, "_blank");
+    //window.open("http://127.0.0.1:9000/launch.html?fhirServiceUrl=http://127.0.0.1:8080/careconnect-gateway/STU3&patientId="+this.patientEprService.patient.id, "_blank");
   }
 
 }
