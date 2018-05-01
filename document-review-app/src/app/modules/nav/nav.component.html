@@ -10,7 +10,7 @@
             <button class="dropdown-item" routerLink="/find">Find</button>
             <span *ngIf="patientEprService.patient != undefined">
               <button class="dropdown-item" routerLink="/epr/{{patientEprService.patient.id}}">Summary</button>
-
+           <!--   <button class="dropdown-item" (click)="smartApp()">Growth Chart</button> -->
             </span>
           </div>
         </div>

@@ -1,12 +1,17 @@
 <ng-template id="modalContent" #modalContent let-c="close" let-d="dismiss">
   <div class="modal-header">
-    <h4>Encounter</h4>
+    <span *ngIf="selectedEncounter.type != undefined && selectedEncounter.type[0].coding != undefined">
+      <h4>{{selectedEncounter.type[0].coding[0].display}}</h4>
+    </span>
+    <span *ngIf="selectedEncounter.type == undefined || selectedEncounter.type[0].coding == undefined">
+      <h4>Encounter</h4>
+    </span>
     <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="modal-body">
-    <app-encounter-detail [patientId]="patient.id" [encounterId]="encounterId"></app-encounter-detail>
+    <app-encounter-detail [patientId]="patient.id" [encounterId]="selectedEncounter.id"></app-encounter-detail>
   </div>
 </ng-template>
 

@@ -7,14 +7,20 @@
           <div class="modal-header">
             <h4>{{section.code.coding[0].display}}</h4>
 
+            <span *ngIf="isSNOMED(section.code.coding[0].system)">
+        <a (click)="getSNOMEDLink(section.code.coding[0])">
+             <span *ngIf="section.code.coding[0].code != undefined" class="badge badge-info" ngbTooltip="{{getCodeSystem(section.code.coding[0].system)}} {{section.code.coding[0].code}}"> code</span>
+        </a></span>
+
 
             <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
            <div class="modal-body">
-               SNOMED CT Code <a href="{{getSNOMEDLink(section.code.coding[0].code)}}">{{section.code.coding[0].code}}</a>
-  <br><br>
+  <!--             SNOMED CT Code <a href="{{getSNOMEDLink(section.code.coding[0].code)}}">{{section.code.coding[0].code}}</a> -->
+
+
             <div *ngIf="section.entry != undefined">
               References {{section.entry.length}} entries
 

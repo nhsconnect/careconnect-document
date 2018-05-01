@@ -2,6 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 
 import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 import {isNumber} from "util";
+import {LinksService} from "../../service/links.service";
 
 @Component({
   selector: 'app-view-document-section',
@@ -28,7 +29,7 @@ export class ViewDocumentSectionComponent implements OnInit {
 
 
   constructor(private modalService: NgbModal
-
+      , private linksService : LinksService
   ) { }
 
   ngOnInit() {
@@ -154,23 +155,20 @@ export class ViewDocumentSectionComponent implements OnInit {
 
   }
 
-  isSNOMED(code: string) : boolean {
-    if (code == undefined) return false;
-    if (!((+code).toString() === code)) {
-      //console.log("Not a number = "+code);
-      return false;
+    getCodeSystem(system : string) : string {
+    return this.linksService.getCodeSystem(system);
+  }
+
+  isSNOMED(system: string) : boolean {
+    return this.linksService.isSNOMED(system);
+  }
+
+  getSNOMEDLink(code : fhir.Coding) {
+    if (this.linksService.isSNOMED(code.system)) {
+      window.open(this.linksService.getSNOMEDLink(code), "_blank");
     }
-    if (code.length<6) return false;
-    return true;
-
   }
 
-  getDMDLink(code : string) {
-    return "http://dmd.medicines.org.uk/DesktopDefault.aspx?VMP="+code+"&toc=nofloat";
-  }
-  getSNOMEDLink(code : string) {
-    return "https://termbrowser.nhs.uk/?perspective=full&conceptId1="+code+"&edition=uk-edition&release=v20180401";
-  }
 
 
 

@@ -50,5 +50,8 @@ export class NavComponent implements OnInit {
   Authorise() : void {
     this.router.navigate(['authorise']);
   }
+  smartApp() {
+    window.open("http://127.0.0.1:9000/launch.html?fhirServiceUrl=https://purple.testlab.nhs.uk/careconnect-ri/STU3/metadata&patientId=1&launch=https://purple.testlab.nhs.uk/careconnect-ri/STU3/&iss=123", "_blank");
+  }
 
 }

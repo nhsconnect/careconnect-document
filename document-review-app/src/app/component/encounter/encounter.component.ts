@@ -15,7 +15,7 @@ export class EncounterComponent implements OnInit {
 
   @Input() patient : fhir.Patient;
 
-  encounterId : string;
+  selectedEncounter : fhir.Encounter;
 
   constructor(private linksService : LinksService
     ,private modalService: NgbModal) { }
@@ -37,7 +37,7 @@ export class EncounterComponent implements OnInit {
     }
   }
   onClick(content ,encounter : fhir.Encounter) {
-    this.encounterId = encounter.id;
+    this.selectedEncounter = encounter;
     this.modalService.open(content,{ windowClass: 'dark-modal' });
   }
 }
