@@ -74,11 +74,11 @@ export class FhirService {
 
   }
   */
-  getBinary(id: string,): Observable<fhir.Bundle> {
+  getBinary(id: string): Observable<fhir.Binary> {
 
     const url = this.getEPRUrl() + `/Binary/${id}`;
 
-    return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getEPRHeaders(false)});
+    return this.http.get<fhir.Binary>(url,{ 'headers' : this.getEPRHeaders(true)});
 
   }
   getBinaryRaw(id: string,): Observable<any> {
@@ -103,7 +103,7 @@ export class FhirService {
 
   getCompositionDocumentPDF(id: string): Observable<any> {
 
-    const url = this.getEPRUrl() + this.path +`/Binary/${id}`;
+    const url = this.getEPRUrl() + `/Binary/${id}`;
 
     let headers = this.getEPRHeaders(false);
     headers = headers.append(

@@ -42,7 +42,9 @@ export class ViewDocumentComponent implements OnInit {
 
 
     this.fhirService.getBinary(id).subscribe( document => {
-      this.document = document;
+      let binary : fhir.Binary = document;
+      //console.log(atob(binary.content));
+      this.document = JSON.parse(atob(binary.content));
     }, err=>{},
       ()=> {
         this.getComposition();
@@ -88,9 +90,9 @@ export class ViewDocumentComponent implements OnInit {
   }
 
   downloadPDF() {
-    console.log("Download PDF");
-
-
+    console.log("Download PDF "+ this.systemType);
+    this.downloadPDFActual(this.docId);
+/*  1/5/2018 removed no longer required KGM
     if (this.systemType === "EPR") {
 
       // EPR doesn't convert document so upload to FDMS and retrieve it as PDF
@@ -110,11 +112,13 @@ export class ViewDocumentComponent implements OnInit {
     } else {
       this.downloadPDFActual(this.docId);
     }
+    */
   }
 
   downloadHTML() {
     console.log("Download HTML");
-
+    this.downloadHTMLActual(this.docId);
+    /* 1/5/2018 removed no longer required KGM
     if (this.systemType === "EPR") {
 
       // EPR doesn't convert document so upload to EDMS and retrieve it as HTML
@@ -134,7 +138,7 @@ export class ViewDocumentComponent implements OnInit {
       );
     } else {
       this.downloadHTMLActual(this.docId);
-    }
+    }*/
   }
 
   downloadHTMLActual(docuemntid : string) {

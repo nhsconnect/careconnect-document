@@ -33,9 +33,9 @@ export class PatientTimelineComponent implements OnInit {
     var container = document.getElementById('timeline');
 
 
-    let names = ['Condition','Procedure','Encounter'];
+    let names = ['Condition', 'Procedure', 'Encounter'];
     let groups = new DataSet();
-    let g= 0;
+    let g = 0;
     for (let name of names) {
       groups.add({id: g, content: name});
       g++;
@@ -44,18 +44,18 @@ export class PatientTimelineComponent implements OnInit {
     let items = new DataSet([]);
 
     for (let condition of this.conditions) {
-      if (condition.code != undefined && condition.code.coding.length>0) {
+      if (condition.code != undefined && condition.code.coding.length > 0) {
         items.add({
-          id: 'Condition/'+condition.id,
-          group : 0,
+          id: 'Condition/' + condition.id,
+          group: 0,
           content: condition.code.coding[0].display,
           start: this.getConditionDate(condition),
           className: 'green'
         });
       } else {
         items.add({
-          id: 'Condition/'+condition.id,
-          group : 0,
+          id: 'Condition/' + condition.id,
+          group: 0,
           content: 'nos',
           className: 'green',
           start: this.getConditionDate(condition)
@@ -64,18 +64,18 @@ export class PatientTimelineComponent implements OnInit {
     }
 
     for (let procedure of this.procedures) {
-      if (procedure.code != undefined && procedure.code.coding.length>0) {
+      if (procedure.code != undefined && procedure.code.coding.length > 0) {
         items.add({
-          id: 'Procedure/'+procedure.id,
-          group : 1,
+          id: 'Procedure/' + procedure.id,
+          group: 1,
           content: procedure.code.coding[0].display,
           start: this.getProcedureDate(procedure),
           className: 'red'
         });
       } else {
         items.add({
-          id: 'Procedure/'+procedure.id,
-          group : 1,
+          id: 'Procedure/' + procedure.id,
+          group: 1,
           content: 'nos',
           className: 'red',
           start: this.getProcedureDate(procedure)
@@ -84,18 +84,18 @@ export class PatientTimelineComponent implements OnInit {
     }
 
     for (let encounter of this.encounters) {
-      if (encounter.type != undefined && encounter.type.length>0) {
+      if (encounter.type != undefined && encounter.type.length > 0) {
         items.add({
-          id: 'Encounter/'+encounter.id,
-          group : 2,
+          id: 'Encounter/' + encounter.id,
+          group: 2,
           content: encounter.type[0].coding[0].display,
           start: encounter.period.start
           //,end: encounter.period.end
         });
       } else {
         items.add({
-          id: 'Encounter/'+encounter.id,
-          group : 2,
+          id: 'Encounter/' + encounter.id,
+          group: 2,
           content: 'nos',
           start: encounter.period.start
           //,end: encounter.period.end
@@ -104,11 +104,11 @@ export class PatientTimelineComponent implements OnInit {
     }
 
 
-    let optiont : TimelineOptions  = {
+    let optiont: TimelineOptions = {
       width: '100%',
       height: '650px',
       start: '2016-05-02',
-      end :'2018-05-08'
+      end: '2018-05-08'
       /*,
       rollingMode : {
         follow : false,
@@ -118,12 +118,26 @@ export class PatientTimelineComponent implements OnInit {
     };
 
 
-    let timeline = new Timeline(container, items, groups , optiont);
+    let timeline = new Timeline(container, items, groups, optiont);
 
+    // Use single click. Works better on mobile devices/touch screens
     timeline.on('click', (properties) => {
-       if (properties != undefined && properties.item != undefined) { console.log('clicked '+properties.item)}
+      if (properties != undefined && properties.item != undefined) {
+        let itemstr: string[] = properties.item.split('/');
+        if (itemstr.length > 1) {
+          if (itemstr[0] == 'Encounter') {
+            //let content =  this.tref.nativeElement.textContent;
+            console.log(this.tref);
+            console.log('Encounter Selected');
+            this.encounterId = itemstr[1];
+            this.modalService.open(this.tref, {windowClass: 'dark-modal'});
+          }
+        }
+        //console.log('clicked '+properties.item)
+      }
     });
-
+  }
+/*
     timeline.on('doubleClick', (properties) => {
       if (properties != undefined && properties.item != undefined) {
         let itemstr : string[] = properties.item.split('/');
@@ -142,7 +156,7 @@ export class PatientTimelineComponent implements OnInit {
     });
 
   }
-
+*/
   getProcedureDate(procedure : fhir.Procedure) {
     if (procedure.performedDateTime != null) return procedure.performedDateTime;
     if (procedure.performedPeriod != null) return procedure.performedPeriod.start;
