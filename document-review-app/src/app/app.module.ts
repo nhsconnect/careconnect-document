@@ -57,6 +57,7 @@ import { ImmunisationComponent } from './component/immunisation/immunisation.com
 
 import { PatientTimelineComponent } from './epr-modules/patient-timeline/patient-timeline.component';
 import { EncounterDetailComponent } from './component/encounter-detail/encounter-detail.component';
+import {DatabaseService} from "./service/database.service";
 
 
 
@@ -119,6 +120,7 @@ import { EncounterDetailComponent } from './component/encounter-detail/encounter
     , AuthService
     ,LinksService
     ,PatientEprService
+    ,DatabaseService
   ],
   bootstrap: [AppComponent]
 })

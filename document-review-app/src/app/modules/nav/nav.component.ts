@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import {AuthService} from "../../service/auth.service";
 import {Router} from "@angular/router";
 import {PatientEprService} from "../../service/patient-epr.service";
+import {DatabaseService} from "../../service/database.service";
+import {Permission} from "../../model/permission";
 
 @Component({
   selector: 'app-nav',
@@ -10,9 +12,10 @@ import {PatientEprService} from "../../service/patient-epr.service";
 })
 export class NavComponent implements OnInit {
 
-  constructor(private authService: AuthService,
+  constructor(public authService: AuthService,
               public patientEprService : PatientEprService,
-              private router : Router) {
+              private router : Router,
+              public databaseService : DatabaseService) {
 
   }
 
@@ -21,6 +24,7 @@ export class NavComponent implements OnInit {
   patient : fhir.Patient;
 
   ngOnInit() {
+
   }
   logout () {
     return this.authService.logout();
@@ -50,6 +54,8 @@ export class NavComponent implements OnInit {
   Authorise() : void {
     this.router.navigate(['authorise']);
   }
+
+
   smartApp() {
     window.open("http://127.0.0.1:9000/launch.html?fhirServiceUrl=http://purple.testlab.nhs.uk/careconnect-ri/STU3&patientId="+this.patientEprService.patient.id, "_blank");
     //window.open("http://127.0.0.1:9000/launch.html?fhirServiceUrl=http://127.0.0.1:8080/careconnect-gateway/STU3&patientId="+this.patientEprService.patient.id, "_blank");

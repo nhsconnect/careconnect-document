@@ -15,8 +15,8 @@
           </div>
         </div>
       </li>
-
-      <li *ngIf="patientEprService.patient != undefined" class="nav-item dropdown">
+      <!-- <li *ngIf="authService.permission != undefined && authService.permission.hacker">User Log</li> -->
+      <li *ngIf="authService.permission != undefined && authService.permission.hacker == true && patientEprService.patient != undefined" class="nav-item dropdown">
         <div ngbDropdown class="d-inline-block">
           <button class="btn btn-dark" id="dropdownMenu3"
                   ngbDropdownToggle><i class="fa fa-fire" style="color:lightskyblue" aria-hidden="false"></i> SmartOnFhir</button>
