@@ -45,7 +45,7 @@ export class MedicationStatementComponent implements OnInit {
         console.log("medicationReference - " + medicationStatement.medicationReference.reference);
         for(let medtemp of this.meds) {
           console.log('meds list '+medtemp.id)
-          if (medtemp.id == medicationStatement.medicationReference) {
+          if (medtemp.id == medicationStatement.medicationReference.reference) {
             this.selectedMeds.push(medtemp);
           }
         }

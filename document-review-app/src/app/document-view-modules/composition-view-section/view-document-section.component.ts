@@ -116,6 +116,7 @@ export class ViewDocumentSectionComponent implements OnInit {
             break;
           case "Medication" :
             let medication :fhir.Medication = <fhir.Medication> resource.resource;
+            medication.id = resource.fullUrl;
 
               this.medications.push(medication);
 

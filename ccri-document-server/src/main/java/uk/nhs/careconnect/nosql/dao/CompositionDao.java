@@ -175,7 +175,7 @@ public class CompositionDao implements IComposition {
             JsonObject jo = (JsonObject)jsonParser.parse(resourceObj.toString());
             jo.remove("_class");
             jo.remove("_id");
-
+           // log.info("Raw "+jo.toString());
             IBaseResource resource = ctx.newJsonParser().parseResource(jo.toString());
 
             bundle = (Bundle) resource;
