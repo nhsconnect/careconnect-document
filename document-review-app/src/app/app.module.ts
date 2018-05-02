@@ -10,10 +10,10 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 import { LoadDocumentFileComponent } from './modules/composition-load/load-document-file/load-document-file.component';
 import {FileUploadModule} from "ng2-file-upload";
-import { ViewDocumentComponent } from './modules/composition-view/view-document.component';
+import { ViewDocumentComponent } from './document-view-modules/composition-view/view-document.component';
 import {FhirService} from "./service/fhir.service";
 import {HttpClientModule} from "@angular/common/http";
-import { ViewDocumentSectionComponent } from './modules/composition-view/view-document-section.component';
+import { ViewDocumentSectionComponent } from './document-view-modules/composition-view-section/view-document-section.component';
 import { PatientFindComponent } from './modules/patient-fdms-find/patient-find.component';
 import { PatientSearchComponent } from './modules/patient-search/patient-search.component';
 import {PatientItemComponent} from "./component/patient/patient-item.component";

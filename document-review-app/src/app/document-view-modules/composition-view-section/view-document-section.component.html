@@ -62,7 +62,7 @@
                <app-encounter [encounters]="encounters"></app-encounter>
               </span>
               <span *ngIf="medicationStatements.length>0">
-               <app-medication-statement [medicationStatements]="medicationStatements"></app-medication-statement>
+               <app-medication-statement [medicationStatements]="medicationStatements" [meds]="medications"></app-medication-statement>
               </span>
               <span *ngIf="conditions.length>0">
                <app-condition [conditions]="conditions"></app-condition>
@@ -74,7 +74,7 @@
                <app-medication [medications]="medications"></app-medication>
               </span>
               <span *ngIf="prescriptions.length>0">
-               <app-medication-request [medicationRequests]="prescriptions"></app-medication-request>
+               <app-medication-request [medicationRequests]="prescriptions" [meds]="medications"></app-medication-request>
               </span>
 
 

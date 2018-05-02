@@ -195,9 +195,17 @@ public class CompositionDao implements IComposition {
 
         if (document!=null) {
            if (document.getFhirDocument() !=null) {
-                bundle = getFhirDocument(ctx, (ObjectId) document.getFhirDocument().getId());
+               bundle = getFhirDocument(ctx, (ObjectId) document.getFhirDocument().getId());
                for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
-
+                   if (entry.getResource().getId() == null || entry.getResource().getId().isEmpty()) {
+                       log.info("In resource Id");
+                       if (entry.getFullUrl() !=null && !entry.getFullUrl().isEmpty()) {
+                           entry.getResource().setId(entry.getFullUrl().replace("urn:uuid:",""));
+                       }
+                   } else {
+                       log.info("Entry id = "+entry.getResource().getId());
+                       if (entry.getResource().getId().contains("urn:uuid:")) entry.getResource().setId(entry.getResource().getId().replace("urn:uuid:",""));
+                   }
                    if (entry.getResource() instanceof Composition) {
                        // Replace Bundle Composition Id with Composition Entity id
                        resolveCompositionReferences((Composition) entry.getResource(), bundle);

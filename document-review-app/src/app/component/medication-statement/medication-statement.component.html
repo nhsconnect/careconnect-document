@@ -1,3 +1,14 @@
+<ng-template #modalContent let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4>Medication</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <app-medication [medications]="selectedMeds"></app-medication>
+  </div>
+</ng-template>
 <table class="table">
   <thead>
   <tr>
@@ -14,7 +25,14 @@
         <a (click)="getSNOMEDLink(medication.medicationCodeableConcept.coding[0])"><span class="badge badge-info">NHSD SNOMED CT</span></a>
         <a (click)="getDMDLink(medication.medicationCodeableConcept.coding[0])"><span class="badge badge-info">dm+d</span></a>
       </div>
-      <span *ngIf="medication.medicationReference !=undefined"><b>{{medication.medicationReference.display}}</b></span>
+      <span *ngIf="medication.medicationReference !=undefined">
+        <span *ngIf="medication.medicationReference.display != undefined">
+          <b>{{medication.medicationReference.display}}</b>
+        </span>
+        <span *ngIf="medication.medicationReference.display == undefined">
+          <a (click)="onClick(modalContent, medication)"> <span class="badge badge-info">medication</span></a>
+        </span>
+        </span>
         -
         <span *ngFor="let dosage of medication.dosage"> <i>DOSE</i>
             <span *ngIf="dosage.doseQuantity!=undefined">{{dosage.doseQuantity.value}} {{dosage.doseQuantity.unit}}</span>

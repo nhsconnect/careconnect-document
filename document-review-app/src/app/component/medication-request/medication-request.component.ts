@@ -11,10 +11,10 @@ import {FhirService} from "../../service/fhir.service";
 export class MedicationRequestComponent implements OnInit {
 
   @Input() medicationRequests : fhir.MedicationRequest[];
+
   @Input() showDetail : boolean = false;
 
-
-  meds : fhir.Medication[];
+  @Input() meds : fhir.Medication[];
 
   constructor(private linksService : LinksService
     ,private modalService: NgbModal
