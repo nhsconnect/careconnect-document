@@ -3,28 +3,45 @@ import {Observable} from 'rxjs/Observable';
 import {AngularFireAuth} from 'angularfire2/auth';
 import {Router} from '@angular/router';
 import * as firebase from 'firebase/app';
+import {AngularFireDatabase} from "angularfire2/database";
 import {Permission} from "../model/permission";
-import {DatabaseService} from "./database.service";
+import {AngularFireObject} from "angularfire2/database/interfaces";
+import {T} from "@angular/core/src/render3";
+
 
 @Injectable()
 export class AuthService {
   private user: Observable<firebase.User>;
   public userDetails: firebase.User = null;
 
-  public permission : Permission = null;
+  private semaphore : boolean = false;
+
+  public permission :Permission = undefined;
+
+  permSub : AngularFireObject<Permission> = undefined;
 
   constructor(private _firebaseAuth: AngularFireAuth
               , private router: Router
-              , private databaseService : DatabaseService) {
+              , public db : AngularFireDatabase
+              ) {
     this.user = _firebaseAuth.authState;
 
     this.user.subscribe(
       (user) => {
         if (user) {
           this.userDetails = user;
-          console.log("Logged ON *** get permissions");
-          console.log(this.userDetails);
-          this.getPermission();
+          console.log('adding permission subscription');
+          this.semaphore = false;
+          this.permSub = this.db.object('/permission/'+user.uid);
+          this.permSub.snapshotChanges().subscribe(action => {
+            console.log(action.type);
+            console.log(action.key);
+            console.log(action.payload.val());
+            if (action.payload.val() != undefined) {
+              this.permission = action.payload.val();
+            }
+          });
+
         }
         else {
           this.userDetails = null;
@@ -33,30 +50,6 @@ export class AuthService {
     );
   }
 
-  getPermission() : boolean {
-
-
-
-    this.databaseService.getPermission(this.getuserInfo().uid).then(perm => {
-      if (perm.user == undefined) {
-        console.log(' Undef permission ');
-        let permission : Permission = new Permission();
-        permission.admin = false;
-        permission.hacker = false;
-        permission.user = true;
-        this.databaseService.setPermission(this.getuserInfo().uid,permission);
-      } else {
-        console.log('Permission '+perm.user);
-      }
-      this.permission = perm;
-
-    },
-      () => {
-       console.log(' Rejected ');
-      }
-      );
-    return true;
-  }
 
   getuserInfo() {
     console.log('user '+this.user);
@@ -102,16 +95,56 @@ export class AuthService {
     if (this.userDetails == null ) {
       return false;
     } else {
+
       return true;
     }
   }
 
+  removeSub() {
+    if (this.permSub != undefined && this.userDetails != undefined) {
+      console.log('Calling unsubscribe');
+      this.permSub.snapshotChanges().subscribe().unsubscribe();
+      //this.permSub.remove(); Don't try this, it performs a delete.
+    }
+    if (this.user != undefined) {
+      this.user.subscribe().unsubscribe();
+    }
+  }
 
-  logout() {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem("PatientBanner");
+  fireBaseLogout() {
+    console.log('Logging out');
+    this.userDetails = undefined;
     this._firebaseAuth.auth.signOut()
-      .then((res) => this.router.navigate(['/']));
+      .then((res) => {
+       // this.semaphore= false;
+        console.log('Finished Signout');
+        this.router.navigate(['/']);
+      });
+  }
+  logout() {
+    if (!this.semaphore) {
+      this.semaphore = true;
+      localStorage.removeItem('access_token');
+      localStorage.removeItem("PatientBanner");
+      if (this.permission == undefined && this.userDetails != null) {
+        this.removeSub();
+        console.log('Adding basic permission ' + this.userDetails.uid);
+        const itemRef = this.db.object('/permission/' + this.userDetails.uid);
+        let basicPermission = new Permission();
+       // basicPermission.user = true;
+        basicPermission.userName = this.userDetails.displayName;
+        itemRef.set(basicPermission).then(() => {
+
+          this.fireBaseLogout();
+        });
+      } else {
+        console.log('Second Logout');
+        this.removeSub();
+
+        this.fireBaseLogout();
+
+      }
+    }
   }
 
 }

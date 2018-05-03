@@ -8,7 +8,6 @@ import { LoadDocumentComponent } from './modules/composition-load/load-document.
 import { NavComponent } from './modules/nav/nav.component';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
-import { LoadDocumentFileComponent } from './modules/composition-load/load-document-file/load-document-file.component';
 import {FileUploadModule} from "ng2-file-upload";
 import { ViewDocumentComponent } from './document-view-modules/composition-view/view-document.component';
 import {FhirService} from "./service/fhir.service";
@@ -57,8 +56,6 @@ import { ImmunisationComponent } from './component/immunisation/immunisation.com
 
 import { PatientTimelineComponent } from './epr-modules/patient-timeline/patient-timeline.component';
 import { EncounterDetailComponent } from './component/encounter-detail/encounter-detail.component';
-import {DatabaseService} from "./service/database.service";
-
 
 
 @NgModule({
@@ -66,7 +63,6 @@ import {DatabaseService} from "./service/database.service";
     AppComponent,
     LoadDocumentComponent,
     NavComponent,
-    LoadDocumentFileComponent,
     ViewDocumentComponent,
     ViewDocumentSectionComponent,
     PatientFindComponent,
@@ -120,7 +116,6 @@ import {DatabaseService} from "./service/database.service";
     , AuthService
     ,LinksService
     ,PatientEprService
-    ,DatabaseService
   ],
   bootstrap: [AppComponent]
 })

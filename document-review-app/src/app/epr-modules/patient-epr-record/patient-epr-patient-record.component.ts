@@ -4,6 +4,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {NgbTabset} from "@ng-bootstrap/ng-bootstrap";
 import {LinksService} from "../../service/links.service";
 import {PatientEprService} from "../../service/patient-epr.service";
+import {AuthService} from "../../service/auth.service";
 
 
 
@@ -58,6 +59,7 @@ export class PatientEprPatientRecordComponent implements OnInit {
               private route: ActivatedRoute,
               private linksService : LinksService,
               private patientEprService : PatientEprService,
+              public auth : AuthService
               ) { }
 
 

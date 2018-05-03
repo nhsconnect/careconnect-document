@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import {AuthService} from "../../service/auth.service";
 import {Router} from "@angular/router";
 import {PatientEprService} from "../../service/patient-epr.service";
-import {DatabaseService} from "../../service/database.service";
+
 import {Permission} from "../../model/permission";
+import {AngularFireDatabase} from "angularfire2/database";
 
 @Component({
   selector: 'app-nav',
@@ -15,13 +16,15 @@ export class NavComponent implements OnInit {
   constructor(public authService: AuthService,
               public patientEprService : PatientEprService,
               private router : Router,
-              public databaseService : DatabaseService) {
+              public db : AngularFireDatabase) {
 
   }
 
   title="FHIR Document Viewer";
 
   patient : fhir.Patient;
+
+  permission : Permission;
 
   ngOnInit() {
 
@@ -31,7 +34,9 @@ export class NavComponent implements OnInit {
   }
 
   isLoggedIn(){
-    return this.authService.isLoggedIn()
+    let isLoggedIn : boolean =this.authService.isLoggedIn();
+
+    return isLoggedIn;
   }
   hasPatient() : boolean {
     if (this.patientEprService.patient != undefined) {

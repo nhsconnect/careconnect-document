@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {Observable} from "rxjs/Observable";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Oauth2token} from "../model/oauth2token";
+import {isNumber} from "util";
 
 @Injectable()
 export class FhirService {
@@ -65,15 +66,7 @@ export class FhirService {
 
   }
 
-  /*
-  getCompositionDocument(id: string,): Observable<fhir.Bundle> {
 
-    const url = this.getEPRUrl() + this.path +`/${id}/$document`;
-
-    return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getHeaders()});
-
-  }
-  */
   getBinary(id: string): Observable<fhir.Binary> {
 
     const url = this.getEPRUrl() + `/Binary/${id}`;
@@ -120,6 +113,15 @@ export class FhirService {
 
     return this.http.post<fhir.Bundle>(url,document,{ 'headers' : this.getHeaders()});
 
+  }
+
+  postBundle(document: any,contentType : string) : Observable<any> {
+
+    let headers :HttpHeaders = this.getEPRHeaders(false);
+    headers.append('Content-Type',contentType);
+    const url = this.getEPRUrl() + `/Bundle`;
+
+    return this.http.post<fhir.Bundle>(url,document,{ 'headers' :headers});
   }
 
 /*
@@ -245,13 +247,18 @@ export class FhirService {
 
   /* GET patients whose name contains search term */
   searchPatients(term: string, systemType : string): Observable<fhir.Bundle> {
-
     let url =  this.getEPRUrl();
-    if (systemType === 'EPR') {
+    if (!isNaN(parseInt(term))) {
+      console.log('Number '+term);
       url =  this.getEPRUrl();
-      return this.http.get<fhir.Bundle>(url + `/Patient?name=${term}`, { 'headers' : this.getEPRHeaders() });
+      return this.http.get<fhir.Bundle>(url + `/Patient?identifier=${term}`, { 'headers' : this.getEPRHeaders() });
     } else {
-      return this.http.get<fhir.Bundle>(url + `/Patient?name=${term}`, { 'headers' : this.getHeaders() });
+      if (systemType === 'EPR') {
+        url = this.getEPRUrl();
+        return this.http.get<fhir.Bundle>(url + `/Patient?name=${term}`, {'headers': this.getEPRHeaders()});
+      } else {
+        return this.http.get<fhir.Bundle>(url + `/Patient?name=${term}`, {'headers': this.getHeaders()});
+      }
     }
 
   }

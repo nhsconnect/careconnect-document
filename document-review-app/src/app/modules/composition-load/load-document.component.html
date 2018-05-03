@@ -1,51 +1,77 @@
 
 
 <form>
-  <div class="form-group">
-    <label for="exampleFormControlFile1">Example file input</label>
-    <input type="file" id="exampleFormControlFile1" class="form-control-file" (change)="fileChange($event)" placeholder="Upload file" accept=".pdf,.doc,.docx,.jpg,.html">
-  </div>
-  <div class="form-group">
-    <label >Date</label>
-    <input type="date" name="bday" max="3000-12-31"
-           min="1000-01-01" class="form-control">
-  </div>
-  <div class="form-group">
-    <label for="exampleFormControlPick1">Document Type</label>
-    <select id="exampleFormControlPick1" class="custom-select" required>
-      <option value=""></option>
-      <option value="1">Mental Health Plan</option>
-      <option value="2">Discharge Letter</option>
-      <option value="3">Outpatient Letter</option>
-    </select>
-    <div class="invalid-feedback">Example invalid custom select feedback</div>
-  </div>
-  <div class="form-group">
-    <label for="exampleFormControlPick2">Specialty</label>
-    <select id="exampleFormControlPick2" class="custom-select" required>
-      <option value=""></option>
-      <option value="1">Mental Health</option>
-      <option value="2">Emergency</option>
-      <option value="3">Outpatient Letter</option>
-    </select>
-    <div class="invalid-feedback">Example invalid custom select feedback</div>
-  </div>
-  <div class="form-group">
-    <label for="exampleFormControlPick3">Service</label>
-    <select id="exampleFormControlPick3" class="custom-select" required>
-      <option value=""></option>
-      <option value="1">Mental Health</option>
-      <option value="2">Emergency</option>
-      <option value="3">Outpatient Letter</option>
-    </select>
-    <div class="invalid-feedback">Example invalid custom select feedback</div>
-  </div>
+  <span *ngIf="auth.permission != undefined && (auth.permission.eprUser == undefined || !auth.permission.eprUser)">
+    <div class="form-group">
+      <label for="exampleFormControlFile1">Example file input</label>
+      <input type="file" id="exampleFormControlFile1" class="form-control-file" (change)="fileChange($event)" placeholder="Upload file" accept=".json,.xml">
+    </div>
+  </span>
+  <span *ngIf="auth.permission != undefined && auth.permission.eprUser != undefined && auth.permission.eprUser">
+    <div class="form-group">
+      <label for="exampleFormControlFile2">Example file input</label>
+      <input type="file" id="exampleFormControlFile2" class="form-control-file" (change)="fileChange($event)" placeholder="Upload file" accept=".json,.xml,.pdf,.doc,.docx,.jpg,.html">
+    </div>
+      <span *ngIf="notFhir">
+        <div class="form-group">
+          <label >Date</label>
+          <input type="date" name="bday" max="3000-12-31"
+                 min="1000-01-01" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="exampleFormControlPick1">Document Type</label>
+          <select id="exampleFormControlPick1" class="custom-select" required>
+            <option value=""></option>
+            <option value="1">Mental Health Plan</option>
+            <option value="2">Discharge Letter</option>
+            <option value="3">Outpatient Letter</option>
+          </select>
+          <div class="invalid-feedback">Example invalid custom select feedback</div>
+        </div>
+        <div class="form-group">
+          <label for="exampleFormControlPick2">Specialty</label>
+          <select id="exampleFormControlPick2" class="custom-select" required>
+            <option value=""></option>
+            <option value="1">Mental Health</option>
+            <option value="2">Emergency</option>
+            <option value="3">Outpatient Letter</option>
+          </select>
+          <div class="invalid-feedback">Example invalid custom select feedback</div>
+        </div>
+        <div class="form-group">
+          <label for="exampleFormControlPick3">Service</label>
+          <select id="exampleFormControlPick3" class="custom-select" required>
+            <option value=""></option>
+            <option value="1">Mental Health</option>
+            <option value="2">Emergency</option>
+            <option value="3">Outpatient Letter</option>
+          </select>
+          <div class="invalid-feedback">Example invalid custom select feedback</div>
+        </div>
+      </span>
+    </span>
   <div class="form-check">
     <input type="checkbox" class="form-check-input" id="exampleCheck1">
-    <label class="form-check-label" for="exampleCheck1">Replace existing file</label>
+    <label class="form-check-label" for="exampleCheck1">Replace document if it exists.</label>
   </div>
   <br>
-  <button type="submit" class="btn btn-primary">Submit</button>
+  <button type="submit" (click)="onClick()" class="btn btn-primary">Submit</button>
 </form>
-  <app-load-document-file></app-load-document-file>
+<br>
+<br>
+<div class="row">
+  <div *ngIf="response != undefined">
+  <div class="col-md-12">
+    <div class="card card-default">
+      <div class="card-heading">Response</div>
+      <div class="card-body">
+          <div *ngFor="let issue of response.issue">
+            <div>{{issue.diagnostics}}</div>
+          </div>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
 

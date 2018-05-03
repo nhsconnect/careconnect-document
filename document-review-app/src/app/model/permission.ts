@@ -2,7 +2,9 @@ export class Permission {
 
   admin : boolean;
 
-  user : boolean;
+  eprUser : boolean;
 
-  hacker : boolean;
+  smartOnFhirUser : boolean;
+
+  userName : string;
 }

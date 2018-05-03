@@ -50,7 +50,7 @@ public class BundleDao implements IBundle {
            Query qry = Query.query(Criteria.where("identifier.system").is(bundle.getIdentifier().getSystem()).and("identifier.value").is(bundle.getIdentifier().getValue()));
 
            CompositionEntity bundleE = mongo.findOne(qry, CompositionEntity.class);
-           if (bundleE!=null) throw new ResourceVersionConflictException("FHIR Document already exists");
+           if (bundleE!=null) throw new ResourceVersionConflictException("FHIR Document already exists. Binary/"+bundleE.getId());
        }
 
         DBObject mObj = fhirDocumentDao.save(ctx,bundle);

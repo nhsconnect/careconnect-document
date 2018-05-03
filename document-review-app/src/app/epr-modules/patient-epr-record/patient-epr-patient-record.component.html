@@ -1,6 +1,6 @@
 
 <ngb-tabset #tabs type="pills">
-
+  <span *ngIf="auth.permission != undefined && auth.permission.eprUser">
   <ngb-tab  id="tab-summary" >
     <ng-template ngbTabTitle><b>Summary</b></ng-template>
     <ng-template ngbTabContent>
@@ -12,6 +12,7 @@
       <app-epr-allergy-intollerance [allergies]="allergies" [allergiesTotal]="allergiesTotal"></app-epr-allergy-intollerance>
     </ng-template>
   </ngb-tab>
+
   <ngb-tab  id="tab-timeline" >
     <ng-template ngbTabTitle><b>Timeline</b></ng-template>
     <ng-template ngbTabContent>
@@ -45,18 +46,20 @@
       <app-epr-immunisation [immunisations]="immunisations" [immsTotal]="immsTotal"></app-epr-immunisation>
     </ng-template>
   </ngb-tab>
+    <ngb-tab id="tab-encounters" >
+    <ng-template ngbTabTitle><b>Encounters</b></ng-template>
+    <ng-template ngbTabContent>
+      <app-epr-encounter [encounters]="encounters"></app-epr-encounter>
+    </ng-template>
+  </ngb-tab>
+    </span>
   <ngb-tab  id="tab-documents" >
     <ng-template ngbTabTitle><b>Documents</b></ng-template>
     <ng-template ngbTabContent>
       <app-epr-document-reference [documents]="documents" [documentsTotal]="documentsTotal"></app-epr-document-reference>
     </ng-template>
   </ngb-tab>
-  <ngb-tab id="tab-selectbyid2" >
-    <ng-template ngbTabTitle><b>Encounters</b></ng-template>
-    <ng-template ngbTabContent>
-      <app-epr-encounter [encounters]="encounters"></app-epr-encounter>
-    </ng-template>
-  </ngb-tab>
+
 
 </ngb-tabset>
 
