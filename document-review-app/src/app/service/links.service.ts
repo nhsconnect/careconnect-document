@@ -17,7 +17,8 @@ export class LinksService {
       case "http://snomed.info/sct": return "SNOMED";
       case "http://loinc.org": return "LOINC";
       case "http://hl7.org/fhir/sid/cvx": return "CVX (vaccine administered)";
-      case "http://www.nlm.nih.gov/research/umls/rxnorm": return "RxNorm (USA Drug CodeSystem)"
+      case "http://www.nlm.nih.gov/research/umls/rxnorm": return "RxNorm (USA Drug CodeSystem)";
+      case "http://unitsofmeasure.org": return "Units Of Measure";
       default:
         console.log(system);
         return system;

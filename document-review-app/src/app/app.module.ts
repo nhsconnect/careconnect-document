@@ -4,7 +4,7 @@ import {FormsModule} from "@angular/forms";
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './/app-routing.module';
-import { LoadDocumentComponent } from './modules/composition-load/load-document.component';
+import { LoadDocumentComponent } from './modules/document-load/load-document.component';
 import { NavComponent } from './modules/nav/nav.component';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
@@ -56,6 +56,8 @@ import { ImmunisationComponent } from './component/immunisation/immunisation.com
 
 import { PatientTimelineComponent } from './epr-modules/patient-timeline/patient-timeline.component';
 import { EncounterDetailComponent } from './component/encounter-detail/encounter-detail.component';
+import { PractitionerSearchComponent } from './modules/practitioner-search/practitioner-search.component';
+import { OrganisationSearchComponent } from './modules/organisation-search/organisation-search.component';
 
 
 @NgModule({
@@ -97,7 +99,9 @@ import { EncounterDetailComponent } from './component/encounter-detail/encounter
     EprImmunisationComponent,
     ImmunisationComponent,
     PatientTimelineComponent,
-    EncounterDetailComponent
+    EncounterDetailComponent,
+    PractitionerSearchComponent,
+    OrganisationSearchComponent
   ],
   imports: [
     BrowserModule,

@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 
 import {HttpClient} from "@angular/common/http";
 import {AuthService} from "../../service/auth.service";
 import {FhirService} from "../../service/fhir.service";
 import {Router} from "@angular/router";
+import {PatientEprService} from "../../service/patient-epr.service";
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 
 
 @Component({
@@ -17,14 +19,21 @@ export class LoadDocumentComponent implements OnInit {
 
   formData: FormData = undefined;
 
+  patient : fhir.Patient;
+
   notFhir :boolean;
 
   constructor(private http: HttpClient
               ,private router: Router
   ,public auth : AuthService
-  ,private fhirService : FhirService) { }
+  ,private fhirService : FhirService
+  , public eprService : PatientEprService
+  , private modalService : NgbModal) { }
 
   ngOnInit() {
+      if (this.eprService.patient != undefined) {
+        this.patient = this.patient;
+      }
   }
 
   // https://stackoverflow.com/questions/40214772/file-upload-in-angular
@@ -37,15 +46,19 @@ export class LoadDocumentComponent implements OnInit {
       let file: File = fileList[0];
       this.formData = new FormData();
       this.formData.append('uploadFile', file, file.name);
-      if (this.getContentType(file).lastIndexOf('fhir')==0) this.notFhir = true;
+      console.log("Find = "+this.getContentType(file).lastIndexOf('fhir'));
+      if (this.getContentType(file).lastIndexOf('fhir')==-1) this.notFhir = true;
     }
   }
   public getContentType(file) : string {
     let ext = file.name.substr(file.name.lastIndexOf('.') + 1);
     if (ext === 'xml' || ext==='XML') {
       return "application/fhir+xml";
-    } else {
+    } else if (ext === 'json' || ext==='JSON') {
       return "application/fhir+json";
+    }
+    else {
+      return "application/pdf";
     }
   }
   onClick() {
@@ -73,6 +86,14 @@ export class LoadDocumentComponent implements OnInit {
 
         this.response = err.error;
       } );
+
+  }
+
+  onModalClick(content ) {
+     console.log("Content = ");
+     console.log(content);
+     this.modalService.open(content, {windowClass: 'dark-modal'});
+
 
   }
 

@@ -1,0 +1,17 @@
+<div id="search-results">
+
+
+  <div class="input-group mb-3">
+    <div class="input-group-prepend">
+      <span class="input-group-text" id="basic-addon1">Find</span>
+    </div>
+    <input type="text" #searchBox id="search-box" class="form-control" (keyup)="search(searchBox.value)" placeholder="Find" aria-label="Fine" aria-describedby="sizing-addon1">
+  </div>
+
+
+  <div *ngFor="let organisation of organisations$ | async" >
+    <a (click)="selectOrganisation(organisation.id)">
+      {{ organisation.name }}
+    </a>
+  </div>
+</div>

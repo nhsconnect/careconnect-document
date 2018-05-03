@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import {RouterModule, Routes} from "@angular/router";
-import {LoadDocumentComponent} from "./modules/composition-load/load-document.component";
+import {LoadDocumentComponent} from "./modules/document-load/load-document.component";
 import {ViewDocumentComponent} from "./document-view-modules/composition-view/view-document.component";
 import {PatientFindComponent} from "./modules/patient-fdms-find/patient-find.component";
 import {FindDocumentComponent} from "./modules/composition-find/find-document.component";

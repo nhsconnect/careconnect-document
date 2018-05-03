@@ -124,15 +124,6 @@ export class FhirService {
     return this.http.post<fhir.Bundle>(url,document,{ 'headers' :headers});
   }
 
-/*
-  getEPRSCRDocument(patientId: string): Observable<fhir.Bundle> {
-
-    const url = this.getTIEUrl()  + `/Patient/${patientId}/$document?_count=50`;
-
-    return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getHeaders()});
-
-  }
-*/
 
   getEPREncounters(patientId: string): Observable<fhir.Bundle> {
 
@@ -259,6 +250,30 @@ export class FhirService {
       } else {
         return this.http.get<fhir.Bundle>(url + `/Patient?name=${term}`, {'headers': this.getHeaders()});
       }
+    }
+
+  }
+
+  searchOrganisations(term: string): Observable<fhir.Bundle> {
+    let url =  this.getEPRUrl();
+
+    url = this.getEPRUrl();
+    return this.http.get<fhir.Bundle>(url + `/Organization?name=${term}`, {'headers': this.getEPRHeaders()});
+
+
+  }
+
+  searchPractitioners(term: string): Observable<fhir.Bundle> {
+    let url =  this.getEPRUrl();
+    if (!isNaN(parseInt(term))) {
+      console.log('Number '+term);
+      url =  this.getEPRUrl();
+      return this.http.get<fhir.Bundle>(url + `/Practitioner?identifier=${term}`, { 'headers' : this.getEPRHeaders() });
+    } else {
+
+        url = this.getEPRUrl();
+        return this.http.get<fhir.Bundle>(url + `/Practitioner?address-postalcode=${term}`, {'headers': this.getEPRHeaders()});
+
     }
 
   }

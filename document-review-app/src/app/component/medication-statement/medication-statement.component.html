@@ -36,9 +36,14 @@
         -
         <span *ngFor="let dosage of medication.dosage"> <i>DOSE</i>
             <span *ngIf="dosage.doseQuantity!=undefined">{{dosage.doseQuantity.value}} {{dosage.doseQuantity.unit}}</span>
-          - <span *ngIf="dosage.route!=undefined && dosage.route.coding.length>0">{{dosage.route.coding[0].display}}</span> -
-            <span *ngIf="dosage.maxDosePerPeriod != undefined"> {{dosage.maxDosePerPeriod.numerator.value}}
-             {{dosage.maxDosePerPeriod.numerator.unit}} {{dosage.maxDosePerPeriod.denominator.value}}{{dosage.maxDosePerPeriod.denominator.code}}
+          - <span *ngIf="dosage.route!=undefined && dosage.route.coding.length>0" ngbTooltip="{{getCodeSystem(dosage.route.coding[0].system)}} {{dosage.route.coding[0].code}}">
+            {{dosage.route.coding[0].display}}
+            <a (click)="getSNOMEDLink(dosage.route.coding[0])"><span class="badge badge-light">route</span></a>
+          </span> -
+            <span *ngIf="dosage.maxDosePerPeriod != undefined" >
+             <span  ngbTooltip="{{getCodeSystem(dosage.maxDosePerPeriod.numerator.system)}} {{dosage.maxDosePerPeriod.numerator.code}}"> {{dosage.maxDosePerPeriod.numerator.value}} {{dosage.maxDosePerPeriod.numerator.unit}} </span>
+              <a (click)="getSNOMEDLink(dosage.maxDosePerPeriod.numerator)"><span class="badge badge-light">form</span></a>
+             <span ngbTooltip="{{getCodeSystem(dosage.maxDosePerPeriod.denominator.system)}} {{dosage.maxDosePerPeriod.denominator.code}}"> {{dosage.maxDosePerPeriod.denominator.value}}{{dosage.maxDosePerPeriod.denominator.code}} </span>
             </span>
             <span *ngIf="dosage.asNeededBoolean"> as required</span>
         </span>
