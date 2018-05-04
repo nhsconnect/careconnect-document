@@ -24,7 +24,7 @@ Using a tool such as [Postman(https://www.getpostman.com/)] POST FHIR Documents 
 
 - http://127.0.0.1:8181/STU3/Bundle
 
-# FHIR Document App
+# FHIR DocumentRef App
 
 in the document-review-app folder
 

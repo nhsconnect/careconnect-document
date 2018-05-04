@@ -173,7 +173,7 @@ public class OpenCMIS {
             VersioningState versioningState = VersioningState.NONE;
             DocumentType docType = (DocumentType) session.getTypeDefinition(typeId);
             if (Boolean.TRUE.equals(docType.isVersionable())) {
-                logger.info("Document type " + typeId + " is versionable, setting MAJOR version state.");
+                logger.info("DocumentRef type " + typeId + " is versionable, setting MAJOR version state.");
                 versioningState = VersioningState.MAJOR;
             }
 
@@ -184,7 +184,7 @@ public class OpenCMIS {
                     " [version=" + newDocument.getVersionLabel() + "][creator=" + newDocument.getCreatedBy() +
                     "][created=" + date2String(newDocument.getCreationDate().getTime()) + "]");
         } else {
-            logger.info("Document already exist: " + getDocumentPath(newDocument));
+            logger.info("DocumentRef already exist: " + getDocumentPath(newDocument));
         }
 
         return newDocument;
@@ -220,7 +220,7 @@ public class OpenCMIS {
                 IOUtils.closeQuietly(is);
             }
         } else {
-            logger.info("Document already exist: " + getDocumentPath(newDocument));
+            logger.info("DocumentRef already exist: " + getDocumentPath(newDocument));
         }
 
         return newDocument;
@@ -246,7 +246,7 @@ public class OpenCMIS {
                 logger.info("Aspect " + aspectName + " is already applied to " + getDocumentPath(document));
             }
         } else {
-            logger.error("Document is null, cannot add aspect to it!");
+            logger.error("DocumentRef is null, cannot add aspect to it!");
         }
     }
 
@@ -304,11 +304,11 @@ public class OpenCMIS {
     }
 
     /**
-     * Get the absolute path to the passed in Document object.
+     * Get the absolute path to the passed in DocumentRef object.
      * Called the primary folder path in the Alfresco world as most documents only have one parent folder.
      *
-     * @param document the Document object to get the path for
-     * @return the path to the passed in Document object, or "Un-filed/{object name}" if it does not have a parent folder
+     * @param document the DocumentRef object to get the path for
+     * @return the path to the passed in DocumentRef object, or "Un-filed/{object name}" if it does not have a parent folder
      */
     private String getDocumentPath(Document document) {
         String path2Doc = getParentFolderPath(document);
@@ -320,7 +320,7 @@ public class OpenCMIS {
     }
 
     /**
-     * Get the parent folder path for passed in Document object
+     * Get the parent folder path for passed in DocumentRef object
      *
      * @param document the document object to get the path for
      * @return the parent folder path, or "Un-filed" if the document is un-filed and does not have a parent folder
@@ -331,10 +331,10 @@ public class OpenCMIS {
     }
 
     /**
-     * Get the parent folder for the passed in Document object.
+     * Get the parent folder for the passed in DocumentRef object.
      * Called the primary parent folder in the Alfresco world as most documents only have one parent folder.
      *
-     * @param document the Document object to get the parent folder for
+     * @param document the DocumentRef object to get the parent folder for
      * @return the parent Folder object, or null if it does not have a parent folder and is un-filed
      */
     private Folder getDocumentParentFolder(Document document) {
@@ -349,7 +349,7 @@ public class OpenCMIS {
 
             return parentFolders.get(0);
         } else {
-            logger.info("Document " + document.getName() + " is un-filed and does not have a parent folder");
+            logger.info("DocumentRef " + document.getName() + " is un-filed and does not have a parent folder");
             return null;
         }
     }

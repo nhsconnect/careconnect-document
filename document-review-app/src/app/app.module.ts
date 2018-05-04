@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './/app-routing.module';
@@ -13,7 +13,7 @@ import { ViewDocumentComponent } from './document-view-modules/composition-view/
 import {FhirService} from "./service/fhir.service";
 import {HttpClientModule} from "@angular/common/http";
 import { ViewDocumentSectionComponent } from './document-view-modules/composition-view-section/view-document-section.component';
-import { PatientSearchComponent } from './modules/patient-search/patient-search.component';
+import { PatientSearchComponent } from './component/patient-search/patient-search.component';
 import {PatientItemComponent} from "./component/patient/patient-item.component";
 import { FindDocumentComponent } from './modules/composition-find/find-document.component';
 import { CompositionComponent } from './component/composition/composition.component';
@@ -54,8 +54,8 @@ import { ImmunisationComponent } from './component/immunisation/immunisation.com
 
 import { PatientTimelineComponent } from './epr-modules/patient-timeline/patient-timeline.component';
 import { EncounterDetailComponent } from './component/encounter-detail/encounter-detail.component';
-import { PractitionerSearchComponent } from './modules/practitioner-search/practitioner-search.component';
-import { OrganisationSearchComponent } from './modules/organisation-search/organisation-search.component';
+import { PractitionerSearchComponent } from './component/practitioner-search/practitioner-search.component';
+import { OrganisationSearchComponent } from './component/organisation-search/organisation-search.component';
 import { OrganisationComponent } from './component/organisation/organisation.component';
 import { PractitionerComponent } from './component/practitioner/practitioner.component';
 
@@ -107,6 +107,7 @@ import { PractitionerComponent } from './component/practitioner/practitioner.com
   imports: [
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule,
     AppRoutingModule,
     FileUploadModule,
     HttpClientModule,

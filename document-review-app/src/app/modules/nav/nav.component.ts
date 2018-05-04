@@ -20,7 +20,7 @@ export class NavComponent implements OnInit {
 
   }
 
-  title="FHIR Document Viewer";
+  title="FHIR DocumentRef Viewer";
 
   patient : fhir.Patient;
 

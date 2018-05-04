@@ -20,11 +20,11 @@ export class EprDocumentReferenceComponent implements OnInit {
   }
 
   selectDocument(document : fhir.DocumentReference) {
-   // console.log("Document clicked = " + document.id);
+   // console.log("DocumentRef clicked = " + document.id);
 
     let array: string[] = document.content[0].attachment.url.split('/');
     let documentId :string = array[array.length-1];
-   // console.log("Document Id = "+documentId);
+   // console.log("DocumentRef Id = "+documentId);
 
     if (documentId !=undefined && document.content[0].attachment.contentType == 'application/fhir+xml' ) {
       this.router.navigate(['doc/'+documentId ] );

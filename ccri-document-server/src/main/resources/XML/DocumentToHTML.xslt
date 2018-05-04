@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  - FHIR Document bundle to HTML Conversion
+  - FHIR DocumentRef bundle to HTML Conversion
   - 
   - Initially developed by Rick Geimer, Lantana Consulting Ltd. & Lloyd McKenzie, Gevity
   - DSTU 2 modifications by Dale Nelson, Lantana Consulting Group LLC
@@ -29,7 +29,7 @@
 <xsl:stylesheet xmlns="http://www.w3.org/1999/xhtml" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fhir="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" version="1.0" exclude-result-prefixes="xhtml">
   <xsl:output indent="yes" encoding="ISO-8859-1"/>
   <!-- Fixed values are defined as parameters so they can be overridden to expose content in other languages, etc. -->
-  <xsl:param name="untitled_doc" select="'Untitled Document'"/>
+  <xsl:param name="untitled_doc" select="'Untitled DocumentRef'"/>
   <xsl:param name="no_human_display" select="'No human-readable content available'"/>
   <xsl:param name="subject-heading" select="'Subject Details'"/>
   <xsl:param name="author-heading" select="'Author Details'"/>

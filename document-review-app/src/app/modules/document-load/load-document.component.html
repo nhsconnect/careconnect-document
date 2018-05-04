@@ -28,28 +28,40 @@
     </button>
   </div>
   <div class="modal-body">
-    <app-patient-search (practitionerSelected)="closePat($event)"></app-patient-search>
+    <app-patient-search (patientSelected)="closePat($event)"></app-patient-search>
   </div>
 </ng-template>
 
-<form>
+<form #documentForm="ngForm"  >
   <span *ngIf="auth.permission == undefined || (auth.permission.eprUser == undefined || !auth.permission.eprUser)">
     <div class="form-group">
-      <label for="exampleFormControlFile1">Example file input</label>
-      <input type="file" id="exampleFormControlFile1" class="form-control-file" (change)="fileChange($event)" placeholder="Upload file" accept=".json,.xml">
+      <label for="fileName1">Example file input</label>
+      <input type="file" id="fileName1" name="fileName2" class="form-control-file" (change)="fileChange($event)" placeholder="Upload file" accept=".json,.xml" required>
     </div>
+    <!-- <div *ngIf="fileName1.errors">
+            File is required.
+          </div> -->
   </span>
   <span *ngIf="auth.permission != undefined && auth.permission.eprUser != undefined && auth.permission.eprUser">
     <div class="form-group">
-      <label for="exampleFormControlFile2">Example file input</label>
-      <input type="file" id="exampleFormControlFile2" class="form-control-file" (change)="fileChange($event)" placeholder="Upload file" accept=".json,.xml,.pdf,.doc,.docx,.jpg,.html">
+      <label for="fileName2">Example file input</label>
+      <input type="file" id="fileName2" name="fileName2" class="form-control-file" (change)="fileChange($event)" placeholder="Upload file" accept=".json,.xml,.pdf,.doc,.docx,.jpg,.html" required>
+
     </div>
       <span *ngIf="notFhir">
         <div class="form-group">
-          <label >Date</label>
-          <input type="date" name="bday" max="3000-12-31"
-                 min="1000-01-01" class="form-control">
+          <label for="docdate">Date</label>
+          <input type="date" id="docdate" name="docdate" max="2030-12-31"
+                 min="1900-01-01" class="form-control" [(ngModel)]="document.date" #docdate="ngModel" required >
+          <div *ngIf="docdate.invalid && (docdate.dirty || docdate.touched)"
+               class="alert alert-danger">
+            <div *ngIf="docdate.errors.required">
+              Date is required.
+            </div>
+          </div>
         </div>
+
+
         <div *ngIf="eprService.patient" >
           <app-patient-item [patient]="eprService.patient" [detail]="true"></app-patient-item>
           <br>
@@ -57,28 +69,28 @@
         </div>
          <div *ngIf="eprService.patient == undefined" >
            <button (click)="onModalClick(modalPat)" class="btn">Patient</button>
-           <app-patient-item [patient]="patient" [detail]="true"></app-patient-item>
+           <app-patient-item [patient]="document.patient" [detail]="true"></app-patient-item>
            <br>
            <br>
         </div>
         <div>
           <button (click)="onModalClick(modalOrg)" class="btn">Organisation</button>
-          <app-organisation [organisation]="organisation"></app-organisation>
+          <app-organisation [organisation]="document.organisation"></app-organisation>
           <br>
           <br>
         </div>
 
         <div>
           <button (click)="onModalClick(modalPrac)" class="btn">Practitioner</button>
-          <app-practitioner [practitioner]="practitioner"></app-practitioner>
+          <app-practitioner [practitioner]="document.practitioner"></app-practitioner>
           <br>
           <br>
         </div>
 
         <div class="form-group">
-          <label for="exampleFormControlPick1">Document Type</label>
-          <select id="exampleFormControlPick1" class="custom-select" required>
-            <option value=""></option>
+          <label for="type">Document Type</label>
+          <select name="type" id="type" class="custom-select" >
+
             <option value="1">Mental Health Plan</option>
             <option value="2">Discharge Letter</option>
             <option value="3">Outpatient Letter</option>
@@ -86,9 +98,9 @@
           <div class="invalid-feedback">Example invalid custom select feedback</div>
         </div>
         <div class="form-group">
-          <label for="exampleFormControlPick2">Specialty</label>
-          <select id="exampleFormControlPick2" class="custom-select" required>
-            <option value=""></option>
+          <label for="speciality">Speciality</label>
+          <select name="speciality" id="speciality" class="custom-select" >
+
             <option value="1">Mental Health</option>
             <option value="2">Emergency</option>
             <option value="3">Outpatient Letter</option>
@@ -96,9 +108,9 @@
           <div class="invalid-feedback">Example invalid custom select feedback</div>
         </div>
         <div class="form-group">
-          <label for="exampleFormControlPick3">Service</label>
-          <select id="exampleFormControlPick3" class="custom-select" required>
-            <option value=""></option>
+          <label for="service">Service</label>
+          <select name="service" id="service" class="custom-select">
+
             <option value="1">Mental Health</option>
             <option value="2">Emergency</option>
             <option value="3">Outpatient Letter</option>
@@ -113,7 +125,7 @@
     <label class="form-check-label" for="exampleCheck1">Replace document if it exists.</label>
   </div> -->
   <br>
-  <button type="submit" (click)="onClick()" class="btn btn-primary">Submit</button>
+  <button type="submit" [disabled]="documentForm.invalid" (click)="onClick()" class="btn btn-primary">Submit</button>
 </form>
 <br>
 <br>

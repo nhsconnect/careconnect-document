@@ -6,6 +6,8 @@ import {FhirService} from "../../service/fhir.service";
 import {Router} from "@angular/router";
 import {PatientEprService} from "../../service/patient-epr.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {DocumentRef} from "../../model/document-ref";
 
 
 @Component({
@@ -19,15 +21,16 @@ export class LoadDocumentComponent implements OnInit {
 
   formData: FormData = undefined;
 
-  patient : fhir.Patient;
-
-  organisation : fhir.Organization;
-
-  practitioner : fhir.Practitioner;
-
   modalReference ;
 
   notFhir :boolean;
+
+  form = { date : '', organisation: '', practitioner : ''};
+
+  document : DocumentRef = new DocumentRef();
+
+
+  documentForm : FormGroup;
 
   constructor(private http: HttpClient
               ,private router: Router
@@ -36,42 +39,66 @@ export class LoadDocumentComponent implements OnInit {
   , public eprService : PatientEprService
   , private modalService : NgbModal) { }
 
-  ngOnInit() {
+  ngOnInit() :void {
       if (this.eprService.patient != undefined) {
-        this.patient = this.patient;
+        this.document.patient = this.eprService.patient;
       }
+
+      /*
+    this.documentForm = new FormGroup({
+      'fileName1' : new FormControl( this.document.file, [
+      //   Validators.required
+
+      ]),
+      'fileName2' : new FormControl( this.document.file, []),
+      'organisation': new FormControl(this.document.organisation, [
+        // Validators.required
+        //,Validators.minLength(4)
+        //,forbiddenNameValidator(/bob/i) // <-- Here's how you pass in the custom validator.
+      ]),
+      'practitioner': new FormControl(this.document.practitioner),
+      'type' : new FormControl(this.document.type),
+      'date' : new FormControl(this.document.date)
+
+    });*/
   }
 
+  /*
+  get type() { return this.documentForm.get('type'); }
+  get fileName1() { return this.documentForm.get('fileName1'); }
+  get fileName2() { return this.documentForm.get('fileName2'); }
+*/
   closeOrg(organization) {
     console.log("Selected Organisation "+organization.id);
-    this.organisation = organization;
+    this.document.organisation = organization;
     this.modalReference.close();
   }
 
   closePrac(practitioner) {
     console.log("selected practitioner "+practitioner.id);
-    this.practitioner = practitioner;
+    this.document.practitioner = practitioner;
     this.modalReference.close();
   }
 
   closePat(patient) {
     console.log("selected patient "+patient.id);
-    this.patient = patient;
+    this.document.patient = patient;
     this.modalReference.close();
   }
 
   // https://stackoverflow.com/questions/40214772/file-upload-in-angular
 
-  apiEndPoint : string;
-
-  fileChange(event) {
+   fileChange(event) {
     let fileList: FileList = event.target.files;
     if (fileList.length > 0) {
       let file: File = fileList[0];
+      this.document.file = file;
       this.formData = new FormData();
       this.formData.append('uploadFile', file, file.name);
       console.log("Find = "+this.getContentType(file).lastIndexOf('fhir'));
-      if (this.getContentType(file).lastIndexOf('fhir')==-1) this.notFhir = true;
+      if (this.getContentType(file).lastIndexOf('fhir')==-1) {
+        this.notFhir = true;
+      } else { this.notFhir = false; }
     }
   }
   public getContentType(file) : string {
@@ -120,6 +147,7 @@ export class LoadDocumentComponent implements OnInit {
 
 
   }
+
 
 
 }

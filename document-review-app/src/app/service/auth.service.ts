@@ -30,15 +30,30 @@ export class AuthService {
       (user) => {
         if (user) {
           this.userDetails = user;
-          console.log('adding permission subscription');
+          console.log('Subscribing on permission '+user.uid);
           this.semaphore = false;
           this.permSub = this.db.object('/permission/'+user.uid);
           this.permSub.snapshotChanges().subscribe(action => {
-            console.log(action.type);
-            console.log(action.key);
+
             console.log(action.payload.val());
-            if (action.payload.val() != undefined) {
+            if (action.payload.val() != undefined && action.payload.val()!=null) {
               this.permission = action.payload.val();
+            } else {
+              console.log('Not found existing permission. Adding basic permission ' + user.uid);
+
+              let basicPermission = new Permission();
+              if (user.displayName != undefined) {
+                basicPermission.userName = user.displayName;
+              } else {
+                basicPermission.userName = user.uid;
+              }
+              this.permission = basicPermission;
+
+              this.db.database.ref('/permission/' + user.uid).set(basicPermission).then(() => {
+
+                console.log('Recorded new permission in database');
+              });
+
             }
           });
 
@@ -104,7 +119,6 @@ export class AuthService {
     if (this.permSub != undefined && this.userDetails != undefined) {
       console.log('Calling unsubscribe');
       this.permSub.snapshotChanges().subscribe().unsubscribe();
-      //this.permSub.remove(); Don't try this, it performs a delete.
     }
     if (this.user != undefined) {
       this.user.subscribe().unsubscribe();
@@ -126,6 +140,7 @@ export class AuthService {
       this.semaphore = true;
       localStorage.removeItem('access_token');
       localStorage.removeItem("PatientBanner");
+      /*
       if (this.permission == undefined && this.userDetails != null) {
         this.removeSub();
         console.log('Adding basic permission ' + this.userDetails.uid);
@@ -137,13 +152,13 @@ export class AuthService {
 
           this.fireBaseLogout();
         });
-      } else {
-        console.log('Second Logout');
+      } else {*/
+        console.log('Main Logout');
         this.removeSub();
 
         this.fireBaseLogout();
 
-      }
+      // }
     }
   }
 
