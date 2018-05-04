@@ -1,0 +1,11 @@
+<div class="card card-default">
+  <div class="card-body d-flex w-100 justify-content-between">
+    <div>
+      <span *ngIf="organisation !=undefined">
+        <b>{{ organisation.name }}</b>
+        <span *ngFor="let identifier of organisation.identifier"><i>{{identifier.value}}</i></span>
+        <div *ngIf="organisation.partOf != undefined"><i>{{organisation.partOf.display}}</i></div>
+      </span>
+    </div>
+  </div>
+</div>

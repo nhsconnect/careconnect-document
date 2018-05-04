@@ -13,13 +13,11 @@ import { ViewDocumentComponent } from './document-view-modules/composition-view/
 import {FhirService} from "./service/fhir.service";
 import {HttpClientModule} from "@angular/common/http";
 import { ViewDocumentSectionComponent } from './document-view-modules/composition-view-section/view-document-section.component';
-import { PatientFindComponent } from './modules/patient-fdms-find/patient-find.component';
 import { PatientSearchComponent } from './modules/patient-search/patient-search.component';
 import {PatientItemComponent} from "./component/patient/patient-item.component";
 import { FindDocumentComponent } from './modules/composition-find/find-document.component';
 import { CompositionComponent } from './component/composition/composition.component';
-
-import { PatientEprFindComponent } from './modules/patient-epr-find/patient-epr-find.component';
+import { PatientFindComponent } from './modules/patient-find/patient-find.component';
 import { PatientEprPatientRecordComponent } from './epr-modules/patient-epr-record/patient-epr-patient-record.component';
 import { EprEncounterComponent } from './epr-modules/epr-encounter/epr-encounter.component';
 import { MedicationStatementComponent } from './component/medication-statement/medication-statement.component';
@@ -58,6 +56,8 @@ import { PatientTimelineComponent } from './epr-modules/patient-timeline/patient
 import { EncounterDetailComponent } from './component/encounter-detail/encounter-detail.component';
 import { PractitionerSearchComponent } from './modules/practitioner-search/practitioner-search.component';
 import { OrganisationSearchComponent } from './modules/organisation-search/organisation-search.component';
+import { OrganisationComponent } from './component/organisation/organisation.component';
+import { PractitionerComponent } from './component/practitioner/practitioner.component';
 
 
 @NgModule({
@@ -72,7 +72,6 @@ import { OrganisationSearchComponent } from './modules/organisation-search/organ
     PatientItemComponent,
     FindDocumentComponent,
     CompositionComponent,
-    PatientEprFindComponent,
     PatientEprPatientRecordComponent,
     EprEncounterComponent,
     MedicationStatementComponent,
@@ -101,7 +100,9 @@ import { OrganisationSearchComponent } from './modules/organisation-search/organ
     PatientTimelineComponent,
     EncounterDetailComponent,
     PractitionerSearchComponent,
-    OrganisationSearchComponent
+    OrganisationSearchComponent,
+    OrganisationComponent,
+    PractitionerComponent
   ],
   imports: [
     BrowserModule,

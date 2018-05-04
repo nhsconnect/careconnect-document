@@ -6,7 +6,7 @@
     </button>
   </div>
   <div class="modal-body">
-    <app-organisation-search></app-organisation-search>
+    <app-organisation-search (organisationSelected)="closeOrg($event)"> </app-organisation-search>
   </div>
 </ng-template>
 <ng-template #modalPrac let-c="close" let-d="dismiss">
@@ -17,12 +17,23 @@
     </button>
   </div>
   <div class="modal-body">
-    <app-practitioner-search></app-practitioner-search>
+    <app-practitioner-search (practitionerSelected)="closePrac($event)"></app-practitioner-search>
+  </div>
+</ng-template>
+<ng-template #modalPat let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4>Select Patient</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <app-patient-search (practitionerSelected)="closePat($event)"></app-patient-search>
   </div>
 </ng-template>
 
 <form>
-  <span *ngIf="auth.permission != undefined && (auth.permission.eprUser == undefined || !auth.permission.eprUser)">
+  <span *ngIf="auth.permission == undefined || (auth.permission.eprUser == undefined || !auth.permission.eprUser)">
     <div class="form-group">
       <label for="exampleFormControlFile1">Example file input</label>
       <input type="file" id="exampleFormControlFile1" class="form-control-file" (change)="fileChange($event)" placeholder="Upload file" accept=".json,.xml">
@@ -40,16 +51,26 @@
                  min="1000-01-01" class="form-control">
         </div>
         <div *ngIf="eprService.patient" >
-          <app-patient-item [patient]="eprService.patient" [detail]="false"></app-patient-item>
+          <app-patient-item [patient]="eprService.patient" [detail]="true"></app-patient-item>
+          <br>
+          <br>
+        </div>
+         <div *ngIf="eprService.patient == undefined" >
+           <button (click)="onModalClick(modalPat)" class="btn">Patient</button>
+           <app-patient-item [patient]="patient" [detail]="true"></app-patient-item>
+           <br>
+           <br>
         </div>
         <div>
           <button (click)="onModalClick(modalOrg)" class="btn">Organisation</button>
+          <app-organisation [organisation]="organisation"></app-organisation>
           <br>
           <br>
         </div>
 
         <div>
           <button (click)="onModalClick(modalPrac)" class="btn">Practitioner</button>
+          <app-practitioner [practitioner]="practitioner"></app-practitioner>
           <br>
           <br>
         </div>

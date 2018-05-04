@@ -237,19 +237,17 @@ export class FhirService {
 
 
   /* GET patients whose name contains search term */
-  searchPatients(term: string, systemType : string): Observable<fhir.Bundle> {
+  searchPatients(term: string): Observable<fhir.Bundle> {
     let url =  this.getEPRUrl();
     if (!isNaN(parseInt(term))) {
       console.log('Number '+term);
       url =  this.getEPRUrl();
       return this.http.get<fhir.Bundle>(url + `/Patient?identifier=${term}`, { 'headers' : this.getEPRHeaders() });
     } else {
-      if (systemType === 'EPR') {
+
         url = this.getEPRUrl();
         return this.http.get<fhir.Bundle>(url + `/Patient?name=${term}`, {'headers': this.getEPRHeaders()});
-      } else {
-        return this.http.get<fhir.Bundle>(url + `/Patient?name=${term}`, {'headers': this.getHeaders()});
-      }
+
     }
 
   }

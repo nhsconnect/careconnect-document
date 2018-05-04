@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {Router} from "@angular/router";
 import {Observable} from "rxjs/Observable";
 import {Subject} from "rxjs/Subject";
@@ -16,6 +16,8 @@ export class PractitionerSearchComponent implements OnInit {
 
   practitioners$: Observable<fhir.Practitioner[]>;
   private searchTerms = new Subject<string>();
+
+  @Output() practitionerSelected : EventEmitter<fhir.Practitioner> = new EventEmitter();
 
   constructor(private fhirService: FhirService,
               private router: Router
@@ -55,8 +57,9 @@ export class PractitionerSearchComponent implements OnInit {
     this.searchTerms.next(term);
   }
 
-  selectPractitioner(practitionerId : number) {
-    console.log("Practitioner clicked = " + practitionerId);
+  selectPractitioner(practitioner : fhir.Practitioner) {
+    console.log("Practitioner clicked = " + practitioner.id);
+    this.practitionerSelected.emit(practitioner);
 
   }
     logError(title : string) {

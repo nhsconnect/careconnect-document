@@ -1,6 +1,6 @@
 /// <reference path="../../../../node_modules/@types/fhir/index.d.ts" />
 
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 
 import { Observable } from 'rxjs/Observable';
 import { Subject }    from 'rxjs/Subject';
@@ -25,14 +25,14 @@ import { Router} from "@angular/router";
 })
 export class PatientSearchComponent implements OnInit {
 
-  @Input() systemType : string;
-
 
   patients$: Observable<fhir.Patient[]>;
   private searchTerms = new Subject<string>();
 
-  constructor(private fhirService: FhirService,
-              private router: Router
+  @Output() patientSelected : EventEmitter<fhir.Patient> = new EventEmitter();
+
+  constructor(private fhirService: FhirService
+
   ) {}
 
 
@@ -54,8 +54,8 @@ export class PatientSearchComponent implements OnInit {
 
       // switch to new search observable each time the term changes
       switchMap((term: string) => {
-        console.log(this.systemType);
-         return this.fhirService.searchPatients(term, this.systemType);
+
+         return this.fhirService.searchPatients(term);
       }),
       map(bundle  => {
         var pat$: fhir.Patient[] = [];
@@ -73,15 +73,11 @@ export class PatientSearchComponent implements OnInit {
   }
 
 
-  selectPatient(patientId : number) {
-    console.log("Patient clicked = " + patientId);
-    if (patientId !=undefined) {
-      if (this.systemType === 'EPR') {
-        this.router.navigate(['epr/'+patientId ] );
-      } else {
-        this.router.navigate(['docs/'+patientId ] );
-      }
-    }
+  selectPatient(patient : fhir.Patient) {
+    console.log("Patient clicked = " + patient.id);
+    this.patientSelected.emit(patient);
+    /*
+    */
   }
 
 

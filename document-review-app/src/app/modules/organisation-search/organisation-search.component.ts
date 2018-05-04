@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {catchError, debounceTime, distinctUntilChanged, map, switchMap} from "rxjs/operators";
 import {Router} from "@angular/router";
 import {Observable} from "rxjs/Observable";
@@ -17,9 +17,12 @@ export class OrganisationSearchComponent implements OnInit {
   organisations$: Observable<fhir.Organization[]>;
   private searchTerms = new Subject<string>();
 
+  @Output() organisationSelected : EventEmitter<fhir.Organization> = new EventEmitter();
+
   constructor(private fhirService: FhirService,
               private router: Router
   ) {}
+
   ngOnInit(): void {
     this.organisations$ = this.searchTerms.pipe(
       // wait 300ms after each keystroke before considering the term
@@ -55,8 +58,8 @@ export class OrganisationSearchComponent implements OnInit {
     this.searchTerms.next(term);
   }
 
-  selectOrganisation(orgId : number) {
-    console.log("Organization clicked = " + orgId);
+  selectOrganisation(organization : fhir.Organization) {
+     this.organisationSelected.emit(organization);
 
   }
   logError(title : string) {

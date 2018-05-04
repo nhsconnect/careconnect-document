@@ -10,8 +10,8 @@
 
 
   <div *ngFor="let organisation of organisations$ | async" >
-    <a (click)="selectOrganisation(organisation.id)">
-      {{ organisation.name }}
+    <a (click)="selectOrganisation(organisation)">
+      <app-organisation [organisation]="organisation"></app-organisation>
     </a>
   </div>
 </div>

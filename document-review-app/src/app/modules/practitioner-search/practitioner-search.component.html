@@ -10,8 +10,8 @@
 
 
   <div *ngFor="let practitioner of practitioners$ | async" >
-    <a (click)="selectPractitioner(practitioner.id)">
-      {{ practitioner.name[0].family }}
+    <a (click)="selectPractitioner(practitioner)">
+      <app-practitioner [practitioner]="practitioner"></app-practitioner>
     </a>
   </div>
 </div>

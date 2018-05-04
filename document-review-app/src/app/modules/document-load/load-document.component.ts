@@ -21,6 +21,12 @@ export class LoadDocumentComponent implements OnInit {
 
   patient : fhir.Patient;
 
+  organisation : fhir.Organization;
+
+  practitioner : fhir.Practitioner;
+
+  modalReference ;
+
   notFhir :boolean;
 
   constructor(private http: HttpClient
@@ -34,6 +40,24 @@ export class LoadDocumentComponent implements OnInit {
       if (this.eprService.patient != undefined) {
         this.patient = this.patient;
       }
+  }
+
+  closeOrg(organization) {
+    console.log("Selected Organisation "+organization.id);
+    this.organisation = organization;
+    this.modalReference.close();
+  }
+
+  closePrac(practitioner) {
+    console.log("selected practitioner "+practitioner.id);
+    this.practitioner = practitioner;
+    this.modalReference.close();
+  }
+
+  closePat(patient) {
+    console.log("selected patient "+patient.id);
+    this.patient = patient;
+    this.modalReference.close();
   }
 
   // https://stackoverflow.com/questions/40214772/file-upload-in-angular
@@ -92,7 +116,7 @@ export class LoadDocumentComponent implements OnInit {
   onModalClick(content ) {
      console.log("Content = ");
      console.log(content);
-     this.modalService.open(content, {windowClass: 'dark-modal'});
+     this.modalReference = this.modalService.open(content, {windowClass: 'dark-modal'});
 
 
   }

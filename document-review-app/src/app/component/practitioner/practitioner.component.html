@@ -1,0 +1,17 @@
+<div class="card card-default">
+  <div class="card-body d-flex w-100 justify-content-between">
+    <div *ngIf="practitioner != undefined">
+      <span *ngFor="let name of practitioner.name">
+      <b>{{ name.prefix }} {{ name.family }}, {{name.given[0] }}</b>
+        <div>
+          <span *ngFor="let identifier of practitioner.identifier"><i>{{identifier.value}}</i></span>
+        </div>
+        <div *ngFor="let address of practitioner.address">
+          <span *ngFor="let line of address.line">{{ line }} </span>
+          {{ address.city }} {{ address.postalCode}}
+        </div>
+      </span>
+    </div>
+  </div>
+
+</div>
