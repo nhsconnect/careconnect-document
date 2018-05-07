@@ -32,11 +32,11 @@
   </div>
 </ng-template>
 
-<form #documentForm="ngForm"  >
+<form [formGroup]="documentForm" (ngSubmit)="onClick()" >
   <span *ngIf="auth.permission == undefined || (auth.permission.eprUser == undefined || !auth.permission.eprUser)">
     <div class="form-group">
       <label for="fileName1">Example file input</label>
-      <input type="file" id="fileName1" name="fileName2" class="form-control-file" (change)="fileChange($event)" placeholder="Upload file" accept=".json,.xml" required>
+      <input type="file" id="fileName1" name="fileName2" class="form-control-file" (change)="fileChange($event)" placeholder="Upload file" accept=".json,.xml" [formControl]="documentForm.controls['fileName']">
     </div>
     <!-- <div *ngIf="fileName1.errors">
             File is required.
@@ -45,20 +45,14 @@
   <span *ngIf="auth.permission != undefined && auth.permission.eprUser != undefined && auth.permission.eprUser">
     <div class="form-group">
       <label for="fileName2">Example file input</label>
-      <input type="file" id="fileName2" name="fileName2" class="form-control-file" (change)="fileChange($event)" placeholder="Upload file" accept=".json,.xml,.pdf,.doc,.docx,.jpg,.html" required>
+      <input type="file" id="fileName2" name="fileName2" class="form-control-file" (change)="fileChange($event)" placeholder="Upload file" accept=".json,.xml,.pdf,.doc,.docx,.jpg,.html" [formControl]="documentForm.controls['fileName']">
 
     </div>
       <span *ngIf="notFhir">
         <div class="form-group">
           <label for="docdate">Date</label>
           <input type="date" id="docdate" name="docdate" max="2030-12-31"
-                 min="1900-01-01" class="form-control" [(ngModel)]="document.date" #docdate="ngModel" required >
-          <div *ngIf="docdate.invalid && (docdate.dirty || docdate.touched)"
-               class="alert alert-danger">
-            <div *ngIf="docdate.errors.required">
-              Date is required.
-            </div>
-          </div>
+                 min="1900-01-01" [formControl]="documentForm.controls['date']" >
         </div>
 
 
@@ -68,28 +62,31 @@
           <br>
         </div>
          <div *ngIf="eprService.patient == undefined" >
-           <button (click)="onModalClick(modalPat)" class="btn">Patient</button>
-           <app-patient-item [patient]="document.patient" [detail]="true"></app-patient-item>
-           <br>
-           <br>
-        </div>
-        <div>
-          <button (click)="onModalClick(modalOrg)" class="btn">Organisation</button>
-          <app-organisation [organisation]="document.organisation"></app-organisation>
-          <br>
-          <br>
-        </div>
+           <button (click)="onModalClick(modalPat)" class="btn" name="btnPat">Patient</button>
 
-        <div>
+           <app-patient-item [patient]="document.patient" [detail]="true" ></app-patient-item>
+
+           <br>
+           <br>
+        </div>
+          <div>
           <button (click)="onModalClick(modalPrac)" class="btn">Practitioner</button>
           <app-practitioner [practitioner]="document.practitioner"></app-practitioner>
           <br>
           <br>
         </div>
+        <div>
+          <button (click)="onModalClick(modalOrg)" class="btn">Organisation</button>
+          <app-organisation [organisation]="document.organisation" ></app-organisation>
+          <br>
+          <br>
+        </div>
+
+
 
         <div class="form-group">
           <label for="type">Document Type</label>
-          <select name="type" id="type" class="custom-select" >
+          <select name="type" id="type" class="custom-select" [formControl]="documentForm.controls['type']" >
 
             <option value="1">Mental Health Plan</option>
             <option value="2">Discharge Letter</option>
@@ -99,7 +96,7 @@
         </div>
         <div class="form-group">
           <label for="speciality">Speciality</label>
-          <select name="speciality" id="speciality" class="custom-select" >
+          <select name="speciality" id="speciality" class="custom-select" [formControl]="documentForm.controls['speciality']" >
 
             <option value="1">Mental Health</option>
             <option value="2">Emergency</option>
@@ -109,7 +106,7 @@
         </div>
         <div class="form-group">
           <label for="service">Service</label>
-          <select name="service" id="service" class="custom-select">
+          <select name="service" id="service" class="custom-select" [formControl]="documentForm.controls['service']">
 
             <option value="1">Mental Health</option>
             <option value="2">Emergency</option>
@@ -125,7 +122,7 @@
     <label class="form-check-label" for="exampleCheck1">Replace document if it exists.</label>
   </div> -->
   <br>
-  <button type="submit" [disabled]="documentForm.invalid" (click)="onClick()" class="btn btn-primary">Submit</button>
+  <button type="submit" [disabled]="documentForm.invalid"  class="btn btn-primary ui button">Submit</button>
 </form>
 <br>
 <br>

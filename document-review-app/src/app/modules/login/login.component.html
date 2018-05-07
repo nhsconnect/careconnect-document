@@ -1,3 +1,16 @@
+<ng-template id="modalContent" #modalContent let-c="close" let-d="dismiss">
+  <div class="modal-header">
+
+      <h4>Information</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+
+  </div>
+  <div class="modal-body">
+    {{ errorMessage }}
+  </div>
+</ng-template>
 <div class="container">
 
       <div class="row">
@@ -7,7 +20,7 @@
             <div class="card-block">
               <form name="userform" method="post" #formCtrl="ngForm">
                 <br>
-                <h5>CCRI EPR Login</h5>
+                <h5>CCRI Demo</h5>
 
                 <div class="form-group">
                   <label for="exampleInputEmail1">Email address</label>
@@ -19,30 +32,32 @@
                 </div>
 
                 <div class="form-group">
-                  <button type="buton" class="btn btn-primary btn-block" style="margin-bottom: 20px" (click)="signInWithEmail()" [disabled]="formCtrl.form.invalid">
+                  <button type="buton" class="btn btn-primary btn-block" style="margin-bottom: 20px" (click)="signInWithEmail(modalContent)" [disabled]="formCtrl.form.invalid">
                     Login with Email
-
+                  </button>
+                  <button type="buton" class="btn btn-primary btn-block" style="margin-bottom: 20px" (click)="signUpWithEmail(modalContent)" [disabled]="formCtrl.form.invalid">
+                    Sign Up
                   </button>
                 </div>
 
                 <div class="form-group">
 
-                 <button type="buton" class="btn btn-block" (click)="signInWithFacebook()">
+                 <button type="buton" class="btn btn-block" (click)="signInWithFacebook(modalContent)">
                    <i class="fa fa-facebook" aria-hidden="true"></i>
                    Login with Facebook
                  </button>
 
-                  <button type="button" class="btn btn-block" (click)="signInWithTwitter()">
+                  <button type="button" class="btn btn-block" (click)="signInWithTwitter(modalContent)">
                     <i class="fa fa-twitter" aria-hidden="true"></i>
                     Login with Twitter
                   </button>
 
-                  <button type="button" class="btn btn-block" (click)="signInWithGithub()">
+                  <button type="button" class="btn btn-block" (click)="signInWithGithub(modalContent)">
                     <i class="fa fa-github" aria-hidden="true"></i>
                     Login with Github
                   </button>
 
-                  <button type="button" class="btn btn-block" (click)="signInWithGoogle()">
+                  <button type="button" class="btn btn-block" (click)="signInWithGoogle(modalContent)">
                     <i class="fa fa-google" aria-hidden="true"></i>
                     Login with Google
                   </button>
@@ -51,7 +66,7 @@
 
             </div>
           </div>
-          <span class="label label-warning">{{errorMessage}}</span>
+         <!-- <span class="label label-warning">{{errorMessage}}</span> -->
         </div> <!-- end card -->
         </div>
 

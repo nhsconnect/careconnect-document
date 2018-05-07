@@ -25,7 +25,6 @@ export class LoadDocumentComponent implements OnInit {
 
   notFhir :boolean;
 
-  form = { date : '', organisation: '', practitioner : ''};
 
   document : DocumentRef = new DocumentRef();
 
@@ -44,30 +43,24 @@ export class LoadDocumentComponent implements OnInit {
         this.document.patient = this.eprService.patient;
       }
 
-      /*
+
     this.documentForm = new FormGroup({
-      'fileName1' : new FormControl( this.document.file, [
-      //   Validators.required
-
+      'fileName' : new FormControl( this.document.file, [
+           Validators.required
       ]),
-      'fileName2' : new FormControl( this.document.file, []),
-      'organisation': new FormControl(this.document.organisation, [
-        // Validators.required
-        //,Validators.minLength(4)
-        //,forbiddenNameValidator(/bob/i) // <-- Here's how you pass in the custom validator.
-      ]),
+      'fPatient': new FormControl(this.document.patient),
+      'organisation': new FormControl(this.document.organisation),
       'practitioner': new FormControl(this.document.practitioner),
-      'type' : new FormControl(this.document.type),
-      'date' : new FormControl(this.document.date)
 
-    });*/
+      'type' : new FormControl(this.document.type, [ Validators.required]),
+      'service' : new FormControl(),
+      'speciality' : new FormControl(),
+      'date' : new FormControl(this.document.docDate,[ Validators.required])
+
+    });
   }
 
-  /*
-  get type() { return this.documentForm.get('type'); }
-  get fileName1() { return this.documentForm.get('fileName1'); }
-  get fileName2() { return this.documentForm.get('fileName2'); }
-*/
+
   closeOrg(organization) {
     console.log("Selected Organisation "+organization.id);
     this.document.organisation = organization;

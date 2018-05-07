@@ -6,7 +6,7 @@ import * as firebase from 'firebase/app';
 import {AngularFireDatabase} from "angularfire2/database";
 import {Permission} from "../model/permission";
 import {AngularFireObject} from "angularfire2/database/interfaces";
-import {T} from "@angular/core/src/render3";
+
 
 
 @Injectable()
@@ -19,6 +19,8 @@ export class AuthService {
   public permission :Permission = undefined;
 
   permSub : AngularFireObject<Permission> = undefined;
+
+  public auth : boolean = false;
 
   constructor(private _firebaseAuth: AngularFireAuth
               , private router: Router
@@ -65,6 +67,9 @@ export class AuthService {
     );
   }
 
+  getUser() {
+    return firebase.auth().currentUser;
+  }
 
   getuserInfo() {
     console.log('user '+this.user);
@@ -101,13 +106,13 @@ export class AuthService {
 
   }
   createRegular (email, password) {
-    return this._firebaseAuth.auth.createUserWithEmailAndPassword(email, password)
+   return this._firebaseAuth.auth.createUserWithEmailAndPassword(email, password );
   }
 
 
 
   isLoggedIn() {
-    if (this.userDetails == null ) {
+    if (this.userDetails == null || !this.auth) {
       return false;
     } else {
 
@@ -138,6 +143,7 @@ export class AuthService {
   logout() {
     if (!this.semaphore) {
       this.semaphore = true;
+      this.auth = false;
       localStorage.removeItem('access_token');
       localStorage.removeItem("PatientBanner");
       /*
