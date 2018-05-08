@@ -33,6 +33,51 @@ public class BundleDao implements IBundle {
     private static final Logger log = LoggerFactory.getLogger(BundleDao.class);
 
     @Override
+    public OperationOutcome update(FhirContext ctx, Bundle bundle, IdType theId, String theConditional) {
+        log.debug("BundleDao.save");
+        OperationOutcome operationOutcome = new OperationOutcome();
+
+
+
+        CompositionEntity compositionEntity = null;
+        uk.nhs.careconnect.nosql.entities.Identifier identifierE = new uk.nhs.careconnect.nosql.entities.Identifier();
+
+
+        if (bundle.hasIdentifier()) {
+            identifierE.setValue(bundle.getIdentifier().getValue());
+            identifierE.setSystem(bundle.getIdentifier().getSystem());
+            Query qry = Query.query(Criteria.where("identifier.system").is(bundle.getIdentifier().getSystem()).and("identifier.value").is(bundle.getIdentifier().getValue()));
+
+            compositionEntity = mongo.findOne(qry, CompositionEntity.class);
+            if (compositionEntity==null) {
+                compositionEntity = new CompositionEntity();
+                compositionEntity.setIdentifier(identifierE);
+            } else {
+                // Handle updated document, this should be history
+            }
+        }
+
+        DBObject mObj = fhirDocumentDao.save(ctx,bundle);
+        compositionEntity.setFhirDocument(new DBRef("Bundle",mObj.get("_id")));
+        compositionEntity.setFhirDocumentlId(mObj.get("_id").toString());
+
+        for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
+            if (entry.hasResource() && entry.getResource() instanceof Patient) {
+                // TODO ensure this is the correcct Patient (one referred to in the Composition)
+                PatientEntity mpiPatient = patientDao.createEntity(ctx,(Patient) entry.getResource());
+                compositionEntity.setIdxPatient(mpiPatient);
+            }
+        }
+
+        mongo.save(compositionEntity);
+
+        operationOutcome.setId("Composition/"+compositionEntity.getId());
+
+
+        return operationOutcome;
+    }
+
+    @Override
     public OperationOutcome create(FhirContext ctx, Bundle bundle, IdType theId, String theConditional) {
 
         log.debug("BundleDao.save");

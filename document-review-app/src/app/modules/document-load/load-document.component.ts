@@ -167,6 +167,36 @@ export class LoadDocumentComponent implements OnInit {
 
   }
 
+  onReplaceClick(issueModal ) {
+    if (!this.getFormValidationErrors()) return;
+
+    let file : File = <File> this.formData.get('uploadFile');
+    console.log('clicked FileName = '+file.name);
+
+
+    this.fhirService.putBundle(file,this.getContentType(file)).subscribe( data => {
+        console.log(data);
+        let resJson :fhir.OperationOutcome =data;
+        this.response = data;
+        if (resJson.id !=undefined) {
+          this.router.navigate(['doc/'+resJson.id ] );
+        }
+      },
+      err  => {
+        console.log(err.statusText );
+        console.log(err.message );
+        console.log(err.error );
+        ///console.log(JSON.stringify(err));
+
+        this.response = err.error;
+
+        this.modalReference = this.modalService.open(issueModal, {windowClass: 'dark-modal'});
+
+      } );
+
+  }
+
+
   onModalClick(content ) {
      console.log("Content = ");
      console.log(content);

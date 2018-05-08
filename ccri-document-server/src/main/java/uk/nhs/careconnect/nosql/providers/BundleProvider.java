@@ -1,9 +1,7 @@
 package uk.nhs.careconnect.nosql.providers;
 
 import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.rest.annotation.Create;
-import ca.uhn.fhir.rest.annotation.IdParam;
-import ca.uhn.fhir.rest.annotation.ResourceParam;
+import ca.uhn.fhir.rest.annotation.*;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import org.hl7.fhir.dstu3.model.Bundle;
@@ -34,10 +32,26 @@ public class BundleProvider implements IResourceProvider {
     public Class<Bundle> getResourceType() {
         return Bundle.class;
     }
+
+
     @Create
     public MethodOutcome create(HttpServletRequest httpRequest, @ResourceParam Bundle bundle) {
 
         OperationOutcome opOutcome = bundleDao.create(ctx,bundle, null,null);
+
+        MethodOutcome method = new MethodOutcome();
+        method.setCreated(true);
+
+        method.setOperationOutcome(opOutcome);
+        method.setId(opOutcome.getIdElement());
+
+        return method;
+    }
+
+    @Update
+    public MethodOutcome update(HttpServletRequest httpRequest, @ResourceParam Bundle bundle, @IdParam IdType bundleId,@ConditionalUrlParam String conditional) {
+
+        OperationOutcome opOutcome = bundleDao.update(ctx,bundle, bundleId, conditional);
 
         MethodOutcome method = new MethodOutcome();
         method.setCreated(true);

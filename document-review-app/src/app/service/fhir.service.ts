@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {Observable} from "rxjs/Observable";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Oauth2token} from "../model/oauth2token";
 import {isNumber} from "util";
 
@@ -8,8 +8,8 @@ import {isNumber} from "util";
 export class FhirService {
 
 
-  //private EPRbase: string = 'http://127.0.0.1:8080/careconnect-gateway/STU3';
-  private EPRbase: string = 'https://purple.testlab.nhs.uk/careconnect-ri/STU3';
+  private EPRbase: string = 'http://127.0.0.1:8080/careconnect-gateway/STU3';
+  //private EPRbase: string = 'https://purple.testlab.nhs.uk/careconnect-ri/STU3';
 
   private authoriseUrl: string = 'https://purple.testlab.nhs.uk/careconnect-ri/oauth2/token?grant_type=client_credentials&client_id=';
 
@@ -124,6 +124,16 @@ export class FhirService {
     return this.http.post<fhir.Bundle>(url,document,{ 'headers' :headers});
   }
 
+  putBundle(document: any,contentType : string) : Observable<any> {
+
+    let headers :HttpHeaders = this.getEPRHeaders(false);
+    headers.append('Content-Type',contentType);
+    // TODO Get real id from XML Bundle
+    const url = this.getEPRUrl() + `/Bundle`;
+    let params = new HttpParams();
+    params = params.append('identifier','https://tools.ietf.org/html/rfc4122|1ff370b6-fc5b-40a1-9721-2a942e301f65');
+    return this.http.put<fhir.Bundle>(url,document,{ 'params': params, 'headers' :headers});
+  }
 
   getEPREncounters(patientId: string): Observable<fhir.Bundle> {
 

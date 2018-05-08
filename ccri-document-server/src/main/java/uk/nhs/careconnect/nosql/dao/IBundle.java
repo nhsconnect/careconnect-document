@@ -9,4 +9,6 @@ import org.hl7.fhir.dstu3.model.OperationOutcome;
 public interface IBundle {
 
     OperationOutcome create(FhirContext ctx, Bundle bundle, IdType theId, String theConditional);
+
+    OperationOutcome update(FhirContext ctx, Bundle bundle, IdType theId, String theConditional);
 }
