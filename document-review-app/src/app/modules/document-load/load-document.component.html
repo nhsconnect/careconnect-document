@@ -1,3 +1,36 @@
+<ng-template id="modalIssue" #modalIssue let-c="close" let-d="dismiss">
+  <div class="modal-header">
+
+    <h4>Warning</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+
+  </div>
+  <div class="modal-body">
+    <div *ngIf="response != undefined">
+          <div class="card-body">
+            <div *ngFor="let issue of response.issue">
+              <div>{{issue.diagnostics}}</div>
+            </div>
+          </div>
+    </div>
+  </div>
+</ng-template>
+<ng-template id="modalDuplicate" #modalDuplicate let-c="close" let-d="dismiss">
+  <div class="modal-header">
+
+    <h4>Warning</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+
+  </div>
+  <div class="modal-body">
+The document already exists on the system. Do you wish to override?
+    <button class="btn btn-warning">Submit</button>
+  </div>
+</ng-template>
 <ng-template #modalOrg let-c="close" let-d="dismiss">
   <div class="modal-header">
     <h4>Find Organisation</h4>
@@ -32,27 +65,33 @@
   </div>
 </ng-template>
 
-<form [formGroup]="documentForm" (ngSubmit)="onClick()" >
+<form [formGroup]="documentForm"  >
   <span *ngIf="auth.permission == undefined || (auth.permission.eprUser == undefined || !auth.permission.eprUser)">
     <div class="form-group">
-      <label for="fileName1">Example file input</label>
-      <input type="file" id="fileName1" name="fileName2" class="form-control-file" (change)="fileChange($event)" placeholder="Upload file" accept=".json,.xml" [formControl]="documentForm.controls['fileName']">
+      <label for="fileName1">Select file to upload</label>
+      <input type="file" id="fileName1" name="fileName1" class="form-control-file" (change)="fileChange($event)" placeholder="Upload file" accept=".json,.xml" [formControl]="documentForm.controls['fileName']">
     </div>
-    <!-- <div *ngIf="fileName1.errors">
-            File is required.
-          </div> -->
+    <div *ngIf="fileName.invalid && (fileName.dirty)"
+         class="alert alert-danger">
+      No file specified
+    </div>
+
+
   </span>
   <span *ngIf="auth.permission != undefined && auth.permission.eprUser != undefined && auth.permission.eprUser">
     <div class="form-group">
-      <label for="fileName2">Example file input</label>
-      <input type="file" id="fileName2" name="fileName2" class="form-control-file" (change)="fileChange($event)" placeholder="Upload file" accept=".json,.xml,.pdf,.doc,.docx,.jpg,.html" [formControl]="documentForm.controls['fileName']">
-
+      <label for="fileName2">Select file to upload</label>
+      <input type="file" id="fileName2" name="fileName2" class="form-control-file" (change)="fileChange($event)" placeholder="Upload file" accept=".json,.xml,.pdf,.doc,.docx,.jpg,.html" [formControl]="documentForm.controls['fileName']" formControlName="fileName">
+      <div *ngIf="fileName.invalid && (fileName.dirty)"
+      class="alert alert-danger">
+       No file specified
+       </div>
     </div>
       <span *ngIf="notFhir">
         <div class="form-group">
-          <label for="docdate">Date</label>
-          <input type="date" id="docdate" name="docdate" max="2030-12-31"
-                 min="1900-01-01" [formControl]="documentForm.controls['date']" >
+          <label for="docdate">Document Creation Date</label>
+          <input class="input-lg" type="date" id="docdate" name="docdate" max="2030-12-31"
+                 min="1900-01-01" [formControl]="documentForm.controls['created']" >
         </div>
 
 
@@ -62,22 +101,29 @@
           <br>
         </div>
          <div *ngIf="eprService.patient == undefined" >
-           <button (click)="onModalClick(modalPat)" class="btn" name="btnPat">Patient</button>
-
-           <app-patient-item [patient]="document.patient" [detail]="true" ></app-patient-item>
-
+           <button for="subject" (click)="onModalClick(modalPat)" class="btn btn-secondary" name="btnPat">Subject (Patient)</button>
+           <span *ngIf="document != undefined && document.patient != undefined">
+             <br><br>
+             <input class="form-control" type="text" id="subject" name="subject" [formControl]="documentForm.controls['subject']" [(ngModel)]="document.patientName" >
+          </span>
            <br>
            <br>
         </div>
           <div>
-          <button (click)="onModalClick(modalPrac)" class="btn">Practitioner</button>
-          <app-practitioner [practitioner]="document.practitioner"></app-practitioner>
+          <button (click)="onModalClick(modalPrac)" class="btn btn-secondary">Author (Practitioner)</button>
+          <span *ngIf="document != undefined && document.practitioner != undefined">
+             <br><br>
+             <input class="form-control" type="text" id="author" name="author" [formControl]="documentForm.controls['author']" [(ngModel)]="document.practitionerName" >
+          </span>
           <br>
           <br>
         </div>
         <div>
-          <button (click)="onModalClick(modalOrg)" class="btn">Organisation</button>
-          <app-organisation [organisation]="document.organisation" ></app-organisation>
+          <button (click)="onModalClick(modalOrg)" class="btn btn-secondary">Custodian (Organisation)</button>
+         <span *ngIf="document != undefined && document.organisation != undefined">
+             <br><br>
+             <input class="form-control" type="text" id="custodian" name="custodian" [formControl]="documentForm.controls['custodian']" [(ngModel)]="document.organisation.name" >
+          </span>
           <br>
           <br>
         </div>
@@ -116,29 +162,10 @@
         </div>
       </span>
     </span>
-  <!--
-  <div class="form-check">
-    <input type="checkbox" class="form-check-input" id="exampleCheck1">
-    <label class="form-check-label" for="exampleCheck1">Replace document if it exists.</label>
-  </div> -->
+
   <br>
-  <button type="submit" [disabled]="documentForm.invalid"  class="btn btn-primary ui button">Submit</button>
+  <button type="submit" (click)="onSubmitClick(modalIssue, modalDuplicate)" class="btn btn-primary ui button">Submit</button>
+  <!-- <button  (click)="onCheckClick(modalIssue)"  class="btn btn-primary ui button">Check</button> -->
 </form>
-<br>
-<br>
-<div class="row">
-  <div *ngIf="response != undefined">
-  <div class="col-md-12">
-    <div class="card card-default">
-      <div class="card-heading">Response</div>
-      <div class="card-body">
-          <div *ngFor="let issue of response.issue">
-            <div>{{issue.diagnostics}}</div>
-          </div>
-      </div>
-    </div>
-  </div>
-  </div>
-</div>
 
 

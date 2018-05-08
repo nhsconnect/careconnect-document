@@ -143,22 +143,11 @@ export class AuthService {
   logout() {
     if (!this.semaphore) {
       this.semaphore = true;
+      this.permission = undefined;
       this.auth = false;
       localStorage.removeItem('access_token');
       localStorage.removeItem("PatientBanner");
-      /*
-      if (this.permission == undefined && this.userDetails != null) {
-        this.removeSub();
-        console.log('Adding basic permission ' + this.userDetails.uid);
-        const itemRef = this.db.object('/permission/' + this.userDetails.uid);
-        let basicPermission = new Permission();
-       // basicPermission.user = true;
-        basicPermission.userName = this.userDetails.displayName;
-        itemRef.set(basicPermission).then(() => {
 
-          this.fireBaseLogout();
-        });
-      } else {*/
         console.log('Main Logout');
         this.removeSub();
 

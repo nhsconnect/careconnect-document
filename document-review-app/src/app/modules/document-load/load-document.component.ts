@@ -6,7 +6,7 @@ import {FhirService} from "../../service/fhir.service";
 import {Router} from "@angular/router";
 import {PatientEprService} from "../../service/patient-epr.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {FormControl, FormGroup, ValidationErrors, Validators} from "@angular/forms";
 import {DocumentRef} from "../../model/document-ref";
 
 
@@ -28,8 +28,13 @@ export class LoadDocumentComponent implements OnInit {
 
   document : DocumentRef = new DocumentRef();
 
-
   documentForm : FormGroup;
+
+  compositionFG : FormGroup;
+  documentReferenceFG : FormGroup;
+
+  fileName : FormControl;
+
 
   constructor(private http: HttpClient
               ,private router: Router
@@ -38,26 +43,39 @@ export class LoadDocumentComponent implements OnInit {
   , public eprService : PatientEprService
   , private modalService : NgbModal) { }
 
+
+
   ngOnInit() :void {
       if (this.eprService.patient != undefined) {
         this.document.patient = this.eprService.patient;
       }
 
+      // The form has two different sets of validation rules.
 
-    this.documentForm = new FormGroup({
-      'fileName' : new FormControl( this.document.file, [
-           Validators.required
-      ]),
-      'fPatient': new FormControl(this.document.patient),
-      'organisation': new FormControl(this.document.organisation),
-      'practitioner': new FormControl(this.document.practitioner),
+    this.fileName = new FormControl( this.document.file, [
+      Validators.required
+    ]);
 
-      'type' : new FormControl(this.document.type, [ Validators.required]),
-      'service' : new FormControl(),
-      'speciality' : new FormControl(),
-      'date' : new FormControl(this.document.docDate,[ Validators.required])
+
+    this.compositionFG = new FormGroup({
+      'fileName' :  this.fileName});
+
+    this.documentReferenceFG = new FormGroup({
+      'fileName' : this.fileName,
+    'subject': new FormControl({ value : this.document.patient, disabled : true}, [ Validators.required]),
+    'custodian': new FormControl({ value : this.document.organisation, disabled : true}, [ Validators.required]),
+    'author' : new FormControl({ value : this.document.practitioner, disabled : true}, [ Validators.required]),
+    'type' : new FormControl(this.document.type, [ Validators.required]),
+    'service' : new FormControl(this.document.service),
+    'speciality' : new FormControl(this.document.speciality),
+    'created' : new FormControl(this.document.docDate)
 
     });
+
+    // Assign current form group
+    console.log('composition validation');
+    this.documentForm = this.compositionFG;
+
   }
 
 
@@ -88,10 +106,16 @@ export class LoadDocumentComponent implements OnInit {
       this.document.file = file;
       this.formData = new FormData();
       this.formData.append('uploadFile', file, file.name);
-      console.log("Find = "+this.getContentType(file).lastIndexOf('fhir'));
+
       if (this.getContentType(file).lastIndexOf('fhir')==-1) {
         this.notFhir = true;
-      } else { this.notFhir = false; }
+        this.documentForm = this.documentReferenceFG;
+        console.log('documentReference validation');
+      } else {
+        this.notFhir = false;
+        this.documentForm = this.compositionFG;
+        console.log('composition validation');
+      }
     }
   }
   public getContentType(file) : string {
@@ -105,11 +129,12 @@ export class LoadDocumentComponent implements OnInit {
       return "application/pdf";
     }
   }
-  onClick() {
-    if (this.formData == undefined) {
-      console.log('no document');
-      return;
-    }
+  onCheckClick(content) {
+    this.getFormValidationErrors();
+  }
+  onSubmitClick(issueModal, duplicateModal ) {
+    if (!this.getFormValidationErrors()) return;
+
     let file : File = <File> this.formData.get('uploadFile');
     console.log('clicked FileName = '+file.name);
 
@@ -126,9 +151,18 @@ export class LoadDocumentComponent implements OnInit {
         console.log(err.statusText );
         console.log(err.message );
         console.log(err.error );
-        console.log(JSON.stringify(err));
+        ///console.log(JSON.stringify(err));
 
         this.response = err.error;
+        if (this.response.issue.length>0) {
+         if (this.response.issue[0].diagnostics.indexOf('FHIR Document already exists') > -1) {
+           this.modalReference = this.modalService.open(duplicateModal, {windowClass: 'dark-modal'});
+         } else {
+           this.modalReference = this.modalService.open(issueModal, {windowClass: 'dark-modal'});
+         }
+        } else {
+          this.modalReference = this.modalService.open(issueModal, {windowClass: 'dark-modal'});
+        }
       } );
 
   }
@@ -139,6 +173,22 @@ export class LoadDocumentComponent implements OnInit {
      this.modalReference = this.modalService.open(content, {windowClass: 'dark-modal'});
 
 
+  }
+
+  getFormValidationErrors() :boolean {
+    let result : boolean = true;
+    Object.keys(this.documentForm.controls).forEach(key => {
+      console.log(key);
+      const controlErrors: ValidationErrors = this.documentForm.get(key).errors;
+      if (controlErrors != null) {
+        Object.keys(controlErrors).forEach(keyError => {
+          console.log('Key control: ' + key + ', keyError: ' + keyError + ', err value: ', controlErrors[keyError]);
+          this.documentForm.get(key).markAsDirty();
+          result = false;
+        });
+      }
+    });
+    return result;
   }
 
 

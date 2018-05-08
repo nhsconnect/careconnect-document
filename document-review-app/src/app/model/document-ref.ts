@@ -14,6 +14,15 @@ export class DocumentRef {
 
   private _practitioner : fhir.Practitioner;
 
+  private _service : fhir.Coding;
+
+  get service(): fhir.Coding {
+    return this._service;
+  }
+
+  set service(value: fhir.Coding) {
+    this._service = value;
+  }
 
   set speciality(value: fhir.Coding) {
     this._speciality = value;
@@ -69,5 +78,29 @@ export class DocumentRef {
 
   get practitioner(): fhir.Practitioner {
     return this._practitioner;
+  }
+
+  get patientName() : string {
+    let retStr : string = "";
+    if (this._patient.name.length == 0) return "";
+    if (this._patient.name[0].prefix != undefined) retStr = retStr + this._patient.name[0].prefix + " ";
+    for (let forename of this._patient.name[0].given) {
+      retStr = retStr + forename + " ";
+    }
+    if (this._patient.name[0].family != undefined) retStr = retStr + this._patient.name[0].family + " ";
+
+    return retStr;
+  }
+
+  get practitionerName() : string {
+    let retStr : string = "";
+    if (this._practitioner.name.length == 0) return "";
+    if (this._practitioner.name[0].prefix != undefined) retStr = retStr + this._practitioner.name[0].prefix + " ";
+    for (let forename of this._practitioner.name[0].given) {
+      retStr = retStr + forename + " ";
+    }
+    if (this._practitioner.name[0].family != undefined) retStr = retStr + this._practitioner.name[0].family + " ";
+
+    return retStr;
   }
 }
