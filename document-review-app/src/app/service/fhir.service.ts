@@ -44,7 +44,7 @@ export class FhirService {
     return headers;
   }
 
-  authorise(clientId : string, clientSecret :string) :Observable<Oauth2token>  {
+  authoriseOAuth2(clientId : string, clientSecret :string) :Observable<Oauth2token>  {
     const url = this.authoriseUrl + clientId;
 
     let bearerToken = 'Basic '+btoa(clientId+":"+clientSecret);

@@ -11,7 +11,9 @@ import {AngularFireObject} from "angularfire2/database/interfaces";
 
 @Injectable()
 export class AuthService {
+
   private user: Observable<firebase.User>;
+
   public userDetails: firebase.User = null;
 
   private semaphore : boolean = false;
