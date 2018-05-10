@@ -5,6 +5,7 @@ import {PatientEprService} from "../../service/patient-epr.service";
 
 import {Permission} from "../../model/permission";
 import {AngularFireDatabase} from "angularfire2/database";
+import {FhirService} from "../../service/fhir.service";
 
 @Component({
   selector: 'app-nav',
@@ -14,6 +15,7 @@ import {AngularFireDatabase} from "angularfire2/database";
 export class NavComponent implements OnInit {
 
   constructor(public authService: AuthService,
+              private  fhirService : FhirService,
               public patientEprService : PatientEprService,
               private router : Router,
               public db : AngularFireDatabase) {
@@ -23,7 +25,7 @@ export class NavComponent implements OnInit {
   title="FHIR DocumentRef Viewer";
 
 
-  smartAppUrl : string = "http://127.0.0.1:9000/launch.html?iss=https://purple.testlab.nhs.uk/careconnect-ri/STU3&iss=";
+  smartAppUrl : string = "http://127.0.0.1:9000/launch.html?iss=https://purple.testlab.nhs.uk/careconnect-ri/STU3&launch=";
   //smartAppUrl : "http://127.0.0.1:9000/launch.html?fhirServiceUrl=http://purple.testlab.nhs.uk/careconnect-ri/STU3&patientId=";
 
   patient : fhir.Patient;
@@ -67,6 +69,17 @@ export class NavComponent implements OnInit {
 
   smartApp() {
     window.open(this.smartAppUrl+"4ae23017813e417d937e3ba21974581", "_blank");
+    this.fhirService.launchSMART('4ae23017813e417d937e3ba21974581').subscribe( response => {
+
+      },
+      (err)=> {
+        console.log(err);
+      },
+      () => {
+        window.open(this.smartAppUrl+"4ae23017813e417d937e3ba21974581", "_blank");
+      }
+    );
+
     //window.open("http://127.0.0.1:9000/launch.html?fhirServiceUrl=http://127.0.0.1:8080/careconnect-gateway/STU3&patientId="+this.patientEprService.patient.id, "_blank");
   }
 

@@ -133,7 +133,7 @@ export class LoginComponent implements OnInit {
   oauth2token() :void {
 
 
-      this.fhirService.authorise('ed73b2cb-abd0-4f75-b9a2-5f9c0535b82c','QOm0VcqJqa9stA1R0MJzHjCN_uYdo0PkY8OT68UCk2XDFxFrAUjajuqOvIom5dISjKshx2YiU51mXtx7W5UOwQ').subscribe( response => {
+      this.fhirService.authoriseOAuth2('ed73b2cb-abd0-4f75-b9a2-5f9c0535b82c','QOm0VcqJqa9stA1R0MJzHjCN_uYdo0PkY8OT68UCk2XDFxFrAUjajuqOvIom5dISjKshx2YiU51mXtx7W5UOwQ').subscribe( response => {
         console.log(response);
         this.smartToken =  response;
         this.authService.auth = true;

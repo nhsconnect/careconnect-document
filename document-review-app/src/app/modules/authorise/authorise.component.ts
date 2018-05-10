@@ -59,7 +59,7 @@ export class AuthoriseComponent implements OnInit {
     }
   }
   onAuthorise() : void {
-    this.FhirService.authorise(this.selectedToken.clientid,this.selectedToken.clientsecret).subscribe( response => {
+    this.FhirService.authoriseOAuth2(this.selectedToken.clientid,this.selectedToken.clientsecret).subscribe( response => {
       console.log(response);
       this.oauth2token =  response;
       this.scopes = this.oauth2token.scope.split(' ');

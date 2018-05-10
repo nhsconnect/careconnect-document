@@ -11,7 +11,7 @@ export class FhirService {
   //private EPRbase: string = 'http://127.0.0.1:8080/careconnect-gateway/STU3';
   private EPRbase: string = 'https://purple.testlab.nhs.uk/careconnect-ri/STU3';
 
-  private authoriseUrl: string = 'https://purple.testlab.nhs.uk/careconnect-ri/oauth2/token?grant_type=client_credentials&client_id=';
+  private authoriseUrl: string = 'https://purple.testlab.nhs.uk/careconnect-ri/oauth2/';
 
   public path = '/Composition';
 
@@ -45,18 +45,24 @@ export class FhirService {
   }
 
   authoriseOAuth2(clientId : string, clientSecret :string) :Observable<Oauth2token>  {
-    const url = this.authoriseUrl + clientId;
+    const url = this.authoriseUrl + 'token?grant_type=client_credentials&client_id=' + clientId;
 
     let bearerToken = 'Basic '+btoa(clientId+":"+clientSecret);
-    //  this.messageService.add('FhirService: OAuth2 '+url+' Authorization='+bearerToken);
     let headers = new HttpHeaders( {'Authorization' : bearerToken});
-    //headers = headers.append('Content-Type' , 'application/json' );
-    //headers = headers.append('Accept' , 'application/json' );
+
     console.log(headers);
     return this.http.post<Oauth2token>(url,'', { 'headers' : headers } );
 
   }
+  launchSMART(contextId : string) :Observable<Oauth2token>  {
+    const url = this.authoriseUrl + 'Launch';
+    let payload = JSON.stringify({ launch_id : contextId , parameters : []  });
+    let headers = new HttpHeaders( {'Authorization' : 'bearer '+localStorage.getItem("access_token")});
 
+    console.log(payload);
+    return this.http.post<Oauth2token>(url,payload, { 'headers' : headers } );
+
+  }
 
   getSearchCompositions(patientId : string) : Observable<fhir.Bundle> {
 
