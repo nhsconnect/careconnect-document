@@ -22,6 +22,10 @@ export class NavComponent implements OnInit {
 
   title="FHIR DocumentRef Viewer";
 
+
+  smartAppUrl : string = "http://127.0.0.1:9000/launch.html?iss=https://purple.testlab.nhs.uk/careconnect-ri/STU3&patientId=";
+  //smartAppUrl : "http://127.0.0.1:9000/launch.html?fhirServiceUrl=http://purple.testlab.nhs.uk/careconnect-ri/STU3&patientId=";
+
   patient : fhir.Patient;
 
   permission : Permission;
@@ -62,7 +66,7 @@ export class NavComponent implements OnInit {
 
 
   smartApp() {
-    window.open("http://127.0.0.1:9000/launch.html?fhirServiceUrl=http://purple.testlab.nhs.uk/careconnect-ri/STU3&patientId="+this.patientEprService.patient.id, "_blank");
+    window.open(this.smartAppUrl+this.patientEprService.patient.id, "_blank");
     //window.open("http://127.0.0.1:9000/launch.html?fhirServiceUrl=http://127.0.0.1:8080/careconnect-gateway/STU3&patientId="+this.patientEprService.patient.id, "_blank");
   }
 

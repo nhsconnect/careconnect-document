@@ -8,8 +8,8 @@ import {isNumber} from "util";
 export class FhirService {
 
 
-  private EPRbase: string = 'http://127.0.0.1:8080/careconnect-gateway/STU3';
-  //private EPRbase: string = 'https://purple.testlab.nhs.uk/careconnect-ri/STU3';
+  //private EPRbase: string = 'http://127.0.0.1:8080/careconnect-gateway/STU3';
+  private EPRbase: string = 'https://purple.testlab.nhs.uk/careconnect-ri/STU3';
 
   private authoriseUrl: string = 'https://purple.testlab.nhs.uk/careconnect-ri/oauth2/token?grant_type=client_credentials&client_id=';
 

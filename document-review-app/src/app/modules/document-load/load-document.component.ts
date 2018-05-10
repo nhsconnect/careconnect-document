@@ -167,12 +167,17 @@ export class LoadDocumentComponent implements OnInit {
 
   }
 
+  onNoClick(issueModal ) {
+    this.modalReference.close();
+  }
+
+
   onReplaceClick(issueModal ) {
     if (!this.getFormValidationErrors()) return;
 
+    this.modalReference.close();
     let file : File = <File> this.formData.get('uploadFile');
     console.log('clicked FileName = '+file.name);
-
 
     this.fhirService.putBundle(file,this.getContentType(file)).subscribe( data => {
         console.log(data);

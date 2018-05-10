@@ -27,8 +27,10 @@
 
   </div>
   <div class="modal-body">
-The document already exists on the system. Do you wish to override?
-    <button (click)="onReplaceClick(modalIssue)" class="btn btn-warning">Submit</button>
+The document already exists on the system. Do you wish to replace?
+    <br>
+    <br>
+    <button (click)="onReplaceClick(modalIssue)" class="btn btn-warning">Yes</button> <button (click)="onNoClick(modalIssue)" class="btn btn-primary">No</button>
   </div>
 </ng-template>
 <ng-template #modalOrg let-c="close" let-d="dismiss">
