@@ -18,7 +18,7 @@ const routes: Routes = [
   { path: 'epr/:docid/:tabid', component: PatientEprPatientRecordComponent},
   { path: 'doc/:docid', component: ViewDocumentComponent},
   { path: 'docs/:patientId', component: FindDocumentComponent},
-  { path: 'load', component: ValidationLoadComponent },
+  { path: 'validate', component: ValidationLoadComponent },
   { path: 'authorise', component: AuthoriseComponent }
 ];
 

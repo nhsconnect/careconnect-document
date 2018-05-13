@@ -1,1 +1,43 @@
-<app-load-file></app-load-file>
+
+<form [formGroup]="validationForm"  >
+
+    <div class="form-group">
+      <label for="fileName1">Select file to validate</label>
+      <input type="file" id="fileName1" name="fileName1" class="form-control-file" (change)="fileChange($event)" placeholder="Upload file" accept=".json,.xml" [formControl]="validationForm.controls['fileName']">
+    </div>
+    <div *ngIf="fileName.invalid && (fileName.dirty)"
+         class="alert alert-danger">
+      No file specified
+    </div>
+
+
+
+  <br>
+  <button type="submit" (click)="onSubmitClick()" class="btn btn-primary ui button">Submit</button>
+  <!-- <button  (click)="onCheckClick(modalIssue)"  class="btn btn-primary ui button">Check</button> -->
+</form>
+<div class="container-fluid">
+<div class="row">
+  <div *ngIf="resJson!=undefined" class="col-md-12">
+
+    <table class="table">
+      <thead>
+      <tr>
+        <th scope="col" width="10%">Severity</th>
+        <th scope="col" width="35%">Resource</th>
+        <th scope="col" width="55%">Diagnositc</th>
+      </tr>
+      </thead>
+      <tr *ngFor="let issue of resJson.issue">
+        <td>{{issue.severity}}</td>
+        <td><span *ngFor="let location of issue.location">{{location}}</span></td>
+        <td>{{issue.diagnostics}}</td>
+
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+
+
+<!-- <app-load-file></app-load-file> -->

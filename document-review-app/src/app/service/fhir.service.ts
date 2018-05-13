@@ -130,6 +130,15 @@ export class FhirService {
     return this.http.post<fhir.Bundle>(url,document,{ 'headers' :headers});
   }
 
+  postBundleValidate(document: any,contentType : string) : Observable<any> {
+
+    let headers :HttpHeaders = this.getEPRHeaders(false);
+    headers.append('Content-Type',contentType);
+    const url = this.getEPRUrl() + `/Bundle/$validate?_format=json`;
+
+    return this.http.post<fhir.Bundle>(url,document,{ 'headers' :headers});
+  }
+
   putBundle(document: any,contentType : string) : Observable<any> {
 
     let headers :HttpHeaders = this.getEPRHeaders(false);
