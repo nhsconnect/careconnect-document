@@ -52,7 +52,7 @@ export class ValidationLoadComponent implements OnInit {
     }
   }
 
-  onSubmitClick(issueModal, duplicateModal ) {
+  onSubmitClick( ) {
     if (!this.getFormValidationErrors()) return;
 
     let file : File = <File> this.formData.get('uploadFile');
