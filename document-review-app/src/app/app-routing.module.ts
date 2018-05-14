@@ -19,7 +19,7 @@ const routes: Routes = [
   { path: 'doc/:docid', component: ViewDocumentComponent},
   { path: 'docs/:patientId', component: FindDocumentComponent},
   { path: 'validate', component: ValidationLoadComponent },
-  { path: 'authorise', component: AuthoriseComponent }
+
 ];
 
 @NgModule({
