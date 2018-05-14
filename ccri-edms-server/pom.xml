@@ -6,7 +6,7 @@
 
     <groupId>uk.nhs.careConnect.ri</groupId>
     <artifactId>ccri-edms-server</artifactId>
-    <version>3.5.1-SNAPSHOT</version>
+    <version>3.5.2</version>
     <name>ccri-edms-server</name>
 
 
@@ -22,7 +22,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring-boot-version>1.5.10.RELEASE</spring-boot-version>
         <hapi-fhir-version>3.3.0</hapi-fhir-version>
-        <care-connect-version>3.5.0</care-connect-version>
+        <care-connect-version>3.5.1</care-connect-version>
         <dependency.alfresco-repository.version>6.41</dependency.alfresco-repository.version>
         <dependency.alfresco-core.version>7.1</dependency.alfresco-core.version>
         <dependency.alfresco-data-model.version>8.3</dependency.alfresco-data-model.version>

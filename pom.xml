@@ -6,7 +6,7 @@
 
     <groupId>uk.nhs.careconnect</groupId>
     <artifactId>careconnect-document</artifactId>
-    <version>3.5.1-SNAPSHOT</version>
+    <version>3.5.2</version>
     <packaging>pom</packaging>
 
     <repositories>
@@ -18,7 +18,7 @@
     </repositories>
     
     <properties>
-        <care-connect-version>3.5.0</care-connect-version>
+        <care-connect-version>3.5.2</care-connect-version>
         <hapi-fhir-version>3.3.0</hapi-fhir-version>
         <cucumber-version>1.2.5</cucumber-version>
         <hapi-hl7v2-version>2.2</hapi-hl7v2-version>

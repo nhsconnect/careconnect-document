@@ -6,7 +6,7 @@
 
     <groupId>uk.nhs.careConnect.ri</groupId>
     <artifactId>ccri-document-server</artifactId>
-    <version>3.5.1-SNAPSHOT</version>
+    <version>3.5.3</version>
     <name>ccri-document-server</name>
 
 
@@ -16,13 +16,20 @@
         <version>1.5.7.RELEASE</version>
     </parent>
 
+    <repositories>
+        <repository>
+            <id>bintray-kevinmayfield-careconnect</id>
+            <name>kevinmayfield-careconnect</name>
+            <url>https://dl.bintray.com/kevinmayfield/careconnect</url>
+        </repository>
+    </repositories>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring-boot-version>1.5.10.RELEASE</spring-boot-version>
         <hapi-fhir-version>3.3.0</hapi-fhir-version>
-        <care-connect-version>3.5.0</care-connect-version>
+        <care-connect-version>3.5.3</care-connect-version>
         <docker.image.prefix>thorlogic</docker.image.prefix>
     </properties>
 
@@ -120,13 +127,13 @@
             <artifactId>commons-collections4</artifactId>
             <version>4.1</version>
         </dependency>
-<!--
+
         <dependency>
             <groupId>uk.org.hl7.fhir</groupId>
             <artifactId>cc-core</artifactId>
             <version>${care-connect-version}</version>
         </dependency>
--->
+
         <!-- For stylesheet transform -->
         <dependency>
             <groupId>xalan</groupId>
