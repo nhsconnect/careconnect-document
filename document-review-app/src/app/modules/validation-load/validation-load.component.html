@@ -1,4 +1,13 @@
-
+<ng-template id="modalWait" #modalWait let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4>Validating</h4>
+  </div>
+  <div class="modal-body">
+    <div class="progress">
+      <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 75%"></div>
+    </div>
+  </div>
+</ng-template>
 <form [formGroup]="validationForm"  >
 
     <div class="form-group">
@@ -13,8 +22,8 @@
 
 
   <br>
-  <button type="submit" (click)="onSubmitClick()" class="btn btn-primary ui button">Submit</button>
-  <!-- <button  (click)="onCheckClick(modalIssue)"  class="btn btn-primary ui button">Check</button> -->
+  <button type="submit" (click)="onSubmitClick(modalWait)" class="btn btn-primary ui button">Submit</button>
+
 </form>
 <div class="container-fluid">
 <div class="row">

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, ValidationErrors, Validators} from "@angular/forms";
 import {DocumentRef} from "../../model/document-ref";
 import {FhirService} from "../../service/fhir.service";
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: 'app-validation-load',
@@ -22,7 +23,8 @@ export class ValidationLoadComponent implements OnInit {
 
   resJson : fhir.OperationOutcome;
 
-  constructor(private fhirService : FhirService) { }
+  constructor(private fhirService : FhirService,
+              private modalService: NgbModal) { }
 
   ngOnInit() {
 
@@ -52,7 +54,9 @@ export class ValidationLoadComponent implements OnInit {
     }
   }
 
-  onSubmitClick( ) {
+  onSubmitClick(modalWait ) {
+
+    let modalWaitRef = this.modalService.open(modalWait,{ windowClass: 'dark-modal' });
     if (!this.getFormValidationErrors()) return;
 
     let file : File = <File> this.formData.get('uploadFile');
@@ -73,7 +77,10 @@ export class ValidationLoadComponent implements OnInit {
 
         this.response = err.error;
 
-      } );
+      },
+      () => {
+       modalWaitRef.close();
+      });
 
   }
 

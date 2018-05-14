@@ -32,7 +32,6 @@ import { MedicationComponent } from './component/medication/medication.component
 import { EprPrescriptionComponent } from './epr-modules/epr-prescription/epr-prescription.component';
 import { EprProcedureComponent } from './epr-modules/epr-procedure/epr-procedure.component';
 import { ValidationLoadComponent } from './modules/validation-load/validation-load.component';
-import { LoadFileComponent } from './modules/validation-load/load-file/load-file.component';
 import { EprConditionComponent } from './epr-modules/epr-condition/epr-condition.component';
 import { EprAllergyIntolleranceComponent } from './epr-modules/epr-allergy-intollerance/epr-allergy-intollerance.component';
 import { DocumentReferenceComponent } from './component/document-reference/document-reference.component';
@@ -86,7 +85,6 @@ import { PractitionerComponent } from './component/practitioner/practitioner.com
     EprPrescriptionComponent,
     EprProcedureComponent,
     ValidationLoadComponent,
-    LoadFileComponent,
     EprConditionComponent,
     EprAllergyIntolleranceComponent,
     DocumentReferenceComponent,
