@@ -10,6 +10,7 @@ import ca.uhn.fhir.rest.server.interceptor.IServerInterceptor;
 import ca.uhn.fhir.rest.server.interceptor.ResponseHighlighterInterceptor;
 import ca.uhn.fhir.util.VersionUtil;
 
+import org.hl7.fhir.dstu3.model.Organization;
 import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -68,6 +69,9 @@ public class CcriIntegrationServerHAPIConfig extends RestfulServer {
 		setResourceProviders(Arrays.asList(
 				applicationContext.getBean(EncounterExtranetProvider.class)
 				,applicationContext.getBean(BundleExtranetProvider.class)
+				,applicationContext.getBean(PatientExtranetProvider.class)
+				,applicationContext.getBean(PractitionerExtranetProvider.class)
+				,applicationContext.getBean(OrganizationExtranetProvider.class)
 		));
 
 		// Replace built in conformance provider (CapabilityStatement)
