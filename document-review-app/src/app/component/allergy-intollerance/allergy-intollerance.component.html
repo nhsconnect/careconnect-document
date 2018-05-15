@@ -21,7 +21,7 @@
       <span *ngFor="let reaction of allergy.reaction">
         <span *ngIf="reaction.substance != undefined">
 
-          <a (click)="getSNOMEDLink(reaction.substance.coding[0])"> <span class="fa fa-book" ngbTooltip="{{getCodeSystem(reaction.substance.coding[0].system)}} {{reaction.substance.coding[0].code}}">reaction</span> </a>
+          <a (click)="getSNOMEDLink(reaction.substance.coding[0])"> <span class="badge badge-info" ngbTooltip="{{getCodeSystem(reaction.substance.coding[0].system)}} {{reaction.substance.coding[0].code}}">reaction</span> </a>
           <b>{{reaction.substance.coding[0].display}}</b>
         </span>
          <span *ngIf="reaction.severity != undefined">
