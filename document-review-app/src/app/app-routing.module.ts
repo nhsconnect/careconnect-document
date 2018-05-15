@@ -8,17 +8,18 @@ import {PatientEprPatientRecordComponent} from "./epr-modules/patient-epr-record
 import {ValidationLoadComponent} from "./modules/validation-load/validation-load.component";
 import {LoginComponent} from "./modules/login/login.component";
 import {AuthoriseComponent} from "./modules/authorise/authorise.component";
+import {AuthGuard} from "./service/auth-guard";
 
 const routes: Routes = [
   { path: '', component: LoginComponent },
-  { path: 'home', component: PatientFindComponent },
-  { path: 'open', component: LoadDocumentComponent },
-  { path: 'find', component: PatientFindComponent },
-  { path: 'epr/:docid', component: PatientEprPatientRecordComponent},
-  { path: 'epr/:docid/:tabid', component: PatientEprPatientRecordComponent},
-  { path: 'doc/:docid', component: ViewDocumentComponent},
-  { path: 'docs/:patientId', component: FindDocumentComponent},
-  { path: 'validate', component: ValidationLoadComponent },
+  { path: 'home', canActivate: [AuthGuard], component: PatientFindComponent },
+  { path: 'open', canActivate: [AuthGuard], component: LoadDocumentComponent },
+  { path: 'find', canActivate: [AuthGuard], component: PatientFindComponent },
+  { path: 'epr/:docid', canActivate: [AuthGuard], component: PatientEprPatientRecordComponent},
+  { path: 'epr/:docid/:tabid', canActivate: [AuthGuard], component: PatientEprPatientRecordComponent},
+  { path: 'doc/:docid',canActivate: [AuthGuard], component: ViewDocumentComponent},
+  { path: 'docs/:patientId', canActivate: [AuthGuard],component: FindDocumentComponent},
+  { path: 'validate', canActivate: [AuthGuard],component: ValidationLoadComponent },
 
 ];
 

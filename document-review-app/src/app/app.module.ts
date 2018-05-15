@@ -58,6 +58,7 @@ import { OrganisationSearchComponent } from './component/organisation-search/org
 import { OrganisationComponent } from './component/organisation/organisation.component';
 import { PractitionerComponent } from './component/practitioner/practitioner.component';
 import {ValidationPipe} from "./modules/validation-load/ValidationPipe";
+import {AuthGuard} from "./service/auth-guard";
 
 
 @NgModule({
@@ -122,6 +123,7 @@ import {ValidationPipe} from "./modules/validation-load/ValidationPipe";
     , AuthService
     ,LinksService
     ,PatientEprService
+    ,AuthGuard
   ],
   bootstrap: [AppComponent]
 })

@@ -138,7 +138,7 @@ export class LoginComponent implements OnInit {
         this.smartToken =  response;
         this.authService.auth = true;
         localStorage.setItem("access_token",this.smartToken.access_token);
-       // localStorage.setItem("access_type",this.selectedToken.type);
+
           this.router.navigate(['home']);
       },
       ()=> {},
