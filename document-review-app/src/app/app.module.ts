@@ -57,6 +57,7 @@ import { PractitionerSearchComponent } from './component/practitioner-search/pra
 import { OrganisationSearchComponent } from './component/organisation-search/organisation-search.component';
 import { OrganisationComponent } from './component/organisation/organisation.component';
 import { PractitionerComponent } from './component/practitioner/practitioner.component';
+import {ValidationPipe} from "./modules/validation-load/ValidationPipe";
 
 
 @NgModule({
@@ -100,7 +101,8 @@ import { PractitionerComponent } from './component/practitioner/practitioner.com
     PractitionerSearchComponent,
     OrganisationSearchComponent,
     OrganisationComponent,
-    PractitionerComponent
+    PractitionerComponent,
+    ValidationPipe
   ],
   imports: [
     BrowserModule,

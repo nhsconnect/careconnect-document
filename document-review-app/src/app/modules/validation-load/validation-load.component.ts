@@ -3,6 +3,7 @@ import {FormControl, FormGroup, ValidationErrors, Validators} from "@angular/for
 import {DocumentRef} from "../../model/document-ref";
 import {FhirService} from "../../service/fhir.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {error} from "../../model/error";
 
 @Component({
   selector: 'app-validation-load',
@@ -22,6 +23,8 @@ export class ValidationLoadComponent implements OnInit {
   fileName : FormControl;
 
   resJson : fhir.OperationOutcome;
+
+  model : error  = new error();
 
   constructor(private fhirService : FhirService,
               private modalService: NgbModal) { }
@@ -54,7 +57,7 @@ export class ValidationLoadComponent implements OnInit {
     }
   }
 
-  onSubmitClick(modalWait ) {
+  onSubmitClick(modalWait, modalError ) {
 
     let modalWaitRef = this.modalService.open(modalWait,{ windowClass: 'dark-modal' });
     if (!this.getFormValidationErrors()) return;
@@ -70,6 +73,8 @@ export class ValidationLoadComponent implements OnInit {
 
       },
       err  => {
+        modalWaitRef.close();
+        this.modalService.open(modalError,{ windowClass: 'dark-modal' });
         console.log(err.statusText );
         console.log(err.message );
         console.log(err.error );

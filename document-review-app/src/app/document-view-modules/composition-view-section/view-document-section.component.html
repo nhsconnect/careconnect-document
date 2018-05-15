@@ -9,7 +9,7 @@
 
             <span *ngIf="isSNOMED(section.code.coding[0].system)">
         <a (click)="getSNOMEDLink(section.code.coding[0])">
-             <span *ngIf="section.code.coding[0].code != undefined" class="badge badge-info" ngbTooltip="{{getCodeSystem(section.code.coding[0].system)}} {{section.code.coding[0].code}}"> code</span>
+             <span *ngIf="section.code.coding[0].code != undefined" class="fa fa-book" ngbTooltip="{{getCodeSystem(section.code.coding[0].system)}} {{section.code.coding[0].code}}"></span>
         </a></span>
 
 

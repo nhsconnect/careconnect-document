@@ -34,8 +34,13 @@
       -
       <span *ngFor="let dosage of medication.dosageInstruction"> <i>DOSE</i>
             <span *ngIf="dosage.doseQuantity!=undefined">{{dosage.doseQuantity.value}} {{dosage.doseQuantity.unit}}</span>
-          - <span *ngIf="dosage.route!=undefined && dosage.route.coding.length>0">{{dosage.route.coding[0].display}}</span> -
-            <span *ngIf="dosage.maxDosePerPeriod != undefined"> {{dosage.maxDosePerPeriod.numerator.value}}
+          - <span *ngIf="dosage.route!=undefined && dosage.route.coding.length>0">
+              <a (click)="getSNOMEDLink(dosage.route.coding[0])"><span class="badge badge-light">route</span></a>
+              {{dosage.route.coding[0].display}}
+            </span> -
+            <span *ngIf="dosage.maxDosePerPeriod != undefined">
+               <a (click)="getSNOMEDLink(dosage.maxDosePerPeriod.numerator)"><span class="badge badge-light">form</span></a>
+              {{dosage.maxDosePerPeriod.numerator.value}}
              {{dosage.maxDosePerPeriod.numerator.unit}} {{dosage.maxDosePerPeriod.denominator.value}}{{dosage.maxDosePerPeriod.denominator.code}}
             </span>
             <span *ngIf="dosage.asNeededBoolean"> as required</span>

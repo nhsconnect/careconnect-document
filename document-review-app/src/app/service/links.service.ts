@@ -19,6 +19,7 @@ export class LinksService {
       case "http://hl7.org/fhir/sid/cvx": return "CVX (vaccine administered)";
       case "http://www.nlm.nih.gov/research/umls/rxnorm": return "RxNorm (USA Drug CodeSystem)";
       case "http://unitsofmeasure.org": return "Units Of Measure";
+      case "https://fhir.hl7.org.uk/STU3/CodeSystem/CareConnect-ConditionCategory-1": return "FHIR ConditionCategory";
       default:
         console.log(system);
         return system;

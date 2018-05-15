@@ -8,6 +8,20 @@
     </div>
   </div>
 </ng-template>
+
+<ng-template id="modalError" #modalError let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4>Error</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="progress">
+      Oooops.
+    </div>
+  </div>
+</ng-template>
 <form [formGroup]="validationForm"  >
 
     <div class="form-group">
@@ -22,13 +36,25 @@
 
 
   <br>
-  <button type="submit" (click)="onSubmitClick(modalWait)" class="btn btn-primary ui button">Submit</button>
+  <button type="submit" (click)="onSubmitClick(modalWait, modalError)" class="btn btn-primary ui button">Submit</button>
 
 </form>
+<br>
+<br>
 <div class="container-fluid">
 <div class="row">
   <div *ngIf="resJson!=undefined" class="col-md-12">
-
+    <div class="btn-group btn-group-toggle">
+      <label class="btn-outline-secondary" ngbButtonLabel>
+        <input type="checkbox" ngbButton [(ngModel)]="model.error"> Error
+      </label>
+      <label class="btn-outline-secondary" ngbButtonLabel>
+        <input type="checkbox" ngbButton [(ngModel)]="model.warning"> Warning
+      </label>
+      <label class="btn-outline-secondary" ngbButtonLabel>
+        <input type="checkbox" ngbButton [(ngModel)]="model.information"> Information
+      </label>
+    </div>
     <table class="table">
       <thead>
       <tr>
@@ -37,12 +63,13 @@
         <th scope="col" width="55%">Diagnositc</th>
       </tr>
       </thead>
-      <tr *ngFor="let issue of resJson.issue">
-        <td>{{issue.severity}}</td>
-        <td><span *ngFor="let location of issue.location">{{location}}</span></td>
-        <td>{{issue.diagnostics}}</td>
 
-      </tr>
+        <tr  *ngFor="let issue of resJson.issue | validationFilter : model.error : model.warning : model.information " >
+              <td>{{issue.severity}}</td>
+              <td><span *ngFor="let location of issue.location">{{location}}</span></td>
+              <td>{{issue.diagnostics}}</td>
+        </tr>
+
     </table>
   </div>
 </div>

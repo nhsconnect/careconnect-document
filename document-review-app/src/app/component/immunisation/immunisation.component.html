@@ -14,10 +14,10 @@
     <td>
       <b>{{immunisation.vaccineCode.coding[0].display}}</b>
       <span *ngIf="isSNOMED(immunisation.vaccineCode.coding[0].system)">
-        <a (click)="getSNOMEDLink(immunisation.vaccineCode.coding[0])"> <span *ngIf="immunisation.vaccineCode.coding[0].code != undefined" class="badge badge-info" ngbTooltip="{{getCodeSystem(immunisation.vaccineCode.coding[0].system)}} {{immunisation.vaccineCode.coding[0].code}}">code</span> </a>
+        <a (click)="getSNOMEDLink(immunisation.vaccineCode.coding[0])"> <span *ngIf="immunisation.vaccineCode.coding[0].code != undefined" class="fa fa-book" ngbTooltip="{{getCodeSystem(immunisation.vaccineCode.coding[0].system)}} {{immunisation.vaccineCode.coding[0].code}}"></span> </a>
       </span>
       <span *ngIf="!isSNOMED(immunisation.vaccineCode.coding[0].system)">
-        <span *ngIf="immunisation.vaccineCode.coding[0].code != undefined" class="badge badge-info" ngbTooltip="{{getCodeSystem(immunisation.vaccineCode.coding[0].system)}} {{immunisation.vaccineCode.coding[0].code}}">code</span>
+        <span *ngIf="immunisation.vaccineCode.coding[0].code != undefined" class="fa fa-book" ngbTooltip="{{getCodeSystem(immunisation.vaccineCode.coding[0].system)}} {{immunisation.vaccineCode.coding[0].code}}"></span>
       </span>
       <i>{{immunisation.status}}</i>
     </td>

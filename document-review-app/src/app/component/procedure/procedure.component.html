@@ -14,11 +14,30 @@
     <td>
        <b>{{procedure.code.coding[0].display}}</b>
       <span *ngIf="isSNOMED(procedure.code.coding[0].system)">
-        <a (click)="getSNOMEDLink(procedure.code.coding[0])"> <span *ngIf="procedure.code.coding[0].code != undefined" class="badge badge-info" ngbTooltip="{{getCodeSystem(procedure.code.coding[0].system)}} {{procedure.code.coding[0].code}}">code</span> </a>
+        <a (click)="getSNOMEDLink(procedure.code.coding[0])"> <span *ngIf="procedure.code.coding[0].code != undefined" class="fa fa-book" ngbTooltip="{{getCodeSystem(procedure.code.coding[0].system)}} {{procedure.code.coding[0].code}}"></span> </a>
       </span>
       <span *ngIf="!isSNOMED(procedure.code.coding[0].system)">
-        <span *ngIf="procedure.code.coding[0].code != undefined" class="badge badge-info" ngbTooltip="{{getCodeSystem(procedure.code.coding[0].system)}} {{procedure.code.coding[0].code}}">code</span>
+        <span *ngIf="procedure.code.coding[0].code != undefined" class="fa fa-book" ngbTooltip="{{getCodeSystem(procedure.code.coding[0].system)}} {{procedure.code.coding[0].code}}"></span>
       </span>
+      <span *ngIf="procedure.bodySite != undefined">
+        <span class="badge badge-light" >body site</span>
+        <span *ngFor="let code of procedure.bodySite">
+          {{code.coding[0].display}}
+          <span *ngIf="isSNOMED(code.coding[0].system)">
+            <a (click)="getSNOMEDLink(code.coding[0])"> <span *ngIf="code.coding[0].code != undefined" class="fa fa-book" ngbTooltip="{{getCodeSystem(code.coding[0].system)}} {{code.coding[0].code}}"></span> </a>
+          </span>
+        </span>
+      </span>
+      <span *ngIf="procedure.complication != undefined">
+        <span class="badge badge-light" >complication</span>
+        <span *ngFor="let code of procedure.complication">
+          {{code.coding[0].display}}
+          <span *ngIf="isSNOMED(code.coding[0].system)">
+            <a (click)="getSNOMEDLink(code.coding[0])"> <span *ngIf="code.coding[0].code != undefined" class="fa fa-book" ngbTooltip="{{getCodeSystem(code.coding[0].system)}} {{code.coding[0].code}}"></span> </a>
+          </span>
+        </span>
+      </span>
+      <span class="badge badge-light" >status</span>
       <i>{{procedure.status}}</i>
     </td>
 

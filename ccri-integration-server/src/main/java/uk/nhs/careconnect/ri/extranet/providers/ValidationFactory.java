@@ -12,6 +12,7 @@ import org.hl7.fhir.dstu3.model.BaseResource;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.OperationOutcome;
 import org.hl7.fhir.dstu3.model.StringType;
+import uk.org.hl7.fhir.core.Dstu2.CareConnectSystem;
 import uk.org.hl7.fhir.validation.stu3.CareConnectProfileValidationSupport;
 import uk.org.hl7.fhir.validation.stu3.SNOMEDUKMockValidationSupport;
 
@@ -61,23 +62,32 @@ public class ValidationFactory {
     try {
         ValidationResult result = validator.validateWithResult(resourceStr);
         for (SingleValidationMessage next : result.getMessages()) {
-            OperationOutcome.OperationOutcomeIssueComponent issue = outcome.addIssue();
-            issue.setDiagnostics(next.getLocationString() + " - " + next.getMessage()).addLocation(resource.getClass().getSimpleName() + "/"+ resource.getIdElement().getIdPart());
-            switch (next.getSeverity()) {
-                case ERROR:
-                    issue.setSeverity(OperationOutcome.IssueSeverity.ERROR);
-                    break;
-                case FATAL:
-                    issue.setSeverity(OperationOutcome.IssueSeverity.FATAL);
-                    break;
-                case WARNING:
-                    issue.setSeverity(OperationOutcome.IssueSeverity.WARNING);
-                    break;
-                case INFORMATION:
-                    issue.setSeverity(OperationOutcome.IssueSeverity.INFORMATION);
-                    break;
+            // Disabling SNOMED warnings for valuesets. (ValueSets with include queries or references require a terminology service)
+            if (next.getMessage().contains("and a code from this value set is required") && next.getMessage().contains(CareConnectSystem.SNOMEDCT)) {
+                //	System.out.println("match **");
+            } else if (next.getMessage().contains("a code is required from this value set") && next.getMessage().contains(CareConnectSystem.SNOMEDCT)) {
+                //	System.out.println("match ** ** ");
+            } else if (next.getMessage().contains("and a code is recommended to come from this value set") && next.getMessage().contains(CareConnectSystem.SNOMEDCT)) {
+                //	System.out.println("match ** ** **" );
+            } else {
+                OperationOutcome.OperationOutcomeIssueComponent issue = outcome.addIssue();
+                issue.setDiagnostics(next.getLocationString() + " - " + next.getMessage()).addLocation(resource.getClass().getSimpleName() + "/" + resource.getIdElement().getIdPart());
+                switch (next.getSeverity()) {
+                    case ERROR:
+                        issue.setSeverity(OperationOutcome.IssueSeverity.ERROR);
+                        break;
+                    case FATAL:
+                        issue.setSeverity(OperationOutcome.IssueSeverity.FATAL);
+                        break;
+                    case WARNING:
+                        issue.setSeverity(OperationOutcome.IssueSeverity.WARNING);
+                        break;
+                    case INFORMATION:
+                        issue.setSeverity(OperationOutcome.IssueSeverity.INFORMATION);
+                        break;
+                }
+                outcome.addIssue(issue);
             }
-            outcome.addIssue(issue);
         }
     } catch (Exception ex) {
         outcome.addIssue().setSeverity(OperationOutcome.IssueSeverity.FATAL).setDiagnostics(ex.getMessage()).addLocation(resource.getId().toString());

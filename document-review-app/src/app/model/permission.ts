@@ -6,5 +6,7 @@ export class Permission {
 
   smartOnFhirUser : boolean;
 
+  validationUser : boolean;
+
   userName : string;
 }

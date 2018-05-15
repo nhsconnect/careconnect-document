@@ -13,23 +13,35 @@
       {{allergy.onsetDateTime | date: 'dd-MMM-yyyy'}}
     </td>
     <td>
-      <span *ngIf="allergy.code !=undefined"> <b>{{allergy.code.coding[0].display}}</b>
-          <a (click)="getSNOMEDLink(allergy.code.coding[0])"> <span class="badge badge-info" ngbTooltip="{{getCodeSystem(allergy.code.coding[0].system)}} {{allergy.code.coding[0].code}}">code</span> </a>
-        </span>
+      <span *ngIf="allergy.code !=undefined">
+
+        <a (click)="getSNOMEDLink(allergy.code.coding[0])"> <span class="fa fa-book" ngbTooltip="{{getCodeSystem(allergy.code.coding[0].system)}} {{allergy.code.coding[0].code}}"></span> </a>
+         <b>{{allergy.code.coding[0].display}}</b>
+      </span>
       <span *ngFor="let reaction of allergy.reaction">
         <span *ngIf="reaction.substance != undefined">
+
+          <a (click)="getSNOMEDLink(reaction.substance.coding[0])"> <span class="fa fa-book" ngbTooltip="{{getCodeSystem(reaction.substance.coding[0].system)}} {{reaction.substance.coding[0].code}}">reaction</span> </a>
           <b>{{reaction.substance.coding[0].display}}</b>
-          <a (click)="getSNOMEDLink(reaction.substance.coding[0])"> <span class="badge badge-info" ngbTooltip="{{getCodeSystem(reaction.substance.coding[0].system)}} {{reaction.substance.coding[0].code}}">reaction</span> </a>
+        </span>
+         <span *ngIf="reaction.severity != undefined">
+
+          <a (click)="getSNOMEDLink(reaction.severity)"> <span class="badge badge-info" ngbTooltip="{{getCodeSystem(reaction.severity.system)}} {{reaction.severity.code}}">severity</span> </a>
+           <b>{{reaction.severity.display }}</b>
         </span>
         <span *ngFor="let manifestation of reaction.manifestation">
-          {{manifestation.coding[0].display}}
+
           <a (click)="getSNOMEDLink(manifestation.coding[0])">
-            <span class="badge badge-info" ngbTooltip="{{getCodeSystem(manifestation.coding[0].system)}} {{manifestation.coding[0].code}}">manifestation</span>
+            <span class="badge badge-light" ngbTooltip="{{getCodeSystem(manifestation.coding[0].system)}} {{manifestation.coding[0].code}}">manifestation</span>
           </a>
+          {{manifestation.coding[0].display}}
         </span>
       </span>
       <i *ngIf="allergy.clinicalStatus!=undefined">{{allergy.clinicalStatus}}</i>
-      <i *ngIf="allergy.verificationStatus!=undefined">{{allergy.verificationStatus}}</i>
+      <span *ngIf="allergy.verificationStatus!=undefined">
+        <span class="badge badge-light" ngbTooltip="FHIR VerificationStatus: {{allergy.verificationStatus}}">verification</span>
+        <i>{{allergy.verificationStatus}}</i>
+      </span>
     </td>
 
   </tr>

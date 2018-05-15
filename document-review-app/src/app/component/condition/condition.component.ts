@@ -20,6 +20,8 @@ export class ConditionComponent implements OnInit {
 
   isSNOMED(system: string) : boolean {
     return this.linksService.isSNOMED(system);
+
+
   }
 
   getSNOMEDLink(code : fhir.Coding) {

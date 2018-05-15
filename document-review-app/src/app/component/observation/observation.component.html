@@ -27,10 +27,10 @@
     <td>
       <b>{{observation.code.coding[0].display}}</b>
       <span *ngIf="isSNOMED(observation.code.coding[0].system)">
-        <a (click)="getSNOMEDLink(observation.code.coding[0])"> <span *ngIf="observation.code.coding[0].code != undefined" class="badge badge-info" ngbTooltip="{{getCodeSystem(observation.code.coding[0].system)}} {{observation.code.coding[0].code}}">code</span> </a>
+        <a (click)="getSNOMEDLink(observation.code.coding[0])"> <span *ngIf="observation.code.coding[0].code != undefined" class="fa fa-book" ngbTooltip="{{getCodeSystem(observation.code.coding[0].system)}} {{observation.code.coding[0].code}}"></span> </a>
       </span>
       <span *ngIf="!isSNOMED(observation.code.coding[0].system)">
-        <span *ngIf="observation.code.coding[0].code != undefined" class="badge badge-info" ngbTooltip="{{getCodeSystem(observation.code.coding[0].system)}} {{observation.code.coding[0].code}}">code</span>
+        <span *ngIf="observation.code.coding[0].code != undefined" class="fa fa-book" ngbTooltip="{{getCodeSystem(observation.code.coding[0].system)}} {{observation.code.coding[0].code}}"></span>
       </span>
       <span *ngIf="observation.category != undefined">
         <i *ngFor="let category of observation.category">{{category.coding[0].display}}</i>

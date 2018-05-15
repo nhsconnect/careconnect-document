@@ -15,13 +15,32 @@
     <td>
       <b>{{condition.code.coding[0].display}}</b>
       <span *ngIf="isSNOMED(condition.code.coding[0].system)">
-        <a (click)="getSNOMEDLink(condition.code.coding[0])"> <span *ngIf="condition.code.coding[0].code != undefined" class="badge badge-info" ngbTooltip="{{getCodeSystem(condition.code.coding[0].system)}} {{condition.code.coding[0].code}}">code</span> </a>
+        <a (click)="getSNOMEDLink(condition.code.coding[0])"> <span *ngIf="condition.code.coding[0].code != undefined" class="fa fa-book" ngbTooltip="{{getCodeSystem(condition.code.coding[0].system)}} {{condition.code.coding[0].code}}"></span> </a>
       </span>
       <span *ngIf="!isSNOMED(condition.code.coding[0].system)">
-        <span *ngIf="condition.code.coding[0].code != undefined" class="badge badge-info" ngbTooltip="{{getCodeSystem(condition.code.coding[0].system)}} {{condition.code.coding[0].code}}">code</span>
+        <span *ngIf="condition.code.coding[0].code != undefined" class="fa fa-book" ngbTooltip="{{getCodeSystem(condition.code.coding[0].system)}} {{condition.code.coding[0].code}}"></span>
       </span>
-      <i *ngIf="condition.clinicalStatus!=undefined">{{condition.clinicalStatus}}</i>
-      <i *ngIf="condition.verificationStatus!=undefined">{{condition.verificationStatus}}</i>
+
+      <span *ngIf="condition.category != undefined && condition.category[0].coding != undefined">
+        <span class="badge badge-light" >category</span>
+        <b><i>{{condition.category[0].coding[0].display}}</i></b>
+        <span *ngIf="isSNOMED(condition.category[0].coding[0].system)">
+          <a (click)="getSNOMEDLink(condition.category[0].coding[0])"> <span *ngIf="condition.category[0].coding[0].code != undefined" class="fa fa-book" ngbTooltip="{{getCodeSystem(condition.code.coding[0].system)}} {{condition.category[0].coding[0].code}}"></span> </a>
+        </span>
+        <span *ngIf="!isSNOMED(condition.category[0].coding[0].system)">
+          <span *ngIf="condition.category[0].coding[0].code != undefined" class="fa fa-book" ngbTooltip="{{getCodeSystem(condition.category[0].coding[0].system)}} {{condition.category[0].coding[0].code}}"></span>
+        </span>
+
+      </span>
+
+      <span *ngIf="condition.clinicalStatus!=undefined">
+        <span class="badge badge-light" >clinicalStatus</span>
+        <i>{{condition.clinicalStatus}}</i>
+      </span>
+      <span *ngIf="condition.verificationStatus!=undefined">
+        <span class="badge badge-light" >verification</span>
+        <i>{{condition.verificationStatus}}</i>
+      </span>
     </td>
 
   </tr>
