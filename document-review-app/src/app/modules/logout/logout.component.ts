@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {CookieService} from "angular2-cookie/core";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {AuthService} from "../../service/auth.service";
 
 @Component({
@@ -12,7 +12,9 @@ export class LogoutComponent implements OnInit {
 
   logoutRedirect : string = "";
 
-  constructor( private authService: AuthService,private activatedRoute: ActivatedRoute
+  constructor( private authService: AuthService
+    ,private activatedRoute: ActivatedRoute
+    ,private router: Router
     ,private _cookieService:CookieService) { }
 
   ngOnInit(
@@ -26,6 +28,8 @@ export class LogoutComponent implements OnInit {
     this.authService._firebaseAuth.auth.signOut().then((res) => {
       if (this.logoutRedirect !=undefined) {
         window.location.href =this.logoutRedirect;
+      } else {
+        this.router.navigate(['/']);
       }
 
     });
