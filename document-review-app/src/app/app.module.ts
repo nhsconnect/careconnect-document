@@ -61,6 +61,7 @@ import {ValidationPipe} from "./modules/validation-load/ValidationPipe";
 import {AuthGuard} from "./service/auth-guard";
 import {CookieService} from "angular2-cookie/core";
 import * as firebase from 'firebase';
+import { LogoutComponent } from './modules/logout/logout.component';
 
 firebase.initializeApp(environment.firebase);
 
@@ -106,7 +107,8 @@ firebase.initializeApp(environment.firebase);
     OrganisationSearchComponent,
     OrganisationComponent,
     PractitionerComponent,
-    ValidationPipe
+    ValidationPipe,
+    LogoutComponent
   ],
   imports: [
     BrowserModule,

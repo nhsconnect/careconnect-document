@@ -24,7 +24,7 @@ export class AuthService {
 
   public auth : boolean = false;
 
-  constructor(private _firebaseAuth: AngularFireAuth
+  constructor(public _firebaseAuth: AngularFireAuth
               , private router: Router
               , public db : AngularFireDatabase
               ) {

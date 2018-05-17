@@ -9,11 +9,13 @@ import {ValidationLoadComponent} from "./modules/validation-load/validation-load
 import {LoginComponent} from "./modules/login/login.component";
 import {AuthoriseComponent} from "./modules/authorise/authorise.component";
 import {AuthGuard} from "./service/auth-guard";
+import {LogoutComponent} from "./modules/logout/logout.component";
 
 const routes: Routes = [
   { path: '', component: LoginComponent },
   { path: 'login', component: LoginComponent },
   { path: 'home', canActivate: [AuthGuard], component: PatientFindComponent },
+  { path: 'logout', component: LogoutComponent },
   { path: 'open', canActivate: [AuthGuard], component: LoadDocumentComponent },
   { path: 'find', canActivate: [AuthGuard], component: PatientFindComponent },
   { path: 'epr/:docid', canActivate: [AuthGuard], component: PatientEprPatientRecordComponent},
