@@ -12,6 +12,7 @@ import {AuthGuard} from "./service/auth-guard";
 
 const routes: Routes = [
   { path: '', component: LoginComponent },
+  { path: 'login', component: LoginComponent },
   { path: 'home', canActivate: [AuthGuard], component: PatientFindComponent },
   { path: 'open', canActivate: [AuthGuard], component: LoadDocumentComponent },
   { path: 'find', canActivate: [AuthGuard], component: PatientFindComponent },
@@ -19,7 +20,7 @@ const routes: Routes = [
   { path: 'epr/:docid/:tabid', canActivate: [AuthGuard], component: PatientEprPatientRecordComponent},
   { path: 'doc/:docid',canActivate: [AuthGuard], component: ViewDocumentComponent},
   { path: 'docs/:patientId', canActivate: [AuthGuard],component: FindDocumentComponent},
-  { path: 'validate', canActivate: [AuthGuard],component: ValidationLoadComponent },
+  { path: 'validate', canActivate: [AuthGuard],component: ValidationLoadComponent }
 
 ];
 

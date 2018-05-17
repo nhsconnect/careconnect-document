@@ -69,8 +69,8 @@ export class AuthService {
     );
   }
 
-  getUser() {
-    return firebase.auth().currentUser;
+  getIdToken() {
+    return this._firebaseAuth.idToken;
   }
 
   getuserInfo() {

@@ -18,6 +18,7 @@
         <a (click)="getSNOMEDLink(allergy.code.coding[0])"> <span class="fa fa-book" ngbTooltip="{{getCodeSystem(allergy.code.coding[0].system)}} {{allergy.code.coding[0].code}}"></span> </a>
          <b>{{allergy.code.coding[0].display}}</b>
       </span>
+
       <span *ngFor="let reaction of allergy.reaction">
         <span *ngIf="reaction.substance != undefined">
 
@@ -29,14 +30,16 @@
           <a (click)="getSNOMEDLink(reaction.severity)"> <span class="badge badge-info" ngbTooltip="{{getCodeSystem(reaction.severity.system)}} {{reaction.severity.code}}">severity</span> </a>
            <b>{{reaction.severity.display }}</b>
         </span>
-        <span *ngFor="let manifestation of reaction.manifestation">
 
-          <a (click)="getSNOMEDLink(manifestation.coding[0])">
-            <span class="badge badge-light" ngbTooltip="{{getCodeSystem(manifestation.coding[0].system)}} {{manifestation.coding[0].code}}">manifestation</span>
-          </a>
+        <span *ngFor="let manifestation of reaction.manifestation">
+          <span class="badge badge-info" >manifestation</span>
           {{manifestation.coding[0].display}}
+          <a (click)="getSNOMEDLink(manifestation.coding[0])">
+            <span class="fa fa-book" ngbTooltip="{{getCodeSystem(manifestation.coding[0].system)}} {{manifestation.coding[0].code}}"></span>
+          </a>
         </span>
       </span>
+
       <i *ngIf="allergy.clinicalStatus!=undefined">{{allergy.clinicalStatus}}</i>
       <span *ngIf="allergy.verificationStatus!=undefined">
         <span class="badge badge-light" ngbTooltip="FHIR VerificationStatus: {{allergy.verificationStatus}}">verification</span>

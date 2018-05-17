@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import {AuthService} from '../../service/auth.service';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Params, Router} from '@angular/router';
 import {FhirService} from "../../service/fhir.service";
 import {Oauth2token} from "../../model/oauth2token";
 import {PatientEprService} from "../../service/patient-epr.service";
 import * as firebase from "firebase";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {CookieService} from "angular2-cookie/core";
 
 @Component({
   selector: 'app-login',
@@ -21,21 +22,38 @@ export class LoginComponent implements OnInit {
 
   errorMessage : string;
 
+  logonRedirect : string = "";
+
   smartToken : Oauth2token;
 
   constructor(private authService: AuthService,
               private router: Router,
               private  fhirService : FhirService,
               private patientMessage : PatientEprService
-              ,private modalService: NgbModal) {
+              ,private modalService: NgbModal
+              ,private activatedRoute: ActivatedRoute
+              ,private _cookieService:CookieService
+    ) {
   }
 
+  ngOnInit() {
+
+      console.log(this.router.url);
+      this.logonRedirect = this.activatedRoute.snapshot.queryParams['afterAuth'];
+      console.log(this.logonRedirect);
+
+    if (this.router.url.indexOf('/login') === -1) {
+      this.authService.logout();
+      this.patientMessage.clear();
+    }
+
+  }
 
   signInWithTwitter(content) {
     this.errorMessage = "";
     this.authService.signInWithTwitter()
-      .then((res) => {
-        this.oauth2token();
+      .then((user : firebase.User) => {
+        this.oauth2token(user);
       })
       .catch((err) => {
         console.log(err);
@@ -48,8 +66,8 @@ export class LoginComponent implements OnInit {
   signInWithFacebook(content) {
     this.errorMessage = "";
     this.authService.signInWithFacebook()
-      .then((res) => {
-        this.oauth2token();
+      .then((user : firebase.User) => {
+        this.oauth2token(user);
       })
       .catch((err) => {
         console.log(err);
@@ -62,8 +80,8 @@ export class LoginComponent implements OnInit {
     signInWithGoogle(content) {
       this.errorMessage = "";
       this.authService.signInWithGoogle()
-        .then((res) => {
-          this.oauth2token();
+        .then((user : firebase.User) => {
+          this.oauth2token(user);
         })
         .catch((err) => {
           console.log(err);
@@ -75,8 +93,8 @@ export class LoginComponent implements OnInit {
     signInWithGithub(content) {
       this.errorMessage = "";
     this.authService.signInWithGithub()
-      .then((res) => {
-         this.oauth2token();
+      .then((user : firebase.User) => {
+         this.oauth2token(user);
       })
       .catch((err) => {
         console.log(err);
@@ -109,7 +127,7 @@ export class LoginComponent implements OnInit {
         console.log(user);
 
         if (user.emailVerified ) {
-          this.oauth2token();
+          this.oauth2token(user);
         } else {
           console.log("Email not verified");
           this.errorMessage = "Email not verified";
@@ -125,27 +143,46 @@ export class LoginComponent implements OnInit {
 
 
 
-  ngOnInit() {
-    this.authService.logout();
-    this.patientMessage.clear();
+
+
+  oauth2token(user : firebase.User) :void {
+      console.log("user = "+user);
+      if (this.logonRedirect !== undefined) {
+         this.redirect(user);
+      } else {
+
+        this.fhirService.authoriseOAuth2('ed73b2cb-abd0-4f75-b9a2-5f9c0535b82c','QOm0VcqJqa9stA1R0MJzHjCN_uYdo0PkY8OT68UCk2XDFxFrAUjajuqOvIom5dISjKshx2YiU51mXtx7W5UOwQ').subscribe( response => {
+          console.log(response);
+          this.smartToken =  response;
+          this.authService.auth = true;
+          localStorage.setItem("access_token",this.smartToken.access_token);
+
+            this.router.navigate(['home']);
+        },
+        ()=> {},
+        () => {
+
+        }
+      );
+    }
+
   }
 
-  oauth2token() :void {
+  redirect(user : firebase.User) {
 
 
-      this.fhirService.authoriseOAuth2('ed73b2cb-abd0-4f75-b9a2-5f9c0535b82c','QOm0VcqJqa9stA1R0MJzHjCN_uYdo0PkY8OT68UCk2XDFxFrAUjajuqOvIom5dISjKshx2YiU51mXtx7W5UOwQ').subscribe( response => {
-        console.log(response);
-        this.smartToken =  response;
-        this.authService.auth = true;
-        localStorage.setItem("access_token",this.smartToken.access_token);
+      this.authService.getIdToken().subscribe(
+        (jwt) => {
 
-          this.router.navigate(['home']);
-      },
-      ()=> {},
-      () => {
+          this._cookieService.put('ccri-token', jwt, {
+            domain: 'localhost',
+            path: '/',
+            expires: new Date((new Date()).getTime() + 3 * 60000)
+          });
 
-      }
-    );
+          window.location.href =this.logonRedirect;
+        }
+      )
 
 
   }

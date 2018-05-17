@@ -59,7 +59,10 @@ import { OrganisationComponent } from './component/organisation/organisation.com
 import { PractitionerComponent } from './component/practitioner/practitioner.component';
 import {ValidationPipe} from "./modules/validation-load/ValidationPipe";
 import {AuthGuard} from "./service/auth-guard";
+import {CookieService} from "angular2-cookie/core";
+import * as firebase from 'firebase';
 
+firebase.initializeApp(environment.firebase);
 
 @NgModule({
   declarations: [
@@ -114,7 +117,7 @@ import {AuthGuard} from "./service/auth-guard";
     HttpClientModule,
     Ng2GoogleChartsModule,
     NgbModule.forRoot(),
-    AngularFireModule.initializeApp(environment.firebase, 'ccri-angular'),
+    AngularFireModule.initializeApp(environment.firebase, 'ccri'),
     AngularFireDatabaseModule,
     AngularFireAuthModule
   ],
@@ -124,6 +127,7 @@ import {AuthGuard} from "./service/auth-guard";
     ,LinksService
     ,PatientEprService
     ,AuthGuard
+    ,CookieService
   ],
   bootstrap: [AppComponent]
 })
