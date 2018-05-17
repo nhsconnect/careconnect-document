@@ -30,10 +30,17 @@ export class AuthService {
               ) {
     this.user = _firebaseAuth.authState;
 
+
+      // copy profile info to database for a richer and more accessible user profile database
+
+    this.verifyUserProfileInfo();
+
     this.user.subscribe(
       (user) => {
         if (user) {
           this.userDetails = user;
+
+
           console.log('Subscribing on permission '+user.uid);
           this.semaphore = false;
           this.permSub = this.db.object('/permission/'+user.uid);
@@ -72,6 +79,22 @@ export class AuthService {
   getIdToken() {
     return this._firebaseAuth.idToken;
   }
+
+  verifyUserProfileInfo() {
+    let user = this._firebaseAuth.authState.subscribe(
+      (user) => {
+        if (user !== null) {
+          this.db.object('users/' + user.uid).set({
+            displayName: user.displayName,
+            email: user.email,
+            uid: user.uid,
+          });
+        }
+      }
+    );
+  }
+
+
 
   getuserInfo() {
     console.log('user '+this.user);

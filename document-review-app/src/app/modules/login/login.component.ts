@@ -170,6 +170,7 @@ export class LoginComponent implements OnInit {
 
   redirect(user : firebase.User) {
 
+      this.authService.verifyUserProfileInfo();
 
       this.authService.getIdToken().subscribe(
         (jwt) => {

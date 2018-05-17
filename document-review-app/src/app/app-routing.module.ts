@@ -14,6 +14,7 @@ import {LogoutComponent} from "./modules/logout/logout.component";
 const routes: Routes = [
   { path: '', component: LoginComponent },
   { path: 'login', component: LoginComponent },
+  { path: 'logout', component: LogoutComponent },
   { path: 'home', canActivate: [AuthGuard], component: PatientFindComponent },
   { path: 'logout', component: LogoutComponent },
   { path: 'open', canActivate: [AuthGuard], component: LoadDocumentComponent },
