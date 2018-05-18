@@ -1,6 +1,6 @@
 {
-  "name": "Care Connect Demo App",
-  "version": "0.0.0",
+  "name": "care-connect-app",
+  "version": "3.5.3",
   "license": "MIT",
   "scripts": {
     "ng": "ng",

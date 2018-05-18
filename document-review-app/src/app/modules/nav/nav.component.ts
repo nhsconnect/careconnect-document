@@ -35,9 +35,11 @@ export class NavComponent implements OnInit {
   ngOnInit() {
 
   }
+  /*
   logout () {
     return this.authService.logout();
   }
+
 
   isLoggedIn(){
     let isLoggedIn : boolean =this.authService.isLoggedIn();
@@ -65,7 +67,7 @@ export class NavComponent implements OnInit {
   Authorise() : void {
     this.router.navigate(['authorise']);
   }
-
+*/
 
   smartApp() {
     window.open(this.smartAppUrl+"4ae23017813e417d937e3ba21974581", "_blank");
@@ -80,7 +82,6 @@ export class NavComponent implements OnInit {
       }
     );
 
-    //window.open("http://127.0.0.1:9000/launch.html?fhirServiceUrl=http://127.0.0.1:8080/careconnect-gateway/STU3&patientId="+this.patientEprService.patient.id, "_blank");
   }
 
 }

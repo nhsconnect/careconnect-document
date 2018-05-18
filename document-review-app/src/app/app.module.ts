@@ -11,7 +11,6 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {FileUploadModule} from "ng2-file-upload";
 import { ViewDocumentComponent } from './document-view-modules/composition-view/view-document.component';
 import {FhirService} from "./service/fhir.service";
-import {HttpClientModule} from "@angular/common/http";
 import { ViewDocumentSectionComponent } from './document-view-modules/composition-view-section/view-document-section.component';
 import { PatientSearchComponent } from './component/patient-search/patient-search.component';
 import {PatientItemComponent} from "./component/patient/patient-item.component";
@@ -59,9 +58,11 @@ import { OrganisationComponent } from './component/organisation/organisation.com
 import { PractitionerComponent } from './component/practitioner/practitioner.component';
 import {ValidationPipe} from "./modules/validation-load/ValidationPipe";
 import {AuthGuard} from "./service/auth-guard";
-import {CookieService} from "angular2-cookie/core";
 import * as firebase from 'firebase';
 import { LogoutComponent } from './modules/logout/logout.component';
+import {HttpClientModule} from "@angular/common/http";
+import {CookieService} from "angular2-cookie/core";
+import {CookieBackendService} from "angular2-cookie/services/cookies.backend.service";
 
 firebase.initializeApp(environment.firebase);
 
@@ -113,10 +114,10 @@ firebase.initializeApp(environment.firebase);
   imports: [
     BrowserModule,
     FormsModule,
+    HttpClientModule,
     ReactiveFormsModule,
     AppRoutingModule,
     FileUploadModule,
-    HttpClientModule,
     Ng2GoogleChartsModule,
     NgbModule.forRoot(),
     AngularFireModule.initializeApp(environment.firebase, 'ccri'),
@@ -130,6 +131,7 @@ firebase.initializeApp(environment.firebase);
     ,PatientEprService
     ,AuthGuard
     ,CookieService
+    ,CookieBackendService
   ],
   bootstrap: [AppComponent]
 })

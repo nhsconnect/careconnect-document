@@ -15,7 +15,8 @@ export class LogoutComponent implements OnInit {
   constructor( private authService: AuthService
     ,private activatedRoute: ActivatedRoute
     ,private router: Router
-    ,private _cookieService:CookieService) { }
+    ,private _cookieService:CookieService
+  ) { }
 
   ngOnInit(
   ) {
@@ -25,6 +26,7 @@ export class LogoutComponent implements OnInit {
     localStorage.removeItem('access_token');
     localStorage.removeItem("PatientBanner");
 
+    this.authService.permission = undefined;
     this.authService._firebaseAuth.auth.signOut().then((res) => {
       if (this.logoutRedirect !=undefined) {
         window.location.href =this.logoutRedirect;

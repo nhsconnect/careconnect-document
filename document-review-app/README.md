@@ -16,3 +16,16 @@ npm install --save @types/fhir
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
+##Docker 
+
+
+docker build . -t ccri-app
+
+docker tag ccri-app thorlogic/ccri-app
+
+docker push thorlogic/ccri-app
+
+###Local test 
+
+docker run -d -p 80:80 ccri-app 
+
