@@ -27,5 +27,5 @@ docker push thorlogic/ccri-app
 
 ###Local test 
 
-docker run -d -p 80:80 ccri-app 
+docker run -d -p 4200:80 --name ccri-app thorlogic/ccri-app 
 
