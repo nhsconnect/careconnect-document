@@ -10,6 +10,8 @@ import ca.uhn.fhir.rest.server.interceptor.IServerInterceptor;
 import ca.uhn.fhir.rest.server.interceptor.ResponseHighlighterInterceptor;
 import ca.uhn.fhir.util.VersionUtil;
 
+import org.hl7.fhir.dstu3.model.Condition;
+import org.hl7.fhir.dstu3.model.Location;
 import org.hl7.fhir.dstu3.model.Organization;
 import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Value;
@@ -72,6 +74,17 @@ public class CcriIntegrationServerHAPIConfig extends RestfulServer {
 				,applicationContext.getBean(PatientExtranetProvider.class)
 				,applicationContext.getBean(PractitionerExtranetProvider.class)
 				,applicationContext.getBean(OrganizationExtranetProvider.class)
+				,applicationContext.getBean(AllergyIntoleranceExtranetProvider.class)
+				,applicationContext.getBean(CompositionExtranetProvider.class)
+				,applicationContext.getBean(ConditionExtranetProvider.class)
+				,applicationContext.getBean(DocumentReferenceExtranetProvider.class)
+				,applicationContext.getBean(ImmunizationExtranetProvider.class)
+				,applicationContext.getBean(LocationExtranetProvider.class)
+				,applicationContext.getBean(MedicationExtranetProvider.class)
+				,applicationContext.getBean(MedicationRequestExtranetProvider.class)
+				,applicationContext.getBean(MedicationStatementExtranetProvider.class)
+				,applicationContext.getBean(ObservationExtranetProvider.class)
+				,applicationContext.getBean(PatientExtranetProvider.class)
 		));
 
 		// Replace built in conformance provider (CapabilityStatement)

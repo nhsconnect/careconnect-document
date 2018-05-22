@@ -12,9 +12,11 @@ import org.hl7.fhir.dstu3.model.BaseResource;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.OperationOutcome;
 import org.hl7.fhir.dstu3.model.StringType;
+import org.springframework.beans.factory.annotation.Autowired;
 import uk.org.hl7.fhir.core.Dstu2.CareConnectSystem;
 import uk.org.hl7.fhir.validation.stu3.CareConnectProfileValidationSupport;
 import uk.org.hl7.fhir.validation.stu3.SNOMEDUKMockValidationSupport;
+
 
 public class ValidationFactory {
     private ValidationFactory() {
@@ -35,7 +37,7 @@ public class ValidationFactory {
         validator.registerValidatorModule(instanceValidator);
         ValidationSupportChain support = new ValidationSupportChain(
                 new DefaultProfileValidationSupport()
-                ,new CareConnectProfileValidationSupport()
+                ,new CareConnectProfileValidationSupport(ctxValidator)
                 ,new SNOMEDUKMockValidationSupport() // This is to disable SNOMED CT Warnings. Mock validation to return ok for SNOMED Concepts
         );
         instanceValidator.setValidationSupport(support);
@@ -69,6 +71,10 @@ public class ValidationFactory {
                 //	System.out.println("match ** ** ");
             } else if (next.getMessage().contains("and a code is recommended to come from this value set") && next.getMessage().contains(CareConnectSystem.SNOMEDCT)) {
                 //	System.out.println("match ** ** **" );
+            } else if (next.getMessage().contains("path Patient.name (fhirPath = true and (use memberOf")) {
+                //System.out.println("** ** ** Code Issue ValueSet expansion not implemented in instanceValidator" );
+            } else if (next.getMessage().contains("Error Multiple filters not handled yet")) {
+                //System.out.println("** ** ** multiple filters in ValueSet not implemented" );
             } else {
                 OperationOutcome.OperationOutcomeIssueComponent issue = outcome.addIssue();
                 issue.setDiagnostics(next.getLocationString() + " - " + next.getMessage()).addLocation(resource.getClass().getSimpleName() + "/" + resource.getIdElement().getIdPart());
