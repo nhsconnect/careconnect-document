@@ -28,9 +28,9 @@
       <li *ngIf="authService.permission != undefined && authService.permission.validationUser == true" class="nav-item dropdown">
         <div ngbDropdown class="d-inline-block">
           <button class="btn btn-dark" id="dropdownValid"
-                  ngbDropdownToggle><i class="fa fa-flask" style="color:lightskyblue" aria-hidden="false"></i> Validation</button>
+                  ngbDropdownToggle><i class="fa fa-flask" style="color:lightskyblue" aria-hidden="false"></i> Testing</button>
           <div ngbDropdownMenu class="dropdown-menu" aria-labelledby="dropdownValid">
-            <button class="dropdown-item" routerLink="/validate">Validate Bundle</button>
+            <button class="dropdown-item" routerLink="/test">Test Bundle</button>
           </div>
         </div>
       </li>

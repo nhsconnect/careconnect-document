@@ -5,7 +5,7 @@ import {ViewDocumentComponent} from "./document-view-modules/composition-view/vi
 import {FindDocumentComponent} from "./modules/composition-find/find-document.component";
 import {PatientFindComponent} from "./modules/patient-find/patient-find.component";
 import {PatientEprPatientRecordComponent} from "./epr-modules/patient-epr-record/patient-epr-patient-record.component";
-import {ValidationLoadComponent} from "./modules/validation-load/validation-load.component";
+import {TestLoadComponent} from "./modules/test-load/test-load.component";
 import {LoginComponent} from "./modules/login/login.component";
 import {AuthoriseComponent} from "./modules/authorise/authorise.component";
 import {AuthGuard} from "./service/auth-guard";
@@ -23,7 +23,7 @@ const routes: Routes = [
   { path: 'epr/:docid/:tabid', canActivate: [AuthGuard], component: PatientEprPatientRecordComponent},
   { path: 'doc/:docid',canActivate: [AuthGuard], component: ViewDocumentComponent},
   { path: 'docs/:patientId', canActivate: [AuthGuard],component: FindDocumentComponent},
-  { path: 'validate', canActivate: [AuthGuard],component: ValidationLoadComponent }
+  { path: 'test', canActivate: [AuthGuard],component: TestLoadComponent }
 
 ];
 

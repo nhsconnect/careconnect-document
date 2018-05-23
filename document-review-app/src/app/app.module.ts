@@ -31,7 +31,7 @@ import { MedicationRequestComponent } from './component/medication-request/medic
 import { MedicationComponent } from './component/medication/medication.component';
 import { EprPrescriptionComponent } from './epr-modules/epr-prescription/epr-prescription.component';
 import { EprProcedureComponent } from './epr-modules/epr-procedure/epr-procedure.component';
-import { ValidationLoadComponent } from './modules/validation-load/validation-load.component';
+import { TestLoadComponent } from './modules/test-load/test-load.component';
 import { EprConditionComponent } from './epr-modules/epr-condition/epr-condition.component';
 import { EprAllergyIntolleranceComponent } from './epr-modules/epr-allergy-intollerance/epr-allergy-intollerance.component';
 import { DocumentReferenceComponent } from './component/document-reference/document-reference.component';
@@ -57,7 +57,7 @@ import { PractitionerSearchComponent } from './component/practitioner-search/pra
 import { OrganisationSearchComponent } from './component/organisation-search/organisation-search.component';
 import { OrganisationComponent } from './component/organisation/organisation.component';
 import { PractitionerComponent } from './component/practitioner/practitioner.component';
-import {ValidationPipe} from "./modules/validation-load/ValidationPipe";
+import {TestPipe} from "./modules/test-load/TestPipe";
 import {AuthGuard} from "./service/auth-guard";
 import {CookieService} from "angular2-cookie/core";
 import * as firebase from 'firebase';
@@ -92,7 +92,7 @@ firebase.initializeApp(environment.firebase);
     MedicationComponent,
     EprPrescriptionComponent,
     EprProcedureComponent,
-    ValidationLoadComponent,
+    TestLoadComponent,
     EprConditionComponent,
     EprAllergyIntolleranceComponent,
     DocumentReferenceComponent,
@@ -110,7 +110,7 @@ firebase.initializeApp(environment.firebase);
     OrganisationSearchComponent,
     OrganisationComponent,
     PractitionerComponent,
-    ValidationPipe
+    TestPipe
   ],
   imports: [
     BrowserModule,

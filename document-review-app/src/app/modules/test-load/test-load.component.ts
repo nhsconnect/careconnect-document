@@ -6,17 +6,17 @@ import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {error} from "../../model/error";
 
 @Component({
-  selector: 'app-validation-load',
-  templateUrl: './validation-load.component.html',
-  styleUrls: ['./validation-load.component.css']
+  selector: 'app-test-load',
+  templateUrl: './test-load.component.html',
+  styleUrls: ['./test-load.component.css']
 })
-export class ValidationLoadComponent implements OnInit {
+export class TestLoadComponent implements OnInit {
 
   response: fhir.OperationOutcome;
 
   formData: FormData = undefined;
 
-  validationForm : FormGroup;
+  testForm : FormGroup;
 
   document : DocumentRef = new DocumentRef();
 
@@ -36,7 +36,7 @@ export class ValidationLoadComponent implements OnInit {
     ]);
 
 
-    this.validationForm = new FormGroup({
+    this.testForm = new FormGroup({
       'fileName' :  this.fileName});
 
     // Assign current form group
@@ -103,13 +103,13 @@ export class ValidationLoadComponent implements OnInit {
 
   getFormValidationErrors() :boolean {
     let result : boolean = true;
-    Object.keys(this.validationForm.controls).forEach(key => {
+    Object.keys(this.testForm.controls).forEach(key => {
       console.log(key);
-      const controlErrors: ValidationErrors = this.validationForm.get(key).errors;
+      const controlErrors: ValidationErrors = this.testForm.get(key).errors;
       if (controlErrors != null) {
         Object.keys(controlErrors).forEach(keyError => {
           console.log('Key control: ' + key + ', keyError: ' + keyError + ', err value: ', controlErrors[keyError]);
-          this.validationForm.get(key).markAsDirty();
+          this.testForm.get(key).markAsDirty();
           result = false;
         });
       }

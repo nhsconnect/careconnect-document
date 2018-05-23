@@ -1,6 +1,6 @@
 <ng-template id="modalWait" #modalWait let-c="close" let-d="dismiss">
   <div class="modal-header">
-    <h4>Validating</h4>
+    <h4>Testing</h4>
   </div>
   <div class="modal-body">
     <div class="progress">
@@ -22,10 +22,10 @@
     </div>
   </div>
 </ng-template>
-<form [formGroup]="validationForm"  >
+<form [formGroup]="testForm"  >
 
     <div class="form-group">
-      <label for="fileName1">Select file to validate</label>
+      <label for="fileName1">Select file to check</label>
       <input type="file" id="fileName1" name="fileName1" class="form-control-file" (change)="fileChange($event)" placeholder="Upload file" accept=".json,.xml" [formControl]="validationForm.controls['fileName']">
     </div>
     <div *ngIf="fileName.invalid && (fileName.dirty)"
@@ -64,7 +64,7 @@
       </tr>
       </thead>
 
-        <tr  *ngFor="let issue of resJson.issue | validationFilter : model.error : model.warning : model.information " >
+        <tr  *ngFor="let issue of resJson.issue | testFilter : model.error : model.warning : model.information " >
               <td>{{issue.severity}}</td>
               <td><span *ngFor="let location of issue.location">{{location}}</span></td>
               <td>{{issue.diagnostics}}</td>

@@ -2,9 +2,9 @@ import { Pipe, PipeTransform } from '@angular/core';
 import {error} from "../../model/error";
 
 @Pipe({
-  name: 'validationFilter'
+  name: 'testFilter'
 })
-export class ValidationPipe implements PipeTransform {
+export class TestPipe implements PipeTransform {
 
     transform(items: any[], error:boolean, warning : boolean, information: boolean) {
     //  console.log("Filter "+error + " " + warning + " " + information);
