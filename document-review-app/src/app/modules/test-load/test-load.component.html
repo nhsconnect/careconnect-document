@@ -26,7 +26,7 @@
 
     <div class="form-group">
       <label for="fileName1">Select file to check</label>
-      <input type="file" id="fileName1" name="fileName1" class="form-control-file" (change)="fileChange($event)" placeholder="Upload file" accept=".json,.xml" [formControl]="validationForm.controls['fileName']">
+      <input type="file" id="fileName1" name="fileName1" class="form-control-file" (change)="fileChange($event)" placeholder="Upload file" accept=".json,.xml" [formControl]="testForm.controls['fileName']">
     </div>
     <div *ngIf="fileName.invalid && (fileName.dirty)"
          class="alert alert-danger">

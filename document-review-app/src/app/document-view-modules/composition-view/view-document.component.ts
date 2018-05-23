@@ -1,6 +1,7 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {FhirService} from "../../service/fhir.service";
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: 'app-view-document',
@@ -12,8 +13,11 @@ export class ViewDocumentComponent implements OnInit {
   @Input() document : fhir.Bundle;
   @Input() systemType : string;
 
+  @ViewChild('modalWait') modalWait;
+
   constructor(private route: ActivatedRoute
-  , private fhirService : FhirService ) { }
+  , private fhirService : FhirService
+  ,private modalService: NgbModal) { }
 
   ngOnInit() {
 
@@ -40,6 +44,7 @@ export class ViewDocumentComponent implements OnInit {
 
     this.docId = id;
 
+    let modalWaitRef = this.modalService.open( this.modalWait,{ windowClass: 'dark-modal' });
 
     this.fhirService.getBinary(id).subscribe( document => {
       let binary : fhir.Binary = document;
@@ -47,7 +52,9 @@ export class ViewDocumentComponent implements OnInit {
       this.document = JSON.parse(atob(binary.content));
     }, err=>{},
       ()=> {
+
         this.getComposition();
+        modalWaitRef.close();
       }
 
       );
