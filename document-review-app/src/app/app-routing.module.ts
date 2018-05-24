@@ -7,7 +7,6 @@ import {PatientFindComponent} from "./modules/patient-find/patient-find.componen
 import {PatientEprPatientRecordComponent} from "./epr-modules/patient-epr-record/patient-epr-patient-record.component";
 import {TestLoadComponent} from "./modules/test-load/test-load.component";
 import {LoginComponent} from "./modules/login/login.component";
-import {AuthoriseComponent} from "./modules/authorise/authorise.component";
 import {AuthGuard} from "./service/auth-guard";
 import {LogoutComponent} from "./modules/logout/logout.component";
 

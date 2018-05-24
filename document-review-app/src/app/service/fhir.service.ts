@@ -1,8 +1,12 @@
-import { Injectable } from '@angular/core';
+import {EventEmitter, Injectable, Output} from '@angular/core';
 import {Observable} from "rxjs/Observable";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Oauth2token} from "../model/oauth2token";
 import {isNumber} from "util";
+import {AuthService} from "./auth.service";
+import {AngularFireDatabase} from "angularfire2/database";
+import {Router} from "@angular/router";
+import {PlatformLocation} from "@angular/common";
 
 @Injectable()
 export class FhirService {
@@ -11,10 +15,18 @@ export class FhirService {
   // TODO https://www.intertech.com/Blog/angular-4-tutorial-handling-refresh-token-with-new-httpinterceptor/
   //
 
-  //private EPRbase: string = 'http://127.0.0.1:8080/careconnect-gateway/STU3';
-  private EPRbase: string = 'https://purple.testlab.nhs.uk/smart-on-fhir-resource/STU3';
+  private EPRbase: string = 'http://127.0.0.1:8080/careconnect-gateway-secure/STU3';
+  //private EPRbase: string = 'https://purple.testlab.nhs.uk/smart-on-fhir-resource/STU3';
 
-  private authoriseUrl: string = 'https://purple.testlab.nhs.uk/auth/';
+  private authoriseUri: string;
+
+  private tokenUri: string;
+
+  private registerUri: string;
+
+  private smartToken : Oauth2token;
+
+  oauthTokenChange : EventEmitter<Oauth2token> = new EventEmitter();
 
   public path = '/Composition';
 
@@ -22,7 +34,11 @@ export class FhirService {
     return this.EPRbase;
   }
 
-  constructor(  private http: HttpClient ) { }
+  constructor(  private http: HttpClient
+                ,private authService: AuthService
+                , public db : AngularFireDatabase
+                , private router: Router
+                , private platformLocation: PlatformLocation) { }
 
   getHeaders(contentType : boolean = true ): HttpHeaders {
 
@@ -47,18 +63,170 @@ export class FhirService {
     return headers;
   }
 
-  authoriseOAuth2(clientId : string, clientSecret :string) :Observable<Oauth2token>  {
-    const url = this.authoriseUrl + 'token?grant_type=client_credentials&client_id=' + clientId;
+  getOAuth2ServerUrls() : void  {
+    console.log("getAuthoriseUrl()");
+ //   if (this.authoriseUri !== undefined) return this.authoriseUri;
 
+    this.http.get<fhir.CapabilityStatement>(this.getEPRUrl()+'/metadata').subscribe(
+      conformance  => {
+        console.log("getAuthoriseUrl() next: ");
+        for (let rest of conformance.rest) {
+          for (let extension of rest.security.extension) {
+            //console.log("Security extensions");
+            if (extension.url == "http://fhir-registry.smarthealthit.org/StructureDefinition/oauth-uris") {
+             // console.log("smart extensions");
+              for (let smartextension of extension.extension) {
+                //console.log(smartextension.url);
+                switch (smartextension.url) {
+                  case "authorize" : {
+                      this.authoriseUri = smartextension.valueUri;
+                      break;
+                  }
+                  case "register" : {
+                    this.registerUri = smartextension.valueUri;
+                    break;
+                  }
+                  case "token" : {
+                    this.tokenUri = smartextension.valueUri;
+                    break;
+                  }
+                }
+
+              }
+            }
+          }
+        }
+
+      },
+      error1 => {},
+      () => {
+        // Check here for client id - need to store in database
+        // If no registration then register client
+
+        console.log((this.platformLocation as any).location.origin);
+
+        let clients = this.db.database.ref('oauth2/'+encodeURI((this.platformLocation as any).location.origin)).once('value').then(
+          (data) => {
+
+            if (data.val() === null) {
+              console.log('complete null');
+              // Register client with OAuth2 server
+              this.performRegister();
+            } else {
+              let auth= data.val();
+              this.performAuthorise(auth.client_id, auth.client_secret);
+            }
+          },
+          () => {
+            console.log('rejected');
+
+          }
+        );
+        console.log(clients);
+
+        console.log('call perform Grant');
+        //this.performGrant('ed73b2cb-abd0-4f75-b9a2-5f9c0535b82c','QOm0VcqJqa9stA1R0MJzHjCN_uYdo0PkY8OT68UCk2XDFxFrAUjajuqOvIom5dISjKshx2YiU51mXtx7W5UOwQ');
+        return this.authoriseUri;
+      }
+    )
+  }
+  getToken() : void {
+    console.log("getTokenUrl()");
+    this.getOAuth2ServerUrls();
+  }
+
+  getOAuthChangeEmitter() {
+    return this.oauthTokenChange;
+  }
+
+  performAuthorise (clientId : string, clientSecret :string){
     let bearerToken = 'Basic '+btoa(clientId+":"+clientSecret);
     let headers = new HttpHeaders( {'Authorization' : bearerToken});
-
+    // Expect missing redirect url
+    const url = this.authoriseUri + '?client_id=' + clientId+'&response_type=code';
     console.log(headers);
-    return this.http.post<Oauth2token>(url,'', { 'headers' : headers } );
+    this.http.post<Oauth2token>(url,'', { 'headers' : headers } ).subscribe( response => {
+        console.log(response);
+        this.smartToken = response;
+        this.authService.auth = true;
+        localStorage.setItem("access_token", this.smartToken.access_token);
+      }
+      , (error: any) => {
+        console.log(error);
+      }
+      ,() => {
+        // Emit event
+        console.log("Emit Token retrieval");
+        this.oauthTokenChange.emit(this.smartToken);
 
+
+      }
+    );
   }
+
+
+  performRegister() {
+    const url = this.registerUri;
+
+    let payload = JSON.stringify({ client_name : 'ClinicalAssuranceTool' ,
+      redirect_uris : ["http://localhost:4200/callback"],
+      client_uri : "http://localhost:4200",
+      grant_types: ["authorization_code"],
+      scope: "user/Patient.read user/Observation.read user/Encounter.read user/Condition.read user/AllergyIntolerance.read user/MedicationPrescription.read user/MedicationStatement.read user/Immunization.read"
+    });
+
+    let headers = new HttpHeaders( {'Content-Type': 'application/json '} );
+    headers = headers.append('Accept','application/json');
+    this.http.post(url,payload,{ 'headers' : headers }  ).subscribe( response => {
+        console.log("Register Response = "+response);
+        this.db.object('oauth2/'+encodeURI((this.platformLocation as any).location.origin)).set(response);
+        this.performAuthorise((response as any).client_id, (response as any).client_secret);
+      }
+      , (error: any) => {
+        console.log("Register Response Error = "+error);
+      }
+      ,() => {
+
+        console.log("Register complete()")
+
+
+
+      }
+    );
+  }
+  performToken(clientId : string, clientSecret :string) {
+    let bearerToken = 'Basic '+btoa(clientId+":"+clientSecret);
+    let headers = new HttpHeaders( {'Authorization' : bearerToken});
+    const url = this.tokenUri + '?grant_type=client_credentials&client_id=' + clientId;
+    console.log(headers);
+    this.http.post<Oauth2token>(url,'', { 'headers' : headers } ).subscribe( response => {
+        console.log(response);
+        this.smartToken = response;
+        this.authService.auth = true;
+        localStorage.setItem("access_token", this.smartToken.access_token);
+      }
+      , (error: any) => {
+      console.log(error);
+      }
+      ,() => {
+        // Emit event
+        console.log("Emit Token retrieval");
+        this.oauthTokenChange.emit(this.smartToken);
+
+
+      }
+    );
+  }
+
+  authoriseOAuth2()  {
+    console.log("authoriseOAuth2");
+
+    this.getToken();
+  }
+
+
   launchSMART(contextId : string) :Observable<Oauth2token>  {
-    const url = this.authoriseUrl + 'Launch';
+    const url = this.tokenUri + 'Launch';
     let payload = JSON.stringify({ launch_id : contextId , parameters : []  });
     let headers = new HttpHeaders( {'Authorization' : 'bearer '+localStorage.getItem("access_token")});
 

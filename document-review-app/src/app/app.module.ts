@@ -42,7 +42,6 @@ import {AngularFireModule} from "angularfire2";
 import {AngularFireDatabaseModule} from "angularfire2/database";
 import {AngularFireAuthModule} from "angularfire2/auth";
 import {environment} from "../environments/environment";
-import {AuthoriseComponent} from "./modules/authorise/authorise.component";
 import {LinksService} from "./service/links.service";
 import {PatientEprService} from "./service/patient-epr.service";
 import {ObservationDetailComponent} from "./component/observation-detail/observation-detail.component";
@@ -99,7 +98,6 @@ firebase.initializeApp(environment.firebase);
     EprDocumentReferenceComponent,
     LoginComponent,
     LogoutComponent,
-    AuthoriseComponent,
     CareGoogleChartComponent,
     ObservationDetailComponent,
     EprImmunisationComponent,

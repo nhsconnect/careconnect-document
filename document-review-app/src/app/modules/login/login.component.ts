@@ -24,7 +24,8 @@ export class LoginComponent implements OnInit {
 
   logonRedirect : string = "";
 
-  smartToken : Oauth2token;
+  subscription: any;
+
 
   constructor(private authService: AuthService,
               private router: Router,
@@ -41,7 +42,11 @@ export class LoginComponent implements OnInit {
       console.log(this.router.url);
       this.logonRedirect = this.activatedRoute.snapshot.queryParams['afterAuth'];
       console.log(this.logonRedirect);
-
+      this.subscription = this.fhirService.getOAuthChangeEmitter()
+        .subscribe(item => {
+          console.log("The Call back ran");
+          this.router.navigate(['home']);
+        });
     if (this.router.url.indexOf('/login') === -1) {
       this.authService.logout();
       this.patientMessage.clear();
@@ -151,19 +156,7 @@ export class LoginComponent implements OnInit {
          this.redirect(user);
       } else {
 
-        this.fhirService.authoriseOAuth2('ed73b2cb-abd0-4f75-b9a2-5f9c0535b82c','QOm0VcqJqa9stA1R0MJzHjCN_uYdo0PkY8OT68UCk2XDFxFrAUjajuqOvIom5dISjKshx2YiU51mXtx7W5UOwQ').subscribe( response => {
-          console.log(response);
-          this.smartToken =  response;
-          this.authService.auth = true;
-          localStorage.setItem("access_token",this.smartToken.access_token);
-
-            this.router.navigate(['home']);
-        },
-        ()=> {},
-        () => {
-
-        }
-      );
+        this.fhirService.authoriseOAuth2();
     }
 
   }
