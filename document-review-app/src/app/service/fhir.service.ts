@@ -164,7 +164,7 @@ export class FhirService {
       redirect_uris : ["http://localhost:4200/callback"],
       client_uri : "http://localhost:4200",
       grant_types: ["authorization_code"],
-      scope: "user/Patient.read user/DocumentReference.read user/Binary.read launch launch/patient launch/other"
+      scope: "user/Patient.read user/DocumentReference.read user/Binary.read smart/orchestrate_launch"
     });
 
     let headers = new HttpHeaders( {'Content-Type': 'application/json '} );
@@ -219,22 +219,33 @@ export class FhirService {
     );
   }
 
-  authoriseOAuth2()  {
-    console.log("authoriseOAuth2");
+  launchSMART(contextId : string) :Observable<Oauth2token> {
 
-    this.getToken();
-  }
+    // https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/119734296/Registering+a+Launch+Context
 
 
-  launchSMART(contextId : string) :Observable<Oauth2token>  {
-    const url = localStorage.getItem("tokenUri").replace('token','') + 'Launch';
-    let payload = JSON.stringify({ launch_id : contextId , parameters : []  });
-    let headers = new HttpHeaders( {'Authorization' : 'bearer '+localStorage.getItem("access_token")});
+    let bearerToken = 'Basic '+btoa(localStorage.getItem("clientId")+":"+localStorage.getItem("clientSecret"));
+
+    const url = localStorage.getItem("tokenUri").replace('token', '') + 'Launch';
+    let payload = JSON.stringify({launch_id: contextId, parameters: []});
+
+    let headers = new HttpHeaders({'Authorization': bearerToken });
+    headers= headers.append('Content-Type','application/json');
 
     console.log(payload);
-    return this.http.post<Oauth2token>(url,payload, { 'headers' : headers } );
-
+    return this.http.post<Oauth2token>(url,"{ launch_id : '"+contextId+"', parameters : { }  }", {'headers': headers});
   }
+
+    authoriseOAuth2()
+    {
+      console.log("authoriseOAuth2");
+
+      this.getToken();
+    }
+
+
+
+
 
   getSearchCompositions(patientId : string) : Observable<fhir.Bundle> {
 
