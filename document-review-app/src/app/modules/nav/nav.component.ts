@@ -47,15 +47,16 @@ export class NavComponent implements OnInit {
 
   smartApp() {
    // window.open(this.smartAppUrl+"4ae23017813e417d937e3ba21974581", "_blank");
-
-    this.fhirService.launchSMART('4ae23017813e417d937e3ba21974581').subscribe( response => {
-
+    let launch : string = undefined;
+    this.fhirService.launchSMART('4ae23017813e417d937e3ba21974581',this.patientEprService.patient.id).subscribe( response => {
+          launch = response.launch_id;
+          console.log("Returned Lauch = "+launch);
       },
       (err)=> {
         console.log(err);
       },
       () => {
-        window.open(this.smartAppUrl+"4ae23017813e417d937e3ba21974581", "_blank");
+        window.open(this.smartAppUrl+launch, "_blank");
       }
     );
 

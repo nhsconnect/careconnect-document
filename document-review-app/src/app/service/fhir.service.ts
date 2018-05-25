@@ -219,7 +219,7 @@ export class FhirService {
     );
   }
 
-  launchSMART(contextId : string) :Observable<Oauth2token> {
+  launchSMART(contextId : string, patientId : string) :Observable<any> {
 
     // https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/119734296/Registering+a+Launch+Context
 
@@ -233,7 +233,7 @@ export class FhirService {
     headers= headers.append('Content-Type','application/json');
 
     console.log(payload);
-    return this.http.post<Oauth2token>(url,"{ launch_id : '"+contextId+"', parameters : { }  }", {'headers': headers});
+    return this.http.post<any>(url,"{ launch_id : '"+contextId+"', parameters : { username : '"+this.authService.userDetails.displayName+"', patient : '"+patientId+"' }  }", {'headers': headers});
   }
 
     authoriseOAuth2()
