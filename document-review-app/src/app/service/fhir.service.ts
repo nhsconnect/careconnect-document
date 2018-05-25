@@ -30,6 +30,7 @@ export class FhirService {
 
   public path = '/Composition';
 
+
   getEPRUrl(): string {
     return this.EPRbase;
   }
@@ -135,33 +136,24 @@ export class FhirService {
     this.getOAuth2ServerUrls();
   }
 
+
   getOAuthChangeEmitter() {
     return this.oauthTokenChange;
   }
 
+
   performAuthorise (clientId : string, clientSecret :string){
-    let bearerToken = 'Basic '+btoa(clientId+":"+clientSecret);
-    let headers = new HttpHeaders( {'Authorization' : bearerToken});
-    // Expect missing redirect url
-    const url = this.authoriseUri + '?client_id=' + clientId+'&response_type=code';
-    console.log(headers);
-    this.http.post<Oauth2token>(url,'', { 'headers' : headers } ).subscribe( response => {
-        console.log(response);
-        this.smartToken = response;
-        this.authService.auth = true;
-        localStorage.setItem("access_token", this.smartToken.access_token);
-      }
-      , (error: any) => {
-        console.log(error);
-      }
-      ,() => {
-        // Emit event
-        console.log("Emit Token retrieval");
-        this.oauthTokenChange.emit(this.smartToken);
 
+    localStorage.setItem("clientId", clientId);
+    localStorage.setItem("clientSecret", clientSecret);
+    localStorage.setItem("authoriseUri", this.authoriseUri);
+    localStorage.setItem("tokenUri", this.tokenUri);
 
-      }
-    );
+    const url = this.authoriseUri + '?client_id=' + clientId+'&response_type=code&redirect_uri=http://localhost:4200/callback&aud=https://test.careconnect.nhs.uk';
+
+    // Perform redirect to
+    window.location.href = url;
+
   }
 
 
@@ -172,7 +164,7 @@ export class FhirService {
       redirect_uris : ["http://localhost:4200/callback"],
       client_uri : "http://localhost:4200",
       grant_types: ["authorization_code"],
-      scope: "user/Patient.read user/Observation.read user/Encounter.read user/Condition.read user/AllergyIntolerance.read user/MedicationPrescription.read user/MedicationStatement.read user/Immunization.read"
+      scope: "user/Patient.read user/DocumentReference.read user/Binary.read"
     });
 
     let headers = new HttpHeaders( {'Content-Type': 'application/json '} );
@@ -194,12 +186,22 @@ export class FhirService {
       }
     );
   }
-  performToken(clientId : string, clientSecret :string) {
-    let bearerToken = 'Basic '+btoa(clientId+":"+clientSecret);
+  performGetAccessToken(authCode :string ) {
+
+
+    let bearerToken = 'Basic '+btoa(localStorage.getItem("clientId")+":"+localStorage.getItem("clientSecret"));
     let headers = new HttpHeaders( {'Authorization' : bearerToken});
-    const url = this.tokenUri + '?grant_type=client_credentials&client_id=' + clientId;
-    console.log(headers);
-    this.http.post<Oauth2token>(url,'', { 'headers' : headers } ).subscribe( response => {
+    headers= headers.append('Content-Type','application/x-www-form-urlencoded');
+
+    const url = localStorage.getItem("tokenUri");
+
+    let body = new URLSearchParams();
+    body.set('grant_type', 'authorization_code');
+    body.set('code', authCode);
+    body.set('redirect_uri','http://localhost:4200/callback');
+
+
+    this.http.post<Oauth2token>(url,body.toString(), { 'headers' : headers } ).subscribe( response => {
         console.log(response);
         this.smartToken = response;
         this.authService.auth = true;
@@ -210,9 +212,8 @@ export class FhirService {
       }
       ,() => {
         // Emit event
-        console.log("Emit Token retrieval");
+        console.log("Emit event");
         this.oauthTokenChange.emit(this.smartToken);
-
 
       }
     );
@@ -284,13 +285,6 @@ export class FhirService {
   }
 
 
-  postFDMSDocument(document: fhir.Bundle) : Observable<any> {
-
-    const url = this.getEPRUrl() + `/Bundle`;
-
-    return this.http.post<fhir.Bundle>(url,document,{ 'headers' : this.getHeaders()});
-
-  }
 
   postBundle(document: any,contentType : string) : Observable<any> {
 

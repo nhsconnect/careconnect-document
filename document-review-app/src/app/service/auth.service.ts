@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {EventEmitter, Injectable} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {AngularFireAuth} from 'angularfire2/auth';
 import {Router} from '@angular/router';
@@ -6,11 +6,15 @@ import * as firebase from 'firebase/app';
 import {AngularFireDatabase} from "angularfire2/database";
 import {Permission} from "../model/permission";
 import {AngularFireObject} from "angularfire2/database/interfaces";
+import {Oauth2token} from "../model/oauth2token";
 
 
 
 @Injectable()
 export class AuthService {
+  set permission(value: Permission) {
+    this._permission = value;
+  }
 
   private user: Observable<firebase.User>;
 
@@ -18,9 +22,9 @@ export class AuthService {
 
   private semaphore : boolean = false;
 
-  public permission :Permission = undefined;
+  private _permission :Permission = undefined;
 
-//  permSub : AngularFireObject<Permission> = undefined;
+  private permissionChange : EventEmitter<Permission> = new EventEmitter();
 
   public auth : boolean = false;
 
@@ -38,16 +42,49 @@ export class AuthService {
     this.user.subscribe(
       (user) => {
         if (user) {
+          console.log(user);
           this.userDetails = user;
-
-
-          console.log('Subscribing on permission '+user.uid);
           this.semaphore = false;
-          this.db.database.ref('/permission/'+user.uid).once('value').then( action => {
+        }
+        else {
+          this.userDetails = null;
+        }
+      }
+    );
+  }
+
+  setPermission(permission : Permission) {
+    this._permission = permission;
+    this.permissionChange.emit(this._permission);
+  }
+
+  getPermission() : Permission {
+    return this._permission;
+  }
+
+  getPermissionChange() {
+    return this.permissionChange;
+  }
+
+  getIdToken() {
+    return this._firebaseAuth.idToken;
+  }
+
+  verifyUserProfileInfo() {
+    this._firebaseAuth.authState.subscribe(
+      (user) => {
+        if (user !== null) {
+          this.db.object('users/' + user.uid).set({
+            displayName: user.displayName,
+            email: user.email,
+            uid: user.uid,
+          });
+
+          this.db.database.ref('/permission/' + user.uid).once('value').then(action => {
 
             //console.log(action.payload.val());
-            if (action.val() != undefined && action.val()!=null) {
-              this.permission = action.val();
+            if (action.val() != undefined && action.val() != null) {
+              this.setPermission(action.val());
             } else {
               console.log('Not found existing permission. Adding basic permission ' + user.uid);
 
@@ -57,7 +94,7 @@ export class AuthService {
               } else {
                 basicPermission.userName = user.uid;
               }
-              this.permission = basicPermission;
+              this.setPermission(basicPermission);
 
               this.db.database.ref('/permission/' + user.uid).set(basicPermission).then(() => {
 
@@ -65,41 +102,15 @@ export class AuthService {
               });
 
             }
+
           });
 
         }
-        else {
-          this.userDetails = null;
-        }
+
       }
     );
   }
 
-  getIdToken() {
-    return this._firebaseAuth.idToken;
-  }
-
-  verifyUserProfileInfo() {
-    let user = this._firebaseAuth.authState.subscribe(
-      (user) => {
-        if (user !== null) {
-          this.db.object('users/' + user.uid).set({
-            displayName: user.displayName,
-            email: user.email,
-            uid: user.uid,
-          });
-        }
-      }
-    );
-  }
-
-
-
-  getuserInfo() {
-    console.log('user '+this.user);
-    console.log('user '+this.userDetails);
-    return this.userDetails;
-  }
   signInWithTwitter() {
     return this._firebaseAuth.auth.signInWithPopup(
       new firebase.auth.TwitterAuthProvider()
@@ -169,10 +180,10 @@ export class AuthService {
   logout() {
     if (!this.semaphore) {
       this.semaphore = true;
-      this.permission = undefined;
+      this.setPermission(undefined);
       this.auth = false;
       localStorage.removeItem('access_token');
-      localStorage.removeItem("PatientBanner");
+
 
         console.log('Main Logout');
        // this.removeSub();

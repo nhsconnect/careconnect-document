@@ -61,6 +61,7 @@ import {AuthGuard} from "./service/auth-guard";
 import {CookieService} from "angular2-cookie/core";
 import * as firebase from 'firebase';
 import {LogoutComponent} from "./modules/logout/logout.component";
+import { CallbackComponent } from './modules/callback/callback.component';
 
 
 
@@ -108,7 +109,8 @@ firebase.initializeApp(environment.firebase);
     OrganisationSearchComponent,
     OrganisationComponent,
     PractitionerComponent,
-    TestPipe
+    TestPipe,
+    CallbackComponent
   ],
   imports: [
     BrowserModule,

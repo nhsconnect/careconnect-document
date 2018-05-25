@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import {AuthService} from '../../service/auth.service';
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import {FhirService} from "../../service/fhir.service";
-import {Oauth2token} from "../../model/oauth2token";
 import {PatientEprService} from "../../service/patient-epr.service";
 import * as firebase from "firebase";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
@@ -26,6 +25,7 @@ export class LoginComponent implements OnInit {
 
   subscription: any;
 
+  jwt : any;
 
   constructor(private authService: AuthService,
               private router: Router,
@@ -39,21 +39,32 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
 
-      console.log(this.router.url);
+
       this.logonRedirect = this.activatedRoute.snapshot.queryParams['afterAuth'];
-      console.log(this.logonRedirect);
+
+      if (this._cookieService.get('ccri-token') !== undefined) {
+
+        this.jwt = this._cookieService.get('ccri-token');
+        console.log('Cookie Found');
+        // Cookie found so no need to logon.
+        if (this.logonRedirect !== undefined) {
+          window.location.href =this.logonRedirect;
+        }
+      }
       this.subscription = this.fhirService.getOAuthChangeEmitter()
         .subscribe(item => {
           console.log("The Call back ran");
           this.router.navigate(['home']);
         });
-    if (this.router.url.indexOf('/login') === -1) {
-      this.authService.logout();
-      this.patientMessage.clear();
-    }
+      // If full client called then perform logout. May need to revisit
+      if (this.router.url.indexOf('/login') === -1) {
+        this.authService.logout();
+        this.patientMessage.clear();
+      }
 
   }
 
+  /*
   signInWithTwitter(content) {
     this.errorMessage = "";
     this.authService.signInWithTwitter()
@@ -80,13 +91,13 @@ export class LoginComponent implements OnInit {
         this.showError(content);
       });
   }
-
+*/
 
     signInWithGoogle(content) {
       this.errorMessage = "";
       this.authService.signInWithGoogle()
         .then((user : firebase.User) => {
-          this.oauth2token(user);
+          this.performLogins(user);
         })
         .catch((err) => {
           console.log(err);
@@ -99,7 +110,7 @@ export class LoginComponent implements OnInit {
       this.errorMessage = "";
     this.authService.signInWithGithub()
       .then((user : firebase.User) => {
-         this.oauth2token(user);
+         this.performLogins(user);
       })
       .catch((err) => {
         console.log(err);
@@ -132,7 +143,7 @@ export class LoginComponent implements OnInit {
         console.log(user);
 
         if (user.emailVerified ) {
-          this.oauth2token(user);
+          this.performLogins(user);
         } else {
           console.log("Email not verified");
           this.errorMessage = "Email not verified";
@@ -150,36 +161,29 @@ export class LoginComponent implements OnInit {
 
 
 
-  oauth2token(user : firebase.User) :void {
+  performLogins(user : firebase.User) :void {
       console.log("user = "+user);
-      if (this.logonRedirect !== undefined) {
-         this.redirect(user);
-      } else {
 
-        this.fhirService.authoriseOAuth2();
-    }
+    this.authService.getIdToken().subscribe(
+      (jwt) => {
 
-  }
+        this._cookieService.put('ccri-token', jwt, {
+          domain: 'localhost',
+          path: '/',
+          expires: new Date((new Date()).getTime() + 3 * 60000)
+        });
 
-  redirect(user : firebase.User) {
-
-      this.authService.verifyUserProfileInfo();
-
-      this.authService.getIdToken().subscribe(
-        (jwt) => {
-
-          this._cookieService.put('ccri-token', jwt, {
-            domain: 'localhost',
-            path: '/',
-            expires: new Date((new Date()).getTime() + 3 * 60000)
-          });
-
+        if (this.logonRedirect !== undefined) {
           window.location.href =this.logonRedirect;
+        } else {
+          this.fhirService.authoriseOAuth2();
         }
-      )
-
+      }
+    )
 
   }
+
+
 
   showError(content ) {
 

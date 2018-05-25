@@ -24,9 +24,10 @@ export class LogoutComponent implements OnInit {
     this._cookieService.remove('ccri-token');
 
     localStorage.removeItem('access_token');
-    localStorage.removeItem("PatientBanner");
+
 
     this.authService.permission = undefined;
+
     this.authService._firebaseAuth.auth.signOut().then((res) => {
       if (this.logoutRedirect !=undefined) {
         window.location.href =this.logoutRedirect;

@@ -13,12 +13,17 @@ export class AuthGuard  implements CanActivate {
 
 
 
-    if (this.authService.permission != undefined ) {
-      console.log("AlwaysAuthGuard");
-      if (localStorage.getItem("access_token") !=undefined) return true
-      else return false;
+    if (this.authService.getPermission() != undefined ) {
+        console.log("AlwaysAuthGuard + Access token = ");
+        if (localStorage.getItem("access_token") !=undefined) {
+
+          return true;
+        }
+        else {
+          return false;
+        }
     } else {
-      console.log("AlwaysAuthGuard");
+      console.log("AlwaysAuthGuard - No permission");
       return false;
     }
   }

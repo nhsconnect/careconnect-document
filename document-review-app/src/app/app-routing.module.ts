@@ -9,6 +9,7 @@ import {TestLoadComponent} from "./modules/test-load/test-load.component";
 import {LoginComponent} from "./modules/login/login.component";
 import {AuthGuard} from "./service/auth-guard";
 import {LogoutComponent} from "./modules/logout/logout.component";
+import {CallbackComponent} from "./modules/callback/callback.component";
 
 const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -22,7 +23,8 @@ const routes: Routes = [
   { path: 'epr/:docid/:tabid', canActivate: [AuthGuard], component: PatientEprPatientRecordComponent},
   { path: 'doc/:docid',canActivate: [AuthGuard], component: ViewDocumentComponent},
   { path: 'docs/:patientId', canActivate: [AuthGuard],component: FindDocumentComponent},
-  { path: 'test', canActivate: [AuthGuard],component: TestLoadComponent }
+  { path: 'test', canActivate: [AuthGuard],component: TestLoadComponent },
+  { path: 'callback', component: CallbackComponent },
 
 ];
 

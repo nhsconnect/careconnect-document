@@ -2,7 +2,7 @@
 <nav class="navbar navbar-expand navbar-dark bg-dark ">
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
-      <li *ngIf="authService.permission !=undefined" class="nav-item dropdown">
+      <li *ngIf="permission !=undefined" class="nav-item dropdown">
         <div ngbDropdown class="d-inline-block">
           <button class="btn btn-dark" id="dropdownMenu1"
                   ngbDropdownToggle><i class="fa fa-hospital-o" style="color:lightskyblue" aria-hidden="false"></i> Patient</button>
@@ -16,7 +16,7 @@
         </div>
       </li>
       <!-- <li *ngIf="authService.permission != undefined && authService.permission.hacker">User Log</li> -->
-      <li *ngIf="authService.permission != undefined && authService.permission.smartOnFhirUser == true && patientEprService.patient != undefined" class="nav-item dropdown">
+      <li *ngIf="permission != undefined && permission.smartOnFhirUser == true && patientEprService.patient != undefined" class="nav-item dropdown">
         <div ngbDropdown class="d-inline-block">
           <button class="btn btn-dark" id="dropdownMenu3"
                   ngbDropdownToggle><i class="fa fa-fire" style="color:lightskyblue" aria-hidden="false"></i> SmartOnFhir</button>
@@ -25,7 +25,7 @@
           </div>
         </div>
       </li>
-      <li *ngIf="authService.permission != undefined && authService.permission.validationUser == true" class="nav-item dropdown">
+      <li *ngIf="permission != undefined && permission.validationUser == true" class="nav-item dropdown">
         <div ngbDropdown class="d-inline-block">
           <button class="btn btn-dark" id="dropdownValid"
                   ngbDropdownToggle><i class="fa fa-flask" style="color:lightskyblue" aria-hidden="false"></i> Testing</button>
@@ -34,7 +34,7 @@
           </div>
         </div>
       </li>
-      <li *ngIf="authService.permission !=undefined" class="nav-item dropdown">
+      <li *ngIf="permission !=undefined" class="nav-item dropdown">
         <div ngbDropdown class="d-inline-block">
           <button class="btn btn-dark" id="dropdownMenu2"
                   ngbDropdownToggle><i class="fa fa-file-o" style="color:lightskyblue" aria-hidden="false"></i> Document</button>
@@ -46,7 +46,7 @@
       </li>
     </ul>
     <ul class="navbar-nav ml-auto">
-      <li *ngIf="authService.permission !=undefined" class="nav-item active"><button class="btn btn-dark" routerLink="/logout"><i class="fa fa-sign-out" style="color:lightskyblue" aria-hidden="false"></i> Logout</button></li>
+      <li *ngIf="permission !=undefined" class="nav-item active"><button class="btn btn-dark" routerLink="/logout"><i class="fa fa-sign-out" style="color:lightskyblue" aria-hidden="false"></i> Logout</button></li>
   </ul>
     </div>
 

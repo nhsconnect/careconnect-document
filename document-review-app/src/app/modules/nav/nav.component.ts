@@ -25,49 +25,25 @@ export class NavComponent implements OnInit {
   title="FHIR DocumentRef Viewer";
 
 
-  smartAppUrl : string = "http://127.0.0.1:9000/launch.html?iss=https://purple.testlab.nhs.uk/careconnect-ri/STU3&launch=";
+  smartAppUrl : string = "http://127.0.0.1:9000/launch.html?iss=http://localhost:8080/careconnect-gateway-secure/STU3&launch=";
+  //smartAppUrl : string = "http://127.0.0.1:9000/launch.html?iss=https://purple.testlab.nhs.uk/careconnect-ri/STU3&launch=";
   //smartAppUrl : "http://127.0.0.1:9000/launch.html?fhirServiceUrl=http://purple.testlab.nhs.uk/careconnect-ri/STU3&patientId=";
 
   patient : fhir.Patient;
 
   permission : Permission;
 
+  subscription: any;
+
   ngOnInit() {
 
-  }
-  /*
-  logout () {
-    return this.authService.logout();
+    this.subscription = this.authService.getPermissionChange()
+      .subscribe(item => {
+        console.log('Nav Permission change callback ran');
+        this.permission = item;
+      });
   }
 
-
-  isLoggedIn(){
-    let isLoggedIn : boolean =this.authService.isLoggedIn();
-
-    return isLoggedIn;
-  }
-  hasPatient() : boolean {
-    if (this.patientEprService.patient != undefined) {
-      this.patient = this.patientEprService.patient;
-    }
-    return false;
-  }
-  hasAuthorised() : boolean {
-    if (localStorage.getItem('access_token') != undefined && localStorage.getItem('access_token') != null) return true;
-    return false;
-  }
-  getType() : string {
-    if (localStorage.getItem('access_type') != undefined) return localStorage.getItem('access_type');
-    return "";
-  }
-  deAuthorise() : void {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem("PatientBanner");
-  }
-  Authorise() : void {
-    this.router.navigate(['authorise']);
-  }
-*/
 
   smartApp() {
     window.open(this.smartAppUrl+"4ae23017813e417d937e3ba21974581", "_blank");
