@@ -20,7 +20,7 @@ export class AuthService {
 
   public permission :Permission = undefined;
 
-  permSub : AngularFireObject<Permission> = undefined;
+//  permSub : AngularFireObject<Permission> = undefined;
 
   public auth : boolean = false;
 
@@ -43,12 +43,11 @@ export class AuthService {
 
           console.log('Subscribing on permission '+user.uid);
           this.semaphore = false;
-          this.permSub = this.db.object('/permission/'+user.uid);
-          this.permSub.snapshotChanges().subscribe(action => {
+          this.db.database.ref('/permission/'+user.uid).once('value').then( action => {
 
-            console.log(action.payload.val());
-            if (action.payload.val() != undefined && action.payload.val()!=null) {
-              this.permission = action.payload.val();
+            //console.log(action.payload.val());
+            if (action.val() != undefined && action.val()!=null) {
+              this.permission = action.val();
             } else {
               console.log('Not found existing permission. Adding basic permission ' + user.uid);
 
@@ -145,6 +144,7 @@ export class AuthService {
     }
   }
 
+  /*
   removeSub() {
     if (this.permSub != undefined && this.userDetails != undefined) {
       console.log('Calling unsubscribe');
@@ -154,6 +154,7 @@ export class AuthService {
       this.user.subscribe().unsubscribe();
     }
   }
+*/
 
   fireBaseLogout() {
     console.log('Logging out');
@@ -174,7 +175,7 @@ export class AuthService {
       localStorage.removeItem("PatientBanner");
 
         console.log('Main Logout');
-        this.removeSub();
+       // this.removeSub();
 
         this.fireBaseLogout();
 
