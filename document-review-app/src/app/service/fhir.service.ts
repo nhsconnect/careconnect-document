@@ -164,7 +164,7 @@ export class FhirService {
       redirect_uris : ["http://localhost:4200/callback"],
       client_uri : "http://localhost:4200",
       grant_types: ["authorization_code"],
-      scope: "user/Patient.read user/DocumentReference.read user/Binary.read"
+      scope: "user/Patient.read user/DocumentReference.read user/Binary.read launch launch/patient launch/other"
     });
 
     let headers = new HttpHeaders( {'Content-Type': 'application/json '} );
@@ -227,7 +227,7 @@ export class FhirService {
 
 
   launchSMART(contextId : string) :Observable<Oauth2token>  {
-    const url = this.tokenUri + 'Launch';
+    const url = localStorage.getItem("tokenUri").replace('token','') + 'Launch';
     let payload = JSON.stringify({ launch_id : contextId , parameters : []  });
     let headers = new HttpHeaders( {'Authorization' : 'bearer '+localStorage.getItem("access_token")});
 

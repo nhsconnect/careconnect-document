@@ -46,7 +46,8 @@ export class NavComponent implements OnInit {
 
 
   smartApp() {
-    window.open(this.smartAppUrl+"4ae23017813e417d937e3ba21974581", "_blank");
+   // window.open(this.smartAppUrl+"4ae23017813e417d937e3ba21974581", "_blank");
+
     this.fhirService.launchSMART('4ae23017813e417d937e3ba21974581').subscribe( response => {
 
       },
