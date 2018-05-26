@@ -141,6 +141,16 @@ export class FhirService {
     return this.oauthTokenChange;
   }
 
+  getScope() :string {
+    return localStorage.getItem("scope");
+  }
+  hasScope(resource : string) : boolean {
+    let scope : string= this.getScope();
+    //console.log(scope + ' checking for '+resource);
+    if (scope.indexOf(resource) !== -1) return true;
+    return false;
+  }
+
 
   performAuthorise (clientId : string, clientSecret :string){
 
@@ -206,6 +216,12 @@ export class FhirService {
         this.smartToken = response;
         this.authService.auth = true;
         localStorage.setItem("access_token", this.smartToken.access_token);
+        if (this.authService.getPermission() !==undefined) {
+          let permission = this.authService.getPermission();
+          permission.cat_access_token = this.smartToken.access_token;
+          this.authService.setPermission(permission);
+        }
+        localStorage.setItem("scope", this.smartToken.scope);
       }
       , (error: any) => {
       console.log(error);

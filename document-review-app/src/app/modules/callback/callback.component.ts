@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {FhirService} from "../../service/fhir.service";
+import {AuthService} from "../../service/auth.service";
 
 @Component({
   selector: 'app-callback',
@@ -11,11 +12,14 @@ export class CallbackComponent implements OnInit {
 
   private authCode :string ;
 
-  subscription: any;
+  subOAuth2 : any;
+
+  subPermission : any;
 
   constructor(private activatedRoute: ActivatedRoute
     ,private  fhirService : FhirService
-    , private router: Router) { }
+    ,private router: Router
+    ,public authService: AuthService) { }
 
   ngOnInit() {
     this.authCode = this.activatedRoute.snapshot.queryParams['code'];
@@ -24,16 +28,22 @@ export class CallbackComponent implements OnInit {
 
     if (this.authCode !==undefined) {
 
-      this.subscription = this.fhirService.getOAuthChangeEmitter()
+      this.subOAuth2 = this.fhirService.getOAuthChangeEmitter()
         .subscribe(item => {
-          console.log("The Call back ran");
+          console.log("Callback OAuth2 Call back ran");
 
         },
           ()=> {},
 
         ()=> {
-          window.location.href = '';
-          this.router.navigate(['home']);
+
+
+        });
+
+      this.subPermission = this.authService.getPermissionChange()
+        .subscribe(item => {
+          console.log('Callback Nav Permission change callback ran');
+          this.router.navigateByUrl('home').then( ()=> { console.log('Navigate by Url'); });
         });
 
       this.fhirService.performGetAccessToken(this.authCode);

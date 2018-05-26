@@ -21,11 +21,11 @@ export class LoginComponent implements OnInit {
 
   errorMessage : string;
 
-  logonRedirect : string = "";
+  logonRedirect : string = undefined;
 
   subscription: any;
 
-  jwt : any;
+  jwt : any = undefined;
 
   constructor(private authService: AuthService,
               private router: Router,

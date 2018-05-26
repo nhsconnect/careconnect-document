@@ -9,4 +9,6 @@ export class Permission {
   validationUser : boolean;
 
   userName : string;
+
+  cat_access_token : string;
 }

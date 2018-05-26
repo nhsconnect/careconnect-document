@@ -5,8 +5,7 @@ import {Router} from '@angular/router';
 import * as firebase from 'firebase/app';
 import {AngularFireDatabase} from "angularfire2/database";
 import {Permission} from "../model/permission";
-import {AngularFireObject} from "angularfire2/database/interfaces";
-import {Oauth2token} from "../model/oauth2token";
+
 
 
 
@@ -55,6 +54,12 @@ export class AuthService {
 
   setPermission(permission : Permission) {
     this._permission = permission;
+    if (this.userDetails !== undefined && permission !== undefined) {
+      this.db.object('/permission/' + this.userDetails.uid).update(permission).then(() => {
+
+        console.log('Recorded new permission in database');
+      });
+    }
     this.permissionChange.emit(this._permission);
   }
 
@@ -96,10 +101,7 @@ export class AuthService {
               }
               this.setPermission(basicPermission);
 
-              this.db.database.ref('/permission/' + user.uid).set(basicPermission).then(() => {
 
-                console.log('Recorded new permission in database');
-              });
 
             }
 
