@@ -16,6 +16,7 @@ import {
 import {HttpErrorResponse} from '@angular/common/http';
 import {FhirService} from "../../service/fhir.service";
 import { Router} from "@angular/router";
+import {AuthService} from "../../service/auth.service";
 
 
 @Component({
@@ -32,7 +33,7 @@ export class PatientSearchComponent implements OnInit {
   @Output() patientSelected : EventEmitter<fhir.Patient> = new EventEmitter();
 
   constructor(private fhirService: FhirService
-
+    ,private authService : AuthService
   ) {}
 
 
@@ -42,6 +43,11 @@ export class PatientSearchComponent implements OnInit {
     this.searchTerms.next(term);
   }
 
+  createObservable(i) {
+    return new Observable();
+  }
+
+
   ngOnInit(): void {
     this.patients$ = this.searchTerms.pipe(
       // wait 300ms after each keystroke before considering the term
@@ -50,7 +56,12 @@ export class PatientSearchComponent implements OnInit {
       // ignore new term if same as previous term
       distinctUntilChanged(),
 
-      catchError(this.logError('Patient')),
+      catchError(err => {
+        console.log('In pipe error handler');
+        this.logError('Patient');
+
+        return this.createObservable(err);
+      }),
 
       // switch to new search observable each time the term changes
       switchMap((term: string) => {
@@ -66,7 +77,10 @@ export class PatientSearchComponent implements OnInit {
             pat$[i] = <fhir.Patient>bundle.entry[i].resource;
           }
         }
-        return pat$;}
+        return pat$;},
+        error => {
+
+        }
         )
     );
 
@@ -86,13 +100,14 @@ export class PatientSearchComponent implements OnInit {
       return (message :any) => {
         if(message instanceof HttpErrorResponse) {
           if (message.status == 401) {
+                this.authService.logout();
             //this.messageService.add(title + ": 401 Unauthorised");
           }
           if (message.status == 403) {
             //this.messageService.add(title + ": 403 Forbidden (insufficient scope)");
           }
         }
-        console.log(message);
+        console.log("Patient Search error handling "+message);
 
         return Observable.never();
 

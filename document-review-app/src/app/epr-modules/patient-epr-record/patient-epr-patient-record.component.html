@@ -1,6 +1,6 @@
 
 <ngb-tabset #tabs type="pills">
-  <span *ngIf="auth.permission != undefined && auth.permission.eprUser">
+  <span *ngIf="authService.permission != undefined && authService.permission.eprUser">
   <ngb-tab  id="tab-summary" >
     <ng-template ngbTabTitle><b>Summary</b></ng-template>
     <ng-template ngbTabContent>

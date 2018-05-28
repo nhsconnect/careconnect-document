@@ -59,7 +59,7 @@ export class PatientEprPatientRecordComponent implements OnInit {
               private route: ActivatedRoute,
               private linksService : LinksService,
               private patientEprService : PatientEprService,
-              public auth : AuthService
+              public authService : AuthService
               ) { }
 
 
@@ -128,6 +128,12 @@ export class PatientEprPatientRecordComponent implements OnInit {
     this.fhirService.getEPRPatient(patientId).subscribe(document => {
         this.patient = document;
         this.patientEprService.set(document);
+      },
+      error => {
+        console.log(error);
+       if (error.status = 401) {
+         this.authService.logout();
+       }
       }
     );
     /*
