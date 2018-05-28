@@ -23,7 +23,7 @@ export class AuthService {
 
   private _permission :Permission = undefined;
 
-  private permissionChange : EventEmitter<Permission> = new EventEmitter();
+  private permissionEvent : EventEmitter<Permission> = new EventEmitter();
 
   public auth : boolean = false;
 
@@ -52,23 +52,36 @@ export class AuthService {
     );
   }
 
-  setPermission(permission : Permission) {
-    this._permission = permission;
-    if (this.userDetails !== undefined && permission !== undefined) {
+  setDbPermission(permission : Permission) {
+
+    if (permission !==undefined) {
+      if (permission.cat_access_token !== localStorage.getItem("access_token")) {
+        permission.cat_access_token = localStorage.getItem("access_token");
+      }
+    }
+    console.log("SetDbPermissions = "+this.userDetails);
+    if (this.userDetails !== undefined && permission !== undefined ) {
+      console.log("Updating permissions");
       this.db.object('/permission/' + this.userDetails.uid).update(permission).then(() => {
 
-        console.log('Recorded new permission in database');
+        console.log('Recorded new permission in database ');
+       // if (permission.cat_access_token != undefined) console.log(permission.cat_access_token);
+        //this.setLocalPermission(permission);
       });
     }
-    this.permissionChange.emit(this._permission);
+
+  }
+  setLocalPermission(permission : Permission) {
+    this._permission = permission;
+    this.permissionEvent.emit(this._permission);
   }
 
   getPermission() : Permission {
     return this._permission;
   }
 
-  getPermissionChange() {
-    return this.permissionChange;
+  getPermissionEventEmitter() {
+    return this.permissionEvent;
   }
 
   getIdToken() {
@@ -89,7 +102,7 @@ export class AuthService {
 
             //console.log(action.payload.val());
             if (action.val() != undefined && action.val() != null) {
-              this.setPermission(action.val());
+              this.setLocalPermission(action.val());
             } else {
               console.log('Not found existing permission. Adding basic permission ' + user.uid);
 
@@ -99,9 +112,9 @@ export class AuthService {
               } else {
                 basicPermission.userName = user.uid;
               }
-              this.setPermission(basicPermission);
-
-
+              basicPermission.cat_access_token = localStorage.getItem("access_token");
+              this.setDbPermission(basicPermission);
+              this.setLocalPermission(basicPermission);
 
             }
 
@@ -182,7 +195,7 @@ export class AuthService {
   logout() {
     if (!this.semaphore) {
       this.semaphore = true;
-      this.setPermission(undefined);
+      this.setLocalPermission(undefined);
       this.auth = false;
       localStorage.removeItem('access_token');
 

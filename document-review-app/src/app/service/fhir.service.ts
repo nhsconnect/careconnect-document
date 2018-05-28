@@ -64,7 +64,7 @@ export class FhirService {
     return headers;
   }
 
-  getOAuth2ServerUrls() : void  {
+  authoriseOAuth2() : void  {
     console.log("getAuthoriseUrl()");
  //   if (this.authoriseUri !== undefined) return this.authoriseUri;
 
@@ -131,10 +131,12 @@ export class FhirService {
       }
     )
   }
+  /*
   getToken() : void {
     console.log("getTokenUrl()");
     this.getOAuth2ServerUrls();
   }
+  */
 
 
   getOAuthChangeEmitter() {
@@ -216,11 +218,7 @@ export class FhirService {
         this.smartToken = response;
         this.authService.auth = true;
         localStorage.setItem("access_token", this.smartToken.access_token);
-        if (this.authService.getPermission() !==undefined) {
-          let permission = this.authService.getPermission();
-          permission.cat_access_token = this.smartToken.access_token;
-          this.authService.setPermission(permission);
-        }
+
         localStorage.setItem("scope", this.smartToken.scope);
       }
       , (error: any) => {
@@ -228,7 +226,7 @@ export class FhirService {
       }
       ,() => {
         // Emit event
-        console.log("Emit event");
+        console.log("performGetAccessToken - Emit event");
         this.oauthTokenChange.emit(this.smartToken);
 
       }
@@ -252,13 +250,14 @@ export class FhirService {
     return this.http.post<any>(url,"{ launch_id : '"+contextId+"', parameters : { username : '"+this.authService.userDetails.displayName+"', patient : '"+patientId+"' }  }", {'headers': headers});
   }
 
-    authoriseOAuth2()
-    {
-      console.log("authoriseOAuth2");
+  /*
+  authoriseOAuth2()
+  {
+    console.log("authoriseOAuth2");
 
-      this.getToken();
-    }
-
+    this.getToken();
+  }
+*/
 
 
 

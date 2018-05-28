@@ -27,7 +27,7 @@ export class CallbackComponent implements OnInit {
 
 
     if (this.authCode !==undefined) {
-
+/*
       this.subOAuth2 = this.fhirService.getOAuthChangeEmitter()
         .subscribe(item => {
           console.log("Callback OAuth2 Call back ran");
@@ -39,11 +39,13 @@ export class CallbackComponent implements OnInit {
 
 
         });
-
-      this.subPermission = this.authService.getPermissionChange()
+*/
+      this.subPermission = this.authService.getPermissionEventEmitter()
         .subscribe(item => {
           console.log('Callback Nav Permission change callback ran');
           this.router.navigateByUrl('home').then( ()=> { console.log('Navigate by Url'); });
+          // Potentially a loop but need to record the access token
+          this.authService.setDbPermission(this.authService.getPermission());
         });
 
       this.fhirService.performGetAccessToken(this.authCode);
