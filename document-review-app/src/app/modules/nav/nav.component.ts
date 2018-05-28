@@ -24,8 +24,8 @@ export class NavComponent implements OnInit {
 
   title="FHIR DocumentRef Viewer";
 
-
-  smartAppUrl : string = "http://127.0.0.1:9000/launch.html?iss=http://localhost:8080/careconnect-gateway-secure/STU3&launch=";
+  cardiacAppUrl : string = "http://127.0.0.1:8000/launch.html?iss=http://localhost:8080/careconnect-gateway-secure/STU3&launch=";
+  growthAppUrl : string = "http://127.0.0.1:9000/launch.html?iss=http://localhost:8080/careconnect-gateway-secure/STU3&launch=";
   //smartAppUrl : string = "http://127.0.0.1:9000/launch.html?iss=https://purple.testlab.nhs.uk/careconnect-ri/STU3&launch=";
   //smartAppUrl : "http://127.0.0.1:9000/launch.html?fhirServiceUrl=http://purple.testlab.nhs.uk/careconnect-ri/STU3&patientId=";
 
@@ -45,10 +45,10 @@ export class NavComponent implements OnInit {
   }
 
 
-  smartApp() {
-   // window.open(this.smartAppUrl+"4ae23017813e417d937e3ba21974581", "_blank");
+  growthApp() {
+
     let launch : string = undefined;
-    this.fhirService.launchSMART('4ae23017813e417d937e3ba21974581',this.patientEprService.patient.id).subscribe( response => {
+    this.fhirService.launchSMART('growth_chart','4ae23017813e417d937e3ba21974581',this.patientEprService.patient.id).subscribe( response => {
           launch = response.launch_id;
           console.log("Returned Lauch = "+launch);
       },
@@ -56,7 +56,24 @@ export class NavComponent implements OnInit {
         console.log(err);
       },
       () => {
-        window.open(this.smartAppUrl+launch, "_blank");
+        window.open(this.growthAppUrl+launch, "_blank");
+      }
+    );
+
+  }
+
+  cardiacApp() {
+
+    let launch : string = undefined;
+    this.fhirService.launchSMART('cardiac_risk','4ae23017813e417d937e3ba21974582',this.patientEprService.patient.id).subscribe( response => {
+        launch = response.launch_id;
+        console.log("Returned Lauch = "+launch);
+      },
+      (err)=> {
+        console.log(err);
+      },
+      () => {
+        window.open(this.cardiacAppUrl+launch, "_blank");
       }
     );
 

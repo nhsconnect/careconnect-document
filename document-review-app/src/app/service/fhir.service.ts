@@ -233,7 +233,7 @@ export class FhirService {
     );
   }
 
-  launchSMART(contextId : string, patientId : string) :Observable<any> {
+  launchSMART(appId : string, contextId : string, patientId : string) :Observable<any> {
 
     // https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/119734296/Registering+a+Launch+Context
 
