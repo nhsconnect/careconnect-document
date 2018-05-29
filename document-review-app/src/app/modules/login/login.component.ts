@@ -162,24 +162,20 @@ export class LoginComponent implements OnInit {
 
 
   performLogins(user : firebase.User) :void {
-      console.log("user = "+user);
+      console.log("logon.performLogons: user = "+user);
 
-    this.authService.getIdToken().subscribe(
-      (jwt) => {
+      this.authService.getCookieEventEmitter()
+          .subscribe(item => {
+              console.log('Login Cookie Emitter Ran ');
+              if (this.logonRedirect !== undefined) {
+                window.location.href =this.logonRedirect;
+              } else {
+                this.fhirService.authoriseOAuth2();
+              }
+          }
+          );
 
-        this._cookieService.put('ccri-token', jwt, {
-          domain: 'localhost',
-          path: '/',
-          expires: new Date((new Date()).getTime() + 3 * 60000)
-        });
-
-        if (this.logonRedirect !== undefined) {
-          window.location.href =this.logonRedirect;
-        } else {
-          this.fhirService.authoriseOAuth2();
-        }
-      }
-    )
+     this.authService.setCookie();
 
   }
 

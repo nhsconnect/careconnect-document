@@ -131,13 +131,6 @@ export class FhirService {
       }
     )
   }
-  /*
-  getToken() : void {
-    console.log("getTokenUrl()");
-    this.getOAuth2ServerUrls();
-  }
-  */
-
 
   getOAuthChangeEmitter() {
     return this.oauthTokenChange;
@@ -249,18 +242,6 @@ export class FhirService {
     console.log(payload);
     return this.http.post<any>(url,"{ launch_id : '"+contextId+"', parameters : { username : '"+this.authService.userDetails.displayName+"', patient : '"+patientId+"' }  }", {'headers': headers});
   }
-
-  /*
-  authoriseOAuth2()
-  {
-    console.log("authoriseOAuth2");
-
-    this.getToken();
-  }
-*/
-
-
-
 
   getSearchCompositions(patientId : string) : Observable<fhir.Bundle> {
 

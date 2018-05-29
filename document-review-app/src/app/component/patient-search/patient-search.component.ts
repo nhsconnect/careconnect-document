@@ -17,6 +17,7 @@ import {HttpErrorResponse} from '@angular/common/http';
 import {FhirService} from "../../service/fhir.service";
 import { Router} from "@angular/router";
 import {AuthService} from "../../service/auth.service";
+import {of} from "rxjs/observable/of";
 
 
 @Component({
@@ -56,18 +57,14 @@ export class PatientSearchComponent implements OnInit {
       // ignore new term if same as previous term
       distinctUntilChanged(),
 
-      catchError(err => {
-        console.log('In pipe error handler');
-        this.logError('Patient');
-
-        return this.createObservable(err);
-      }),
+      catchError(this.handleError('getPatients', [])),
 
       // switch to new search observable each time the term changes
       switchMap((term: string) => {
 
          return this.fhirService.searchPatients(term);
-      }),
+      }
+      ),
       map(bundle  => {
         var pat$: fhir.Patient[] = [];
         var i;
@@ -86,6 +83,19 @@ export class PatientSearchComponent implements OnInit {
 
   }
 
+  private handleError<T> (operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
+
+      // TODO: send the error to remote logging infrastructure
+      console.error(error); // log to console instead
+
+      // TODO: better job of transforming error for user consumption
+      console.log(`${operation} failed: ${error.message}`);
+
+      // Let the app keep running by returning an empty result.
+      return of(result as T);
+    };
+  }
 
   selectPatient(patient : fhir.Patient) {
     console.log("Patient clicked = " + patient.id);

@@ -33,11 +33,13 @@ export class NavComponent implements OnInit {
 
   permission : Permission;
 
-  subscription: any;
+  subscriptionPermission: any;
+
+
 
   ngOnInit() {
 
-    this.subscription = this.authService.getPermissionEventEmitter()
+    this.subscriptionPermission = this.authService.getPermissionEventEmitter()
       .subscribe(item => {
         console.log('Nav Permission change callback ran');
         this.permission = item;
@@ -48,34 +50,45 @@ export class NavComponent implements OnInit {
   growthApp() {
 
     let launch : string = undefined;
-    this.fhirService.launchSMART('growth_chart','4ae23017813e417d937e3ba21974581',this.patientEprService.patient.id).subscribe( response => {
-          launch = response.launch_id;
-          console.log("Returned Lauch = "+launch);
-      },
-      (err)=> {
-        console.log(err);
-      },
-      () => {
-        window.open(this.growthAppUrl+launch, "_blank");
+
+    this.authService.getCookieEventEmitter().subscribe(
+      ()=> {
+        this.fhirService.launchSMART('growth_chart','4ae23017813e417d937e3ba21974581',this.patientEprService.patient.id).subscribe( response => {
+            launch = response.launch_id;
+            console.log("Returned Lauch = "+launch);
+          },
+          (err)=> {
+            console.log(err);
+          },
+          () => {
+            window.open(this.growthAppUrl+launch, "_blank");
+          }
+        );
+
       }
     );
+    this.authService.setCookie();
 
   }
 
   cardiacApp() {
 
     let launch : string = undefined;
-    this.fhirService.launchSMART('cardiac_risk','4ae23017813e417d937e3ba21974582',this.patientEprService.patient.id).subscribe( response => {
-        launch = response.launch_id;
-        console.log("Returned Lauch = "+launch);
-      },
-      (err)=> {
-        console.log(err);
-      },
-      () => {
-        window.open(this.cardiacAppUrl+launch, "_blank");
+    this.authService.getCookieEventEmitter().subscribe(
+      ()=> {
+        this.fhirService.launchSMART('cardiac_risk', '4ae23017813e417d937e3ba21974582', this.patientEprService.patient.id).subscribe(response => {
+            launch = response.launch_id;
+            console.log("Returned Lauch = " + launch);
+          },
+          (err) => {
+            console.log(err);
+          },
+          () => {
+            window.open(this.cardiacAppUrl + launch, "_blank");
+          }
+        );
       }
-    );
+    )
 
   }
 

@@ -5,6 +5,7 @@ import {Router} from '@angular/router';
 import * as firebase from 'firebase/app';
 import {AngularFireDatabase} from "angularfire2/database";
 import {Permission} from "../model/permission";
+import {CookieService} from "angular2-cookie/core";
 
 
 
@@ -25,11 +26,14 @@ export class AuthService {
 
   private permissionEvent : EventEmitter<Permission> = new EventEmitter();
 
+  private cookieEvent : EventEmitter<any> = new EventEmitter();
+
   public auth : boolean = false;
 
   constructor(public _firebaseAuth: AngularFireAuth
-              , private router: Router
-              , public db : AngularFireDatabase
+            , private router: Router
+            , public db : AngularFireDatabase
+            ,private _cookieService:CookieService
               ) {
     this.user = _firebaseAuth.authState;
 
@@ -80,6 +84,23 @@ export class AuthService {
     return this._permission;
   }
 
+  getCookieEventEmitter() {
+    return this.cookieEvent;
+  }
+  setCookie() {
+    this.getIdToken().subscribe(
+      (jwt) => {
+        console.log('Storing cookie');
+        this._cookieService.put('ccri-token', jwt, {
+          domain: 'localhost',
+          path: '/',
+          expires: new Date((new Date()).getTime() + 3 * 60000)
+        });
+
+        this.cookieEvent.emit(jwt);
+      }
+    )
+  }
   getPermissionEventEmitter() {
     return this.permissionEvent;
   }
