@@ -10,10 +10,12 @@ import {LoginComponent} from "./modules/login/login.component";
 import {AuthGuard} from "./service/auth-guard";
 import {LogoutComponent} from "./modules/logout/logout.component";
 import {CallbackComponent} from "./modules/callback/callback.component";
+import {LoginKeycloakComponent} from "./modules/login-keycloak/login-keycloak.component";
 
 const routes: Routes = [
   { path: '', component: LoginComponent },
   { path: 'login', component: LoginComponent },
+  { path: 'keycloak', component: LoginKeycloakComponent },
   { path: 'logout', component: LogoutComponent },
   { path: 'home', canActivate: [AuthGuard], component: PatientFindComponent },
   { path: 'logout', component: LogoutComponent },

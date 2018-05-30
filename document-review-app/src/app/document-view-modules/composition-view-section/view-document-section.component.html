@@ -86,8 +86,10 @@
 
         </ng-template>
 
-      <button class="btn-info"  placement="top" (click)="open(modalContent)">
+      <button *ngIf="section.entry != undefined" class="btn-info"  placement="top" (click)="open(modalContent)">
         View Structured Content</button>
+      <button *ngIf="section.entry == undefined" disabled="true" class="btn-outline-info"  placement="top" (click)="open(modalContent)">
+        No Structured Content</button>
     </div>
   </div>
   <div class="card-body" >

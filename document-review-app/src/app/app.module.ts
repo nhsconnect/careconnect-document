@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import {ErrorHandler, NgModule} from '@angular/core';
 import {FormBuilder, FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import { AppComponent } from './app.component';
@@ -62,6 +62,9 @@ import {CookieService} from "angular2-cookie/core";
 import * as firebase from 'firebase';
 import {LogoutComponent} from "./modules/logout/logout.component";
 import { CallbackComponent } from './modules/callback/callback.component';
+import {ErrorsHandler} from "./service/errors-handler";
+import { LoginKeycloakComponent } from './modules/login-keycloak/login-keycloak.component';
+import {KeycloakService} from "./service/keycloak.service";
 
 
 
@@ -110,7 +113,8 @@ firebase.initializeApp(environment.firebase);
     OrganisationComponent,
     PractitionerComponent,
     TestPipe,
-    CallbackComponent
+    CallbackComponent,
+    LoginKeycloakComponent
   ],
   imports: [
     BrowserModule,
@@ -132,6 +136,11 @@ firebase.initializeApp(environment.firebase);
     ,PatientEprService
     ,AuthGuard
     ,CookieService
+    ,KeycloakService,
+    {
+      provide: ErrorHandler,
+      useClass: ErrorsHandler,
+    }
   ],
   bootstrap: [AppComponent]
 })

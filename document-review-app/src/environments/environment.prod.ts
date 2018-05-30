@@ -1,5 +1,6 @@
 export const environment = {
   production: true,
+  keycloakRootUrl: 'http://localhost:8080/auth',
   firebase: {
     apiKey: "AIzaSyDOZAaiv8VP7i4IfViF_u5fEhgL1sjGSCQ",
     authDomain: "ccri-f0694.firebaseapp.com",

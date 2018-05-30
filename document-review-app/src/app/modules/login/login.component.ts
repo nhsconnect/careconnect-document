@@ -6,6 +6,7 @@ import {PatientEprService} from "../../service/patient-epr.service";
 import * as firebase from "firebase";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {CookieService} from "angular2-cookie/core";
+import {KeycloakService} from "../../service/keycloak.service";
 
 @Component({
   selector: 'app-login',
@@ -34,6 +35,7 @@ export class LoginComponent implements OnInit {
               ,private modalService: NgbModal
               ,private activatedRoute: ActivatedRoute
               ,private _cookieService:CookieService
+              ,public keycloak : KeycloakService
     ) {
   }
 
@@ -41,6 +43,8 @@ export class LoginComponent implements OnInit {
 
 
       this.logonRedirect = this.activatedRoute.snapshot.queryParams['afterAuth'];
+
+      console.log(this.keycloak.getUsername());
 
       if (this._cookieService.get('ccri-token') !== undefined) {
 

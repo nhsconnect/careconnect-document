@@ -15,7 +15,7 @@ export class FhirService {
   // TODO https://www.intertech.com/Blog/angular-4-tutorial-handling-refresh-token-with-new-httpinterceptor/
   //
 
-  private EPRbase: string = 'http://127.0.0.1:8080/careconnect-gateway-secure/STU3';
+  private EPRbase: string = 'http://127.0.0.1:9090/careconnect-gateway-secure/STU3';
   //private EPRbase: string = 'https://purple.testlab.nhs.uk/smart-on-fhir-resource/STU3';
 
   private authoriseUri: string;

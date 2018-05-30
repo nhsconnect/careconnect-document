@@ -24,8 +24,8 @@ export class NavComponent implements OnInit {
 
   title="FHIR DocumentRef Viewer";
 
-  cardiacAppUrl : string = "http://127.0.0.1:8000/launch.html?iss=http://localhost:8080/careconnect-gateway-secure/STU3&launch=";
-  growthAppUrl : string = "http://127.0.0.1:9000/launch.html?iss=http://localhost:8080/careconnect-gateway-secure/STU3&launch=";
+  cardiacAppUrl : string = "http://127.0.0.1:8000/launch.html?iss=http://localhost:9090/careconnect-gateway-secure/STU3&launch=";
+  growthAppUrl : string = "http://127.0.0.1:9000/launch.html?iss=http://localhost:9090/careconnect-gateway-secure/STU3&launch=";
   //smartAppUrl : string = "http://127.0.0.1:9000/launch.html?iss=https://purple.testlab.nhs.uk/careconnect-ri/STU3&launch=";
   //smartAppUrl : "http://127.0.0.1:9000/launch.html?fhirServiceUrl=http://purple.testlab.nhs.uk/careconnect-ri/STU3&patientId=";
 
@@ -74,6 +74,9 @@ export class NavComponent implements OnInit {
   cardiacApp() {
 
     let launch : string = undefined;
+
+    console.log('cardiac app clicked');
+
     this.authService.getCookieEventEmitter().subscribe(
       ()=> {
         this.fhirService.launchSMART('cardiac_risk', '4ae23017813e417d937e3ba21974582', this.patientEprService.patient.id).subscribe(response => {

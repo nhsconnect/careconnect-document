@@ -57,34 +57,30 @@ export class PatientSearchComponent implements OnInit {
       // ignore new term if same as previous term
       distinctUntilChanged(),
 
-      catchError(this.handleError('getPatients', [])),
-
       // switch to new search observable each time the term changes
       switchMap((term: string) => {
-
-         return this.fhirService.searchPatients(term);
-      }
+         return this.fhirService.searchPatients(term) }
+           //,()=> { }
       ),
+
       map(bundle  => {
         var pat$: fhir.Patient[] = [];
         var i;
         if (bundle != undefined && bundle.hasOwnProperty("entry")) {
           for (i = 0; i < bundle.entry.length && i < 10; i++) {
-            //console.log("Entry="+i);
             pat$[i] = <fhir.Patient>bundle.entry[i].resource;
           }
         }
-        return pat$;},
-        error => {
-
-        }
+        return pat$;}
         )
-    );
+    ), catchError(this.handleError('getPatients', []));
 
   }
 
   private handleError<T> (operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
+
+      console.log('patient search ERROR');
 
       // TODO: send the error to remote logging infrastructure
       console.error(error); // log to console instead
