@@ -33,6 +33,11 @@ export class KeycloakService {
           console.log(keycloakAuth);
           KeycloakService.auth.loggedIn = true;
           KeycloakService.auth.authz = keycloakAuth;
+          /*
+          if (keycloakAuth !== undefined) {
+            localStorage.setItem("keycloak.auth",keycloakAuth);
+          }
+          */
           KeycloakService.auth.logoutUrl = keycloakAuth.authServerUrl
             + '/realms/fhir/protocol/openid-connect/logout?redirect_uri='
             + document.baseURI;
@@ -52,7 +57,7 @@ export class KeycloakService {
     window.location.href = KeycloakService.auth.logoutUrl;
   }
 
-  public getUsername(): string {
+  static getUsername(): string {
     return KeycloakService.auth.authz.tokenParsed.preferred_username;
   }
 
@@ -62,6 +67,15 @@ export class KeycloakService {
 
   getToken(): Promise<string> {
     return new Promise<string>((resolve, reject) => {
+
+      /*
+      if (KeycloakService.auth.authz === undefined) {
+        console.log('Missing auth, attempting to retrieve from localStorage');
+            KeycloakService.auth.authz = localStorage.getItem("keycloak.auth");
+            console.log(localStorage.getItem("keycloak.auth"));
+      }
+      */
+
       if (KeycloakService.auth.authz.token) {
         KeycloakService.auth.authz
           .updateToken(5)

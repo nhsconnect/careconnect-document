@@ -7,6 +7,7 @@ import {AuthService} from "./auth.service";
 import {AngularFireDatabase} from "angularfire2/database";
 import {Router} from "@angular/router";
 import {PlatformLocation} from "@angular/common";
+import {environment} from "../../environments/environment";
 
 @Injectable()
 export class FhirService {
@@ -14,9 +15,6 @@ export class FhirService {
 
   // TODO https://www.intertech.com/Blog/angular-4-tutorial-handling-refresh-token-with-new-httpinterceptor/
   //
-
-  private EPRbase: string = 'http://127.0.0.1:9090/careconnect-gateway-secure/STU3';
-  //private EPRbase: string = 'https://purple.testlab.nhs.uk/smart-on-fhir-resource/STU3';
 
   private authoriseUri: string;
 
@@ -32,7 +30,7 @@ export class FhirService {
 
 
   getEPRUrl(): string {
-    return this.EPRbase;
+    return environment.cat.eprUrl;
   }
 
   constructor(  private http: HttpClient
@@ -103,30 +101,15 @@ export class FhirService {
       () => {
         // Check here for client id - need to store in database
         // If no registration then register client
+        // Dynamic registration not present at the mo but   this.performRegister();
 
         console.log((this.platformLocation as any).location.origin);
 
-        let clients = this.db.database.ref('oauth2/'+encodeURI((this.platformLocation as any).location.origin)).once('value').then(
-          (data) => {
 
-            if (data.val() === null) {
-              console.log('complete null');
-              // Register client with OAuth2 server
-              this.performRegister();
-            } else {
-              let auth= data.val();
-              this.performAuthorise(auth.client_id, auth.client_secret);
-            }
-          },
-          () => {
-            console.log('rejected');
-
-          }
-        );
-        console.log(clients);
+        this.performAuthorise(environment.cat.client_id, environment.cat.client_secret);
 
         console.log('call perform Grant');
-        //this.performGrant('ed73b2cb-abd0-4f75-b9a2-5f9c0535b82c','QOm0VcqJqa9stA1R0MJzHjCN_uYdo0PkY8OT68UCk2XDFxFrAUjajuqOvIom5dISjKshx2YiU51mXtx7W5UOwQ');
+
         return this.authoriseUri;
       }
     )
@@ -149,8 +132,7 @@ export class FhirService {
 
   performAuthorise (clientId : string, clientSecret :string){
 
-    localStorage.setItem("clientId", clientId);
-    localStorage.setItem("clientSecret", clientSecret);
+
     localStorage.setItem("authoriseUri", this.authoriseUri);
     localStorage.setItem("tokenUri", this.tokenUri);
 
@@ -194,7 +176,7 @@ export class FhirService {
   performGetAccessToken(authCode :string ) {
 
 
-    let bearerToken = 'Basic '+btoa(localStorage.getItem("clientId")+":"+localStorage.getItem("clientSecret"));
+    let bearerToken = 'Basic '+btoa(environment.cat.client_id+":"+environment.cat.client_secret);
     let headers = new HttpHeaders( {'Authorization' : bearerToken});
     headers= headers.append('Content-Type','application/x-www-form-urlencoded');
 

@@ -8,10 +8,11 @@ import {KeycloakService} from "./app/service/keycloak.service";
 if (environment.production) {
   enableProdMode();
 }
-
+/*
 KeycloakService.init()
   .then(() => platformBrowserDynamic().bootstrapModule(AppModule))
   .catch(e => window.location.reload());
+*/
 
 platformBrowserDynamic().bootstrapModule(AppModule)
   .catch(err => console.log(err));

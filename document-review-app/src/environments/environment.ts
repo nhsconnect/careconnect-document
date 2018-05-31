@@ -6,6 +6,11 @@
 export const environment = {
   production: false,
   keycloakRootUrl: 'http://localhost:8080/auth',
+  cat : {
+    eprUrl : 'http://127.0.0.1:9090/careconnect-gateway-secure/STU3',
+    client_id : '8b7fb34f-756d-4431-b75c-58bb2a0b41c1',
+    client_secret : 'AKB3iOSv-UnAZUF1oOpRKLqWWeVzEf_YTLqyNrIrUPxB0DOgVrXRgJouYbi_rN3jKSDLXsJxnVVqtQqLAC2wlg'
+  },
   firebase: {
     apiKey: "AIzaSyDOZAaiv8VP7i4IfViF_u5fEhgL1sjGSCQ",
     authDomain: "ccri-f0694.firebaseapp.com",

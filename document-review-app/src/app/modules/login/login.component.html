@@ -11,6 +11,7 @@
     {{ errorMessage }}
   </div>
 </ng-template>
+<!--
 <div *ngIf="logonRedirect == undefined || jwt == undefined" class="container">
 
       <div class="row">
@@ -41,18 +42,7 @@
                 </div>
 
                 <div class="form-group">
-<!--
-                 <button type="buton" class="btn btn-block" (click)="signInWithFacebook(modalContent)">
-                   <i class="fa fa-facebook" aria-hidden="true"></i>
-                   Login with Facebook
-                 </button>
--->
-                  <!--
-                  <button type="button" class="btn btn-block" (click)="signInWithTwitter(modalContent)">
-                    <i class="fa fa-twitter" aria-hidden="true"></i>
-                    Login with Twitter
-                  </button>
--->
+
                   <button type="button" class="btn btn-block" (click)="signInWithGithub(modalContent)">
                     <i class="fa fa-github" aria-hidden="true"></i>
                     Login with Github
@@ -67,10 +57,11 @@
 
             </div>
           </div>
-         <!-- <span class="label label-warning">{{errorMessage}}</span> -->
-        </div> <!-- end card -->
+
+        </div>
         </div>
 
 
     </div>
 
+-->

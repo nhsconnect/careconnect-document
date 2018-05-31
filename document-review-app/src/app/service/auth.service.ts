@@ -6,6 +6,7 @@ import * as firebase from 'firebase/app';
 import {AngularFireDatabase} from "angularfire2/database";
 import {Permission} from "../model/permission";
 import {CookieService} from "angular2-cookie/core";
+import {KeycloakService} from "./keycloak.service";
 
 
 
@@ -29,6 +30,8 @@ export class AuthService {
   private cookieEvent : EventEmitter<any> = new EventEmitter();
 
   public auth : boolean = false;
+
+
 
   constructor(public _firebaseAuth: AngularFireAuth
             , private router: Router
@@ -88,19 +91,20 @@ export class AuthService {
     return this.cookieEvent;
   }
   setCookie() {
-    this.getIdToken().subscribe(
-      (jwt) => {
-        console.log('Storing cookie');
-        this._cookieService.put('ccri-token', jwt, {
-          domain: 'localhost',
-          path: '/',
-          expires: new Date((new Date()).getTime() + 3 * 60000)
-        });
+      console.log('Storing cookie');
+      let jwt: any = KeycloakService.auth.authz.token;
+      console.log('Storing cookie - token = '+jwt);
 
-        this.cookieEvent.emit(jwt);
-      }
-    )
+      this._cookieService.put('ccri-token', jwt , {
+        domain: 'localhost',
+        path: '/',
+        expires: new Date((new Date()).getTime() + 3 * 60000)
+      });
+
+      this.cookieEvent.emit(jwt);
   }
+
+
   getPermissionEventEmitter() {
     return this.permissionEvent;
   }
