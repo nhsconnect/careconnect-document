@@ -17,9 +17,11 @@ export class KeycloakService {
   static init(): Promise<any> {
     //let keycloakAuth: any = new Keycloak('keycloak.json');
     const keycloakAuth: any = Keycloak({
-      url: environment.keycloakRootUrl,
-      realm: 'fhir',
-      clientId: 'ccri',
+      url: environment.keycloak.RootUrl,
+      authServerUrl: environment.keycloak.authServerUrl,
+
+      realm: environment.keycloak.realm,
+      clientId: environment.keycloak.client_id,
       'ssl-required': 'external',
       'public-client': true
     });
@@ -33,11 +35,7 @@ export class KeycloakService {
           console.log(keycloakAuth);
           KeycloakService.auth.loggedIn = true;
           KeycloakService.auth.authz = keycloakAuth;
-          /*
-          if (keycloakAuth !== undefined) {
-            localStorage.setItem("keycloak.auth",keycloakAuth);
-          }
-          */
+
           KeycloakService.auth.logoutUrl = keycloakAuth.authServerUrl
             + '/realms/fhir/protocol/openid-connect/logout?redirect_uri='
             + document.baseURI;
@@ -53,8 +51,6 @@ export class KeycloakService {
     console.log('*** LOGOUT');
     KeycloakService.auth.loggedIn = false;
     KeycloakService.auth.authz = null;
-
-    window.location.href = KeycloakService.auth.logoutUrl;
   }
 
   static getUsername(): string {

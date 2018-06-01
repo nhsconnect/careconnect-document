@@ -38,6 +38,9 @@ export class LoginComponent implements OnInit {
     ) {
   }
 
+  // https://symbiotics.co.za/integrating-keycloak-with-an-angular-4-web-application/
+
+
   ngOnInit() {
 
       this.logonRedirect = this.activatedRoute.snapshot.queryParams['afterAuth'];
@@ -80,7 +83,7 @@ export class LoginComponent implements OnInit {
           .subscribe(item => {
               console.log('Login Cookie Emitter Ran ');
               if (this.logonRedirect !== undefined) {
-                //window.location.href =this.logonRedirect;
+                window.location.href =this.logonRedirect;
               } else {
                 this.fhirService.authoriseOAuth2();
               }

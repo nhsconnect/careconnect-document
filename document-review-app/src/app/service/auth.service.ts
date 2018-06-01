@@ -17,9 +17,9 @@ export class AuthService {
     this._permission = value;
   }
 
-  private user: Observable<firebase.User>;
+ // private user: Observable<firebase.User>;
 
-  public userDetails: firebase.User = null;
+  //public userDetails: firebase.User = null;
 
   private semaphore : boolean = false;
 
@@ -33,61 +33,28 @@ export class AuthService {
 
 
 
-  constructor(public _firebaseAuth: AngularFireAuth
-            , private router: Router
-            , public db : AngularFireDatabase
+  constructor(
+             private router: Router
+
             ,private _cookieService:CookieService
               ) {
-    this.user = _firebaseAuth.authState;
 
 
-      // copy profile info to database for a richer and more accessible user profile database
 
-    this.verifyUserProfileInfo();
-
-    this.user.subscribe(
-      (user) => {
-        if (user) {
-          console.log(user);
-          this.userDetails = user;
-          this.semaphore = false;
-        }
-        else {
-          this.userDetails = null;
-        }
-      }
-    );
-  }
-
-  setDbPermission(permission : Permission) {
-
-    if (permission !==undefined) {
-      if (permission.cat_access_token !== localStorage.getItem("access_token")) {
-        permission.cat_access_token = localStorage.getItem("access_token");
-      }
-    }
-    console.log("SetDbPermissions = "+this.userDetails);
-    if (this.userDetails !== undefined && permission !== undefined ) {
-      console.log("Updating permissions");
-      this.db.object('/permission/' + this.userDetails.uid).update(permission).then(() => {
-
-        console.log('Recorded new permission in database ');
-       // if (permission.cat_access_token != undefined) console.log(permission.cat_access_token);
-        //this.setLocalPermission(permission);
-      });
-    }
+    this.updatePermission();
 
   }
+
+
   setLocalPermission(permission : Permission) {
     this._permission = permission;
     this.permissionEvent.emit(this._permission);
   }
 
-  getPermission() : Permission {
-    return this._permission;
-  }
+
 
   getCookieEventEmitter() {
+
     return this.cookieEvent;
   }
   setCookie() {
@@ -103,54 +70,28 @@ export class AuthService {
 
       this.cookieEvent.emit(jwt);
   }
+  getCookie() {
+
+    // This should also include a check for expired cookie, return undefined if it is.
+    return this._cookieService.get('ccri-token');
+  }
 
 
   getPermissionEventEmitter() {
     return this.permissionEvent;
   }
 
-  getIdToken() {
-    return this._firebaseAuth.idToken;
+  updatePermission() {
+
+
+      let basicPermission = new Permission();
+
+      basicPermission.cat_access_token = localStorage.getItem("access_token");
+
+      this.setLocalPermission(basicPermission);
   }
 
-  verifyUserProfileInfo() {
-    this._firebaseAuth.authState.subscribe(
-      (user) => {
-        if (user !== null) {
-          this.db.object('users/' + user.uid).set({
-            displayName: user.displayName,
-            email: user.email,
-            uid: user.uid,
-          });
-
-          this.db.database.ref('/permission/' + user.uid).once('value').then(action => {
-
-            //console.log(action.payload.val());
-            if (action.val() != undefined && action.val() != null) {
-              this.setLocalPermission(action.val());
-            } else {
-              console.log('Not found existing permission. Adding basic permission ' + user.uid);
-
-              let basicPermission = new Permission();
-              if (user.displayName != undefined) {
-                basicPermission.userName = user.displayName;
-              } else {
-                basicPermission.userName = user.uid;
-              }
-              basicPermission.cat_access_token = localStorage.getItem("access_token");
-              this.setDbPermission(basicPermission);
-              this.setLocalPermission(basicPermission);
-
-            }
-
-          });
-
-        }
-
-      }
-    );
-  }
-
+  /*
   signInWithTwitter() {
     return this._firebaseAuth.auth.signInWithPopup(
       new firebase.auth.TwitterAuthProvider()
@@ -194,7 +135,7 @@ export class AuthService {
       return true;
     }
   }
-
+*/
   /*
   removeSub() {
     if (this.permSub != undefined && this.userDetails != undefined) {
@@ -207,6 +148,7 @@ export class AuthService {
   }
 */
 
+  /*
   fireBaseLogout() {
     console.log('Logging out');
     this.userDetails = undefined;
@@ -217,6 +159,8 @@ export class AuthService {
         this.router.navigate(['/']);
       });
   }
+  */
+
   logout() {
     if (!this.semaphore) {
       this.semaphore = true;
@@ -225,12 +169,8 @@ export class AuthService {
       localStorage.removeItem('access_token');
 
 
-        console.log('Main Logout');
-       // this.removeSub();
+      console.log('Main Logout');
 
-        this.fireBaseLogout();
-
-      // }
     }
   }
 

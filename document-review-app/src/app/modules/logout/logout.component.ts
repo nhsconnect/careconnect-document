@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import {CookieService} from "angular2-cookie/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {AuthService} from "../../service/auth.service";
+import {KeycloakService} from "../../service/keycloak.service";
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'app-logout',
@@ -12,32 +14,34 @@ export class LogoutComponent implements OnInit {
 
   logoutRedirect : string = "";
 
-  constructor( private authService: AuthService
-    ,private activatedRoute: ActivatedRoute
-    ,private router: Router
-    ,private _cookieService:CookieService
+  constructor(
+      private authService: AuthService
+      ,private activatedRoute: ActivatedRoute
+      ,private router: Router
+      ,private _cookieService:CookieService
+      ,private keycloak : KeycloakService
   ) { }
 
   ngOnInit(
   ) {
     this.logoutRedirect = this.activatedRoute.snapshot.queryParams['afterLogout'];
+    if (this.logoutRedirect === undefined) {
+      console.log(environment.keycloak.authServerUrl+'/realms/'+ environment.keycloak.realm+'/protocol/openid-connect/logout?redirect_uri='
+      + document.baseURI);
+      this.logoutRedirect = environment.keycloak.authServerUrl+'/realms/'+ environment.keycloak.realm+'/protocol/openid-connect/logout?redirect_uri='
+        + document.baseURI;
+    }
     this._cookieService.remove('ccri-token');
 
     localStorage.removeItem('access_token');
 
+    this.keycloak.logout();
 
-    this.authService.permission = undefined;
+    this.authService.setLocalPermission(undefined);
 
-    this.authService._firebaseAuth.auth.signOut().then((res) => {
-      if (this.logoutRedirect !=undefined) {
-        window.location.href =this.logoutRedirect;
-      } else {
-        this.router.navigate(['/']);
-      }
-
-    });
-
-
+    if (this.logoutRedirect !== undefined) {
+      window.location.href = this.logoutRedirect;
+    }
 
 
 

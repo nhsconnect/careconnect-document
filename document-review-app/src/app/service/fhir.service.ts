@@ -195,6 +195,8 @@ export class FhirService {
         localStorage.setItem("access_token", this.smartToken.access_token);
 
         localStorage.setItem("scope", this.smartToken.scope);
+
+        this.authService.updatePermission();
       }
       , (error: any) => {
       console.log(error);
@@ -222,7 +224,7 @@ export class FhirService {
     headers= headers.append('Content-Type','application/json');
 
     console.log(payload);
-    return this.http.post<any>(url,"{ launch_id : '"+contextId+"', parameters : { username : '"+this.authService.userDetails.displayName+"', patient : '"+patientId+"' }  }", {'headers': headers});
+    return this.http.post<any>(url,"{ launch_id : '"+contextId+"', parameters : { username : 'Get Details From Keycloak', patient : '"+patientId+"' }  }", {'headers': headers});
   }
 
   getSearchCompositions(patientId : string) : Observable<fhir.Bundle> {

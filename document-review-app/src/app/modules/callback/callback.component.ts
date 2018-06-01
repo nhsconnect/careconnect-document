@@ -18,34 +18,19 @@ export class CallbackComponent implements OnInit {
 
   constructor(private activatedRoute: ActivatedRoute
     ,private  fhirService : FhirService
-    ,private router: Router
-    ,public authService: AuthService) { }
+    ,private router: Router) { }
 
   ngOnInit() {
     this.authCode = this.activatedRoute.snapshot.queryParams['code'];
 
-
-
     if (this.authCode !==undefined) {
-/*
+
       this.subOAuth2 = this.fhirService.getOAuthChangeEmitter()
         .subscribe(item => {
-          console.log("Callback OAuth2 Call back ran");
-
-        },
-          ()=> {},
-
-        ()=> {
-
-
-        });
-*/
-      this.subPermission = this.authService.getPermissionEventEmitter()
-        .subscribe(item => {
-          console.log('Callback Nav Permission change callback ran');
+          console.log('Callback Access Token callback ran');
           this.router.navigateByUrl('home').then( ()=> { console.log('Navigate by Url'); });
           // Potentially a loop but need to record the access token
-          this.authService.setDbPermission(this.authService.getPermission());
+
         });
 
       this.fhirService.performGetAccessToken(this.authCode);

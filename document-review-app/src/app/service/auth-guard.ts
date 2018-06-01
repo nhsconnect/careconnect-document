@@ -12,26 +12,21 @@ export class AuthGuard  implements CanActivate {
   }
   canActivate() {
 
-    if (KeycloakService.auth !== undefined && KeycloakService.auth.authz != undefined) {
-      console.log("Auth Guard " + KeycloakService.auth.authz.authenticated);
-      return KeycloakService.auth.authz.authenticated;
+    if (this.authService.getCookie() !== undefined) {
+      // no need to process keycloak, cookie present
+      return true;
     }
+    if (KeycloakService.auth !== undefined) {
+      if (KeycloakService.auth.authz != undefined) {
+        console.log("Auth Guard " + KeycloakService.auth.authz.authenticated);
+        return KeycloakService.auth.authz.authenticated;
+      } else {
+        console.log('Keycloak defined but auth is not - Unable to activate route');
+        return false;
+      }
+    }
+    console.log('Unable to activate route' );
     return false;
   }
-  /*
-    if (this.authService.getPermission() != undefined ) {
-        console.log("AlwaysAuthGuard + Access token = ");
-        if (localStorage.getItem("access_token") !=undefined) {
 
-          return true;
-        }
-        else {
-          return false;
-        }
-    } else {
-      console.log("AlwaysAuthGuard - No permission");
-      return false;
-    }
-  }
-  */
 }

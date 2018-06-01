@@ -15,10 +15,9 @@ import {FhirService} from "../../service/fhir.service";
 export class NavComponent implements OnInit {
 
   constructor(public authService: AuthService,
-              private  fhirService : FhirService,
+              private fhirService : FhirService,
               public patientEprService : PatientEprService,
-              private router : Router,
-              public db : AngularFireDatabase) {
+            ) {
 
   }
 
@@ -26,8 +25,6 @@ export class NavComponent implements OnInit {
 
   cardiacAppUrl : string = "http://127.0.0.1:8000/launch.html?iss=http://localhost:9090/careconnect-gateway-secure/STU3&launch=";
   growthAppUrl : string = "http://127.0.0.1:9000/launch.html?iss=http://localhost:9090/careconnect-gateway-secure/STU3&launch=";
-  //smartAppUrl : string = "http://127.0.0.1:9000/launch.html?iss=https://purple.testlab.nhs.uk/careconnect-ri/STU3&launch=";
-  //smartAppUrl : "http://127.0.0.1:9000/launch.html?fhirServiceUrl=http://purple.testlab.nhs.uk/careconnect-ri/STU3&patientId=";
 
   patient : fhir.Patient;
 
