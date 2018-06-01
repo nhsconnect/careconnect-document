@@ -136,10 +136,16 @@ export class FhirService {
     localStorage.setItem("authoriseUri", this.authoriseUri);
     localStorage.setItem("tokenUri", this.tokenUri);
 
-    const url = this.authoriseUri + '?client_id=' + clientId+'&response_type=code&redirect_uri=http://localhost:4200/callback&aud=https://test.careconnect.nhs.uk';
+    if (localStorage.getItem('access_token')!= undefined) {
+      // access token is present so forgo access token retrieval
+      this.authService.updatePermission();
+      this.router.navigateByUrl('home');
+    } else {
 
-    // Perform redirect to
-    window.location.href = url;
+      const url = this.authoriseUri + '?client_id=' + clientId + '&response_type=code&redirect_uri=http://localhost:4200/callback&aud=https://test.careconnect.nhs.uk';
+      // Perform redirect to
+      window.location.href = url;
+    }
 
   }
 
@@ -173,6 +179,8 @@ export class FhirService {
       }
     );
   }
+
+
   performGetAccessToken(authCode :string ) {
 
 

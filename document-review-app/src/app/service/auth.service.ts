@@ -91,6 +91,19 @@ export class AuthService {
       this.setLocalPermission(basicPermission);
   }
 
+  logout() {
+    if (!this.semaphore) {
+      this.semaphore = true;
+      this.setLocalPermission(undefined);
+      this.auth = false;
+      localStorage.removeItem('access_token');
+
+
+      console.log('Main Logout');
+
+    }
+  }
+
   /*
   signInWithTwitter() {
     return this._firebaseAuth.auth.signInWithPopup(
@@ -161,17 +174,6 @@ export class AuthService {
   }
   */
 
-  logout() {
-    if (!this.semaphore) {
-      this.semaphore = true;
-      this.setLocalPermission(undefined);
-      this.auth = false;
-      localStorage.removeItem('access_token');
 
-
-      console.log('Main Logout');
-
-    }
-  }
 
 }

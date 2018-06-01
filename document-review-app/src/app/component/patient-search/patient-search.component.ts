@@ -106,7 +106,7 @@ export class PatientSearchComponent implements OnInit {
       return (message :any) => {
         if(message instanceof HttpErrorResponse) {
           if (message.status == 401) {
-                this.authService.logout();
+            //this.authService.logout();
             //this.messageService.add(title + ": 401 Unauthorised");
           }
           if (message.status == 403) {

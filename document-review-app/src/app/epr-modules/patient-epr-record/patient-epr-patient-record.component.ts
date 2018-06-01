@@ -132,7 +132,7 @@ export class PatientEprPatientRecordComponent implements OnInit {
       error => {
         console.log(error);
        if (error.status = 401) {
-         this.authService.logout();
+        // this.authService.logout();
        }
       }
     );
