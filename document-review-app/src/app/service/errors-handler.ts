@@ -17,6 +17,9 @@ export class ErrorsHandler implements ErrorHandler {
         // Handle offline error
       } else {
         // Handle Http Error (error.status === 403, 404...)
+        if (error.status == 401) {
+          console.log('Need to refresh access token');
+        }
       }
     } else {
       // Handle Client Error (Angular Error, ReferenceError...)
