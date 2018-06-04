@@ -11,7 +11,7 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {FileUploadModule} from "ng2-file-upload";
 import { ViewDocumentComponent } from './document-view-modules/composition-view/view-document.component';
 import {FhirService} from "./service/fhir.service";
-import {HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import { ViewDocumentSectionComponent } from './document-view-modules/composition-view-section/view-document-section.component';
 import { PatientSearchComponent } from './component/patient-search/patient-search.component';
 import {PatientItemComponent} from "./component/patient/patient-item.component";
@@ -65,6 +65,8 @@ import { CallbackComponent } from './modules/callback/callback.component';
 import {ErrorsHandler} from "./service/errors-handler";
 
 import {KeycloakService} from "./service/keycloak.service";
+import {TokenInterceptor} from "./service/token-interceptor";
+import {Oauth2Service} from "./service/oauth2.service";
 
 
 
@@ -135,10 +137,16 @@ firebase.initializeApp(environment.firebase);
     ,PatientEprService
     ,AuthGuard
     ,CookieService
-    ,KeycloakService,
+    ,KeycloakService
+    ,Oauth2Service,
     {
       provide: ErrorHandler,
       useClass: ErrorsHandler,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true
     }
   ],
   bootstrap: [AppComponent]

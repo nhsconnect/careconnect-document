@@ -58,9 +58,9 @@ export class AuthService {
     return this.cookieEvent;
   }
   setCookie() {
-      console.log('Storing cookie');
+
       let jwt: any = KeycloakService.auth.authz.token;
-      console.log('Storing cookie - token = '+jwt);
+
 
       this._cookieService.put('ccri-token', jwt , {
         domain: 'localhost',
@@ -99,7 +99,7 @@ export class AuthService {
       localStorage.removeItem('access_token');
 
 
-      console.log('Main Logout');
+
 
     }
   }

@@ -13,13 +13,8 @@ export const environment = {
   },
   cat : {
     eprUrl : 'http://127.0.0.1:9090/careconnect-gateway-secure/STU3',
-    client_id : '0b1c2961-d759-4fe2-8f24-a87437902c2a',
+    client_id : 'clinical-assurance-tool',
     client_secret : 'AM3ai-PGoZZRW-7osWbzvGlDBHjHq7M2aBlpNttreHeEyB5jequWy8fsHMVQP4JV0Kd0Fzrtu0iNEqGqguq69Qs'
-  },
-  catWin : {
-    eprUrl : 'http://127.0.0.1:9090/careconnect-gateway-secure/STU3',
-    client_id : '8b7fb34f-756d-4431-b75c-58bb2a0b41c1',
-    client_secret : 'AKB3iOSv-UnAZUF1oOpRKLqWWeVzEf_YTLqyNrIrUPxB0DOgVrXRgJouYbi_rN3jKSDLXsJxnVVqtQqLAC2wlg'
   },
   firebase: {
     apiKey: "AIzaSyDOZAaiv8VP7i4IfViF_u5fEhgL1sjGSCQ",

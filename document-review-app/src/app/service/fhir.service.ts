@@ -29,7 +29,7 @@ export class FhirService {
   public path = '/Composition';
 
 
-  getEPRUrl(): string {
+  public getEPRUrl(): string {
     return environment.cat.eprUrl;
   }
 
@@ -53,12 +53,7 @@ export class FhirService {
   getEPRHeaders(contentType : boolean = true ): HttpHeaders {
 
     let headers = this.getHeaders(contentType);
-    if (localStorage.getItem("access_token") != undefined) {
 
-      headers = headers.append('Authorization' , 'bearer '+localStorage.getItem("access_token"));
-    } else {
-      console.log('Access Token missing!');
-    }
     return headers;
   }
 
@@ -71,11 +66,11 @@ export class FhirService {
         console.log("getAuthoriseUrl() next: ");
         for (let rest of conformance.rest) {
           for (let extension of rest.security.extension) {
-            //console.log("Security extensions");
+
             if (extension.url == "http://fhir-registry.smarthealthit.org/StructureDefinition/oauth-uris") {
-             // console.log("smart extensions");
+
               for (let smartextension of extension.extension) {
-                //console.log(smartextension.url);
+
                 switch (smartextension.url) {
                   case "authorize" : {
                       this.authoriseUri = smartextension.valueUri;
@@ -124,7 +119,7 @@ export class FhirService {
   }
   hasScope(resource : string) : boolean {
     let scope : string= this.getScope();
-    //console.log(scope + ' checking for '+resource);
+
     if (scope.indexOf(resource) !== -1) return true;
     return false;
   }
@@ -163,7 +158,7 @@ export class FhirService {
     let headers = new HttpHeaders( {'Content-Type': 'application/json '} );
     headers = headers.append('Accept','application/json');
     this.http.post(url,payload,{ 'headers' : headers }  ).subscribe( response => {
-        console.log("Register Response = "+response);
+
         this.db.object('oauth2/'+encodeURI((this.platformLocation as any).location.origin)).set(response);
         this.performAuthorise((response as any).client_id, (response as any).client_secret);
       }
