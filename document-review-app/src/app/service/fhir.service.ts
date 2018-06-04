@@ -58,12 +58,11 @@ export class FhirService {
   }
 
   authoriseOAuth2() : void  {
-    console.log("getAuthoriseUrl()");
- //   if (this.authoriseUri !== undefined) return this.authoriseUri;
+
 
     this.http.get<fhir.CapabilityStatement>(this.getEPRUrl()+'/metadata').subscribe(
       conformance  => {
-        console.log("getAuthoriseUrl() next: ");
+
         for (let rest of conformance.rest) {
           for (let extension of rest.security.extension) {
 
@@ -98,12 +97,7 @@ export class FhirService {
         // If no registration then register client
         // Dynamic registration not present at the mo but   this.performRegister();
 
-        console.log((this.platformLocation as any).location.origin);
-
-
         this.performAuthorise(environment.cat.client_id, environment.cat.client_secret);
-
-        console.log('call perform Grant');
 
         return this.authoriseUri;
       }

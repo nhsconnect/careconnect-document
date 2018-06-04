@@ -39,9 +39,10 @@ export class TokenInterceptor implements HttpInterceptor {
              }, (err: any) => {
                if (err instanceof HttpErrorResponse) {
                  if (err.status === 401) {
-                   console.log('*** 401 401 401 401 401 ***')
-                   // redirect to the login route
-                   // or show a modal
+                   console.log('*** 401 401 401 401 401 ***');
+                   localStorage.removeItem('access_token')
+                   this.fhir.authoriseOAuth2();
+
                  }
                }
              });

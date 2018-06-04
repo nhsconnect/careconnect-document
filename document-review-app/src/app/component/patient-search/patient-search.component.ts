@@ -94,7 +94,7 @@ export class PatientSearchComponent implements OnInit {
   }
 
   selectPatient(patient : fhir.Patient) {
-    console.log("Patient clicked = " + patient.id);
+
     this.patientSelected.emit(patient);
     /*
     */

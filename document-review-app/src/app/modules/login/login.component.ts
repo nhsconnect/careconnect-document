@@ -47,7 +47,6 @@ export class LoginComponent implements OnInit {
 
       KeycloakService.init()
         .then(() => {
-          console.log('keycloak init');
 
           this.onKeyCloakComplete();
         })
@@ -59,7 +58,6 @@ export class LoginComponent implements OnInit {
   onKeyCloakComplete() {
     // Check logged in or login
     this.keycloak.getToken().then(() => {
-        console.log('Got Token');
 
         // Set up a redirect for completion of OAuth2 login
         // This should only be called if OAuth2 has not been performed
@@ -76,12 +74,12 @@ export class LoginComponent implements OnInit {
   }
 
   performLogins() :void {
-      console.log("logon.performLogons:");
+
 
       // Set a call back for the CookieService
       this.authService.getCookieEventEmitter()
           .subscribe(item => {
-              console.log('Login Cookie Emitter Ran ');
+
               if (this.logonRedirect !== undefined) {
                 window.location.href =this.logonRedirect;
               } else {

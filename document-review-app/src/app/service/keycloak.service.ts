@@ -32,7 +32,7 @@ export class KeycloakService {
     return new Promise((resolve, reject) => {
       keycloakAuth.init({onLoad: 'login-required'})
         .success(() => {
-          console.log(keycloakAuth);
+
           KeycloakService.auth.loggedIn = true;
           KeycloakService.auth.authz = keycloakAuth;
 

@@ -38,7 +38,7 @@ export class NavComponent implements OnInit {
 
     this.subscriptionPermission = this.authService.getPermissionEventEmitter()
       .subscribe(item => {
-        console.log('Nav Permission change callback ran');
+
         this.permission = item;
       });
   }
