@@ -16,6 +16,9 @@ export class ViewDocumentSectionComponent implements OnInit {
   @Input() document : fhir.Bundle;
 
 
+  // Reference for modal size https://stackoverflow.com/questions/46977398/ng-bootstrap-modal-size
+
+
   entries : any[];
 
   medicationStatements : fhir.MedicationStatement[];
@@ -61,7 +64,7 @@ export class ViewDocumentSectionComponent implements OnInit {
   open(content) {
    // console.log("In getReferenced and medications count = "+this.medications.length);
    // console.log("Encounters count = "+this.encounters.length);
-    this.modalService.open(content, { windowClass: 'dark-modal' });
+    this.modalService.open(content, { size: 'lg', windowClass: 'dark-modal', backdrop: 'static' });
   }
 
   getReferencedItem(reference : string)  {

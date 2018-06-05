@@ -12,7 +12,7 @@
 <table class="table">
   <thead>
   <tr>
-    <th scope="col" width="50%">Prescription</th>
+    <th scope="col" width="70%">Prescription</th>
     <th scope="col">Status</th>
     <th scope="col">Start</th>
   </tr>
@@ -22,8 +22,8 @@
     <td>
       <div *ngIf="medication.medicationCodeableConcept !=undefined" ngbTooltip="{{getCodeSystem(medication.medicationCodeableConcept.coding[0].system)}} {{medication.medicationCodeableConcept.coding[0].code}}">
         <b *ngIf="medication.medicationCodeableConcept !=undefined">{{medication.medicationCodeableConcept.coding[0].display}}</b>
-        <a (click)="getSNOMEDLink(medication.medicationCodeableConcept.coding[0])"><span class="badge badge-info">NHSD SNOMED CT</span></a>
-        <a (click)="getDMDLink(medication.medicationCodeableConcept.coding[0])"><span class="badge badge-info">dm+d</span></a>
+        <a (click)="getSNOMEDLink(medication.medicationCodeableConcept.coding[0])"><span class="fa fa-book"></span></a>
+        <a (click)="getDMDLink(medication.medicationCodeableConcept.coding[0])"><span class="fa fa-bookmark"></span></a>
       </div>
       <span *ngIf="medication.medicationReference !=undefined">
           <b>{{medication.medicationReference.display}}</b>
@@ -31,7 +31,7 @@
           <a (click)="onClick(modalContent, medication)"> <span class="badge badge-info">medication</span></a>
           </span>
       </span>
-      -
+      <br>
       <span *ngFor="let dosage of medication.dosageInstruction"> <i>DOSE</i>
             <span *ngIf="dosage.doseQuantity!=undefined">{{dosage.doseQuantity.value}} {{dosage.doseQuantity.unit}}</span>
           - <span *ngIf="dosage.route!=undefined && dosage.route.coding.length>0">

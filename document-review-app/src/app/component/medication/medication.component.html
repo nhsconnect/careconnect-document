@@ -13,8 +13,8 @@
       <div *ngIf="medication.code !=undefined" ngbTooltip="{{getCodeSystem(medication.code.coding[0].system)}} {{medication.code.coding[0].code}}">
         <b *ngIf="medication.code !=undefined">{{medication.code.coding[0].display}}</b>
         <span *ngIf="isSNOMED(medication.code.coding[0].system)">
-        <a (click)="getSNOMEDLink(medication.code.coding[0])"><span class="badge badge-info">NHSD SNOMED CT</span></a>
-        <a (click)="getDMDLink(medication.code.coding[0])"><span class="badge badge-info">dm+d</span></a>
+        <a (click)="getSNOMEDLink(medication.code.coding[0])"><span class="fa fa-book"></span></a>
+        <a (click)="getDMDLink(medication.code.coding[0])"><span class="fa fa-bookmark"></span></a>
           </span>
       </div>
     </td>
