@@ -146,7 +146,7 @@ export class FhirService {
       redirect_uris : ["http://localhost:4200/callback"],
       client_uri : "http://localhost:4200",
       grant_types: ["authorization_code"],
-      scope: "user/Patient.read user/DocumentReference.read user/Binary.read smart/orchestrate_launch"
+      scope: "user/Patient.read user/DocumentReference.read user/Binary.read user/Bundle.write smart/orchestrate_launch"
     });
 
     let headers = new HttpHeaders( {'Content-Type': 'application/json '} );
@@ -186,7 +186,7 @@ export class FhirService {
 
 
     this.http.post<Oauth2token>(url,body.toString(), { 'headers' : headers } ).subscribe( response => {
-        console.log(response);
+       // console.log(response);
         this.smartToken = response;
         this.authService.auth = true;
         localStorage.setItem("access_token", this.smartToken.access_token);
@@ -200,7 +200,7 @@ export class FhirService {
       }
       ,() => {
         // Emit event
-        console.log("performGetAccessToken - Emit event");
+
         this.oauthTokenChange.emit(this.smartToken);
 
       }

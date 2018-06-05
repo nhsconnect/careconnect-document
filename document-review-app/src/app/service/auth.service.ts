@@ -39,19 +39,25 @@ export class AuthService {
             ,private _cookieService:CookieService
               ) {
 
-
-
     this.updatePermission();
 
   }
 
 
   setLocalPermission(permission : Permission) {
+    console.log('Permission set');
     this._permission = permission;
     this.permissionEvent.emit(this._permission);
   }
 
-
+  getAccessToken() {
+    if (this._permission == undefined) {
+      this.updatePermission();
+    } else {
+      console.log("Permission not undefined");
+    }
+    return localStorage.getItem("access_token");
+  }
 
   getCookieEventEmitter() {
 
@@ -91,18 +97,6 @@ export class AuthService {
       this.setLocalPermission(basicPermission);
   }
 
-  logout() {
-    if (!this.semaphore) {
-      this.semaphore = true;
-      this.setLocalPermission(undefined);
-      this.auth = false;
-      localStorage.removeItem('access_token');
-
-
-
-
-    }
-  }
 
   /*
   signInWithTwitter() {

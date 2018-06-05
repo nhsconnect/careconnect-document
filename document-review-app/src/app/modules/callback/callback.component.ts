@@ -28,7 +28,9 @@ export class CallbackComponent implements OnInit {
       this.subOAuth2 = this.fhirService.getOAuthChangeEmitter()
         .subscribe(item => {
           console.log('Callback Access Token callback ran');
-          this.router.navigateByUrl('home').then( ()=> { console.log('Navigate by Url'); });
+          this.router.navigateByUrl('home').then( ()=> {
+            //console.log('Navigate by Url');
+          });
           // Potentially a loop but need to record the access token
 
         });

@@ -17,6 +17,7 @@
     </div>
   </div>
 </ng-template>
+
 <ng-template id="modalDuplicate" #modalDuplicate let-c="close" let-d="dismiss">
   <div class="modal-header">
 
@@ -33,6 +34,7 @@ The document already exists on the system. Do you wish to replace?
     <button (click)="onReplaceClick(modalIssue)" class="btn btn-warning">Yes</button> <button (click)="onNoClick(modalIssue)" class="btn btn-primary">No</button>
   </div>
 </ng-template>
+
 <ng-template #modalOrg let-c="close" let-d="dismiss">
   <div class="modal-header">
     <h4>Find Organisation</h4>
@@ -44,6 +46,7 @@ The document already exists on the system. Do you wish to replace?
     <app-organisation-search (organisationSelected)="closeOrg($event)"> </app-organisation-search>
   </div>
 </ng-template>
+
 <ng-template #modalPrac let-c="close" let-d="dismiss">
   <div class="modal-header">
     <h4>Find Practitioner</h4>
@@ -55,6 +58,7 @@ The document already exists on the system. Do you wish to replace?
     <app-practitioner-search (practitionerSelected)="closePrac($event)"></app-practitioner-search>
   </div>
 </ng-template>
+
 <ng-template #modalPat let-c="close" let-d="dismiss">
   <div class="modal-header">
     <h4>Select Patient</h4>
@@ -166,7 +170,7 @@ The document already exists on the system. Do you wish to replace?
     </span>
 
   <br>
-  <button type="submit" (click)="onSubmitClick(modalIssue, modalDuplicate)" class="btn btn-primary ui button">Submit</button>
+  <button type="submit" (click)="onSubmitClick()" class="btn btn-primary ui button">Submit</button>
   <!-- <button  (click)="onCheckClick(modalIssue)"  class="btn btn-primary ui button">Check</button> -->
 </form>
 

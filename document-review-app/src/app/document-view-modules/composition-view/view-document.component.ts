@@ -15,6 +15,8 @@ export class ViewDocumentComponent implements OnInit {
 
   @ViewChild('modalWait') modalWait;
 
+  @ViewChild('modalIssue') modalIssue;
+
   constructor(private route: ActivatedRoute
   , private fhirService : FhirService
   ,private modalService: NgbModal) { }
@@ -50,7 +52,13 @@ export class ViewDocumentComponent implements OnInit {
       let binary : fhir.Binary = document;
       //console.log(atob(binary.content));
       this.document = JSON.parse(atob(binary.content));
-    }, err=>{},
+    }, err=>{
+
+        modalWaitRef.close();
+
+        let modalIssueRef = this.modalService.open( this.modalIssue,{ windowClass: 'dark-modal' });
+
+      },
       ()=> {
 
         this.getComposition();
@@ -99,53 +107,13 @@ export class ViewDocumentComponent implements OnInit {
   downloadPDF() {
     console.log("Download PDF "+ this.systemType);
     this.downloadPDFActual(this.docId);
-/*  1/5/2018 removed no longer required KGM
-    if (this.systemType === "EPR") {
 
-      // EPR doesn't convert document so upload to FDMS and retrieve it as PDF
-      let operation : fhir.OperationDefinition = undefined;
-      this.fhirService.postFDMSDocument(this.document).subscribe(data => {
-          console.log(data);
-          operation = data;
-          // thefile = new Blob([data], { type: "application/octet-stream" });
-        },
-        error => console.log("Error downloading the file.", error),
-        () => {
-          if (operation != undefined) {
-            this.downloadPDFActual(operation.id);
-          }
-        }
-      );
-    } else {
-      this.downloadPDFActual(this.docId);
-    }
-    */
   }
 
   downloadHTML() {
     console.log("Download HTML");
     this.downloadHTMLActual(this.docId);
-    /* 1/5/2018 removed no longer required KGM
-    if (this.systemType === "EPR") {
 
-      // EPR doesn't convert document so upload to EDMS and retrieve it as HTML
-
-      let operation : fhir.OperationDefinition = undefined;
-      this.fhirService.postFDMSDocument(this.document).subscribe(data => {
-          console.log(data);
-          operation = data;
-         // thefile = new Blob([data], { type: "application/octet-stream" });
-        },
-        error => console.log("Error downloading the file.", error),
-        () => {
-            if (operation != undefined) {
-              this.downloadHTMLActual(operation.id);
-            }
-        }
-      );
-    } else {
-      this.downloadHTMLActual(this.docId);
-    }*/
   }
 
   downloadHTMLActual(docuemntid : string) {

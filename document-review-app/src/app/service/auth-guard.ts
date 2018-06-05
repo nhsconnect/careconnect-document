@@ -16,6 +16,9 @@ export class AuthGuard  implements CanActivate {
       // no need to process keycloak, cookie present
       return true;
     }
+    if (this.authService.getAccessToken() !== undefined) {
+      return true;
+    }
     if (KeycloakService.auth !== undefined) {
       if (KeycloakService.auth.authz != undefined) {
         console.log("Auth Guard " + KeycloakService.auth.authz.authenticated);

@@ -8,6 +8,22 @@
     </div>
   </div>
 </ng-template>
+
+<ng-template id="modalIssue" #modalIssue let-c="close" let-d="dismiss">
+  <div class="modal-header">
+
+    <h4>Warning</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+      <div class="card-body">
+        Unable to Load document.
+      </div>
+  </div>
+</ng-template>
+
 <span *ngIf="systemType==='FDMS'">
     <div class="alert alert-primary">
       <div class="d-flex justify-content-between container-fluid">

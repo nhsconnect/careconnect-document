@@ -30,17 +30,24 @@ export class NavComponent implements OnInit {
 
   permission : Permission;
 
-  subscriptionPermission: any;
+  subPermission: any;
+
+  subPatient : any;
 
 
 
   ngOnInit() {
 
-    this.subscriptionPermission = this.authService.getPermissionEventEmitter()
+    this.subPermission = this.authService.getPermissionEventEmitter()
       .subscribe(item => {
 
         this.permission = item;
       });
+    this.subPatient = this.patientEprService.getPatientChangeEmitter()
+      .subscribe( patient => {
+        this.patient = patient;
+      });
+
   }
 
 

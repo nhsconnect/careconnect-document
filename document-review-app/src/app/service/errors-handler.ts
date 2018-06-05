@@ -9,7 +9,7 @@ export class ErrorsHandler implements ErrorHandler {
     private injector: Injector,
   ) { }
 
-  handleError(error: Error | HttpErrorResponse) {
+  handleError(error: Error | HttpErrorResponse ) {
     if (error instanceof HttpErrorResponse) {
       // Server or connection error happened
       console.error('Http Error');
@@ -21,7 +21,10 @@ export class ErrorsHandler implements ErrorHandler {
           console.log('Need to refresh access token');
         }
       }
-    } else {
+    }
+    //else if (error instanceof ExpressionChangedAfterItHasBeenCheckedError) {
+    //}
+    else {
       // Handle Client Error (Angular Error, ReferenceError...)
       console.error('It happens: ', error);
     }

@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
 
 import {HttpClient} from "@angular/common/http";
 import {AuthService} from "../../service/auth.service";
@@ -35,6 +35,9 @@ export class LoadDocumentComponent implements OnInit {
 
   fileName : FormControl;
 
+  @ViewChild('modalDuplicate') modalDuplicate;
+
+  @ViewChild('modalIssue') modalIssue;
 
   constructor(private http: HttpClient
               ,private router: Router
@@ -132,7 +135,7 @@ export class LoadDocumentComponent implements OnInit {
   onCheckClick(content) {
     this.getFormValidationErrors();
   }
-  onSubmitClick(issueModal, duplicateModal ) {
+  onSubmitClick() {
     if (!this.getFormValidationErrors()) return;
 
     let file : File = <File> this.formData.get('uploadFile');
@@ -156,23 +159,23 @@ export class LoadDocumentComponent implements OnInit {
         this.response = err.error;
         if (this.response.issue.length>0) {
          if (this.response.issue[0].diagnostics.indexOf('FHIR Document already exists') > -1) {
-           this.modalReference = this.modalService.open(duplicateModal, {windowClass: 'dark-modal'});
+           this.modalReference = this.modalService.open(this.modalDuplicate, {windowClass: 'dark-modal'});
          } else {
-           this.modalReference = this.modalService.open(issueModal, {windowClass: 'dark-modal'});
+           this.modalReference = this.modalService.open(this.modalIssue, {windowClass: 'dark-modal'});
          }
         } else {
-          this.modalReference = this.modalService.open(issueModal, {windowClass: 'dark-modal'});
+          this.modalReference = this.modalService.open(this.modalIssue, {windowClass: 'dark-modal'});
         }
       } );
 
   }
 
-  onNoClick(issueModal ) {
+  onNoClick( ) {
     this.modalReference.close();
   }
 
 
-  onReplaceClick(issueModal ) {
+  onReplaceClick() {
     if (!this.getFormValidationErrors()) return;
 
     this.modalReference.close();
@@ -195,7 +198,7 @@ export class LoadDocumentComponent implements OnInit {
 
         this.response = err.error;
 
-        this.modalReference = this.modalService.open(issueModal, {windowClass: 'dark-modal'});
+        this.modalReference = this.modalService.open(this.modalIssue, {windowClass: 'dark-modal'});
 
       } );
 
