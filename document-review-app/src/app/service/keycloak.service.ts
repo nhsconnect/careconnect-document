@@ -22,6 +22,10 @@ export class KeycloakService {
 
       realm: environment.keycloak.realm,
       clientId: environment.keycloak.client_id,
+      //resource: environment.keycloak.client_id,
+      credentials : {
+        secret :environment.keycloak.client_secret,
+      },
       'ssl-required': 'external',
       'public-client': true
     });

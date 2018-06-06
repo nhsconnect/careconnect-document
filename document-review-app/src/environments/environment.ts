@@ -6,10 +6,18 @@
 export const environment = {
   production: false,
   keycloak: {
+    RootUrl: 'https://enterprisearchitecture-test.digital.nhs.uk/auth',
+    authServerUrl: 'https://enterprisearchitecture-test.digital.nhs.uk/auth',
+    realm : 'ReferenceImplementations',
+    client_id : 'ccri-cat',
+    client_secret: '709c79a1-7710-452f-859c-fb6edfb86027'
+  },
+  keycloakLocal: {
     RootUrl: 'http://localhost:8080/auth',
     authServerUrl: 'http://localhost:8080/auth',
-    realm : 'fhir',
-    client_id : 'ccri'
+    realm : 'ReferenceImplementations',
+    client_secret : 'e6f380d2-8e05-4807-9c63-56d92a40c894',
+    client_id : 'ccri-cat'
   },
   cat : {
     eprUrl : 'http://127.0.0.1:9090/careconnect-gateway-secure/STU3',
