@@ -17,76 +17,77 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
+
            <div class="modal-body">
-  <!--             SNOMED CT Code <a href="{{getSNOMEDLink(section.code.coding[0].code)}}">{{section.code.coding[0].code}}</a> -->
-            <div class="row">
-            <div class="col-lg-8">
-            <div *ngIf="section.entry != undefined">
-              References {{section.entry.length}} entries
 
-              <br><br>
-              <table >
-                <div *ngFor="let ent of entries" >
-                  <tr>
-                    <td>{{ent.resource}}</td>
+                <div class="row">
+                <div class="col-lg-8">
+                <div *ngIf="section.entry != undefined">
+                  References {{section.entry.length}} entries
 
-                    <td *ngIf="ent.code!=undefined" [ngSwitch]="ent.resource">
-                      <span *ngIf="isSNOMED(ent.code)">
-                        <span *ngSwitchCase="'Medication'"><a href="{{getDMDLink(ent.code)}}" target="_blank">dm+d</a> <a href="{{getSNOMEDLink(ent.code)}}" target="_blank">SCT</a></span>
-                        <span *ngSwitchCase="'MedicationRequest'"><a href="{{getDMDLink(ent.code)}}" target="_blank">dm+d</a> <a href="{{getSNOMEDLink(ent.code)}}" target="_blank">SCT</a></span>
-                        <span *ngSwitchDefault><a href="{{getSNOMEDLink(ent.code)}}" target="_blank">SCT</a></span>
-                      </span>
-                      <span *ngIf="!isSNOMED(ent.code)">
-                        code=<i>{{ent.code}}</i>
-                      </span>
-                    </td>
-                    <td *ngIf="ent.code==undefined"></td>
+                  <br><br>
+                  <table >
+                    <div *ngFor="let ent of entries" >
+                      <tr>
+                        <td>{{ent.resource}}</td>
+
+                        <td *ngIf="ent.code!=undefined" [ngSwitch]="ent.resource">
+                          <span *ngIf="isSNOMED(ent.code)">
+                            <span *ngSwitchCase="'Medication'"><a href="{{getDMDLink(ent.code)}}" target="_blank">dm+d</a> <a href="{{getSNOMEDLink(ent.code)}}" target="_blank">SCT</a></span>
+                            <span *ngSwitchCase="'MedicationRequest'"><a href="{{getDMDLink(ent.code)}}" target="_blank">dm+d</a> <a href="{{getSNOMEDLink(ent.code)}}" target="_blank">SCT</a></span>
+                            <span *ngSwitchDefault><a href="{{getSNOMEDLink(ent.code)}}" target="_blank">SCT</a></span>
+                          </span>
+                          <span *ngIf="!isSNOMED(ent.code)">
+                            code=<i>{{ent.code}}</i>
+                          </span>
+                        </td>
+                        <td *ngIf="ent.code==undefined"></td>
 
 
-                    <td *ngIf="ent.display!=undefined">
-                     {{ent.display}}</td>
-                    <td *ngIf="ent.display==undefined">
-                    </td>
+                        <td *ngIf="ent.display!=undefined">
+                         {{ent.display}}</td>
+                        <td *ngIf="ent.display==undefined">
+                        </td>
 
-                  </tr>
+                      </tr>
+                    </div>
+                 </table>
+
+                  <span *ngIf="allergies.length>0">
+                   <app-allergy-intollerance [allergies]="allergies" (allergy)="onResoureSelected($event)"></app-allergy-intollerance>
+                  </span>
+                  <span *ngIf="observations.length>0">
+                   <app-observation [observations]="observations" (observation)="onResoureSelected($event)"></app-observation>
+                  </span>
+                  <span *ngIf="encounters.length>0">
+                   <app-encounter [encounters]="encounters" (encounter)="onResoureSelected($event)"></app-encounter>
+                  </span>
+                  <span *ngIf="medicationStatements.length>0">
+                   <app-medication-statement [medicationStatements]="medicationStatements" [meds]="medications" (medicationStatement)="onResoureSelected($event)"></app-medication-statement>
+                  </span>
+                  <span *ngIf="conditions.length>0">
+                   <app-condition [conditions]="conditions" (condition)="onResoureSelected($event)"></app-condition>
+                  </span>
+                  <span *ngIf="procedures.length>0">
+                   <app-procedure [procedures]="procedures" (procedure)="onResoureSelected($event)"></app-procedure>
+                  </span>
+                  <span *ngIf="medications.length > 0">
+                   <app-medication [medications]="medications" (medication)="onResoureSelected($event)"></app-medication>
+                  </span>
+                  <span *ngIf="prescriptions.length>0">
+                   <app-medication-request [medicationRequests]="prescriptions" [meds]="medications" (medicationRequest)="onResoureSelected($event)"></app-medication-request>
+                  </span>
+
+
                 </div>
-             </table>
-
-              <span *ngIf="allergies.length>0">
-               <app-allergy-intollerance [allergies]="allergies" (allergy)="onResoureSelected($event)"></app-allergy-intollerance>
-              </span>
-              <span *ngIf="observations.length>0">
-               <app-observation [observations]="observations" (observation)="onResoureSelected($event)"></app-observation>
-              </span>
-              <span *ngIf="encounters.length>0">
-               <app-encounter [encounters]="encounters"></app-encounter>
-              </span>
-              <span *ngIf="medicationStatements.length>0">
-               <app-medication-statement [medicationStatements]="medicationStatements" [meds]="medications" (medicationStatement)="onResoureSelected($event)"></app-medication-statement>
-              </span>
-              <span *ngIf="conditions.length>0">
-               <app-condition [conditions]="conditions" (condition)="onResoureSelected($event)"></app-condition>
-              </span>
-              <span *ngIf="procedures.length>0">
-               <app-procedure [procedures]="procedures"></app-procedure>
-              </span>
-              <span *ngIf="medications.length > 0">
-               <app-medication [medications]="medications" (medication)="onResoureSelected($event)"></app-medication>
-              </span>
-              <span *ngIf="prescriptions.length>0">
-               <app-medication-request [medicationRequests]="prescriptions" [meds]="medications" (medicationRequest)="onResoureSelected($event)"></app-medication-request>
-              </span>
-
-
-            </div>
-            <div *ngIf="section.entry == undefined">
-              No structured content referenced
-            </div>
-             </div>
-             <div class="col-lg-4">
-               <app-resource-viewer></app-resource-viewer>
-             </div>
-          </div>
+                <div *ngIf="section.entry == undefined">
+                  No structured content referenced
+                </div>
+                 </div>
+                 <div class="col-lg-4">
+                   <app-resource-viewer></app-resource-viewer>
+                 </div>
+              </div>
            </div>
 
         </ng-template>

@@ -18,7 +18,7 @@ export class ViewDocumentSectionComponent implements OnInit {
 
 
   // Reference for modal size https://stackoverflow.com/questions/46977398/ng-bootstrap-modal-size
-
+  resource = undefined;
 
   entries : any[];
 
@@ -64,9 +64,8 @@ export class ViewDocumentSectionComponent implements OnInit {
   }
 
   open(content) {
-   // console.log("In getReferenced and medications count = "+this.medications.length);
-   // console.log("Encounters count = "+this.encounters.length);
-    this.modalService.open(content, { size: 'lg', windowClass: 'dark-modal', backdrop: 'static' });
+
+    this.modalService.open(content, { size: 'lg', windowClass: 'xlModal', backdrop: 'static' });
   }
 
   getReferencedItem(reference : string)  {
@@ -176,7 +175,7 @@ export class ViewDocumentSectionComponent implements OnInit {
   }
 
   onResoureSelected(event ) {
-
+    this.resource = event;
     this.patientEPRService.setResource(event);
   }
 

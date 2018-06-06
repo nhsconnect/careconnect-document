@@ -17,6 +17,8 @@ export class ViewDocumentComponent implements OnInit {
 
   @ViewChild('modalIssue') modalIssue;
 
+
+
   constructor(private route: ActivatedRoute
   , private fhirService : FhirService
   ,private modalService: NgbModal) { }

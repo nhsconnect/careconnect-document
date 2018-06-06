@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {LinksService} from "../../service/links.service";
 
 @Component({
@@ -9,6 +9,8 @@ import {LinksService} from "../../service/links.service";
 export class ProcedureComponent implements OnInit {
 
   @Input() procedures : fhir.Procedure[];
+
+  @Output() procedure = new EventEmitter<any>();
 
   constructor(private linksService : LinksService) { }
 
@@ -26,5 +28,8 @@ export class ProcedureComponent implements OnInit {
     if (this.linksService.isSNOMED(code.system)) {
       window.open(this.linksService.getSNOMEDLink(code), "_blank");
     }
+  }
+  select(procedure) {
+    this.procedure.emit(procedure);
   }
 }

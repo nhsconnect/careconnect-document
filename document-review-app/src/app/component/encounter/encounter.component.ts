@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {LinksService} from "../../service/links.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 
@@ -15,6 +15,7 @@ export class EncounterComponent implements OnInit {
 
   @Input() patient : fhir.Patient;
 
+  @Output() encounter = new EventEmitter<any>();
 
   selectedEncounter : fhir.Encounter;
 
@@ -40,5 +41,9 @@ export class EncounterComponent implements OnInit {
   onClick(content ,encounter : fhir.Encounter) {
     this.selectedEncounter = encounter;
     this.modalService.open(content,{ windowClass: 'dark-modal' });
+  }
+
+  select(encounter) {
+    this.encounter.emit(encounter);
   }
 }
