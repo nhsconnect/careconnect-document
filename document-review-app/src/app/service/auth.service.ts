@@ -69,7 +69,7 @@ export class AuthService {
 
 
       this._cookieService.put('ccri-token', jwt , {
-        domain: 'localhost',
+        domain: 'purple.testlab.nhs.uk',
         path: '/',
         expires: new Date((new Date()).getTime() + 3 * 60000)
       });
