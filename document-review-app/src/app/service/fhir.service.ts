@@ -131,7 +131,7 @@ export class FhirService {
       this.router.navigateByUrl('home');
     } else {
 
-      const url = this.authoriseUri + '?client_id=' + clientId + '&response_type=code&redirect_uri=http://localhost:4200/callback&aud=https://test.careconnect.nhs.uk';
+      const url = this.authoriseUri + '?client_id=' + clientId + '&response_type=code&redirect_uri='+document.baseURI+'/callback&aud=https://test.careconnect.nhs.uk';
       // Perform redirect to
       window.location.href = url;
     }
@@ -143,8 +143,8 @@ export class FhirService {
     const url = this.registerUri;
 
     let payload = JSON.stringify({ client_name : 'ClinicalAssuranceTool' ,
-      redirect_uris : ["http://localhost:4200/callback"],
-      client_uri : "http://localhost:4200",
+      redirect_uris : [document.baseURI+"/callback"],
+      client_uri : document.baseURI,
       grant_types: ["authorization_code"],
       scope: "user/Patient.read user/DocumentReference.read user/Binary.read user/Bundle.write smart/orchestrate_launch"
     });
@@ -182,7 +182,7 @@ export class FhirService {
     let body = new URLSearchParams();
     body.set('grant_type', 'authorization_code');
     body.set('code', authCode);
-    body.set('redirect_uri','http://localhost:4200/callback');
+    body.set('redirect_uri',document.baseURI+'/callback');
 
 
     this.http.post<Oauth2token>(url,body.toString(), { 'headers' : headers } ).subscribe( response => {
