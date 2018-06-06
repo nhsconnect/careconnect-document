@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {LinksService} from "../../service/links.service";
 
 @Component({
@@ -10,6 +10,8 @@ export class ConditionComponent implements OnInit {
 
   @Input() conditions : fhir.Condition[];
 
+  @Output() condition = new EventEmitter<any>();
+
   constructor(private linksService : LinksService) { }
 
   ngOnInit() {
@@ -20,13 +22,15 @@ export class ConditionComponent implements OnInit {
 
   isSNOMED(system: string) : boolean {
     return this.linksService.isSNOMED(system);
-
-
   }
 
   getSNOMEDLink(code : fhir.Coding) {
     if (this.linksService.isSNOMED(code.system)) {
       window.open(this.linksService.getSNOMEDLink(code), "_blank");
     }
+  }
+
+  select(condition) {
+    this.condition.emit(condition);
   }
 }

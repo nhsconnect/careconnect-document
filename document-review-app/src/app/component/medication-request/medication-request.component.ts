@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {LinksService} from "../../service/links.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {FhirService} from "../../service/fhir.service";
@@ -15,6 +15,8 @@ export class MedicationRequestComponent implements OnInit {
   @Input() showDetail : boolean = false;
 
   @Input() meds : fhir.Medication[];
+
+  @Output() medicationRequest = new EventEmitter<any>();
 
   constructor(private linksService : LinksService
     ,private modalService: NgbModal
@@ -57,5 +59,8 @@ export class MedicationRequestComponent implements OnInit {
         }
       );
     }
+  }
+  select(medicationRequest) {
+    this.medicationRequest.emit(medicationRequest);
   }
 }

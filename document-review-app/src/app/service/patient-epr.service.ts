@@ -6,7 +6,11 @@ export class PatientEprService {
 
   patient: fhir.Patient = undefined;
 
+  resource : any = undefined;
+
   private patientChangeEvent : EventEmitter<fhir.Patient> = new EventEmitter();
+
+  private resourceChangeEvent : EventEmitter<any> = new EventEmitter();
 
   set(patient: fhir.Patient) {
 
@@ -20,4 +24,14 @@ export class PatientEprService {
   getPatientChangeEmitter() {
     return this.patientChangeEvent;
   }
+
+  getResourceChangeEvent() {
+    return this.resourceChangeEvent;
+  }
+
+  setResource(resource) {
+    this.resource = resource;
+    this.resourceChangeEvent.emit(resource);
+  }
+
 }

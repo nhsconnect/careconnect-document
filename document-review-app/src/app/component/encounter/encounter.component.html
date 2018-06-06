@@ -26,7 +26,8 @@
   <tbody>
   <tr *ngFor="let encounter of encounters">
     <td>
-      {{encounter.period.start | date: 'dd-MMM-yyyy HH:mm'}}
+      <span class="badge badge-light" >start</span>{{encounter.period.start | date: 'dd-MMM-yyyy HH:mm'}}
+      <span *ngIf="encounter.period.end !== undefined"> <span class="badge badge-light" >end</span>{{encounter.period.end | date: 'dd-MMM-yyyy HH:mm'}}</span>
     </td>
     <td>
       <span *ngIf="encounter.type != undefined && encounter.type.length>0 && encounter.type[0].coding.length >0">

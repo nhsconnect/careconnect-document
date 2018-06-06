@@ -19,8 +19,8 @@
           </div>
            <div class="modal-body">
   <!--             SNOMED CT Code <a href="{{getSNOMEDLink(section.code.coding[0].code)}}">{{section.code.coding[0].code}}</a> -->
-
-
+            <div class="row">
+            <div class="col-lg-8">
             <div *ngIf="section.entry != undefined">
               References {{section.entry.length}} entries
 
@@ -53,28 +53,28 @@
              </table>
 
               <span *ngIf="allergies.length>0">
-               <app-allergy-intollerance [allergies]="allergies"></app-allergy-intollerance>
+               <app-allergy-intollerance [allergies]="allergies" (allergy)="onResoureSelected($event)"></app-allergy-intollerance>
               </span>
               <span *ngIf="observations.length>0">
-               <app-observation [observations]="observations"></app-observation>
+               <app-observation [observations]="observations" (observation)="onResoureSelected($event)"></app-observation>
               </span>
               <span *ngIf="encounters.length>0">
                <app-encounter [encounters]="encounters"></app-encounter>
               </span>
               <span *ngIf="medicationStatements.length>0">
-               <app-medication-statement [medicationStatements]="medicationStatements" [meds]="medications"></app-medication-statement>
+               <app-medication-statement [medicationStatements]="medicationStatements" [meds]="medications" (medicationStatement)="onResoureSelected($event)"></app-medication-statement>
               </span>
               <span *ngIf="conditions.length>0">
-               <app-condition [conditions]="conditions"></app-condition>
+               <app-condition [conditions]="conditions" (condition)="onResoureSelected($event)"></app-condition>
               </span>
               <span *ngIf="procedures.length>0">
                <app-procedure [procedures]="procedures"></app-procedure>
               </span>
               <span *ngIf="medications.length > 0">
-               <app-medication [medications]="medications"></app-medication>
+               <app-medication [medications]="medications" (medication)="onResoureSelected($event)"></app-medication>
               </span>
               <span *ngIf="prescriptions.length>0">
-               <app-medication-request [medicationRequests]="prescriptions" [meds]="medications"></app-medication-request>
+               <app-medication-request [medicationRequests]="prescriptions" [meds]="medications" (medicationRequest)="onResoureSelected($event)"></app-medication-request>
               </span>
 
 
@@ -82,7 +82,12 @@
             <div *ngIf="section.entry == undefined">
               No structured content referenced
             </div>
+             </div>
+             <div class="col-lg-4">
+               <app-resource-viewer></app-resource-viewer>
+             </div>
           </div>
+           </div>
 
         </ng-template>
 

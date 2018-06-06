@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {LinksService} from "../../service/links.service";
 
 @Component({
@@ -10,6 +10,8 @@ export class MedicationComponent implements OnInit {
 
   @Input() medications : fhir.Medication[];
   constructor(private linksService : LinksService) { }
+
+  @Output() medication = new EventEmitter<any>();
 
   ngOnInit() {
   }
@@ -26,5 +28,8 @@ export class MedicationComponent implements OnInit {
   }
   isSNOMED(system: string) : boolean {
     return this.linksService.isSNOMED(system);
+  }
+  select(medication) {
+    this.medication.emit(medication);
   }
 }

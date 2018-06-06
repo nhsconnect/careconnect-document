@@ -16,7 +16,7 @@
     <th scope="col" width="20%">Date</th>
     <th scope="col" width="60%">Observation</th>
     <th scope="col">Value</th>
-
+    <th scope="col" width="5%"></th>
   </tr>
   </thead>
   <tbody>
@@ -43,7 +43,11 @@
       <a (click)="onClick(modalContent, observation)"> <span *ngIf="observation.code.coding[0].code != undefined" class="badge badge-success" >detail</span></a>
       </span>
     </td>
-
+    <td>
+      <a (click)="select(observation)">
+        <span class="fa fa-arrow-right"></span>
+      </a>
+    </td>
   </tr>
   </tbody>
 </table>

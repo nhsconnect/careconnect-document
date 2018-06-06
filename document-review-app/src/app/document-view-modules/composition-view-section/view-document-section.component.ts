@@ -3,6 +3,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 import {isNumber} from "util";
 import {LinksService} from "../../service/links.service";
+import {PatientEprService} from "../../service/patient-epr.service";
 
 @Component({
   selector: 'app-view-document-section',
@@ -33,6 +34,7 @@ export class ViewDocumentSectionComponent implements OnInit {
 
   constructor(private modalService: NgbModal
       , private linksService : LinksService
+      ,public patientEPRService : PatientEprService
   ) { }
 
   ngOnInit() {
@@ -171,6 +173,11 @@ export class ViewDocumentSectionComponent implements OnInit {
     if (this.linksService.isSNOMED(code.system)) {
       window.open(this.linksService.getSNOMEDLink(code), "_blank");
     }
+  }
+
+  onResoureSelected(event ) {
+
+    this.patientEPRService.setResource(event);
   }
 
 

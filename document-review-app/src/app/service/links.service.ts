@@ -21,7 +21,7 @@ export class LinksService {
       case "http://unitsofmeasure.org": return "Units Of Measure";
       case "https://fhir.hl7.org.uk/STU3/CodeSystem/CareConnect-ConditionCategory-1": return "FHIR ConditionCategory";
       default:
-        console.log(system);
+        //console.log(system);
         return system;
     }
   }

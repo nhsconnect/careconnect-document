@@ -2,15 +2,16 @@
   <thead>
   <tr>
     <th scope="col" width="30%">Date</th>
-    <th scope="col" width="60%">Allergy</th>
+    <th scope="col" width="65%">Allergy</th>
+    <th scope="col" width="5%"></th>
   </tr>
   </thead>
   <tbody>
   <tr *ngFor="let allergy of allergies">
     <td>
-      {{allergy.assertedDate | date: 'dd-MMM-yyyy'}}
+      <span *ngIf="allergy.assertedDate !== undefined"> <span class="badge badge-light" >asserted</span>{{allergy.assertedDate | date: 'dd-MMM-yyyy'}}</span>
 
-      {{allergy.onsetDateTime | date: 'dd-MMM-yyyy'}}
+      <span *ngIf="allergy.onsetDateTime !== undefined"> <span class="badge badge-light" >onset</span>{{allergy.onsetDateTime | date: 'dd-MMM-yyyy'}}</span>
     </td>
     <td>
       <span *ngIf="allergy.code !=undefined">
@@ -46,7 +47,11 @@
         <i>{{allergy.verificationStatus}}</i>
       </span>
     </td>
-
+    <td>
+      <a (click)="select(allergy)">
+        <span class="fa fa-arrow-right"></span>
+      </a>
+    </td>
   </tr>
   </tbody>
 </table>

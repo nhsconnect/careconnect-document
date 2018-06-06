@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {LinksService} from "../../service/links.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {FhirService} from "../../service/fhir.service";
@@ -13,6 +13,8 @@ export class MedicationStatementComponent implements OnInit {
   @Input() medicationStatements : fhir.MedicationStatement[];
 
   @Input() meds : fhir.Medication[] = [];
+
+  @Output() medicationStatement = new EventEmitter<any>();
 
   selectedMeds : fhir.Medication[];
 
@@ -72,5 +74,8 @@ export class MedicationStatementComponent implements OnInit {
         );
       }
     }
+  }
+  select(medicationStatement) {
+    this.medicationStatement.emit(medicationStatement);
   }
 }

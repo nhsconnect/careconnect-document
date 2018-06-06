@@ -15,6 +15,7 @@
     <th scope="col" width="70%">Prescription</th>
     <th scope="col">Status</th>
     <th scope="col">Start</th>
+    <th scope="col" width="5%"></th>
   </tr>
   </thead>
   <tbody>
@@ -51,6 +52,11 @@
     </td>
     <td>
       {{medication.authoredOn | date: 'dd-MMM-yyyy'}}
+    </td>
+    <td>
+      <a (click)="select(medication)">
+        <span class="fa fa-arrow-right"></span>
+      </a>
     </td>
   </tr>
   </tbody>

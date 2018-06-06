@@ -15,6 +15,7 @@ export class EncounterComponent implements OnInit {
 
   @Input() patient : fhir.Patient;
 
+
   selectedEncounter : fhir.Encounter;
 
   constructor(private linksService : LinksService

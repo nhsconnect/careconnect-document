@@ -67,7 +67,8 @@ import {ErrorsHandler} from "./service/errors-handler";
 import {KeycloakService} from "./service/keycloak.service";
 import {TokenInterceptor} from "./service/token-interceptor";
 import {Oauth2Service} from "./service/oauth2.service";
-
+import { ResourceViewerComponent } from './component/resource-viewer/resource-viewer.component';
+import { TreeModule } from 'angular-tree-component';
 
 
 firebase.initializeApp(environment.firebase);
@@ -115,7 +116,8 @@ firebase.initializeApp(environment.firebase);
     OrganisationComponent,
     PractitionerComponent,
     TestPipe,
-    CallbackComponent
+    CallbackComponent,
+    ResourceViewerComponent
   ],
   imports: [
     BrowserModule,
@@ -128,7 +130,8 @@ firebase.initializeApp(environment.firebase);
     NgbModule.forRoot(),
     AngularFireModule.initializeApp(environment.firebase, 'ccri'),
     AngularFireDatabaseModule,
-    AngularFireAuthModule
+    AngularFireAuthModule,
+    TreeModule
   ],
   providers: [
     FhirService

@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {LinksService} from "../../service/links.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 
@@ -14,6 +14,8 @@ export class ObservationComponent implements OnInit {
   @Input() showDetail : boolean = false;
 
   @Input() patient : fhir.Patient;
+
+  @Output() observation = new EventEmitter<any>();
 
   selectedObs : fhir.Observation;
 
@@ -68,6 +70,10 @@ export class ObservationComponent implements OnInit {
     if (this.linksService.isSNOMED(code.system)) {
       window.open(this.linksService.getSNOMEDLink(code), "_blank");
     }
+  }
+
+  select(observation) {
+    this.observation.emit(observation);
   }
 
 }

@@ -9,7 +9,7 @@
   <tbody>
   <tr *ngFor="let procedure of procedures">
     <td>
-      {{procedure.performedDateTime | date: 'dd-MMM-yyyy'}}
+      <span class="badge badge-light" >performed</span>{{procedure.performedDateTime | date: 'dd-MMM-yyyy'}}
     </td>
     <td>
        <b>{{procedure.code.coding[0].display}}</b>

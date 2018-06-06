@@ -3,7 +3,7 @@
   <tr>
     <th scope="col" width="50%">Medication</th>
     <th scope="col">Status</th>
-
+    <th scope="col" width="5%"></th>
   </tr>
   </thead>
   <tbody>
@@ -20,6 +20,11 @@
     </td>
     <td>
       {{medication.status}}
+    </td>
+    <td>
+      <a (click)="select(medication)">
+        <span class="fa fa-arrow-right"></span>
+      </a>
     </td>
   </tr>
   </tbody>

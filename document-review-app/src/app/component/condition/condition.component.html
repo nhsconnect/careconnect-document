@@ -1,16 +1,17 @@
 <table class="table">
   <thead>
   <tr>
-    <th scope="col" width="30%">Date</th>
+    <th scope="col" width="35%">Date</th>
     <th scope="col" width="60%">Condition</th>
+    <th scope="col" width="5%"></th>
   </tr>
   </thead>
   <tbody>
   <tr *ngFor="let condition of conditions">
     <td>
-      {{condition.assertedDate | date: 'dd-MMM-yyyy'}}
+      <span *ngIf="condition.assertedDate !== undefined"> <span class="badge badge-light" >asserted</span>{{condition.assertedDate | date: 'dd-MMM-yyyy'}}</span>
 
-      {{condition.onsetDateTime | date: 'dd-MMM-yyyy'}}
+      <span *ngIf="condition.onsetDateTime !== undefined"><span class="badge badge-light" >onset</span>{{condition.onsetDateTime | date: 'dd-MMM-yyyy'}}</span>
     </td>
     <td>
       <b>{{condition.code.coding[0].display}}</b>
@@ -41,8 +42,13 @@
         <span class="badge badge-light" >verification</span>
         <i>{{condition.verificationStatus}}</i>
       </span>
-    </td>
 
+    </td>
+    <td>
+      <a (click)="select(condition)">
+        <span class="fa fa-arrow-right"></span>
+      </a>
+    </td>
   </tr>
   </tbody>
 </table>

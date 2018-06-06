@@ -15,6 +15,7 @@
     <th scope="col" width="70%">Medication Statement</th>
     <th scope="col">Status</th>
     <th scope="col">Start</th>
+    <th scope="col" width="5%"></th>
   </tr>
   </thead>
   <tbody>
@@ -57,6 +58,11 @@
     <td>
         {{medication.dateAsserted}}
       </td>
+    <td>
+      <a (click)="select(medication)">
+        <span class="fa fa-arrow-right"></span>
+      </a>
+    </td>
   </tr>
   </tbody>
 </table>

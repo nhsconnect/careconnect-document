@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {LinksService} from "../../service/links.service";
 
 @Component({
@@ -10,6 +10,7 @@ export class AllergyIntolleranceComponent implements OnInit {
 
   @Input() allergies : fhir.AllergyIntolerance[];
 
+  @Output() allergy = new EventEmitter<any>();
   constructor(private linksService : LinksService) { }
 
   ngOnInit() {
@@ -22,5 +23,8 @@ export class AllergyIntolleranceComponent implements OnInit {
     if (this.linksService.isSNOMED(code.system)) {
       window.open(this.linksService.getSNOMEDLink(code), "_blank");
     }
+  }
+  select(allergy) {
+    this.allergy.emit(allergy);
   }
 }
