@@ -50,48 +50,48 @@
                  </table>
 
                   <span *ngIf="allergies.length>0">
-                    <h4>Allergies</h4>
-                   <app-allergy-intollerance [allergies]="allergies" (allergy)="onResoureSelected($event)"></app-allergy-intollerance>
+                      <h4>Allergies</h4>
+                      <app-allergy-intollerance [allergies]="allergies" (allergy)="onResoureSelected($event)"></app-allergy-intollerance>
                   </span>
                   <span *ngIf="patients.length>0">
-                     <h4>Patient</h4>
-                   <app-patient [patients]="patients" (patient)="onResoureSelected($event)"></app-patient>
+                      <h4>Patient</h4>
+                      <app-patient [patients]="patients" (patient)="onResoureSelected($event)"></app-patient>
                   </span>
                   <span *ngIf="practitioners.length>0">
-                    <h4>Practitioner</h4>
-                   <app-practitioner-list [practitioners]="practitioners" (patient)="onResoureSelected($event)"></app-practitioner-list>
+                      <h4>Practitioner</h4>
+                      <app-practitioner-list [practitioners]="practitioners" (practitioner)="onResoureSelected($event)"></app-practitioner-list>
                   </span>
                   <span *ngIf="organisations.length>0">
-                    <h4>Organisation</h4>
-                   <app-organisation-list [organisations]="organisations" (patient)="onResoureSelected($event)"></app-organisation-list>
+                      <h4>Organisation</h4>
+                      <app-organisation-list [organisations]="organisations" (organisation)="onResoureSelected($event)"></app-organisation-list>
                   </span>
                   <span *ngIf="observations.length>0">
-                    <h4>Observations</h4>
-                   <app-observation [observations]="observations" (observation)="onResoureSelected($event)"></app-observation>
+                      <h4>Observations</h4>
+                      <app-observation [observations]="observations" (observation)="onResoureSelected($event)"></app-observation>
                   </span>
                   <span *ngIf="encounters.length>0">
-                    <h4>Encounter</h4>
-                   <app-encounter [encounters]="encounters" (encounter)="onResoureSelected($event)"></app-encounter>
+                      <h4>Encounter</h4>
+                      <app-encounter [encounters]="encounters" (encounter)="onResoureSelected($event)"></app-encounter>
                   </span>
                   <span *ngIf="medicationStatements.length>0">
-                    <h4>Medication Statement</h4>
-                   <app-medication-statement [medicationStatements]="medicationStatements" [meds]="medications" (medicationStatement)="onResoureSelected($event)"></app-medication-statement>
+                      <h4>Medication Statement</h4>
+                      <app-medication-statement [medicationStatements]="medicationStatements" [meds]="medications" (medicationStatement)="onResoureSelected($event)"></app-medication-statement>
                   </span>
                   <span *ngIf="conditions.length>0">
-                    <h4>Conditions</h4>
-                   <app-condition [conditions]="conditions" (condition)="onResoureSelected($event)"></app-condition>
+                      <h4>Conditions</h4>
+                      <app-condition [conditions]="conditions" (condition)="onResoureSelected($event)"></app-condition>
                   </span>
                   <span *ngIf="procedures.length>0">
-                    <h4>Procedure</h4>
-                   <app-procedure [procedures]="procedures" (procedure)="onResoureSelected($event)"></app-procedure>
+                      <h4>Procedure</h4>
+                      <app-procedure [procedures]="procedures" (procedure)="onResoureSelected($event)"></app-procedure>
                   </span>
                   <span *ngIf="medications.length > 0">
-                    <h4>Medications</h4>
-                   <app-medication [medications]="medications" (medication)="onResoureSelected($event)"></app-medication>
+                      <h4>Medications</h4>
+                      <app-medication [medications]="medications" (medication)="onResoureSelected($event)"></app-medication>
                   </span>
                   <span *ngIf="prescriptions.length>0">
-                    <h4>Prescriptions</h4>
-                   <app-medication-request [medicationRequests]="prescriptions" [meds]="medications" (medicationRequest)="onResoureSelected($event)"></app-medication-request>
+                      <h4>Prescriptions</h4>
+                      <app-medication-request [medicationRequests]="prescriptions" [meds]="medications" (medicationRequest)="onResoureSelected($event)"></app-medication-request>
                   </span>
                 </div>
                 <div *ngIf="section.entry == undefined">

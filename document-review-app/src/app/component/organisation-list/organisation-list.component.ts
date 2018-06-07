@@ -16,4 +16,8 @@ export class OrganisationListComponent implements OnInit {
   ngOnInit() {
   }
 
+  select(organisation) {
+    this.organisation.emit(organisation);
+  }
+
 }

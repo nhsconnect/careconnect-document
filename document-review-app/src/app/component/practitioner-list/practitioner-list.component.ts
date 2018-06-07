@@ -16,4 +16,7 @@ export class PractitionerListComponent implements OnInit {
   ngOnInit() {
   }
 
+  select(practitioner) {
+    this.practitioner.emit(practitioner);
+  }
 }

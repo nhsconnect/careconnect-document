@@ -1,4 +1,20 @@
-
-<div *ngFor="let practitioner of practitioners" >
-  <app-practitioner [practitioner]="practitioner"  ></app-practitioner>
-</div>
+<table class="table" >
+  <thead>
+  <tr>
+    <th scope="col" width="95%"></th>
+    <th scope="col" width="5%"></th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let practitioner of practitioners" >
+    <td>
+    <app-practitioner [practitioner]="practitioner"  ></app-practitioner>
+    </td>
+    <td>
+      <a (click)="select(practitioner)">
+        <span class="fa fa-arrow-right"></span>
+      </a>
+    </td>
+  </tr>
+  </tbody>
+</table>
