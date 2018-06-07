@@ -30,6 +30,9 @@ export class ViewDocumentSectionComponent implements OnInit {
   observations : fhir.Observation[];
   allergies : fhir.AllergyIntolerance[];
   encounters : fhir.Encounter[];
+  patients : fhir.Patient[];
+  practitioners : fhir.Practitioner[];
+  organisations : fhir.Organization[];
 
 
   constructor(private modalService: NgbModal
@@ -47,7 +50,9 @@ export class ViewDocumentSectionComponent implements OnInit {
     this.observations=[];
     this.encounters=[];
     this.allergies=[];
-
+    this.patients=[];
+    this.practitioners=[];
+    this.organisations=[];
     this.getPopover(this.section);
 
   }
@@ -143,12 +148,22 @@ export class ViewDocumentSectionComponent implements OnInit {
           case "Observation" :
             let observation :fhir.Observation = <fhir.Observation> resource.resource;
             this.observations.push(observation);
-
             break;
           case "Procedure" :
             let procedure :fhir.Procedure = <fhir.Procedure> resource.resource;
             this.procedures.push(procedure)
-
+            break;
+          case "Patient" :
+            let patient :fhir.Patient = <fhir.Patient> resource.resource;
+            this.patients.push(patient);
+            break;
+          case "Practitioner":
+            let practitioner : fhir.Practitioner = <fhir.Practitioner> resource.resource;
+            this.practitioners.push(practitioner);
+            break;
+          case "Organization":
+            let organization : fhir.Organization = <fhir.Organization> resource.resource;
+            this.organisations.push(organization);
             break;
           default : this.entries.push({
             "resource": resource.resource.resourceType
@@ -178,8 +193,5 @@ export class ViewDocumentSectionComponent implements OnInit {
     this.resource = event;
     this.patientEPRService.setResource(event);
   }
-
-
-
 
 }

@@ -14,7 +14,7 @@ import {FhirService} from "./service/fhir.service";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import { ViewDocumentSectionComponent } from './document-view-modules/composition-view-section/view-document-section.component';
 import { PatientSearchComponent } from './component/patient-search/patient-search.component';
-import {PatientItemComponent} from "./component/patient/patient-item.component";
+import {PatientItemComponent} from "./component/patient-detail/patient-item.component";
 import { FindDocumentComponent } from './modules/composition-find/find-document.component';
 import { CompositionComponent } from './component/composition/composition.component';
 import { PatientFindComponent } from './modules/patient-find/patient-find.component';
@@ -69,6 +69,10 @@ import {TokenInterceptor} from "./service/token-interceptor";
 import {Oauth2Service} from "./service/oauth2.service";
 import { ResourceViewerComponent } from './component/resource-viewer/resource-viewer.component';
 import { TreeModule } from 'angular-tree-component';
+import { EprPatientComponent } from './epr-modules/epr-patient/epr-patient.component';
+import { PatientComponent } from './component/patient/patient.component';
+import { OrganisationListComponent } from './component/organisation-list/organisation-list.component';
+import { PractitionerListComponent } from './component/practitioner-list/practitioner-list.component';
 
 
 @NgModule({
@@ -115,7 +119,11 @@ import { TreeModule } from 'angular-tree-component';
     PractitionerComponent,
     TestPipe,
     CallbackComponent,
-    ResourceViewerComponent
+    ResourceViewerComponent,
+    EprPatientComponent,
+    PatientComponent,
+    OrganisationListComponent,
+    PractitionerListComponent
   ],
   imports: [
     BrowserModule,
