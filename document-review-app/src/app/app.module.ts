@@ -71,8 +71,6 @@ import { ResourceViewerComponent } from './component/resource-viewer/resource-vi
 import { TreeModule } from 'angular-tree-component';
 
 
-firebase.initializeApp(environment.firebase);
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -128,9 +126,6 @@ firebase.initializeApp(environment.firebase);
     HttpClientModule,
     Ng2GoogleChartsModule,
     NgbModule.forRoot(),
-    AngularFireModule.initializeApp(environment.firebase, 'ccri'),
-    AngularFireDatabaseModule,
-    AngularFireAuthModule,
     TreeModule
   ],
   providers: [

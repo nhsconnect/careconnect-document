@@ -24,7 +24,7 @@ export class KeycloakService {
       clientId: environment.keycloak.client_id,
       //resource: environment.keycloak.client_id,
       credentials : {
-        secret :environment.keycloak.client_secret,
+        secret : this.getClientSecret(),
       },
       'ssl-required': 'external',
       'public-client': true
@@ -59,6 +59,13 @@ export class KeycloakService {
 
   static getUsername(): string {
     return KeycloakService.auth.authz.tokenParsed.preferred_username;
+  }
+
+  static getClientSecret() {
+    // This is a marker for entryPoint.sh to replace
+     let secret :string = 'KEYCLOAK_CLIENT_SECRET';
+     if (secret.indexOf('SECRET') != -1) secret = environment.keycloak.client_secret;
+     return secret;
   }
 
   static getFullName(): string {

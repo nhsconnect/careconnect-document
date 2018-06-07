@@ -4,7 +4,7 @@ import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Oauth2token} from "../model/oauth2token";
 import {isNumber} from "util";
 import {AuthService} from "./auth.service";
-import {AngularFireDatabase} from "angularfire2/database";
+
 import {Router} from "@angular/router";
 import {PlatformLocation} from "@angular/common";
 import {environment} from "../../environments/environment";
@@ -35,7 +35,6 @@ export class FhirService {
 
   constructor(  private http: HttpClient
                 ,private authService: AuthService
-                , public db : AngularFireDatabase
                 , private router: Router
                 , private platformLocation: PlatformLocation) { }
 
@@ -97,7 +96,7 @@ export class FhirService {
         // If no registration then register client
         // Dynamic registration not present at the mo but   this.performRegister();
 
-        this.performAuthorise(environment.cat.client_id, environment.cat.client_secret);
+        this.performAuthorise(environment.cat.client_id, this.getCatClientSecret());
 
         return this.authoriseUri;
       }
@@ -153,7 +152,7 @@ export class FhirService {
     headers = headers.append('Accept','application/json');
     this.http.post(url,payload,{ 'headers' : headers }  ).subscribe( response => {
 
-        this.db.object('oauth2/'+encodeURI((this.platformLocation as any).location.origin)).set(response);
+       // KGM firebase code this.db.object('oauth2/'+encodeURI((this.platformLocation as any).location.origin)).set(response);
         this.performAuthorise((response as any).client_id, (response as any).client_secret);
       }
       , (error: any) => {
@@ -169,11 +168,18 @@ export class FhirService {
     );
   }
 
+  getCatClientSecret() {
+    // This is a marker for entryPoint.sh to replace
+    let secret :string = 'SMART_OAUTH2_CLIENT_SECRET';
+    if (secret.indexOf('SECRET') != -1) secret = environment.cat.client_secret;
+    return secret;
+  }
+
 
   performGetAccessToken(authCode :string ) {
 
 
-    let bearerToken = 'Basic '+btoa(environment.cat.client_id+":"+environment.cat.client_secret);
+    let bearerToken = 'Basic '+btoa(environment.cat.client_id+":"+this.getCatClientSecret());
     let headers = new HttpHeaders( {'Authorization' : bearerToken});
     headers= headers.append('Content-Type','application/x-www-form-urlencoded');
 

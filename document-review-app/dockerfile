@@ -15,7 +15,7 @@ WORKDIR /ng-app
 COPY . .
 
 ## Build the angular app in production mode and store the artifacts in dist folder
-RUN $(npm bin)/ng build --deploy-url /cat/ --base-href /cat/
+RUN $(npm bin)/ng build --env=test --deploy-url /cat/ --base-href /cat/
 
 
 ### STAGE 2: Setup ###
@@ -31,4 +31,13 @@ RUN rm -rf /usr/share/nginx/html/*
 ## From 'builder' stage copy over the artifacts in dist folder to default nginx public folder
 COPY --from=builder /ng-app/dist /usr/share/nginx/html/cat
 
+# Copy the EntryPoint
+COPY ./nginx/entryPoint.sh /
+RUN chmod +x /entryPoint.sh
+
+# RUN ls /
+
+RUN cat /entryPoint.sh
+
+ENTRYPOINT ["/entryPoint.sh"]
 CMD ["nginx", "-g", "daemon off;"]

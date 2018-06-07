@@ -6,16 +6,16 @@
 export const environment = {
   production: false,
   keycloak: {
-    RootUrl: 'http://localhost:8080/auth',
-    authServerUrl: 'http://localhost:8080/auth',
+    RootUrl: 'https://enterprisearchitecture-test.digital.nhs.uk/auth',
+    authServerUrl: 'https://enterprisearchitecture-test.digital.nhs.uk/auth',
     realm : 'ReferenceImplementations',
-    client_secret : 'e6f380d2-8e05-4807-9c63-56d92a40c894',
+    client_secret : 'KEYCLOAK_CLIENT_SECRET',
     client_id : 'ccri-cat'
   },
   cat : {
-    eprUrl : 'http://127.0.0.1:9090/careconnect-gateway-secure/STU3',
+    eprUrl : 'https://purple.testlab.nhs.uk/smart-on-fhir-resource/STU3',
     client_id : 'clinical-assurance-tool',
-    client_secret : 'AM3ai-PGoZZRW-7osWbzvGlDBHjHq7M2aBlpNttreHeEyB5jequWy8fsHMVQP4JV0Kd0Fzrtu0iNEqGqguq69Qs',
-    cookie_domain : 'localhost'
+    client_secret : 'SMART_OAUTH2_CLIENT_SECRET',
+    cookie_domain: 'purple.testlab.nhs.uk'
   }
 };

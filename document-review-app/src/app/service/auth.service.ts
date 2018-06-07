@@ -7,6 +7,7 @@ import {AngularFireDatabase} from "angularfire2/database";
 import {Permission} from "../model/permission";
 import {CookieService} from "angular2-cookie/core";
 import {KeycloakService} from "./keycloak.service";
+import {environment} from "../../environments/environment";
 
 
 
@@ -69,7 +70,7 @@ export class AuthService {
 
 
       this._cookieService.put('ccri-token', jwt , {
-        domain: 'purple.testlab.nhs.uk',
+        domain: environment.cat.cookie_domain,
         path: '/',
         expires: new Date((new Date()).getTime() + 3 * 60000)
       });
