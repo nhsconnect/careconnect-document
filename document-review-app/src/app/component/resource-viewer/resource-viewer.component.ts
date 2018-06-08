@@ -19,6 +19,8 @@ export class ResourceViewerComponent implements OnInit {
 
   nodes = [];
 
+  treeData = [];
+
   options = {};
 
   nodeId: integer;
@@ -28,26 +30,73 @@ export class ResourceViewerComponent implements OnInit {
 
 
   ngOnInit() {
-    $('#foo').jstree();
+
+    console.log('Init Called TREE');
     this.patientEPRService.getResourceChangeEvent().subscribe(
       resource => {
         this.resource = resource;
         this.buildNodes();
+
+        $('#docTreeView').jstree('destroy');
+
+        $('#docTreeView').jstree({
+          'core' : {
+            'data' : this.treeData
+          }
+        });
       }
     )
 
   }
 
+
+
+
+
   buildNodes() {
     this.nodes = [];
+    this.treeData = [];
     this.nodeId = 0;
     for (let key in this.resource) {
       if (this.resource.hasOwnProperty(key)) {
-        this.nodes.push( this.iterateNodes(this.resource,key));
+       // console.log(this.treeData);
+        this.treeData.push(this.iterateTreeNodes(this.resource,key));
+
       }
     }
   }
 
+  iterateTreeNodes (jsonRes, key) {
+
+    this.nodeId++;
+
+    if (typeof jsonRes[key] == "object") {
+
+      let node = {
+        'id': this.nodeId,
+        'text': key,
+        'state' : { opened: true },
+        'children' : []
+
+      };
+      for (let childkey in jsonRes[key]) {
+        if (jsonRes[key].hasOwnProperty(childkey)) {
+
+          node.children.push( this.iterateTreeNodes(jsonRes[key], childkey));
+        }
+      }
+
+      return node;
+    } else {
+      return {
+        'id': this.nodeId,
+        'icon' : '.',
+        'text': key + " - " + '<b>'+ jsonRes[key]+ '</b>'
+      };
+    }
+
+  }
+  /*
   iterateNodes (jsonRes, key) {
 
       this.nodeId++;
@@ -77,7 +126,7 @@ export class ResourceViewerComponent implements OnInit {
       }
 
     }
-
+*/
  }
 
 

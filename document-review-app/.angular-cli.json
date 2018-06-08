@@ -22,7 +22,7 @@
         "../node_modules/bootstrap/scss/bootstrap.scss",
         "styles.scss",
         "../node_modules/font-awesome/css/font-awesome.css",
-        "../node_modules/jstree/dist/themes/default-dark/style.min.css"
+        "../node_modules/jstree/dist/themes/default/style.min.css"
       ],
       "scripts": [
         "../node_modules/keycloak-js/dist/keycloak.js",
