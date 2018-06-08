@@ -188,13 +188,14 @@ export class LoadDocumentComponent implements OnInit {
         this.response = data;
         if (resJson.id !=undefined) {
           this.router.navigate(['doc/'+resJson.id ] );
+        } else {
+
+          this.modalReference = this.modalService.open(this.modalIssue, {windowClass: 'dark-modal'});
         }
       },
       err  => {
-        console.log(err.statusText );
+
         console.log(err.message );
-        console.log(err.error );
-        ///console.log(JSON.stringify(err));
 
         this.response = err.error;
 

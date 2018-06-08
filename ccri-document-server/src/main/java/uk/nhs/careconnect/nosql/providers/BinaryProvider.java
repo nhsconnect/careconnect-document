@@ -39,27 +39,29 @@ public class BinaryProvider implements IResourceProvider {
 
     @Read
     public Binary getBinaryById(HttpServletRequest request, @IdParam IdType internalId) {
-
+        Binary binary =null;
         // Assume this is a file
-        Binary binary = binaryResource.read(ctx,internalId);
 
-        if (binary == null) {
-            log.info("Binary was null");
-            // if no file return check it is not a composition
+            binary = binaryResource.read(ctx, internalId);
 
-            Bundle bundle = compositionDao.readDocument(ctx, internalId);
-            if (bundle != null) {
-                binary = new Binary();
-                String resource = ctx.newXmlParser().encodeResourceToString(bundle);
-                log.info("Resource returned from composition.readDocument as " + resource);
-                binary.setId(internalId.getIdPart());
-                binary.setContentType("application/fhir+xml");
-                binary.setContent(resource.getBytes());
+            if (binary == null) {
+                log.info("Binary was null");
+                // if no file return check it is not a composition
+
+                Bundle bundle = compositionDao.readDocument(ctx, internalId);
+                if (bundle != null) {
+                    binary = new Binary();
+                    String resource = ctx.newXmlParser().encodeResourceToString(bundle);
+                    log.info("Resource returned from composition.readDocument as " + resource);
+                    binary.setId(internalId.getIdPart());
+                    binary.setContentType("application/fhir+xml");
+                    binary.setContent(resource.getBytes());
+                }
+            } else {
+                String resource = ctx.newXmlParser().encodeResourceToString(binary);
+                log.debug("Resource returned from binary.read as " + resource);
             }
-        } else {
-            String resource = ctx.newXmlParser().encodeResourceToString(binary);
-            log.debug("Resource returned from binary.read as " + resource);
-        }
+
 
         return binary;
     }

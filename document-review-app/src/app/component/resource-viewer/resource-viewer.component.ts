@@ -2,12 +2,18 @@ import {Component, Input, OnInit} from '@angular/core';
 import integer = fhir.integer;
 import {PatientEprService} from "../../service/patient-epr.service";
 
+declare var $: any;
+
 @Component({
   selector: 'app-resource-viewer',
   templateUrl: './resource-viewer.component.html',
   styleUrls: ['./resource-viewer.component.css']
 })
 export class ResourceViewerComponent implements OnInit {
+
+
+  //https://stackoverflow.com/questions/44987260/how-to-add-jstree-to-angular-2-application-using-typescript-with-types-jstree
+
 
   constructor(public patientEPRService : PatientEprService) { }
 
@@ -22,6 +28,7 @@ export class ResourceViewerComponent implements OnInit {
 
 
   ngOnInit() {
+    $('#foo').jstree();
     this.patientEPRService.getResourceChangeEvent().subscribe(
       resource => {
         this.resource = resource;

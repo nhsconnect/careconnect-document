@@ -9,6 +9,13 @@ export const environment = {
     RootUrl: 'http://localhost:8080/auth',
     authServerUrl: 'http://localhost:8080/auth',
     realm : 'ReferenceImplementations',
+    client_secret : '8e7d9a8c-d72c-4c74-94c3-83620e5007a4',
+    client_id : 'ccri-cat'
+  },
+  keycloakWin: {
+    RootUrl: 'http://localhost:8080/auth',
+    authServerUrl: 'http://localhost:8080/auth',
+    realm : 'ReferenceImplementations',
     client_secret : 'e6f380d2-8e05-4807-9c63-56d92a40c894',
     client_id : 'ccri-cat'
   },

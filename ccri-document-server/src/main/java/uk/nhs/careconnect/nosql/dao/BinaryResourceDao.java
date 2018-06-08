@@ -1,6 +1,8 @@
 package uk.nhs.careconnect.nosql.dao;
 
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
+import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.gridfs.GridFS;
@@ -54,7 +56,12 @@ public class BinaryResourceDao implements IBinaryResource {
     public Binary read(FhirContext ctx, IdType theId) {
 
         GridFS gridFS = new GridFS(mongoTemplate.getDb());
-        GridFSDBFile gridFSDBFile = gridFS.find(new ObjectId(theId.getIdPart()));
+        GridFSDBFile gridFSDBFile = null;
+        try {
+            gridFSDBFile = gridFS.find(new ObjectId(theId.getIdPart()));
+        } catch (Exception ex) {
+            throw new ResourceNotFoundException("Document " + theId.getIdPart() + " Not found");
+        }
 
         Binary binary = null;
         if (gridFSDBFile != null) {
@@ -65,6 +72,7 @@ public class BinaryResourceDao implements IBinaryResource {
             } catch(
             Exception ex) {
                 log.info(ex.getMessage());
+                throw new InternalErrorException(ex.getMessage());
             }
         }
         return binary;
