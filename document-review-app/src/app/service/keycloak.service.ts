@@ -15,14 +15,14 @@ export class KeycloakService {
   static auth: any = {};
 
   static init(): Promise<any> {
-    //let keycloakAuth: any = new Keycloak('keycloak.json');
-    const keycloakAuth: any = Keycloak({
-      url: environment.keycloak.RootUrl,
-      authServerUrl: environment.keycloak.authServerUrl,
 
-      realm: environment.keycloak.realm,
-      clientId: environment.keycloak.client_id,
-      //resource: environment.keycloak.client_id,
+    const keycloakAuth: any = Keycloak({
+      url: this.getKeycloakRootUrl(),
+      authServerUrl: this.getKeycloakServerUrl(),
+
+      realm: this.getKeycloakRealm(),
+      clientId: this.getKeycloakClientId(),
+
       credentials : {
         secret : this.getClientSecret(),
       },
@@ -66,6 +66,27 @@ export class KeycloakService {
      let secret :string = 'KEYCLOAK_CLIENT_SECRET';
      if (secret.indexOf('SECRET') != -1) secret = environment.keycloak.client_secret;
      return secret;
+  }
+
+  static getKeycloakRootUrl() {
+    let rootUrl :string = 'KEYCLOAK_ROOT_URL';
+    if (rootUrl.indexOf('KEYCLOAK') != -1) rootUrl = environment.keycloak.RootUrl;
+    return rootUrl;
+  }
+  static getKeycloakServerUrl() {
+    let rootUrl :string = 'KEYCLOAK_SERVER_URL';
+    if (rootUrl.indexOf('KEYCLOAK') != -1) rootUrl = environment.keycloak.authServerUrl;
+    return rootUrl;
+  }
+  static getKeycloakRealm() {
+    let realm :string = 'KEYCLOAK_REALM';
+    if (realm.indexOf('KEYCLOAK') != -1) realm= environment.keycloak.realm;
+    return realm;
+  }
+  static getKeycloakClientId() {
+    let clienId :string = 'KEYCLOAK_CLIENT_ID';
+    if (clienId.indexOf('KEYCLOAK') != -1) clienId= environment.keycloak.client_id;
+    return clienId;
   }
 
   static getFullName(): string {

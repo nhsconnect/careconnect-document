@@ -17,6 +17,10 @@ import {DocumentRef} from "../../model/document-ref";
 })
 export class LoadDocumentComponent implements OnInit {
 
+  // PDF Viewer https://www.npmjs.com/package/ng2-pdf-viewer
+
+  // Jpeg viewer http://fcrohas.github.io/angular-canvas-viewer/
+
   response: fhir.OperationOutcome;
 
   formData: FormData = undefined;
