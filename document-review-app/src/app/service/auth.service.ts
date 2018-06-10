@@ -70,13 +70,22 @@ export class AuthService {
 
 
       this._cookieService.put('ccri-token', jwt , {
-        domain: environment.cat.cookie_domain,
+        domain: this.getCookieDomain(),
         path: '/',
         expires: new Date((new Date()).getTime() + 3 * 60000)
       });
 
       this.cookieEvent.emit(jwt);
   }
+
+  getCookieDomain() {
+
+      let cookieDomain :string = 'CAT_COOKIE_DOMAIN';
+      if (cookieDomain.indexOf('CAT_') != -1) cookieDomain = environment.cat.cookie_domain;
+      return cookieDomain;
+
+  }
+
   getCookie() {
 
     // This should also include a check for expired cookie, return undefined if it is.

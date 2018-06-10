@@ -21,6 +21,8 @@ sed -i "s/KEYCLOAK_AUTH_URL/$KEYCLOAK_AUTH_URL/g" /usr/share/nginx/html/cat/main
 
 sed -i "s/KEYCLOAK_SERVER_URL/$KEYCLOAK_SERVER_URL/g" /usr/share/nginx/html/cat/main*bundle.js
 
+sed -i "s/CAT_COOKIE_DOMAIN/$CAT_COOKIE_DOMAIN/g" /usr/share/nginx/html/cat/main*bundle.js
+
 sed -i "s/SMART_OAUTH2_CLIENT_SECRET/$SMART_OAUTH2_CLIENT_SECRET/g" /usr/share/nginx/html/cat/main*bundle.js
 
 
