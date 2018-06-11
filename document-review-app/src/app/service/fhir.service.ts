@@ -30,7 +30,10 @@ export class FhirService {
 
 
   public getEPRUrl(): string {
-    return environment.cat.eprUrl;
+
+    let eprUrl :string = 'FHIR_SERVER_URL';
+    if (eprUrl.indexOf('FHIR_SERVER') != -1) eprUrl = environment.cat.eprUrl;
+    return eprUrl;
   }
 
   constructor(  private http: HttpClient

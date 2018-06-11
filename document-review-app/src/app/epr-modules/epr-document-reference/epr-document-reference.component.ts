@@ -27,8 +27,14 @@ export class EprDocumentReferenceComponent implements OnInit {
    // console.log("DocumentRef Id = "+documentId);
 
     if (documentId !=undefined && document.content[0].attachment.contentType == 'application/fhir+xml' ) {
-      this.router.navigate(['doc/'+documentId ] );
-    } else {
+        this.router.navigate(['doc/'+documentId ] );
+    } else if (documentId !=undefined && document.content[0].attachment.contentType == 'application/pdf' ) {
+      this.router.navigate(['pdf/'+documentId ] );
+    } else if (documentId !=undefined && document.content[0].attachment.contentType.indexOf('image') != -1 ) {
+      this.router.navigate(['img/'+documentId ] );
+    }
+
+    else {
       this.FhirService.getBinaryRaw(documentId).subscribe(
         (res) => {
           var fileURL = URL.createObjectURL(res);

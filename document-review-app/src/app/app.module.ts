@@ -9,10 +9,10 @@ import { NavComponent } from './modules/nav/nav.component';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 import {FileUploadModule} from "ng2-file-upload";
-import { ViewDocumentComponent } from './document-view-modules/composition-view/view-document.component';
+import { ViewDocumentComponent } from './document-view/composition-view/view-document.component';
 import {FhirService} from "./service/fhir.service";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
-import { ViewDocumentSectionComponent } from './document-view-modules/composition-view-section/view-document-section.component';
+import { ViewDocumentSectionComponent } from './document-view/composition-view-section/view-document-section.component';
 import { PatientSearchComponent } from './component/patient-search/patient-search.component';
 import {PatientItemComponent} from "./component/patient-detail/patient-item.component";
 import { FindDocumentComponent } from './modules/composition-find/find-document.component';
@@ -38,9 +38,7 @@ import { DocumentReferenceComponent } from './component/document-reference/docum
 import { EprDocumentReferenceComponent } from './epr-modules/epr-document-reference/epr-document-reference.component';
 import {AuthService} from "./service/auth.service";
 import {LoginComponent} from "./modules/login/login.component";
-import {AngularFireModule} from "angularfire2";
-import {AngularFireDatabaseModule} from "angularfire2/database";
-import {AngularFireAuthModule} from "angularfire2/auth";
+
 import {environment} from "../environments/environment";
 import {LinksService} from "./service/links.service";
 import {PatientEprService} from "./service/patient-epr.service";
@@ -73,6 +71,10 @@ import { EprPatientComponent } from './epr-modules/epr-patient/epr-patient.compo
 import { PatientComponent } from './component/patient/patient.component';
 import { OrganisationListComponent } from './component/organisation-list/organisation-list.component';
 import { PractitionerListComponent } from './component/practitioner-list/practitioner-list.component';
+import { PdfViewerComponent } from './document-view/pdf-viewer/pdf-viewer.component';
+import {PdfViewerModule} from "ng2-pdf-viewer";
+import { ImgViewerComponent } from './document-view/img-viewer/img-viewer.component';
+import {ImageViewerModule} from '@hallysonh/ngx-imageviewer';
 
 
 @NgModule({
@@ -123,7 +125,9 @@ import { PractitionerListComponent } from './component/practitioner-list/practit
     EprPatientComponent,
     PatientComponent,
     OrganisationListComponent,
-    PractitionerListComponent
+    PractitionerListComponent,
+    PdfViewerComponent,
+    ImgViewerComponent
   ],
   imports: [
     BrowserModule,
@@ -134,7 +138,9 @@ import { PractitionerListComponent } from './component/practitioner-list/practit
     HttpClientModule,
     Ng2GoogleChartsModule,
     NgbModule.forRoot(),
-    TreeModule
+    TreeModule,
+    PdfViewerModule,
+    ImageViewerModule
   ],
   providers: [
     FhirService
