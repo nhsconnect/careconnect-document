@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, ViewChild} from '@angular/core';
 
 import {HttpClient} from "@angular/common/http";
 import {AuthService} from "../../service/auth.service";
@@ -8,6 +8,7 @@ import {PatientEprService} from "../../service/patient-epr.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {FormControl, FormGroup, ValidationErrors, Validators} from "@angular/forms";
 import {DocumentRef} from "../../model/document-ref";
+import { v4 as uuid } from 'uuid';
 
 
 @Component({
@@ -29,6 +30,8 @@ export class LoadDocumentComponent implements OnInit {
 
   notFhir :boolean;
 
+  file : File;
+
 
   document : DocumentRef = new DocumentRef();
 
@@ -39,14 +42,19 @@ export class LoadDocumentComponent implements OnInit {
 
   fileName : FormControl;
 
+  public loadComplete :EventEmitter<any> = new EventEmitter();
+
+
   @ViewChild('modalDuplicate') modalDuplicate;
 
   @ViewChild('modalIssue') modalIssue;
 
+  @ViewChild('docCreated') inputCreated;
+
   constructor(private http: HttpClient
               ,private router: Router
-  ,public auth : AuthService
-  ,private fhirService : FhirService
+  , public auth : AuthService
+  , private fhirService : FhirService
   , public eprService : PatientEprService
   , private modalService : NgbModal) { }
 
@@ -75,7 +83,7 @@ export class LoadDocumentComponent implements OnInit {
     'type' : new FormControl(this.document.type, [ Validators.required]),
     'service' : new FormControl(this.document.service),
     'speciality' : new FormControl(this.document.speciality),
-    'created' : new FormControl(this.document.docDate)
+    'created' : new FormControl(this.document.docDate, [ Validators.required])
 
     });
 
@@ -133,7 +141,7 @@ export class LoadDocumentComponent implements OnInit {
       return "application/fhir+json";
     }
     else {
-      return "application/pdf";
+      return file.type;
     }
   }
   onCheckClick(content) {
@@ -142,36 +150,172 @@ export class LoadDocumentComponent implements OnInit {
   onSubmitClick() {
     if (!this.getFormValidationErrors()) return;
 
-    let file : File = <File> this.formData.get('uploadFile');
-    console.log('clicked FileName = '+file.name);
+    let file: File = <File> this.formData.get('uploadFile');
+    console.log('clicked FileName = ' + file.name);
 
+    if (!this.notFhir) {
 
-    this.fhirService.postBundle(file,this.getContentType(file)).subscribe( data => {
-        console.log(data);
-        let resJson :fhir.OperationOutcome =data;
-        this.response = data;
-        if (resJson.id !=undefined) {
-          this.router.navigate(['doc/'+resJson.id ] );
+      this.fhirService.postBundle(file, this.getContentType(file)).subscribe(data => {
+          console.log(data);
+          let resJson: fhir.OperationOutcome = data;
+          this.response = data;
+          if (resJson.id != undefined) {
+            this.router.navigate(['doc/' + resJson.id]);
+          }
+        },
+        err => {
+         // console.log(err.statusText);
+         // console.log(err.message);
+          console.log(err.error);
+          ///console.log(JSON.stringify(err));
+
+          this.response = err.error;
+          if (this.response.issue.length > 0) {
+            if (this.response.issue[0].diagnostics.indexOf('FHIR Document already exists') > -1) {
+              this.modalReference = this.modalService.open(this.modalDuplicate, {windowClass: 'dark-modal'});
+            } else {
+              this.modalReference = this.modalService.open(this.modalIssue, {windowClass: 'dark-modal'});
+            }
+          } else {
+            this.modalReference = this.modalService.open(this.modalIssue, {windowClass: 'dark-modal'});
+          }
         }
-      },
-      err  => {
-        console.log(err.statusText );
-        console.log(err.message );
-        console.log(err.error );
-        ///console.log(JSON.stringify(err));
+      );
+    } else {
+      this.file = file;
+      this.buildBinary(file);
+    }
+  }
 
-        this.response = err.error;
-        if (this.response.issue.length>0) {
-         if (this.response.issue[0].diagnostics.indexOf('FHIR Document already exists') > -1) {
-           this.modalReference = this.modalService.open(this.modalDuplicate, {windowClass: 'dark-modal'});
-         } else {
-           this.modalReference = this.modalService.open(this.modalIssue, {windowClass: 'dark-modal'});
-         }
-        } else {
-          this.modalReference = this.modalService.open(this.modalIssue, {windowClass: 'dark-modal'});
+    buildBundle(base64file : string) :any {
+      let binary : fhir.Binary = {
+        id : uuid(),
+        contentType: this.getContentType(this.file),
+        content: base64file
+      };
+      //console.log('reader '+ base64file);
+
+      binary.resourceType= 'Binary';
+
+      this.document.patient.id = uuid();
+      this.document.patient.resourceType = 'Patient';
+      this.document.organisation.id = uuid();
+      this.document.organisation.resourceType = 'Organization';
+      this.document.practitioner.id = uuid();
+      this.document.practitioner.resourceType = 'Practitioner';
+
+      let documentReference : fhir.DocumentReference = <fhir.DocumentReference>{};
+      documentReference.id = uuid();
+      documentReference.subject = {};
+      documentReference.subject.reference = 'urn:uuid:'+this.document.patient.id;
+
+      documentReference.created = this.document.docDate.toString()+'T00:00:00+00:00';
+
+      documentReference.type = {}
+      documentReference.type.coding =[];
+      documentReference.type.coding.push({
+        "system": "http://snomed.info/sct",
+          "code": "823571000000103",
+          "display": "Scored assessment record (record artifact)"
+      });
+
+      documentReference.author = [];
+      documentReference.author.push({
+        "reference": "urn:uuid:"+this.document.practitioner.id
+      });
+
+      documentReference.custodian = {};
+      documentReference.custodian.reference = 'urn:uuid:'+ this.document.organisation.id;
+
+      documentReference.context = {};
+      documentReference.context.practiceSetting = {};
+      documentReference.context.practiceSetting.coding = [];
+      documentReference.context.practiceSetting.coding.push({
+        "system": "http://snomed.info/sct",
+        "code": "394802001",
+        "display": "General medicine (qualifier value)"
+      });
+
+      documentReference.content = [];
+      documentReference.content.push({
+        "attachment": {
+          "contentType": binary.contentType,
+          "url": "urn:uuid:"+binary.id
         }
+      }) ;
+      documentReference.resourceType ='DocumentReference';
+
+      let bundle : fhir.Bundle = {
+        type : 'collection',
+        resourceType : 'Bundle'
+      };
+      bundle.entry = [];
+      bundle.entry.push({
+        fullUrl : "urn:uuid:"+documentReference.id,
+        resource : documentReference
+      } );
+      bundle.entry.push({
+        fullUrl : "urn:uuid:"+binary.id,
+        resource : binary
+      } );
+      bundle.entry.push({
+        fullUrl : "urn:uuid:"+this.document.patient.id,
+        resource : this.document.patient
+      } );
+      bundle.entry.push({
+        fullUrl : "urn:uuid:"+this.document.practitioner.id,
+        resource : this.document.practitioner
+      } );
+      bundle.entry.push({
+        fullUrl : "urn:uuid:"+this.document.organisation.id,
+        resource : this.document.organisation
       } );
 
+
+      this.fhirService.postBundle(bundle, 'application/json+fhir').subscribe(data => {
+          console.log(data);
+          let resJson: fhir.OperationOutcome = data;
+          this.response = data;
+          console.log(data);
+        },
+        err => {
+          // console.log(err.statusText);
+          // console.log(err.message);
+          console.log(err.error);
+          ///console.log(JSON.stringify(err));
+
+          this.response = err.error;
+          if (this.response.issue.length > 0) {
+            if (this.response.issue[0].diagnostics.indexOf('FHIR Document already exists') > -1) {
+              this.modalReference = this.modalService.open(this.modalDuplicate, {windowClass: 'dark-modal'});
+            } else {
+              this.modalReference = this.modalService.open(this.modalIssue, {windowClass: 'dark-modal'});
+            }
+          } else {
+            this.modalReference = this.modalService.open(this.modalIssue, {windowClass: 'dark-modal'});
+          }
+        }
+      );
+      console.log(bundle);
+    }
+
+
+  buildBinary(file) :string {
+    let result="";
+    var reader = new FileReader();
+    reader.readAsBinaryString(file);
+    this.loadComplete.subscribe( (data) => {
+      this.buildBundle(data);
+      }
+     );
+    let me = this;
+    reader.onload = function(this) {
+      me.loadComplete.emit(btoa(reader.result));
+    };
+    reader.onerror = function (error) {
+      console.log('Error: ', error);
+    };
+    return result;
   }
 
   onNoClick( ) {
