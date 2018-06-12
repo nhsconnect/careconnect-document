@@ -97,7 +97,6 @@ The document already exists on the system. Do you wish to replace?
       <span *ngIf="notFhir">
 
 
-
         <div *ngIf="eprService.patient" >
           <app-patient-item [patient]="eprService.patient" [detail]="true"></app-patient-item>
           <br>
@@ -140,18 +139,17 @@ The document already exists on the system. Do you wish to replace?
 
         <div class="form-group">
           <label for="type">Document Type</label>
-          <select name="type" id="type" class="custom-select" [formControl]="documentForm.controls['type']" >
-
-            <option value="1">Mental Health Plan</option>
-            <option value="2">Discharge Letter</option>
-            <option value="3">Outpatient Letter</option>
+          <select name="type" id="type" class="custom-select" [formControl]="documentForm.controls['type']" [(ngModel)]="document.type" >
+              <option *ngFor="let code of documentType.compose.include[0].concept" [value]="code">
+              {{ code.display}}
+            </option>
           </select>
           <div class="invalid-feedback">Example invalid custom select feedback</div>
         </div>
         <div class="form-group">
           <label for="speciality">Speciality</label>
-          <select name="speciality" id="speciality" class="custom-select" [formControl]="documentForm.controls['speciality']" >
-            <option *ngFor="let code of practiceSettings.compose.include[0].concept" id="{{code._code}}">
+          <select name="speciality" id="speciality" class="custom-select" [formControl]="documentForm.controls['speciality']" [(ngModel)]="document.speciality">
+            <option *ngFor="let code of practiceSettings.compose.include[0].concept" [value]="code">
               {{ code.display}}
             </option>
 
@@ -160,8 +158,8 @@ The document already exists on the system. Do you wish to replace?
         </div>
         <div class="form-group">
           <label for="service">Service</label>
-          <select name="service" id="service" class="custom-select" [formControl]="documentForm.controls['service']">
-            <option *ngFor="let code of facilityCodes.compose.include[0].concept" id="{{code._code}}">
+          <select name="service" id="service" class="custom-select" [formControl]="documentForm.controls['service']" [(ngModel)]="document.service">
+            <option *ngFor="let code of facilityCodes.compose.include[0].concept" [value]="code">
               {{ code.display}}
             </option>
           </select>

@@ -37,6 +37,7 @@ export class LoadDocumentComponent implements OnInit {
 
   facilityCodes : fhir.ValueSet;
 
+  documentType : fhir.ValueSet;
 
   document : DocumentRef = new DocumentRef();
 
@@ -69,13 +70,18 @@ export class LoadDocumentComponent implements OnInit {
       if (this.eprService.patient != undefined) {
         this.document.patient = this.eprService.patient;
       }
-      this.fhirService.getValueSet('c80-practice-codes').subscribe(
+      this.fhirService.getValueSet('NRLS-RecordType-1').subscribe(
         data => {
-          this.practiceSettings = data;
+          this.documentType = data;
           //this.practiceSettings.compose.include[0].concept
         }
       );
     this.fhirService.getValueSet('c80-facilitycodes').subscribe(
+      data => {
+        this.facilityCodes = data;
+      }
+    );
+    this.fhirService.getNHSDValueSet('c80-facilitycodes').subscribe(
       data => {
         this.facilityCodes = data;
       }
