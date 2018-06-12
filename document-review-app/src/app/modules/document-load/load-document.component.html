@@ -151,20 +151,19 @@ The document already exists on the system. Do you wish to replace?
         <div class="form-group">
           <label for="speciality">Speciality</label>
           <select name="speciality" id="speciality" class="custom-select" [formControl]="documentForm.controls['speciality']" >
+            <option *ngFor="let code of practiceSettings.compose.include[0].concept" id="{{code._code}}">
+              {{ code.display}}
+            </option>
 
-            <option value="1">Mental Health</option>
-            <option value="2">Emergency</option>
-            <option value="3">Outpatient Letter</option>
           </select>
           <div class="invalid-feedback">Example invalid custom select feedback</div>
         </div>
         <div class="form-group">
           <label for="service">Service</label>
           <select name="service" id="service" class="custom-select" [formControl]="documentForm.controls['service']">
-
-            <option value="1">Mental Health</option>
-            <option value="2">Emergency</option>
-            <option value="3">Outpatient Letter</option>
+            <option *ngFor="let code of facilityCodes.compose.include[0].concept" id="{{code._code}}">
+              {{ code.display}}
+            </option>
           </select>
           <div class="invalid-feedback">Example invalid custom select feedback</div>
         </div>

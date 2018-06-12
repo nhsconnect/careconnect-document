@@ -420,6 +420,14 @@ export class FhirService {
 
   }
 
+  getValueSet(valueSet : string ) : Observable<fhir.ValueSet> {
+    const url = 'http://hl7.org/fhir/ValueSet/'+valueSet;
+    let headers = new HttpHeaders();
+    headers = headers.append('Accept', 'application/fhir+json');
+
+    return this.http.get<fhir.ValueSet>(url,{ 'headers' : headers });
+  }
+
 
 
 

@@ -33,6 +33,11 @@ export class LoadDocumentComponent implements OnInit {
   file : File;
 
 
+  practiceSettings : fhir.ValueSet;
+
+  facilityCodes : fhir.ValueSet;
+
+
   document : DocumentRef = new DocumentRef();
 
   documentForm : FormGroup;
@@ -64,6 +69,17 @@ export class LoadDocumentComponent implements OnInit {
       if (this.eprService.patient != undefined) {
         this.document.patient = this.eprService.patient;
       }
+      this.fhirService.getValueSet('c80-practice-codes').subscribe(
+        data => {
+          this.practiceSettings = data;
+          //this.practiceSettings.compose.include[0].concept
+        }
+      );
+    this.fhirService.getValueSet('c80-facilitycodes').subscribe(
+      data => {
+        this.facilityCodes = data;
+      }
+    );
 
       // The form has two different sets of validation rules.
 
