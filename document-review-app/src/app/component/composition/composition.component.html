@@ -28,7 +28,12 @@
       </tr>
       <tr *ngIf="encounter != undefined">
         <td><b>Encounter</b></td>
-        <td>{{encounter.type[0].coding[0].display}} <span *ngIf="encounter.period!=undefined">({{encounter.period.start | date: 'dd MMM yyyy HH:mm'}} <span *ngIf="encounter.period.end !=undefined"> - {{encounter.period.end | date: 'dd MMM yyyy HH:mm'}}</span>)</span></td>
+        <td>
+          <span *ngIf="encounter.type != undefined && encounter.type.length && encounter.type[0].coding != undefined > 0">{{encounter.type[0].coding[0].display}}</span>
+          <span *ngIf="encounter.period!=undefined">({{encounter.period.start | date: 'dd MMM yyyy HH:mm'}}
+            <span *ngIf="encounter.period.end !=undefined"> - {{encounter.period.end | date: 'dd MMM yyyy HH:mm'}}</span>)
+          </span>
+        </td>
       </tr>
     </table>
 
