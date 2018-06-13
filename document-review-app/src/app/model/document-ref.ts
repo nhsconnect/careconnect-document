@@ -1,8 +1,8 @@
 export class DocumentRef {
 
-  private _speciality : fhir.Coding;
+  private _speciality : string;
 
-  private _type : fhir.Coding;
+  private _type : string;
 
   private _patient : fhir.Patient;
 
@@ -14,22 +14,31 @@ export class DocumentRef {
 
   private _practitioner : fhir.Practitioner;
 
-  private _service : fhir.Coding;
+  private _service : string;
 
-  get service(): fhir.Coding {
-    return this._service;
+
+  get speciality(): string {
+    return this._speciality;
   }
 
-  set service(value: fhir.Coding) {
-    this._service = value;
-  }
-
-  set speciality(value: fhir.Coding) {
+  set speciality(value: string) {
     this._speciality = value;
   }
 
-  set type(value: fhir.Coding) {
+  get type(): string {
+    return this._type;
+  }
+
+  set type(value: string) {
     this._type = value;
+  }
+
+  get service(): string {
+    return this._service;
+  }
+
+  set service(value: string) {
+    this._service = value;
   }
 
   set patient(value: fhir.Patient) {
@@ -52,13 +61,6 @@ export class DocumentRef {
     this._practitioner = value;
   }
 
-  get speciality(): fhir.Coding {
-    return this._speciality;
-  }
-
-  get type(): fhir.Coding {
-    return this._type;
-  }
 
   get patient(): fhir.Patient {
     return this._patient;

@@ -70,20 +70,59 @@ export class LoadDocumentComponent implements OnInit {
       if (this.eprService.patient != undefined) {
         this.document.patient = this.eprService.patient;
       }
-      this.fhirService.getValueSet('NRLS-RecordType-1').subscribe(
+      /*
+      this.fhirService.getNHSDValueSet('NRLS-RecordType-1').subscribe(
         data => {
           this.documentType = data;
           //this.practiceSettings.compose.include[0].concept
         }
-      );
+      );*/
+      this.documentType = {
+        "resourceType": "ValueSet",
+        "id": "NRLS-RecordType-1",
+        "url": "https://fhir.nhs.uk/STU3/ValueSet/NRLS-RecordType-1",
+        "version": "1.0.0",
+        "name": "NRLS Record Type",
+        "status": "draft",
+        "date": "2018-05-25T00:00:00+00:00",
+        "publisher": "NHS Digital",
+        "contact": [
+          {
+            "name": "Interoperability Team",
+            "telecom": [
+              {
+                "system": "email",
+                "value": "interoperabilityteam@nhs.net",
+                "use": "work"
+              }
+            ]
+          }
+        ],
+        "description": "A code from the SNOMED Clinical Terminology UK coding system to represent the NRLS clinical record type.",
+        "copyright": "This value set includes content from SNOMED CT, which is copyright © 2002+ International Health Terminology Standards Development Organisation (IHTSDO), and distributed by agreement between IHTSDO and HL7. Implementer use of SNOMED CT is not covered by this agreement.",
+        "compose": {
+          "include": [
+            {
+              "system": "http://snomed.info/sct",
+              "concept": [
+                {
+                  "code": "736253002",
+                  "display": "Mental health crisis plan (record artifact)"
+                }
+              ]
+            }
+          ]
+        }
+      };
+
     this.fhirService.getValueSet('c80-facilitycodes').subscribe(
       data => {
         this.facilityCodes = data;
       }
     );
-    this.fhirService.getNHSDValueSet('c80-facilitycodes').subscribe(
+    this.fhirService.getValueSet('c80-practice-codes').subscribe(
       data => {
-        this.facilityCodes = data;
+        this.practiceSettings = data;
       }
     );
 
@@ -215,7 +254,9 @@ export class LoadDocumentComponent implements OnInit {
         contentType: this.getContentType(this.file),
         content: base64file
       };
-      //console.log('reader '+ base64file);
+
+      console.log('service '+ this.document.service);
+      console.log('service display '+ this.getDisplayFromCode(this.document.service,this.facilityCodes));
 
       binary.resourceType= 'Binary';
 
@@ -237,8 +278,8 @@ export class LoadDocumentComponent implements OnInit {
       documentReference.type.coding =[];
       documentReference.type.coding.push({
         "system": "http://snomed.info/sct",
-          "code": "823571000000103",
-          "display": "Scored assessment record (record artifact)"
+          "code": this.document.type,
+          "display": this.getDisplayFromCode(this.document.type,this.documentType)
       });
 
       documentReference.author = [];
@@ -252,10 +293,20 @@ export class LoadDocumentComponent implements OnInit {
       documentReference.context = {};
       documentReference.context.practiceSetting = {};
       documentReference.context.practiceSetting.coding = [];
+
       documentReference.context.practiceSetting.coding.push({
         "system": "http://snomed.info/sct",
-        "code": "394802001",
-        "display": "General medicine (qualifier value)"
+        "code": this.document.speciality,
+        "display": this.getDisplayFromCode(this.document.speciality,this.practiceSettings)
+      });
+
+      documentReference.context.facilityType = {};
+      documentReference.context.facilityType.coding = [];
+
+      documentReference.context.facilityType.coding.push({
+        "system": "http://snomed.info/sct",
+        "code": this.document.service,
+        "display": this.getDisplayFromCode(this.document.service,this.facilityCodes)
       });
 
       documentReference.content = [];
@@ -322,6 +373,7 @@ export class LoadDocumentComponent implements OnInit {
     }
 
 
+
   buildBinary(file) :string {
     let result="";
     var reader = new FileReader();
@@ -344,6 +396,20 @@ export class LoadDocumentComponent implements OnInit {
     this.modalReference.close();
   }
 
+  specialityChanged(event) {
+    console.log(event);
+  }
+
+  getDisplayFromCode(code : String, valueSet : fhir.ValueSet) {
+    let display = "";
+    for (let concept of valueSet.compose.include[0].concept) {
+      //console.log(code + ' + ' + concept.code);
+      if (code.indexOf(concept.code) !== -1 ) {
+        display = concept.display;
+      }
+    }
+    return display
+  }
 
   onReplaceClick() {
     if (!this.getFormValidationErrors()) return;
