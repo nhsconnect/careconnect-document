@@ -259,7 +259,7 @@ export class LoadDocumentComponent implements OnInit {
       console.log('service display '+ this.getDisplayFromCode(this.document.service,this.facilityCodes));
 
       binary.resourceType= 'Binary';
-
+      let orignialPatientId = this.document.patient.id;
       this.document.patient.id = uuid();
       this.document.patient.resourceType = 'Patient';
       this.document.organisation.id = uuid();
@@ -350,23 +350,15 @@ export class LoadDocumentComponent implements OnInit {
           let resJson: fhir.OperationOutcome = data;
           this.response = data;
           console.log(data);
+          this.router.navigate(['epr/' + orignialPatientId]);
         },
         err => {
-          // console.log(err.statusText);
-          // console.log(err.message);
-          console.log(err.error);
-          ///console.log(JSON.stringify(err));
 
+          console.log(err.error);
           this.response = err.error;
-          if (this.response.issue.length > 0) {
-            if (this.response.issue[0].diagnostics.indexOf('FHIR Document already exists') > -1) {
-              this.modalReference = this.modalService.open(this.modalDuplicate, {windowClass: 'dark-modal'});
-            } else {
-              this.modalReference = this.modalService.open(this.modalIssue, {windowClass: 'dark-modal'});
-            }
-          } else {
-            this.modalReference = this.modalService.open(this.modalIssue, {windowClass: 'dark-modal'});
-          }
+
+          this.modalReference = this.modalService.open(this.modalIssue, {windowClass: 'dark-modal'});
+
         }
       );
       console.log(bundle);

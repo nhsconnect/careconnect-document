@@ -9,6 +9,8 @@ export class CompositionComponent implements OnInit {
 
   @Input() composition : fhir.Composition;
 
+  @Input() encounter : fhir.Encounter;
+
   constructor() { }
 
   ngOnInit() {

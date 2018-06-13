@@ -111,7 +111,7 @@ export class ViewDocumentSectionComponent implements OnInit {
               for (let entry of list.entry) {
 
                 if (entry.item != undefined && entry.item.reference != undefined) {
-                  console.log(entry.item.reference);
+                 // console.log(entry.item.reference);
                   this.getReferencedItem(entry.item.reference);
                 }
                 else {

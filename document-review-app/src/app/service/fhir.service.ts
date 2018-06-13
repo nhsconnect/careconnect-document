@@ -421,7 +421,7 @@ export class FhirService {
   }
 
   getValueSet(valueSet : string ) : Observable<fhir.ValueSet> {
-    const url = 'https://hl7.org/fhir/ValueSet/'+valueSet;
+    const url = 'https://vonk.fire.ly/ValueSet/'+valueSet;
     let headers = new HttpHeaders();
     headers = headers.append('Accept', 'application/fhir+json');
 

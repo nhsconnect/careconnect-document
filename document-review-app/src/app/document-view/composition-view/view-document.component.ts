@@ -2,6 +2,7 @@ import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {FhirService} from "../../service/fhir.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {PatientEprService} from "../../service/patient-epr.service";
 
 @Component({
   selector: 'app-view-document',
@@ -17,11 +18,14 @@ export class ViewDocumentComponent implements OnInit {
 
   @ViewChild('modalIssue') modalIssue;
 
+  @ViewChild('modalResource') modalResource;
+
 
 
   constructor(private route: ActivatedRoute
   , private fhirService : FhirService
-  ,private modalService: NgbModal) { }
+  ,private modalService: NgbModal
+  ,private  patientEprService : PatientEprService) { }
 
   ngOnInit() {
 
@@ -41,7 +45,9 @@ export class ViewDocumentComponent implements OnInit {
 
   composition : fhir.Composition = undefined;
   patient : fhir.Patient = undefined;
+  encounter : fhir.Encounter = undefined;
   sections : fhir.CompositionSection[] = [];
+  resource : any = undefined;
   docId : string;
 
   getDocument(id : string): void {
@@ -81,7 +87,23 @@ export class ViewDocumentComponent implements OnInit {
         this.patient = <fhir.Patient> entry.resource;
       }
     }
+    if (this.composition != undefined && this.composition.encounter != undefined) {
+      console.log('Encounter '+this.composition.encounter.reference);
+      for (let entry of this.document.entry) {
+        if (entry.resource.resourceType === "Encounter") {
+         // console.log('Doc Ent = '+entry.fullUrl);
+          if (entry.fullUrl.indexOf(this.composition.encounter.reference) != -1)
+          this.encounter = <fhir.Encounter>entry.resource;
+        }
+      }
+    }
   }
+
+  openResource(resource ){
+    this.resource = resource;
+    let modalIssueRef = this.modalService.open( this.modalResource,{ size: 'lg',windowClass: 'dark-modal' });
+  }
+
 
 
   downloadPDFActual(documentid : string) {

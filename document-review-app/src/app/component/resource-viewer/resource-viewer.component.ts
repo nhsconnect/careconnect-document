@@ -30,8 +30,19 @@ export class ResourceViewerComponent implements OnInit {
 
 
   ngOnInit() {
-
     console.log('Init Called TREE');
+    if (this.resource != undefined) {
+      this.buildNodes();
+
+      $('#docTreeView').jstree('destroy');
+
+      $('#docTreeView').jstree({
+        'core' : {
+          'data' : this.treeData
+        }
+      });
+    }
+
     this.patientEPRService.getResourceChangeEvent().subscribe(
       resource => {
         this.resource = resource;
@@ -66,6 +77,20 @@ export class ResourceViewerComponent implements OnInit {
     }
   }
 
+
+  entityMap = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': '&quot;',
+    "'": '&#39;',
+    "/": '&#x2F;'
+  };
+
+  escapeHtml(source: string) {
+    return String(source).replace(/[&<>"'\/]/g, s => this.entityMap[s]);
+  }
+
   iterateTreeNodes (jsonRes, key) {
 
     this.nodeId++;
@@ -74,7 +99,7 @@ export class ResourceViewerComponent implements OnInit {
 
       let node = {
         'id': this.nodeId,
-        'text': key,
+        'text': this.escapeHtml(key),
         'state' : { opened: true },
         'children' : []
 
@@ -91,7 +116,7 @@ export class ResourceViewerComponent implements OnInit {
       return {
         'id': this.nodeId,
         'icon' : '.',
-        'text': key + " - " + '<b>'+ jsonRes[key]+ '</b>'
+        'text': key + " - " + '<b>'+ this.escapeHtml(jsonRes[key])+ '</b>'
       };
     }
 

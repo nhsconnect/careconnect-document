@@ -9,6 +9,25 @@
   </div>
 </ng-template>
 
+<ng-template id="modalResource" #modalResource let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4>{{resource.resourceType}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="row">
+       <app-resource-viewer [resource]="resource"></app-resource-viewer>
+    </div>
+  </div>
+
+</ng-template>
+
+
+
 <ng-template id="modalIssue" #modalIssue let-c="close" let-d="dismiss">
   <div class="modal-header">
 
@@ -40,9 +59,22 @@
      </div>
 -->
      <div *ngIf="composition!=undefined" class="container-fluid">
-       <div class="card card-default">
-         <app-composition [composition] = "composition"></app-composition>
-       </div>
+
+         <div class="card card-default">
+            <div class="card-header d-flex justify-content-between">
+                <div>{{composition.title}}</div>
+              <div>   <button class="btn-info"  placement="top" (click)="openResource(composition)">
+                Composition</button>
+                <button class="btn-info"  placement="top" (click)="openResource(patient)">
+                Patient</button>
+                <span *ngIf="encounter != undefined"><button class="btn-info"  placement="top" (click)="openResource(encounter)">
+                Encounter</button></span>
+              </div>
+            </div>
+            <div class="card-body">
+                <app-composition [composition] = "composition" [encounter]="encounter"></app-composition>
+            </div>
+          </div>
      </div>
     <br>
      <div class="alert alert-primary">
