@@ -8,9 +8,10 @@ import {
   HttpResponse
 } from "@angular/common/http";
 import {Oauth2Service} from "./oauth2.service";
-import {Observable} from "rxjs/Observable";
+import { Observable, Subject, asapScheduler, pipe, of, from, interval, merge, fromEvent } from 'rxjs';
+import { map, filter, catchError, mergeMap } from 'rxjs/operators';
 import {FhirService} from "./fhir.service";
-import 'rxjs/add/operator/do';
+
 
 
 @Injectable()
@@ -31,8 +32,9 @@ export class TokenInterceptor implements HttpInterceptor {
              Authorization: `Bearer ${this.oauth2.getToken()}`
            }
          });
-         return next.handle(request)
-           .do((event: HttpEvent<any>) => {
+         return next.handle(request);
+           /*
+           .pipe() tap((event: HttpEvent<any>) => {
                if (event instanceof HttpResponse) {
                  // do stuff with response if you want
                }
@@ -46,7 +48,7 @@ export class TokenInterceptor implements HttpInterceptor {
                  }
                }
              });
-
+*/
 
        } else {
          return next.handle(request);

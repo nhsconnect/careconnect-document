@@ -3,6 +3,7 @@
 @import '~bootstrap/scss/bootstrap.scss';
 @import '~vis/dist/vis-timeline-graph2d.min.css';
 @import '~angular-tree-component/dist/angular-tree-component.css';
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
 //@import "~font-awesome/css/font-awesome.min.css";
 
 
@@ -20,13 +21,6 @@ body {
 body, input[text], button {
   color: #888;
 
-}
-a {
-  cursor: pointer;
-  cursor: hand;
-}
-body {
-  margin: 2em;
 }
 body, input[text], button {
   color: #888;
@@ -60,7 +54,10 @@ body {
   padding: 3rem 1.5rem;
   text-align: center;
 }
-
+/* MD changed this bit */
+.mat-drawer-container {
+  margin-top: 3em;
+}
 
 /* everywhere else */
 * {

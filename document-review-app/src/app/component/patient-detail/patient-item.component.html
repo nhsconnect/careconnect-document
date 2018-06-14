@@ -1,14 +1,16 @@
-<div class="card card-default">
-  <div class="card-header d-flex w-100 justify-content-between">
-    <div>
+<mat-card >
+  <div class="d-flex justify-content-between">
+    <div >
     <b>{{ getLastName() }}</b>
       {{ getFirstName() }}
     </div>
+
     <div><i>Born: </i><b>{{patient.birthDate | date: 'dd-MMM-yyyy'}}</b></div>
     <div><i>Gender: </i><b>{{ patient.gender }}</b></div>
+
     <div><i>NHS No: </i><b>{{ getNHSIdentifier() }}</b></div>
   </div>
-  <div *ngIf="detail" class="card-body">
+  <div *ngIf="detail">
     <table>
       <tr>
         <td>
@@ -45,6 +47,6 @@
         </td>
       </tr>
     </table>
-
   </div>
-</div>
+
+</mat-card>

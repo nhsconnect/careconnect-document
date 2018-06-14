@@ -1,7 +1,7 @@
-<div class="card card-default">
-  <div class="card-header">
+<mat-card>
+  <mat-card-title>
     <div class="d-flex w-100 justify-content-between">
-      <h5>{{section.title}}</h5>
+      {{section.title}}
 
       <ng-template #modalContent let-c="close" let-d="dismiss">
           <div class="modal-header">
@@ -106,13 +106,13 @@
 
         </ng-template>
 
-      <button *ngIf="section.entry != undefined" class="btn-info"  placement="top" (click)="open(modalContent)">
-        View Structured Content</button>
-      <button *ngIf="section.entry == undefined" disabled="true" class="btn-outline-info"  placement="top" (click)="open(modalContent)">
+      <button mat-raised-button *ngIf="section.entry != undefined" placement="top" (click)="open(modalContent)">
+        Structured Content</button>
+      <button mat-button *ngIf="section.entry == undefined" disabled="true"  placement="top" (click)="open(modalContent)">
         No Structured Content</button>
     </div>
-  </div>
-  <div class="card-body" >
+  </mat-card-title>
+  <mat-card-content >
     <div [innerHTML]="section.text.div"></div>
-  </div>
-</div>
+  </mat-card-content>
+</mat-card>

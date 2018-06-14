@@ -4,7 +4,7 @@ import {Router} from "@angular/router";
 import {PatientEprService} from "../../service/patient-epr.service";
 
 import {Permission} from "../../model/permission";
-import {AngularFireDatabase} from "angularfire2/database";
+
 import {FhirService} from "../../service/fhir.service";
 
 @Component({

@@ -1,10 +1,10 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {Router} from "@angular/router";
-import {Observable} from "rxjs/Observable";
-import {Subject} from "rxjs/Subject";
+import { Observable, Subject, asapScheduler, pipe, of, from, interval, merge, fromEvent } from 'rxjs';
 import {FhirService} from "../../service/fhir.service";
 import {catchError, debounceTime, distinctUntilChanged, map, switchMap} from "rxjs/operators";
 import {HttpErrorResponse} from "@angular/common/http";
+import {NEVER} from "rxjs/internal/observable/never";
 
 @Component({
   selector: 'app-practitioner-search',
@@ -58,7 +58,7 @@ export class PractitionerSearchComponent implements OnInit {
   }
 
   selectPractitioner(practitioner : fhir.Practitioner) {
-    console.log("Practitioner clicked = " + practitioner.id);
+    this.practitioners$ = undefined;
     this.practitionerSelected.emit(practitioner);
 
   }
@@ -74,7 +74,7 @@ export class PractitionerSearchComponent implements OnInit {
         }
         console.log(message);
 
-        return Observable.never();
+        return NEVER;
 
       }
     }

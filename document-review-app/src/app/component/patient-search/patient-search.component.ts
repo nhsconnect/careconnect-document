@@ -2,10 +2,9 @@
 
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 
-import { Observable } from 'rxjs/Observable';
-import { Subject }    from 'rxjs/Subject';
+import { Observable, Subject, asapScheduler, pipe, of, from, interval, merge, fromEvent } from 'rxjs';
 import 'rxjs/add/observable/throw';
-import 'rxjs/add/observable/never';
+
 
 import {
   catchError,
@@ -17,7 +16,8 @@ import {HttpErrorResponse} from '@angular/common/http';
 import {FhirService} from "../../service/fhir.service";
 import { Router} from "@angular/router";
 import {AuthService} from "../../service/auth.service";
-import {of} from "rxjs/observable/of";
+import {NEVER} from "rxjs/internal/observable/never";
+
 
 
 @Component({
@@ -94,7 +94,7 @@ export class PatientSearchComponent implements OnInit {
   }
 
   selectPatient(patient : fhir.Patient) {
-
+    this.patients$ = undefined;
     this.patientSelected.emit(patient);
     /*
     */
@@ -115,7 +115,7 @@ export class PatientSearchComponent implements OnInit {
         }
         console.log("Patient Search error handling "+message);
 
-        return Observable.never();
+        return NEVER;
 
     }
   }

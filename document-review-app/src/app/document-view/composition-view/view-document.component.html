@@ -60,21 +60,21 @@
 -->
      <div *ngIf="composition!=undefined" class="container-fluid">
 
-         <div class="card card-default">
-            <div class="card-header d-flex justify-content-between">
+        <mat-card>
+            <mat-card-title class="d-flex justify-content-between">
                 <div>{{composition.title}}</div>
-              <div>   <button class="btn-info"  placement="top" (click)="openResource(composition)">
+              <div>   <button mat-raised-button  placement="top" (click)="openResource(composition)">
                 Composition</button>
-                <button class="btn-info"  placement="top" (click)="openResource(patient)">
+                <button mat-raised-button placement="top" (click)="openResource(patient)">
                 Patient</button>
-                <span *ngIf="encounter != undefined"><button class="btn-info"  placement="top" (click)="openResource(encounter)">
+                <span *ngIf="encounter != undefined"><button mat-raised-button  placement="top" (click)="openResource(encounter)">
                 Encounter</button></span>
               </div>
-            </div>
-            <div class="card-body">
+            </mat-card-title>
+            <mat-card-content>
                 <app-composition [composition] = "composition" [encounter]="encounter"></app-composition>
-            </div>
-          </div>
+            </mat-card-content>
+          </mat-card>
      </div>
     <br>
      <div class="alert alert-primary">
@@ -92,8 +92,8 @@
       </div>
       <div>
 
-          <button class="btn-info" (click)="downloadPDF()">Export PDF</button>
-          <button class="btn-info" (click)="downloadHTML()">Export html</button>
+          <button mat-raised-button (click)="downloadPDF()">Export PDF</button>
+          <button mat-raised-button (click)="downloadHTML()">Export html</button>
         </div>
 
     </div>
@@ -104,7 +104,7 @@
       <div class="card-header">
         <div class="d-flex w-100 justify-content-between">
           <h5>Patient</h5>
-          <button class="btn-info">View Structured Content</button>
+          <button mat-raised-button>View Structured Content</button>
         </div>
       </div>
     <div class="card-body" [innerHTML]="patient.text.div"></div>

@@ -1,13 +1,17 @@
-<div class="card">
-  <div class="card-header d-flex justify-content-between">
-    <div>
+<mat-card>
+  <mat-card-header class="d-flex justify-content-between">
+
+    <mat-card-title>
+      <b>
       <div *ngIf="document.description!=undefined">{{document.description}}</div>
       <div *ngIf="document.description==undefined && document.type !=undefined" >{{document.type.coding[0].display}}</div>
-    </div>
-    <div>{{document.created | date: 'dd MMM yyyy HH:mm'}}</div>
-  </div>
+      </b>
+    </mat-card-title>
+      <div><b>{{document.created | date: 'dd MMM yyyy HH:mm'}}</b></div>
 
-  <div class="card-body">
+  </mat-card-header>
+
+  <mat-card-content>
     <div class="row">
       <div class="col-sm">
         <div *ngIf="document.description!=undefined && document.type != undefined" class="card-title">{{document.type.coding[0].display}}</div>
@@ -20,7 +24,6 @@
         <span *ngIf="document.content != undefined" class="badge badge-info">{{document.content[0].attachment.contentType}}</span>
       </div>
     </div>
-
     <div class="row">
       <div class="col-sm">
 
@@ -39,5 +42,5 @@
 
 
 
-  </div>
-</div>
+  </mat-card-content>
+</mat-card>

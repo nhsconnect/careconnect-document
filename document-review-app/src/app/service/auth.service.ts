@@ -1,14 +1,12 @@
 import {EventEmitter, Injectable} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
-import {AngularFireAuth} from 'angularfire2/auth';
+
+
 import {Router} from '@angular/router';
-import * as firebase from 'firebase/app';
-import {AngularFireDatabase} from "angularfire2/database";
 import {Permission} from "../model/permission";
 import {CookieService} from "angular2-cookie/core";
 import {KeycloakService} from "./keycloak.service";
 import {environment} from "../../environments/environment";
-
+import { Observable, Subject, asapScheduler, pipe, of, from, interval, merge, fromEvent } from 'rxjs';
 
 
 

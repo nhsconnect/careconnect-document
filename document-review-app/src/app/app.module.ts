@@ -75,6 +75,16 @@ import { PdfViewerComponent } from './document-view/pdf-viewer/pdf-viewer.compon
 import {PdfViewerModule} from "ng2-pdf-viewer";
 import { ImgViewerComponent } from './document-view/img-viewer/img-viewer.component';
 import {ImageViewerModule} from '@hallysonh/ngx-imageviewer';
+import {
+  DateAdapter, MAT_DATE_FORMATS,
+  MAT_DATE_LOCALE, MatButtonModule, MatCardModule,
+  MatDatepickerModule,
+  MatInputModule, MatSelectModule,
+
+  MatSidenavModule
+} from "@angular/material";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {MAT_MOMENT_DATE_FORMATS, MatMomentDateModule, MomentDateAdapter} from "@angular/material-moment-adapter";
 
 
 @NgModule({
@@ -140,7 +150,15 @@ import {ImageViewerModule} from '@hallysonh/ngx-imageviewer';
     NgbModule.forRoot(),
     TreeModule,
     PdfViewerModule,
-    ImageViewerModule
+    ImageViewerModule,
+    BrowserAnimationsModule,
+    MatSidenavModule,
+    MatInputModule,
+    MatMomentDateModule,
+    MatDatepickerModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatCardModule
   ],
   providers: [
     FhirService
@@ -159,7 +177,10 @@ import {ImageViewerModule} from '@hallysonh/ngx-imageviewer';
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,
       multi: true
-    }
+    },
+    { provide: MAT_DATE_LOCALE, useValue: 'en-GB'},
+    {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
+    {provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS},
   ],
   bootstrap: [AppComponent]
 })

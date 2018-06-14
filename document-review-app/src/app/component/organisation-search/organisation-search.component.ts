@@ -5,6 +5,7 @@ import {Observable} from "rxjs/Observable";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Subject} from "rxjs/Subject";
 import {FhirService} from "../../service/fhir.service";
+import {NEVER} from "rxjs/internal/observable/never";
 
 @Component({
   selector: 'app-organisation-search',
@@ -59,8 +60,8 @@ export class OrganisationSearchComponent implements OnInit {
   }
 
   selectOrganisation(organization : fhir.Organization) {
-     this.organisationSelected.emit(organization);
-
+    this.organisations$ = undefined;
+    this.organisationSelected.emit(organization);
   }
   logError(title : string) {
     return (message :any) => {
@@ -74,7 +75,7 @@ export class OrganisationSearchComponent implements OnInit {
       }
       console.log(message);
 
-      return Observable.never();
+      return NEVER;
 
     }
   }

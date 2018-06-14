@@ -158,19 +158,19 @@ export class LoadDocumentComponent implements OnInit {
   closeOrg(organization) {
     console.log("Selected Organisation "+organization.id);
     this.document.organisation = organization;
-    this.modalReference.close();
+   // this.modalReference.close();
   }
 
   closePrac(practitioner) {
     console.log("selected practitioner "+practitioner.id);
     this.document.practitioner = practitioner;
-    this.modalReference.close();
+    //this.modalReference.close();
   }
 
   closePat(patient) {
     console.log("selected patient "+patient.id);
     this.document.patient = patient;
-    this.modalReference.close();
+    //this.modalReference.close();
   }
 
   // https://stackoverflow.com/questions/40214772/file-upload-in-angular
@@ -272,7 +272,9 @@ export class LoadDocumentComponent implements OnInit {
       documentReference.subject = {};
       documentReference.subject.reference = 'urn:uuid:'+this.document.patient.id;
 
-      documentReference.created = this.document.docDate.toString()+'T00:00:00+00:00';
+      let date = new Date(this.document.docDate.toString());
+      console.log(date.toISOString());
+      documentReference.created = date.toISOString();
 
       documentReference.type = {}
       documentReference.type.coding =[];

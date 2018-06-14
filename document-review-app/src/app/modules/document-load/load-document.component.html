@@ -35,41 +35,6 @@ The document already exists on the system. Do you wish to replace?
   </div>
 </ng-template>
 
-<ng-template #modalOrg let-c="close" let-d="dismiss">
-  <div class="modal-header">
-    <h4>Find Organisation</h4>
-    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-    <app-organisation-search (organisationSelected)="closeOrg($event)"> </app-organisation-search>
-  </div>
-</ng-template>
-
-<ng-template #modalPrac let-c="close" let-d="dismiss">
-  <div class="modal-header">
-    <h4>Find Practitioner</h4>
-    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-    <app-practitioner-search (practitionerSelected)="closePrac($event)"></app-practitioner-search>
-  </div>
-</ng-template>
-
-<ng-template #modalPat let-c="close" let-d="dismiss">
-  <div class="modal-header">
-    <h4>Select Patient</h4>
-    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-    <app-patient-search (patientSelected)="closePat($event)"></app-patient-search>
-  </div>
-</ng-template>
 
 <form [formGroup]="documentForm"  >
   <!--
@@ -86,9 +51,11 @@ The document already exists on the system. Do you wish to replace?
 
   </span> -->
   <span >
-    <div class="form-group">
-      <label for="fileName2">Select file to upload</label>
-      <input type="file" id="fileName2" name="fileName2" class="form-control-file" (change)="fileChange($event)" placeholder="Upload file" accept=".json,.xml,.pdf,.doc,.docx,.jpg,.html" [formControl]="documentForm.controls['fileName']" formControlName="fileName">
+    <div>
+
+
+      <input type="file" id="fileName2" name="fileName2" class="ng-hide" (change)="fileChange($event)" placeholder="Upload file" accept=".json,.xml,.pdf,.doc,.docx,.jpg,.html" [formControl]="documentForm.controls['fileName']" formControlName="fileName">
+     <!-- <label for="fileName2" class="md-button md-raised md-primary">Choose files</label> -->
       <div *ngIf="fileName.invalid && (fileName.dirty)"
       class="alert alert-danger">
        No file specified
@@ -103,73 +70,84 @@ The document already exists on the system. Do you wish to replace?
           <br>
         </div>
          <div *ngIf="eprService.patient == undefined" >
-           <button for="subject" (click)="onModalClick(modalPat)" class="btn btn-secondary" name="btnPat">Subject (Patient)</button>
+           <!-- <button for="subject" (click)="onModalClick(modalPat)" class="btn btn-secondary" name="btnPat">Subject (Patient)</button> -->
+           <app-patient-search (patientSelected)="closePat($event)"></app-patient-search>
            <span *ngIf="document != undefined && document.patient != undefined">
-             <br><br>
+
              <input class="form-control" type="text" id="subject" name="subject" [formControl]="documentForm.controls['subject']" [(ngModel)]="document.patientName" >
           </span>
            <br>
            <br>
         </div>
           <div>
-          <button (click)="onModalClick(modalPrac)" class="btn btn-secondary">Author (Practitioner)</button>
+          <!-- <button (click)="onModalClick(modalPrac)" class="btn btn-secondary">Author (Practitioner)</button> -->
+          <app-practitioner-search (practitionerSelected)="closePrac($event)"></app-practitioner-search>
           <span *ngIf="document != undefined && document.practitioner != undefined">
-             <br><br>
+
              <input class="form-control" type="text" id="author" name="author" [formControl]="documentForm.controls['author']" [(ngModel)]="document.practitionerName" >
           </span>
           <br>
           <br>
         </div>
         <div>
-          <button (click)="onModalClick(modalOrg)" class="btn btn-secondary">Custodian (Organisation)</button>
+          <!-- <button (click)="onModalClick(modalOrg)" class="btn btn-secondary">Custodian (Organisation)</button> -->
+          <app-organisation-search (organisationSelected)="closeOrg($event)"> </app-organisation-search>
          <span *ngIf="document != undefined && document.organisation != undefined">
-             <br><br>
+
              <input class="form-control" type="text" id="custodian" name="custodian" [formControl]="documentForm.controls['custodian']" [(ngModel)]="document.organisation.name" >
           </span>
           <br>
           <br>
         </div>
 
-        <div class="form-group">
-          <label for="docdate">Document Creation Date</label>
-          <input #docCreated class="input-lg" type="date" id="docdate" name="docdate" max="2030-12-31"
-                 min="1900-01-01" [formControl]="documentForm.controls['created']" [(ngModel)]="document.docDate" >
-          <div class="invalid-feedback">Example invalid custom select feedback</div>
-        </div>
+        <div>
 
-        <div class="form-group">
-          <label for="type">Document Type</label>
-          <select name="type" id="type" class="custom-select" [formControl]="documentForm.controls['type']" (ngModelChange)="specialityChanged($event)" [(ngModel)]="document.type" >
-              <option *ngFor="let docType of documentType.compose.include[0].concept" [value]="docType.code">
-              {{ docType.display}}
-            </option>
-          </select>
-          <div class="invalid-feedback">Example invalid custom select feedback</div>
+            <mat-form-field>
+              <input #docCreated class="input-lg" matInput [matDatepicker]="picker" placeholder="Document Creation Date" id="docdate" name="docdate" max="2030-12-31"
+                     min="1900-01-01" [formControl]="documentForm.controls['created']" [(ngModel)]="document.docDate" >
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker ></mat-datepicker>
+              <div class="invalid-feedback">Example invalid custom select feedback</div>
+            </mat-form-field>
         </div>
-        <div class="form-group">
-          <label for="speciality">Speciality</label>
-          <select name="speciality" id="speciality" class="custom-select" [formControl]="documentForm.controls['speciality']" (ngModelChange)="specialityChanged($event)" [(ngModel)]="document.speciality">
-            <option *ngFor="let docSpec of practiceSettings.compose.include[0].concept" [value]="docSpec.code">
-              {{ docSpec.display}}
-            </option>
+        <div>
+        <mat-form-field>
 
-          </select>
-          <div class="invalid-feedback">Example invalid custom select feedback</div>
+            <mat-select name="type" placeholder="Document Type" id="type" [formControl]="documentForm.controls['type']" (ngModelChange)="specialityChanged($event)" [(ngModel)]="document.type" >
+                <mat-option *ngFor="let docType of documentType.compose.include[0].concept" [value]="docType.code">
+                {{ docType.display}}
+              </mat-option>
+            </mat-select>
+            <div class="invalid-feedback">Example invalid custom select feedback</div>
+          </mat-form-field>
         </div>
-        <div class="form-group">
-          <label for="service">Service</label>
-          <select name="service" id="service" class="custom-select" [formControl]="documentForm.controls['service']" (ngModelChange)="specialityChanged($event)" [(ngModel)]="document.service">
-            <option *ngFor="let docService of facilityCodes.compose.include[0].concept" [value]="docService.code">
-              {{ docService.display}}
-            </option>
-          </select>
-          <div class="invalid-feedback">Example invalid custom select feedback</div>
-        </div>
+        <div>
+          <mat-form-field>
+            <mat-select name="speciality" placeholder="Speciality" id="speciality"  [formControl]="documentForm.controls['speciality']" (ngModelChange)="specialityChanged($event)" [(ngModel)]="document.speciality">
+              <mat-option *ngFor="let docSpec of practiceSettings.compose.include[0].concept" [value]="docSpec.code">
+                {{ docSpec.display}}
+              </mat-option>
+
+            </mat-select>
+            <div class="invalid-feedback">Example invalid custom select feedback</div>
+          </mat-form-field>
+          </div>
+        <div>
+           <mat-form-field>
+
+              <mat-select name="service" placeholder="Service" id="service"  [formControl]="documentForm.controls['service']" (ngModelChange)="specialityChanged($event)" [(ngModel)]="document.service">
+                <mat-option *ngFor="let docService of facilityCodes.compose.include[0].concept" [value]="docService.code">
+                  {{ docService.display}}
+                </mat-option>
+              </mat-select>
+              <div class="invalid-feedback">Example invalid custom select feedback</div>
+           </mat-form-field>
+          </div>
       </span>
     </span>
 
   <br>
-  <button type="submit" (click)="onSubmitClick()" class="btn btn-primary ui button">Submit</button>
+  <button mat-raised-button type="submit" (click)="onSubmitClick()" color="primary" >Submit</button>
   <!-- <button  (click)="onCheckClick(modalIssue)"  class="btn btn-primary ui button">Check</button> -->
 </form>
 
