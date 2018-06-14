@@ -78,13 +78,18 @@ import {ImageViewerModule} from '@hallysonh/ngx-imageviewer';
 import {
   DateAdapter, MAT_DATE_FORMATS,
   MAT_DATE_LOCALE, MatButtonModule, MatCardModule,
-  MatDatepickerModule,
+  MatDatepickerModule, MatIcon, MatIconModule,
   MatInputModule, MatSelectModule,
 
   MatSidenavModule
 } from "@angular/material";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {MAT_MOMENT_DATE_FORMATS, MatMomentDateModule, MomentDateAdapter} from "@angular/material-moment-adapter";
+import {CovalentLayoutModule, CovalentStepsModule, TdFileUploadComponent} from "@covalent/core";
+import {CovalentHttpModule} from "@covalent/http";
+import {CovalentHighlightModule} from "@covalent/highlight";
+import {CovalentMarkdownModule} from "@covalent/markdown";
+import {CovalentDynamicFormsModule} from "@covalent/dynamic-forms";
 
 
 @NgModule({
@@ -138,6 +143,7 @@ import {MAT_MOMENT_DATE_FORMATS, MatMomentDateModule, MomentDateAdapter} from "@
     PractitionerListComponent,
     PdfViewerComponent,
     ImgViewerComponent
+    //TdFileUploadComponent
   ],
   imports: [
     BrowserModule,
@@ -158,7 +164,20 @@ import {MAT_MOMENT_DATE_FORMATS, MatMomentDateModule, MomentDateAdapter} from "@
     MatDatepickerModule,
     MatSelectModule,
     MatButtonModule,
-    MatCardModule
+    MatCardModule,
+    MatIconModule
+/*
+
+    // Issue with https://github.com/Teradata/covalent/issues/1152
+    CovalentLayoutModule,
+    CovalentStepsModule,
+    // (optional) Additional Covalent Modules imports
+    /*,
+    CovalentHttpModule.forRoot(),
+    CovalentHighlightModule,
+    CovalentMarkdownModule,
+    CovalentDynamicFormsModule
+*/
   ],
   providers: [
     FhirService

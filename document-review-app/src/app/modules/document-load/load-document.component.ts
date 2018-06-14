@@ -70,13 +70,14 @@ export class LoadDocumentComponent implements OnInit {
       if (this.eprService.patient != undefined) {
         this.document.patient = this.eprService.patient;
       }
-      /*
+
       this.fhirService.getNHSDValueSet('NRLS-RecordType-1').subscribe(
         data => {
           this.documentType = data;
           //this.practiceSettings.compose.include[0].concept
         }
-      );*/
+      );
+      /*
       this.documentType = {
         "resourceType": "ValueSet",
         "id": "NRLS-RecordType-1",
@@ -114,7 +115,7 @@ export class LoadDocumentComponent implements OnInit {
           ]
         }
       };
-
+*/
     this.fhirService.getValueSet('c80-facilitycodes').subscribe(
       data => {
         this.facilityCodes = data;

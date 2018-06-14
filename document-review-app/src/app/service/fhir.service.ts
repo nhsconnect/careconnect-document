@@ -429,7 +429,7 @@ export class FhirService {
   }
 
   getNHSDValueSet(valueSet : string ) : Observable<fhir.ValueSet> {
-    const url = 'https://fhir.nhs.uk/STU3/ValueSet/'+valueSet;
+    const url = 'https://fhir-test.nhs.uk/STU3/ValueSet/'+valueSet;
     let headers = new HttpHeaders();
     headers = headers.append('Accept', 'application/fhir+json');
 

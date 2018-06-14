@@ -52,8 +52,11 @@ The document already exists on the system. Do you wish to replace?
   </span> -->
   <span >
     <div>
-
-
+<!--
+      <td-file-input [(ngModel)]="files" color="primary" (select)="selectEvent($event)"
+                     accept=".ext,.anotherExt" [disabled]="disabled" multiple>
+        <mat-icon>attach_file</mat-icon><span>Choose a file...</span>
+      </td-file-input> -->
       <input type="file" id="fileName2" name="fileName2" class="ng-hide" (change)="fileChange($event)" placeholder="Upload file" accept=".json,.xml,.pdf,.doc,.docx,.jpg,.html" [formControl]="documentForm.controls['fileName']" formControlName="fileName">
      <!-- <label for="fileName2" class="md-button md-raised md-primary">Choose files</label> -->
       <div *ngIf="fileName.invalid && (fileName.dirty)"
@@ -74,7 +77,8 @@ The document already exists on the system. Do you wish to replace?
            <app-patient-search (patientSelected)="closePat($event)"></app-patient-search>
            <span *ngIf="document != undefined && document.patient != undefined">
 
-             <input class="form-control" type="text" id="subject" name="subject" [formControl]="documentForm.controls['subject']" [(ngModel)]="document.patientName" >
+             <!-- <input class="form-control" type="text" id="subject" name="subject" [formControl]="documentForm.controls['subject']" [(ngModel)]="document.patientName" > -->
+             <app-patient-item [patient]="document.patient" [detail]="false"></app-patient-item>
           </span>
            <br>
            <br>
@@ -84,7 +88,8 @@ The document already exists on the system. Do you wish to replace?
           <app-practitioner-search (practitionerSelected)="closePrac($event)"></app-practitioner-search>
           <span *ngIf="document != undefined && document.practitioner != undefined">
 
-             <input class="form-control" type="text" id="author" name="author" [formControl]="documentForm.controls['author']" [(ngModel)]="document.practitionerName" >
+            <!-- <input class="form-control" type="text" id="author" name="author" [formControl]="documentForm.controls['author']" [(ngModel)]="document.practitionerName" > -->
+            <app-practitioner [practitioner]="document.practitioner"></app-practitioner>
           </span>
           <br>
           <br>
@@ -94,7 +99,8 @@ The document already exists on the system. Do you wish to replace?
           <app-organisation-search (organisationSelected)="closeOrg($event)"> </app-organisation-search>
          <span *ngIf="document != undefined && document.organisation != undefined">
 
-             <input class="form-control" type="text" id="custodian" name="custodian" [formControl]="documentForm.controls['custodian']" [(ngModel)]="document.organisation.name" >
+             <!-- <input class="form-control" type="text" id="custodian" name="custodian" [formControl]="documentForm.controls['custodian']" [(ngModel)]="document.organisation.name" > -->
+             <app-organisation [organisation]="document.organisation"></app-organisation>
           </span>
           <br>
           <br>
