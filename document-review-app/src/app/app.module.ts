@@ -85,7 +85,12 @@ import {
 } from "@angular/material";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {MAT_MOMENT_DATE_FORMATS, MatMomentDateModule, MomentDateAdapter} from "@angular/material-moment-adapter";
-import {CovalentLayoutModule, CovalentStepsModule, TdFileUploadComponent} from "@covalent/core";
+import {
+  CovalentJsonFormatterModule,
+  CovalentLayoutModule,
+  CovalentStepsModule,
+  TdFileUploadComponent
+} from "@covalent/core";
 import {CovalentHttpModule} from "@covalent/http";
 import {CovalentHighlightModule} from "@covalent/highlight";
 import {CovalentMarkdownModule} from "@covalent/markdown";
@@ -165,17 +170,20 @@ import {CovalentDynamicFormsModule} from "@covalent/dynamic-forms";
     MatSelectModule,
     MatButtonModule,
     MatCardModule,
-    MatIconModule
-/*
-
-    // Issue with https://github.com/Teradata/covalent/issues/1152
+    MatIconModule,
     CovalentLayoutModule,
+    /*
     CovalentStepsModule,
+    */
     // (optional) Additional Covalent Modules imports
-    /*,
+
     CovalentHttpModule.forRoot(),
     CovalentHighlightModule,
     CovalentMarkdownModule,
+    CovalentJsonFormatterModule
+
+/*
+    // Issue with https://github.com/Teradata/covalent/issues/1152
     CovalentDynamicFormsModule
 */
   ],
