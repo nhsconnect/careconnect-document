@@ -1,8 +1,10 @@
 <td-layout>
   <td-navigation-drawer flex sidenavTitle="Clinical Assurance Tool" name="{{name}}" email="{{email}}">
     <mat-nav-list>
-      <a mat-list-item routerLink="/logout"><mat-icon>exit_to_app</mat-icon>Logout</a>
-
+      <a mat-list-item href="/home"><mat-icon>person</mat-icon>Patient</a>
+      <a mat-list-item href="/open"><mat-icon>note_addd</mat-icon>Import Document</a>
+      <mat-divider></mat-divider>
+      <a mat-list-item href="/logout"><mat-icon>exit_to_app</mat-icon>Logout</a>
     </mat-nav-list>
     <div td-navigation-drawer-menu>
       <mat-nav-list>
@@ -14,21 +16,20 @@
     <button mat-icon-button td-menu-button tdLayoutToggle>
       <mat-icon>menu</mat-icon>
     </button>
-    <td-layout-manage-list opened="true" mode="side">
+    <td-layout-manage-list [opened]="patientEprService.patient != undefined" mode="side">
       <mat-toolbar td-sidenav-content>Medical Records</mat-toolbar>
       <div td-sidenav-content>
         <mat-nav-list>
-          <a mat-list-item routerLink="/home"><mat-icon>person</mat-icon>Patient</a>
-          <a *ngIf="patientEprService.patient != undefined" mat-list-item routerLink="/epr/{{patientEprService.patient.id}}/documents"><mat-icon>note</mat-icon>Documents</a>
-          <a mat-list-item routerLink="/open"><mat-icon>note_addd</mat-icon>Import Document</a>
+          <span *ngIf="patientEprService.patient != undefined">
+            <a mat-list-item routerLink="/epr/{{patientEprService.patient.id}}/documents"><mat-icon>note</mat-icon>Documents</a>
+          </span>
         </mat-nav-list>
       </div>
-      <mat-toolbar >
+      <mat-toolbar>
         <span *ngIf="patient != undefined">
             <span>  <b>{{ getLastName() }}</b> {{ getFirstName() }}</span>
             <span class="fill-remaining-space"></span>
             <span>
-
                &nbsp; <i>Born: </i><b>{{patient.birthDate | date: 'dd-MMM-yyyy'}}</b>
             </span>
             <span class="fill-remaining-space"></span>
@@ -48,70 +49,3 @@
     </td-layout-manage-list>
   </td-layout-nav>
 </td-layout>
-<!--
-<div class="container-fluid fixed-top">
-<nav class="navbar navbar-expand navbar-dark bg-dark ">
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-
-    <ul class="navbar-nav mr-auto">
-      <li *ngIf="permission != undefined" class="nav-item dropdown">
-        <div ngbDropdown class="d-inline-block">
-          <button class="btn btn-dark" id="dropdownMenu1"
-                  ngbDropdownToggle><i class="fa fa-hospital-o" style="color:lightskyblue" aria-hidden="false"></i> Patient</button>
-          <div ngbDropdownMenu class="dropdown-menu" aria-labelledby="dropdownMenu1">
-            <button class="dropdown-item" routerLink="/find">Find</button>
-            <span *ngIf="patientEprService.patient != undefined">
-              <button class="dropdown-item" routerLink="/epr/{{patientEprService.patient.id}}">Summary</button>
-
-            </span>
-          </div>
-        </div>
-      </li>
-
-      <li *ngIf="permission != undefined && permission.smartOnFhirUser == true && patientEprService.patient != undefined" class="nav-item dropdown">
-        <div ngbDropdown class="d-inline-block">
-          <button class="btn btn-dark" id="dropdownMenu3"
-                  ngbDropdownToggle><i class="fa fa-fire" style="color:lightskyblue" aria-hidden="false"></i> SmartOnFhir</button>
-          <div ngbDropdownMenu class="dropdown-menu" aria-labelledby="dropdownMenu3">
-            <button class="dropdown-item" (click)="growthApp()">Growth Chart</button>
-            <button class="dropdown-item" (click)="cardiacApp()">Cardiac Risk</button>
-          </div>
-        </div>
-      </li>
-      <li *ngIf="permission != undefined && permission.validationUser == true" class="nav-item dropdown">
-        <div ngbDropdown class="d-inline-block">
-          <button class="btn btn-dark" id="dropdownValid"
-                  ngbDropdownToggle><i class="fa fa-flask" style="color:lightskyblue" aria-hidden="false"></i> Testing</button>
-          <div ngbDropdownMenu class="dropdown-menu" aria-labelledby="dropdownValid">
-            <button class="dropdown-item" routerLink="/test">Test Bundle</button>
-          </div>
-        </div>
-      </li>
-      <li *ngIf="permission != undefined" class="nav-item dropdown">
-        <div ngbDropdown class="d-inline-block">
-          <button class="btn btn-dark" id="dropdownMenu2"
-                  ngbDropdownToggle><i class="fa fa-file-o" style="color:lightskyblue" aria-hidden="false"></i> Document</button>
-          <div ngbDropdownMenu class="dropdown-menu" aria-labelledby="dropdownMenu2">
-            <button class="dropdown-item" routerLink="/open">Load</button>
-
-          </div>
-        </div>
-      </li>
-    </ul>
-
-    <ul class="navbar-nav ml-auto">
-      <li class="nav-item active"><button class="btn btn-dark" routerLink="/logout"><i class="fa fa-sign-out" style="color:lightskyblue" aria-hidden="false"></i> Logout</button></li>
-  </ul>
-
-    </div>
-
-</nav>
-  <span *ngIf="patient != undefined">
-  <app-patient-item [patient]="patient"></app-patient-item>
-    </span>
-</div>
-<mat-sidenav-container>
-  <mat-sidenav>Start</mat-sidenav>
-  <mat-sidenav-content><router-outlet></router-outlet></mat-sidenav-content>
-</mat-sidenav-container>
--->

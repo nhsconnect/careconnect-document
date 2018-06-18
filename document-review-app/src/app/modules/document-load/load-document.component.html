@@ -106,7 +106,7 @@ The document already exists on the system. Do you wish to replace?
 
         <div>
 
-            <mat-form-field>
+            <mat-form-field class="input-half-width">
               <input #docCreated class="input-lg" matInput [matDatepicker]="picker" placeholder="Document Creation Date" id="docdate" name="docdate" max="2030-12-31"
                      min="1900-01-01" [formControl]="documentForm.controls['created']" [(ngModel)]="document.docDate" >
               <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
@@ -115,7 +115,7 @@ The document already exists on the system. Do you wish to replace?
             </mat-form-field>
         </div>
         <div>
-        <mat-form-field>
+        <mat-form-field class="input-half-width">
 
             <mat-select name="type" placeholder="Document Type" id="type" [formControl]="documentForm.controls['type']" (ngModelChange)="specialityChanged($event)" [(ngModel)]="document.type" >
                 <mat-option *ngFor="let docType of documentType.compose.include[0].concept" [value]="docType.code">
@@ -126,7 +126,7 @@ The document already exists on the system. Do you wish to replace?
           </mat-form-field>
         </div>
         <div>
-          <mat-form-field>
+          <mat-form-field class="input-half-width">
             <mat-select name="speciality" placeholder="Speciality" id="speciality"  [formControl]="documentForm.controls['speciality']" (ngModelChange)="specialityChanged($event)" [(ngModel)]="document.speciality">
               <mat-option *ngFor="let docSpec of practiceSettings.compose.include[0].concept" [value]="docSpec.code">
                 {{ docSpec.display}}
@@ -137,7 +137,7 @@ The document already exists on the system. Do you wish to replace?
           </mat-form-field>
           </div>
         <div>
-           <mat-form-field>
+           <mat-form-field class="input-half-width">
 
               <mat-select name="service" placeholder="Service" id="service"  [formControl]="documentForm.controls['service']" (ngModelChange)="specialityChanged($event)" [(ngModel)]="document.service">
                 <mat-option *ngFor="let docService of facilityCodes.compose.include[0].concept" [value]="docService.code">
