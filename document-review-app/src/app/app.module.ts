@@ -81,7 +81,7 @@ import {
   MatDatepickerModule, MatIcon, MatIconModule,
   MatInputModule, MatListModule, MatSelectModule,
 
-  MatSidenavModule, MatToolbarModule
+  MatSidenavModule, MatTableDataSource, MatTableModule, MatToolbarModule
 } from "@angular/material";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {MAT_MOMENT_DATE_FORMATS, MatMomentDateModule, MomentDateAdapter} from "@angular/material-moment-adapter";
@@ -174,6 +174,8 @@ import {CovalentDynamicFormsModule} from "@covalent/dynamic-forms";
     MatIconModule,
     MatListModule,
     MatToolbarModule,
+    MatTableModule,
+
     CovalentLayoutModule,
 
     /*

@@ -7,7 +7,7 @@ set -xe
 : "${KEYCLOAK_CLIENT_SECRET?Need an keycloak secret}"
 : "${SMART_OAUTH2_CLIENT_SECRET?Need an SMART OAUTH2 secret}"
 
-echo /usr/share/nginx/html/cat/main.js
+echo /usr/share/nginx/html/cat/*.js
 
 ls /usr/share/nginx/html/cat
 
