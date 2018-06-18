@@ -31,6 +31,7 @@ export class ResourceViewerComponent implements OnInit {
 
   ngOnInit() {
     console.log('Init Called TREE');
+    /*
     if (this.resource != undefined) {
       this.buildNodes();
 
@@ -42,10 +43,12 @@ export class ResourceViewerComponent implements OnInit {
         }
       });
     }
+    */
 
     this.patientEPRService.getResourceChangeEvent().subscribe(
       resource => {
         this.resource = resource;
+        /*
         this.buildNodes();
 
         $('#docTreeView').jstree('destroy');
@@ -55,6 +58,7 @@ export class ResourceViewerComponent implements OnInit {
             'data' : this.treeData
           }
         });
+        */
       }
     )
 

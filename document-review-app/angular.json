@@ -24,7 +24,8 @@
               "node_modules/bootstrap/scss/bootstrap.scss",
               "src/styles.scss",
               "node_modules/font-awesome/css/font-awesome.css",
-              "node_modules/jstree/dist/themes/default/style.min.css"
+              "node_modules/jstree/dist/themes/default/style.min.css",
+              "src/theme.scss"
             ],
             "scripts": [
               "node_modules/keycloak-js/dist/keycloak.js",

@@ -79,15 +79,16 @@ import {
   DateAdapter, MAT_DATE_FORMATS,
   MAT_DATE_LOCALE, MatButtonModule, MatCardModule,
   MatDatepickerModule, MatIcon, MatIconModule,
-  MatInputModule, MatSelectModule,
+  MatInputModule, MatListModule, MatSelectModule,
 
-  MatSidenavModule
+  MatSidenavModule, MatToolbarModule
 } from "@angular/material";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {MAT_MOMENT_DATE_FORMATS, MatMomentDateModule, MomentDateAdapter} from "@angular/material-moment-adapter";
 import {
+  CovalentFileModule,
   CovalentJsonFormatterModule,
-  CovalentLayoutModule,
+  CovalentLayoutModule, CovalentMenuModule,
   CovalentStepsModule,
   TdFileUploadComponent
 } from "@covalent/core";
@@ -171,7 +172,10 @@ import {CovalentDynamicFormsModule} from "@covalent/dynamic-forms";
     MatButtonModule,
     MatCardModule,
     MatIconModule,
+    MatListModule,
+    MatToolbarModule,
     CovalentLayoutModule,
+
     /*
     CovalentStepsModule,
     */
@@ -180,7 +184,9 @@ import {CovalentDynamicFormsModule} from "@covalent/dynamic-forms";
     CovalentHttpModule.forRoot(),
     CovalentHighlightModule,
     CovalentMarkdownModule,
-    CovalentJsonFormatterModule
+    CovalentJsonFormatterModule,
+    CovalentMenuModule
+   // CovalentFileModule
 
 /*
     // Issue with https://github.com/Teradata/covalent/issues/1152

@@ -1,4 +1,11 @@
+<span ngSwitch="tabid"  id="tab-documents" >
+  <span *ngSwitchDefault>
+    <app-epr-document-reference [documents]="documents" [documentsTotal]="documentsTotal"></app-epr-document-reference>
+  </span>
+</span>
 
+<ngb-tab>
+<!--
 <ngb-tabset #tabs type="pills">
   <span *ngIf="authService.permission != undefined && authService.permission.eprUser">
   <ngb-tab  id="tab-summary" >
@@ -53,14 +60,8 @@
     </ng-template>
   </ngb-tab>
     </span>
-  <ngb-tab  id="tab-documents" >
-    <ng-template ngbTabTitle><b>Documents</b></ng-template>
-    <ng-template ngbTabContent>
-      <app-epr-document-reference [documents]="documents" [documentsTotal]="documentsTotal"></app-epr-document-reference>
-    </ng-template>
-  </ngb-tab>
 
 
 </ngb-tabset>
-
+-->
 

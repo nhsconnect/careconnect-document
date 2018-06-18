@@ -4,8 +4,7 @@
 @import '~vis/dist/vis-timeline-graph2d.min.css';
 @import '~angular-tree-component/dist/angular-tree-component.css';
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
-//@import "~font-awesome/css/font-awesome.min.css";
-
+@import '~@covalent/core/theming/all-theme';
 
 body { color: #000000; font-size: 10pt; line-height: normal;  margin: 10px; }
 
@@ -54,10 +53,19 @@ body {
   padding: 3rem 1.5rem;
   text-align: center;
 }
-/* MD changed this bit */
+/* MD changed this bit
 .mat-drawer-container {
   margin-top: 3em;
 }
+*/
+.fill-remaining-space {
+  /* This fills the remaining space, by using flexbox.
+     Every toolbar row uses a flexbox row layout. */
+  flex: 1 1 auto;
+
+  layout-align: space-between none;
+}
+
 
 /* everywhere else */
 * {

@@ -34,6 +34,9 @@ export class NavComponent implements OnInit {
 
   subPatient : any;
 
+  name : string = "";
+
+  email : string = "";
 
 
   ngOnInit() {
@@ -42,6 +45,8 @@ export class NavComponent implements OnInit {
       .subscribe(item => {
 
         this.permission = item;
+        this.name= this.permission.userName;
+        this.email = "email address";
       });
     this.subPatient = this.patientEprService.getPatientChangeEmitter()
       .subscribe( patient => {
@@ -96,6 +101,43 @@ export class NavComponent implements OnInit {
         );
       }
     )
+
+  }
+
+  getLastName() : String {
+    if (this.patient == undefined) return "";
+    if (this.patient.name == undefined || this.patient.name.length == 0)
+      return "";
+
+    let name = "";
+    if (this.patient.name[0].family != undefined) name += this.patient.name[0].family.toUpperCase();
+    return name;
+
+  }
+  getFirstName() : String {
+    if (this.patient == undefined) return "";
+    if (this.patient.name == undefined || this.patient.name.length == 0)
+      return "";
+    // Move to address
+    let name = "";
+    if (this.patient.name[0].given != undefined && this.patient.name[0].given.length>0) name += ", "+ this.patient.name[0].given[0];
+
+    if (this.patient.name[0].prefix != undefined && this.patient.name[0].prefix.length>0) name += " (" + this.patient.name[0].prefix[0] +")" ;
+    return name;
+
+  }
+
+  getNHSIdentifier() : String {
+    if (this.patient == undefined) return "";
+    if (this.patient.identifier == undefined || this.patient.identifier.length == 0)
+      return "";
+    // Move to address
+    var NHSNumber :String = "";
+    for (var f=0;f<this.patient.identifier.length;f++) {
+      if (this.patient.identifier[f].system.includes("nhs-number") )
+        NHSNumber = this.patient.identifier[f].value;
+    }
+    return NHSNumber;
 
   }
 

@@ -52,11 +52,7 @@ The document already exists on the system. Do you wish to replace?
   </span> -->
   <span >
     <div>
-<!--
-      <td-file-input [(ngModel)]="files" color="primary" (select)="selectEvent($event)"
-                     accept=".ext,.anotherExt" [disabled]="disabled" multiple>
-        <mat-icon>attach_file</mat-icon><span>Choose a file...</span>
-      </td-file-input> -->
+
       <input type="file" id="fileName2" name="fileName2" class="ng-hide" (change)="fileChange($event)" placeholder="Upload file" accept=".json,.xml,.pdf,.doc,.docx,.jpg,.html" [formControl]="documentForm.controls['fileName']" formControlName="fileName">
      <!-- <label for="fileName2" class="md-button md-raised md-primary">Choose files</label> -->
       <div *ngIf="fileName.invalid && (fileName.dirty)"

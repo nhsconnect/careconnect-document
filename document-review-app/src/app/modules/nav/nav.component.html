@@ -1,3 +1,54 @@
+<td-layout>
+  <td-navigation-drawer flex sidenavTitle="Clinical Assurance Tool" name="{{name}}" email="{{email}}">
+    <mat-nav-list>
+      <a mat-list-item routerLink="/logout"><mat-icon>exit_to_app</mat-icon>Logout</a>
+
+    </mat-nav-list>
+    <div td-navigation-drawer-menu>
+      <mat-nav-list>
+        <a mat-list-item><mat-icon>account_box</mat-icon>Profile</a>
+      </mat-nav-list>
+    </div>
+  </td-navigation-drawer>
+  <td-layout-nav toolbarTitle="Clinical Assurance Tool" navigationRoute="/epr">
+    <button mat-icon-button td-menu-button tdLayoutToggle>
+      <mat-icon>menu</mat-icon>
+    </button>
+    <td-layout-manage-list opened="true" mode="side">
+      <mat-toolbar td-sidenav-content>Medical Records</mat-toolbar>
+      <div td-sidenav-content>
+        <mat-nav-list>
+          <a mat-list-item routerLink="/home"><mat-icon>person</mat-icon>Patient</a>
+          <a *ngIf="patientEprService.patient != undefined" mat-list-item routerLink="/epr/{{patientEprService.patient.id}}/documents"><mat-icon>note</mat-icon>Documents</a>
+          <a mat-list-item routerLink="/open"><mat-icon>note_addd</mat-icon>Import Document</a>
+        </mat-nav-list>
+      </div>
+      <mat-toolbar >
+        <span *ngIf="patient != undefined">
+            <span>  <b>{{ getLastName() }}</b> {{ getFirstName() }}</span>
+            <span class="fill-remaining-space"></span>
+            <span>
+
+               <i>Born: </i><b>{{patient.birthDate | date: 'dd-MMM-yyyy'}}</b>
+            </span>
+            <span class="fill-remaining-space"></span>
+            <span>
+               <i>Gender: </i><b>{{ patient.gender }}</b>
+            </span>
+            <span class="fill-remaining-space"></span>
+            <span>
+               <i>NHS No: </i><b>{{ getNHSIdentifier() }}</b>
+            </span>
+          </span>
+      <!--  <button mat-button tdLayoutManageListToggle>
+          Toggle
+        </button> -->
+      </mat-toolbar>
+      <router-outlet></router-outlet>
+    </td-layout-manage-list>
+  </td-layout-nav>
+</td-layout>
+<!--
 <div class="container-fluid fixed-top">
 <nav class="navbar navbar-expand navbar-dark bg-dark ">
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -16,7 +67,7 @@
           </div>
         </div>
       </li>
-      <!-- <li *ngIf="authService.permission != undefined && authService.permission.hacker">User Log</li> -->
+
       <li *ngIf="permission != undefined && permission.smartOnFhirUser == true && patientEprService.patient != undefined" class="nav-item dropdown">
         <div ngbDropdown class="d-inline-block">
           <button class="btn btn-dark" id="dropdownMenu3"
@@ -63,4 +114,4 @@
   <mat-sidenav>Start</mat-sidenav>
   <mat-sidenav-content><router-outlet></router-outlet></mat-sidenav-content>
 </mat-sidenav-container>
-
+-->
