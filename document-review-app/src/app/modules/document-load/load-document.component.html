@@ -35,7 +35,9 @@ The document already exists on the system. Do you wish to replace?
   </div>
 </ng-template>
 
-
+<mat-card>
+  <mat-card-title>Import Document</mat-card-title>
+  <mat-card-content>
 <form [formGroup]="documentForm"  >
   <!--
   <span *ngIf="auth.permission == undefined || (auth.permission.eprUser == undefined || !auth.permission.eprUser)">
@@ -152,5 +154,6 @@ The document already exists on the system. Do you wish to replace?
   <button mat-raised-button type="submit" (click)="onSubmitClick()" color="primary" >Submit</button>
   <!-- <button  (click)="onCheckClick(modalIssue)"  class="btn btn-primary ui button">Check</button> -->
 </form>
-
+  </mat-card-content>
+</mat-card>
 
