@@ -36,7 +36,7 @@
 .fill-remaining-space {
   /* This fills the remaining space, by using flexbox.
      Every toolbar row uses a flexbox row layout. */
-  flex: 1 1 auto;
+  flex: 0 1 auto;
 
   layout-align: space-between none;
 }
