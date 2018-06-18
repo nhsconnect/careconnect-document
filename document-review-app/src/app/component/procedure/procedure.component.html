@@ -1,17 +1,17 @@
-<table mat-table>
+<table >
   <thead>
-  <tr mat-header-row>
-    <th mat-header-cell scope="col" width="30%">Date</th>
-    <th mat-header-cell scope="col" width="60%">Procedure</th>
-    <th mat-header-cell scope="col" width="5%"></th>
+  <tr >
+    <th scope="col" width="30%">Date</th>
+    <th scope="col" width="60%">Procedure</th>
+    <th scope="col" width="5%"></th>
   </tr>
   </thead>
   <tbody>
-  <tr mat-row *ngFor="let procedure of procedures">
-    <td mat-cell>
+  <tr *ngFor="let procedure of procedures">
+    <td >
       <span class="badge badge-light" >performed</span>{{procedure.performedDateTime | date: 'dd-MMM-yyyy'}}
     </td>
-    <td mat-cell>
+    <td >
        <b>{{procedure.code.coding[0].display}}</b>
       <span *ngIf="isSNOMED(procedure.code.coding[0].system)">
         <a (click)="getSNOMEDLink(procedure.code.coding[0])"> <span *ngIf="procedure.code.coding[0].code != undefined" class="fa fa-book" ngbTooltip="{{getCodeSystem(procedure.code.coding[0].system)}} {{procedure.code.coding[0].code}}"></span> </a>
@@ -40,7 +40,7 @@
       <span class="badge badge-light" >status</span>
       <i>{{procedure.status}}</i>
     </td>
-    <td mat-cell>
+    <td >
       <a (click)="select(procedure)">
         <span class="fa fa-arrow-right" ngbTooltip="View Resource" style="color:green"></span>
       </a>
