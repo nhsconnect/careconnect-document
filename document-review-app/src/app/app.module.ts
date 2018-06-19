@@ -78,7 +78,7 @@ import {ImageViewerModule} from '@hallysonh/ngx-imageviewer';
 import {
   DateAdapter, MAT_DATE_FORMATS,
   MAT_DATE_LOCALE, MatButtonModule, MatCardModule,
-  MatDatepickerModule, MatIcon, MatIconModule,
+  MatDatepickerModule, MatGridListModule, MatIcon, MatIconModule,
   MatInputModule, MatListModule, MatSelectModule,
 
   MatSidenavModule, MatTableDataSource, MatTableModule, MatToolbarModule
@@ -175,6 +175,7 @@ import {CovalentDynamicFormsModule} from "@covalent/dynamic-forms";
     MatListModule,
     MatToolbarModule,
     MatTableModule,
+    MatGridListModule,
 
     CovalentLayoutModule,
 

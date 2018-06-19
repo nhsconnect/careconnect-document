@@ -3,7 +3,7 @@ import {AuthService} from "../../service/auth.service";
 import {Router} from "@angular/router";
 import {PatientEprService} from "../../service/patient-epr.service";
 
-import {Permission} from "../../model/permission";
+import {User} from "../../model/user";
 
 import {FhirService} from "../../service/fhir.service";
 import {environment} from "../../../environments/environment";
@@ -27,25 +27,24 @@ export class NavComponent implements OnInit {
 
   patient : fhir.Patient;
 
-  permission : Permission;
+  user: User;
 
-  subPermission: any;
+  userName : string = undefined;
+  email : string = undefined;
+
+  subUser: any;
 
   subPatient : any;
 
-  name : string = "";
-
-  email : string = "";
-
-
   ngOnInit() {
 
-    this.subPermission = this.authService.getPermissionEventEmitter()
+    this.subUser = this.authService.getUserEventEmitter()
       .subscribe(item => {
 
-        this.permission = item;
-        this.name= this.permission.userName;
-        this.email = "email address";
+        this.user = item;
+        this.userName = this.user.userName;
+        this.email = this.user.email;
+
       });
     this.subPatient = this.patientEprService.getPatientChangeEmitter()
       .subscribe( patient => {
@@ -109,14 +108,14 @@ export class NavComponent implements OnInit {
   getCardiacAppUrl() : string {
     // This is a marker for entryPoint.sh to replace
     let url :string = 'SMART_CARDIAC_URL';
-    if (url.indexOf('SMART_CARDIAC_URL') != -1) url = environment.smart.cardiac;
+    if (url.indexOf('SMART_CARDIAC') != -1) url = environment.smart.cardiac;
     return url;
   }
 
   getGrowthChartAppUrl() : string {
     // This is a marker for entryPoint.sh to replace
     let url :string = 'SMART_GROWTH_CHART_URL';
-    if (url.indexOf('SMART_GROWTH_CHART_URL') != -1) url = environment.smart.cardiac;
+    if (url.indexOf('SMART_GROWTH_CHART') != -1) url = environment.smart.cardiac;
     return url;
   }
 

@@ -132,7 +132,7 @@ export class FhirService {
 
     if (localStorage.getItem('access_token')!= undefined) {
       // access token is present so forgo access token retrieval
-      this.authService.updatePermission();
+      this.authService.updateUser();
       this.router.navigateByUrl('home');
     } else {
 
@@ -200,12 +200,13 @@ export class FhirService {
     this.http.post<Oauth2token>(url,body.toString(), { 'headers' : headers } ).subscribe( response => {
        // console.log(response);
         this.smartToken = response;
+        console.log('OAuth2Token : '+response);
         this.authService.auth = true;
         localStorage.setItem("access_token", this.smartToken.access_token);
 
         localStorage.setItem("scope", this.smartToken.scope);
 
-        this.authService.updatePermission();
+        this.authService.updateUser();
       }
       , (error: any) => {
       console.log(error);

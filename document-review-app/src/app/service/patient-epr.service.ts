@@ -1,5 +1,5 @@
 import {EventEmitter, Injectable} from '@angular/core';
-import {Permission} from "../model/permission";
+import {User} from "../model/user";
 
 @Injectable()
 export class PatientEprService {

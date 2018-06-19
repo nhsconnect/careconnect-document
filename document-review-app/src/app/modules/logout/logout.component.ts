@@ -37,7 +37,7 @@ export class LogoutComponent implements OnInit {
 
     this.keycloak.logout();
 
-    this.authService.setLocalPermission(undefined);
+    this.authService.setLocalUser(undefined);
 
     if (this.logoutRedirect !== undefined) {
       window.location.href = this.logoutRedirect;

@@ -2,7 +2,7 @@ import {EventEmitter, Injectable} from '@angular/core';
 
 
 import {Router} from '@angular/router';
-import {Permission} from "../model/permission";
+import {User} from "../model/user";
 import {CookieService} from "angular2-cookie/core";
 import {KeycloakService} from "./keycloak.service";
 import {environment} from "../../environments/environment";
@@ -12,8 +12,8 @@ import { Observable, Subject, asapScheduler, pipe, of, from, interval, merge, fr
 
 @Injectable()
 export class AuthService {
-  set permission(value: Permission) {
-    this._permission = value;
+  set User(value: User) {
+    this._User = value;
   }
 
  // private user: Observable<firebase.User>;
@@ -22,9 +22,9 @@ export class AuthService {
 
   private semaphore : boolean = false;
 
-  private _permission :Permission = undefined;
+  private _User :User = undefined;
 
-  private permissionEvent : EventEmitter<Permission> = new EventEmitter();
+  private UserEvent : EventEmitter<User> = new EventEmitter();
 
   private cookieEvent : EventEmitter<any> = new EventEmitter();
 
@@ -36,24 +36,25 @@ export class AuthService {
              private router: Router
 
             ,private _cookieService:CookieService
+             , private keycloakService : KeycloakService
               ) {
 
-    this.updatePermission();
+    this.updateUser();
 
   }
 
 
-  setLocalPermission(permission : Permission) {
-    console.log('Permission set');
-    this._permission = permission;
-    this.permissionEvent.emit(this._permission);
+  setLocalUser(User : User) {
+    console.log('User set');
+    this._User = User;
+    this.UserEvent.emit(this._User);
   }
 
   getAccessToken() {
-    if (this._permission == undefined) {
-      this.updatePermission();
+    if (this._User == undefined) {
+      this.updateUser();
     } else {
-      console.log("Permission not undefined");
+      console.log("User not undefined");
     }
     return localStorage.getItem("access_token");
   }
@@ -67,15 +68,22 @@ export class AuthService {
       if (this.getCookie() !=undefined) {
         jwt = this._cookieService.get('ccri-token');
       } else {
-        jwt = KeycloakService.auth.authz.token;
+        if (KeycloakService.auth != undefined && KeycloakService.auth.authz != undefined) {
+          jwt = KeycloakService.auth.authz.token;
 
-        this._cookieService.put('ccri-token', jwt, {
-          domain: this.getCookieDomain(),
-          path: '/',
-          expires: new Date((new Date()).getTime() + 3 * 60000)
-        });
+          this._cookieService.put('ccri-token', jwt, {
+            domain: this.getCookieDomain(),
+            path: '/',
+            expires: new Date((new Date()).getTime() + 3 * 60000)
+          });
+        }
       }
-      this.cookieEvent.emit(jwt);
+      if (jwt != undefined) {
+        this.cookieEvent.emit(jwt);
+      } else {
+        console.log('jwt not recorded')
+        //this.keycloakService.logout();
+      }
   }
 
   getCookieDomain() {
@@ -93,90 +101,21 @@ export class AuthService {
   }
 
 
-  getPermissionEventEmitter() {
-    return this.permissionEvent;
+  getUserEventEmitter() {
+    return this.UserEvent;
   }
 
-  updatePermission() {
+  updateUser() {
 
 
-      let basicPermission = new Permission();
+      let basicUser = new User();
 
-      basicPermission.cat_access_token = localStorage.getItem("access_token");
+      basicUser.cat_access_token = localStorage.getItem("access_token");
 
-      this.setLocalPermission(basicPermission);
-  }
-
-
-  /*
-  signInWithTwitter() {
-    return this._firebaseAuth.auth.signInWithPopup(
-      new firebase.auth.TwitterAuthProvider()
-    )
-  }
-
-  signInWithFacebook() {
-    return this._firebaseAuth.auth.signInWithPopup(
-      new firebase.auth.FacebookAuthProvider()
-    )
-  }
-
-  signInWithGoogle() {
-    return this._firebaseAuth.auth.signInWithPopup(
-      new firebase.auth.GoogleAuthProvider()
-    )
-  }
-
-  signInWithGithub() {
-    return this._firebaseAuth.auth.signInWithPopup(
-      new firebase.auth.GithubAuthProvider()
-    )
-  }
-
-  signInRegular(email, password) {
-    //const credential = firebase.auth.EmailAuthProvider.credential( email, password );
-    return this._firebaseAuth.auth.signInWithEmailAndPassword(email,password);
-
-  }
-  createRegular (email, password) {
-   return this._firebaseAuth.auth.createUserWithEmailAndPassword(email, password );
+      this.setLocalUser(basicUser);
   }
 
 
-
-  isLoggedIn() {
-    if (this.userDetails == null || !this.auth) {
-      return false;
-    } else {
-
-      return true;
-    }
-  }
-*/
-  /*
-  removeSub() {
-    if (this.permSub != undefined && this.userDetails != undefined) {
-      console.log('Calling unsubscribe');
-      this.permSub.snapshotChanges().subscribe().unsubscribe();
-    }
-    if (this.user != undefined) {
-      this.user.subscribe().unsubscribe();
-    }
-  }
-*/
-
-  /*
-  fireBaseLogout() {
-    console.log('Logging out');
-    this.userDetails = undefined;
-    this._firebaseAuth.auth.signOut()
-      .then((res) => {
-       // this.semaphore= false;
-        console.log('Finished Signout');
-        this.router.navigate(['/']);
-      });
-  }
-  */
 
 
 
