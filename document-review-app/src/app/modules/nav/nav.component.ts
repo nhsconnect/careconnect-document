@@ -6,6 +6,7 @@ import {PatientEprService} from "../../service/patient-epr.service";
 import {Permission} from "../../model/permission";
 
 import {FhirService} from "../../service/fhir.service";
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'app-nav',
@@ -23,8 +24,6 @@ export class NavComponent implements OnInit {
 
   title="FHIR DocumentRef Viewer";
 
-  cardiacAppUrl : string = "http://127.0.0.1:8000/launch.html?iss=http://localhost:9090/careconnect-gateway-secure/STU3&launch=";
-  growthAppUrl : string = "http://127.0.0.1:9000/launch.html?iss=http://localhost:9090/careconnect-gateway-secure/STU3&launch=";
 
   patient : fhir.Patient;
 
@@ -62,16 +61,16 @@ export class NavComponent implements OnInit {
 
     this.authService.getCookieEventEmitter().subscribe(
       ()=> {
-        console.log('Smart Launch Cardiac');
+        console.log('Smart Launch Growth Chart');
         this.fhirService.launchSMART('growth_chart','4ae23017813e417d937e3ba21974581',this.patientEprService.patient.id).subscribe( response => {
             launch = response.launch_id;
-            console.log("Returned Lauch = "+launch);
+            console.log("Returned Launch = "+launch);
           },
           (err)=> {
             console.log(err);
           },
           () => {
-            window.open(this.growthAppUrl+launch, "_blank");
+            window.open(this.getGrowthChartAppUrl()+launch, "_blank");
           }
         );
 
@@ -98,13 +97,27 @@ export class NavComponent implements OnInit {
             console.log(err);
           },
           () => {
-            window.open(this.cardiacAppUrl + launch, "_blank");
+            window.open(this.getCardiacAppUrl() + launch, "_blank");
           }
         );
       }
     )
     this.authService.setCookie();
 
+  }
+
+  getCardiacAppUrl() : string {
+    // This is a marker for entryPoint.sh to replace
+    let url :string = 'SMART_CARDIAC_URL';
+    if (url.indexOf('SMART_CARDIAC_URL') != -1) url = environment.smart.cardiac;
+    return url;
+  }
+
+  getGrowthChartAppUrl() : string {
+    // This is a marker for entryPoint.sh to replace
+    let url :string = 'SMART_GROWTH_CHART_URL';
+    if (url.indexOf('SMART_GROWTH_CHART_URL') != -1) url = environment.smart.cardiac;
+    return url;
   }
 
   getLastName() : String {

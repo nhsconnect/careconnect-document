@@ -27,5 +27,8 @@ sed -i "s/SMART_OAUTH2_CLIENT_SECRET/$SMART_OAUTH2_CLIENT_SECRET/g" /usr/share/n
 
 sed -i "s~FHIR_SERVER_URL~$FHIR_SERVER_URL~g" /usr/share/nginx/html/cat/main.js
 
+sed -i "s~SMART_CARDIAC_URL~$SMART_CARDIAC_URL~g" /usr/share/nginx/html/cat/main.js
+
+sed -i "s~SMART_GROWTH_CHART_URL~$SMART_GROWTH_CHART_URL~g" /usr/share/nginx/html/cat/main.js
 
 exec "$@"

@@ -17,5 +17,9 @@ export const environment = {
     client_id : 'clinical-assurance-tool',
     client_secret : 'SMART_OAUTH2_CLIENT_SECRET',
     cookie_domain: 'purple.testlab.nhs.uk'
+  },
+  smart: {
+    cardiac : 'http://127.0.0.1:8000/launch.html?iss=http://localhost:9090/careconnect-gateway-secure/STU3&launch=',
+    growthChart : 'http://127.0.0.1:9000/launch.html?iss=http://localhost:9090/careconnect-gateway-secure/STU3&launch='
   }
 };
