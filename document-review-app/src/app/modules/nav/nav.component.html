@@ -22,6 +22,12 @@
         <mat-nav-list>
           <span *ngIf="patientEprService.patient != undefined">
             <a mat-list-item routerLink="/epr/{{patientEprService.patient.id}}/documents"><mat-icon>note</mat-icon>Documents</a>
+          <!--  <mat-divider></mat-divider>
+            Smart on FHIR Apps
+            <mat-divider></mat-divider>
+            <a mat-list-item (click)="growthApp()"><mat-icon>bar_chart</mat-icon>Growth Chart</a>
+            <a mat-list-item (click)="cardiacApp()"><mat-icon>favorite</mat-icon>Cardiac Risk</a>
+-->
           </span>
         </mat-nav-list>
       </div>

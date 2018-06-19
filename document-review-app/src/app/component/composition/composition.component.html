@@ -36,5 +36,8 @@
         </td>
       </tr>
     </table>
+    <span *ngIf="composition.text != undefined">
+       <div [innerHTML]="composition.text.div"></div>
+    </span>
 
 

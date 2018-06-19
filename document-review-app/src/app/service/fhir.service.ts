@@ -8,6 +8,7 @@ import {AuthService} from "./auth.service";
 import {Router} from "@angular/router";
 import {PlatformLocation} from "@angular/common";
 import {environment} from "../../environments/environment";
+import {Oauth2Service} from "./oauth2.service";
 
 @Injectable()
 export class FhirService {
@@ -39,7 +40,9 @@ export class FhirService {
   constructor(  private http: HttpClient
                 ,private authService: AuthService
                 , private router: Router
-                , private platformLocation: PlatformLocation) { }
+                , private platformLocation: PlatformLocation
+                , private oauth2 : Oauth2Service
+                ) { }
 
   getHeaders(contentType : boolean = true ): HttpHeaders {
 
@@ -218,10 +221,11 @@ export class FhirService {
 
   launchSMART(appId : string, contextId : string, patientId : string) :Observable<any> {
 
+    // Calls OAuth2 Server to register launch context for SMART App.
+
     // https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/119734296/Registering+a+Launch+Context
 
-
-    let bearerToken = 'Basic '+btoa(localStorage.getItem("clientId")+":"+localStorage.getItem("clientSecret"));
+    let bearerToken = 'Basic '+btoa(environment.cat.client_id+":"+this.getCatClientSecret());
 
     const url = localStorage.getItem("tokenUri").replace('token', '') + 'Launch';
     let payload = JSON.stringify({launch_id: contextId, parameters: []});

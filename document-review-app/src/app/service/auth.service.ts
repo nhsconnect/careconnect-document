@@ -63,16 +63,18 @@ export class AuthService {
     return this.cookieEvent;
   }
   setCookie() {
+      let jwt: any = undefined;
+      if (this.getCookie() !=undefined) {
+        jwt = this._cookieService.get('ccri-token');
+      } else {
+        jwt = KeycloakService.auth.authz.token;
 
-      let jwt: any = KeycloakService.auth.authz.token;
-
-
-      this._cookieService.put('ccri-token', jwt , {
-        domain: this.getCookieDomain(),
-        path: '/',
-        expires: new Date((new Date()).getTime() + 3 * 60000)
-      });
-
+        this._cookieService.put('ccri-token', jwt, {
+          domain: this.getCookieDomain(),
+          path: '/',
+          expires: new Date((new Date()).getTime() + 3 * 60000)
+        });
+      }
       this.cookieEvent.emit(jwt);
   }
 

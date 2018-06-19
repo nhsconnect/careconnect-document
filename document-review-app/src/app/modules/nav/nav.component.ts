@@ -52,7 +52,7 @@ export class NavComponent implements OnInit {
       .subscribe( patient => {
         this.patient = patient;
       });
-
+    this.authService.setCookie();
   }
 
 
@@ -62,6 +62,7 @@ export class NavComponent implements OnInit {
 
     this.authService.getCookieEventEmitter().subscribe(
       ()=> {
+        console.log('Smart Launch Cardiac');
         this.fhirService.launchSMART('growth_chart','4ae23017813e417d937e3ba21974581',this.patientEprService.patient.id).subscribe( response => {
             launch = response.launch_id;
             console.log("Returned Lauch = "+launch);
@@ -88,6 +89,7 @@ export class NavComponent implements OnInit {
 
     this.authService.getCookieEventEmitter().subscribe(
       ()=> {
+        console.log('Smart Launch Cardiac');
         this.fhirService.launchSMART('cardiac_risk', '4ae23017813e417d937e3ba21974582', this.patientEprService.patient.id).subscribe(response => {
             launch = response.launch_id;
             console.log("Returned Lauch = " + launch);
@@ -101,6 +103,7 @@ export class NavComponent implements OnInit {
         );
       }
     )
+    this.authService.setCookie();
 
   }
 
