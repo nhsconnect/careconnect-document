@@ -1,4 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {ResourceDialogComponent} from "../resource-dialog/resource-dialog.component";
+import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
 
 @Component({
   selector: 'app-practitioner-list',
@@ -11,12 +13,20 @@ export class PractitionerListComponent implements OnInit {
 
   @Output() practitioner = new EventEmitter<any>();
 
-  constructor() { }
+  constructor(public dialog: MatDialog) { }
 
   ngOnInit() {
   }
 
-  select(practitioner) {
-    this.practitioner.emit(practitioner);
+  select(resource) {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.data = {
+      id: 1,
+      resource: resource
+    };
+    let resourceDialog : MatDialogRef<ResourceDialogComponent> = this.dialog.open( ResourceDialogComponent, dialogConfig);
   }
 }

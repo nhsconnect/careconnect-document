@@ -11,9 +11,7 @@
         <app-organisation [organisation]="organisation"  ></app-organisation>
       </td>
       <td>
-        <a (click)="select(organisation)">
-          <span class="fa fa-arrow-right" ngbTooltip="View Resource" style="color:green"></span>
-        </a>
+        <button mat-raised-button  placement="top" (click)="select(organisation)"><mat-icon>code</mat-icon></button>
       </td>
     </tr>
   </tbody>

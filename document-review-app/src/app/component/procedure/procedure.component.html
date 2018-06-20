@@ -41,9 +41,7 @@
       <i>{{procedure.status}}</i>
     </td>
     <td >
-      <a (click)="select(procedure)">
-        <span class="fa fa-arrow-right" ngbTooltip="View Resource" style="color:green"></span>
-      </a>
+      <button mat-raised-button  placement="top" (click)="select(procedure)"><mat-icon>code</mat-icon></button>
     </td>
   </tr>
   </tbody>

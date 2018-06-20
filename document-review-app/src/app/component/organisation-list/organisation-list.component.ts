@@ -1,4 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {ResourceDialogComponent} from "../resource-dialog/resource-dialog.component";
+import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
 
 @Component({
   selector: 'app-organisation-list',
@@ -11,13 +13,20 @@ export class OrganisationListComponent implements OnInit {
 
   @Output() organisation = new EventEmitter<any>();
 
-  constructor() { }
+  constructor(public dialog: MatDialog) { }
 
   ngOnInit() {
   }
 
-  select(organisation) {
-    this.organisation.emit(organisation);
-  }
+  select(resource) {
+    const dialogConfig = new MatDialogConfig();
 
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.data = {
+      id: 1,
+      resource: resource
+    };
+    let resourceDialog : MatDialogRef<ResourceDialogComponent> = this.dialog.open( ResourceDialogComponent, dialogConfig);
+  }
 }

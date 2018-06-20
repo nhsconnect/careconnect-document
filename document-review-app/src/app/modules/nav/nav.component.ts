@@ -36,6 +36,10 @@ export class NavComponent implements OnInit {
 
   subPatient : any;
 
+  showMenu : boolean = true;
+
+
+
   ngOnInit() {
 
     this.subUser = this.authService.getUserEventEmitter()
@@ -53,7 +57,9 @@ export class NavComponent implements OnInit {
     this.authService.setCookie();
   }
 
-
+menuToggle() {
+    this.showMenu = !this.showMenu;
+}
   growthApp() {
 
     let launch : string = undefined;

@@ -1,6 +1,8 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {LinksService} from "../../service/links.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {ResourceDialogComponent} from "../resource-dialog/resource-dialog.component";
+import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
 
 @Component({
   selector: 'app-observation',
@@ -19,7 +21,7 @@ export class ObservationComponent implements OnInit {
 
   selectedObs : fhir.Observation;
 
-  constructor(private linksService : LinksService,private modalService: NgbModal) { }
+  constructor(private linksService : LinksService,private modalService: NgbModal, public dialog: MatDialog) { }
 
   ngOnInit() {
   }
@@ -72,8 +74,15 @@ export class ObservationComponent implements OnInit {
     }
   }
 
-  select(observation) {
-    this.observation.emit(observation);
-  }
+  select(resource) {
+    const dialogConfig = new MatDialogConfig();
 
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.data = {
+      id: 1,
+      resource: resource
+    };
+    let resourceDialog : MatDialogRef<ResourceDialogComponent> = this.dialog.open( ResourceDialogComponent, dialogConfig);
+  }
 }

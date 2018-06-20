@@ -65,7 +65,7 @@ import {ErrorsHandler} from "./service/errors-handler";
 import {KeycloakService} from "./service/keycloak.service";
 import {TokenInterceptor} from "./service/token-interceptor";
 import {Oauth2Service} from "./service/oauth2.service";
-import { ResourceViewerComponent } from './component/resource-viewer/resource-viewer.component';
+import { ResourceDialogComponent } from './component/resource-dialog/resource-dialog.component';
 import { TreeModule } from 'angular-tree-component';
 import { EprPatientComponent } from './epr-modules/epr-patient/epr-patient.component';
 import { PatientComponent } from './component/patient/patient.component';
@@ -78,7 +78,7 @@ import {ImageViewerModule} from '@hallysonh/ngx-imageviewer';
 import {
   DateAdapter, MAT_DATE_FORMATS,
   MAT_DATE_LOCALE, MatButtonModule, MatCardModule,
-  MatDatepickerModule, MatGridListModule, MatIcon, MatIconModule,
+  MatDatepickerModule, MatDialogModule, MatGridListModule, MatIcon, MatIconModule,
   MatInputModule, MatListModule, MatSelectModule,
 
   MatSidenavModule, MatTableDataSource, MatTableModule, MatToolbarModule
@@ -142,7 +142,7 @@ import {CovalentDynamicFormsModule} from "@covalent/dynamic-forms";
     PractitionerComponent,
     TestPipe,
     CallbackComponent,
-    ResourceViewerComponent,
+    ResourceDialogComponent,
     EprPatientComponent,
     PatientComponent,
     OrganisationListComponent,
@@ -150,6 +150,9 @@ import {CovalentDynamicFormsModule} from "@covalent/dynamic-forms";
     PdfViewerComponent,
     ImgViewerComponent
     //TdFileUploadComponent
+  ],
+  entryComponents: [
+    ResourceDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -176,6 +179,7 @@ import {CovalentDynamicFormsModule} from "@covalent/dynamic-forms";
     MatToolbarModule,
     MatTableModule,
     MatGridListModule,
+    MatDialogModule,
 
     CovalentLayoutModule,
 

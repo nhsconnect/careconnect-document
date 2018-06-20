@@ -54,9 +54,7 @@
       {{medication.authoredOn | date: 'dd-MMM-yyyy'}}
     </td>
     <td>
-      <a (click)="select(medication)">
-        <span class="fa fa-arrow-right" ngbTooltip="View Resource" style="color:green"></span>
-      </a>
+      <button mat-raised-button  placement="top" (click)="select(medication)"><mat-icon>code</mat-icon></button>
     </td>
   </tr>
   </tbody>

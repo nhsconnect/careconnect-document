@@ -4,6 +4,7 @@ import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 import {isNumber} from "util";
 import {LinksService} from "../../service/links.service";
 import {PatientEprService} from "../../service/patient-epr.service";
+import {MatDialog} from "@angular/material";
 
 @Component({
   selector: 'app-view-document-section',
@@ -37,6 +38,7 @@ export class ViewDocumentSectionComponent implements OnInit {
   showStructured : boolean = false;
 
   constructor(private modalService: NgbModal
+              ,public dialog: MatDialog
       , private linksService : LinksService
       ,public patientEPRService : PatientEprService
   ) { }

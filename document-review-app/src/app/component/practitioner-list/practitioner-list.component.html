@@ -11,9 +11,7 @@
     <app-practitioner [practitioner]="practitioner"  ></app-practitioner>
     </td>
     <td>
-      <a (click)="select(practitioner)">
-        <span class="fa fa-arrow-right" ngbTooltip="View Resource" style="color:green"></span>
-      </a>
+      <button mat-raised-button  placement="top" (click)="select(practitioner)"><mat-icon>code</mat-icon></button>
     </td>
   </tr>
   </tbody>

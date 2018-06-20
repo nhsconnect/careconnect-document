@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ResourceViewerComponent } from './resource-viewer.component';
+import { ResourceDialogComponent } from './resource-dialog.component';
 
-describe('ResourceViewerComponent', () => {
-  let component: ResourceViewerComponent;
-  let fixture: ComponentFixture<ResourceViewerComponent>;
+describe('ResourceDialogComponent', () => {
+  let component: ResourceDialogComponent;
+  let fixture: ComponentFixture<ResourceDialogComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ResourceViewerComponent ]
+      declarations: [ ResourceDialogComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ResourceViewerComponent);
+    fixture = TestBed.createComponent(ResourceDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

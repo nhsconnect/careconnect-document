@@ -49,9 +49,7 @@
     </td>
     <td><a *ngIf="showDetail" (click)="onClick(modalContent, encounter)"> <span class="badge badge-success">view consultation</span></a> </td>
     <td>
-      <a (click)="select(encounter)">
-        <span class="fa fa-arrow-right" ngbTooltip="View Resource" style="color:green"></span>
-      </a>
+      <button mat-raised-button  placement="top" (click)="select(encounter)"><mat-icon>code</mat-icon></button>
     </td>
   </tr>
   </tbody>

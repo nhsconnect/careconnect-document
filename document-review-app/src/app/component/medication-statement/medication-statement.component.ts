@@ -2,6 +2,8 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {LinksService} from "../../service/links.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {FhirService} from "../../service/fhir.service";
+import {ResourceDialogComponent} from "../resource-dialog/resource-dialog.component";
+import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
 
 @Component({
   selector: 'app-medication-statement',
@@ -20,7 +22,8 @@ export class MedicationStatementComponent implements OnInit {
 
   constructor(private linksService : LinksService
       ,private modalService: NgbModal
-      ,private fhirService : FhirService) { }
+      ,private fhirService : FhirService,
+              public dialog: MatDialog) { }
 
   ngOnInit() {
 
@@ -75,7 +78,15 @@ export class MedicationStatementComponent implements OnInit {
       }
     }
   }
-  select(medicationStatement) {
-    this.medicationStatement.emit(medicationStatement);
+  select(resource) {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.data = {
+      id: 1,
+      resource: resource
+    };
+    let resourceDialog : MatDialogRef<ResourceDialogComponent> = this.dialog.open( ResourceDialogComponent, dialogConfig);
   }
 }

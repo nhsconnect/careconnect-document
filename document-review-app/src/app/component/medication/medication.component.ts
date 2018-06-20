@@ -1,5 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {LinksService} from "../../service/links.service";
+import {ResourceDialogComponent} from "../resource-dialog/resource-dialog.component";
+import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
 
 @Component({
   selector: 'app-medication',
@@ -9,7 +11,7 @@ import {LinksService} from "../../service/links.service";
 export class MedicationComponent implements OnInit {
 
   @Input() medications : fhir.Medication[];
-  constructor(private linksService : LinksService) { }
+  constructor(private linksService : LinksService, public dialog: MatDialog) { }
 
   @Output() medication = new EventEmitter<any>();
 
@@ -29,7 +31,15 @@ export class MedicationComponent implements OnInit {
   isSNOMED(system: string) : boolean {
     return this.linksService.isSNOMED(system);
   }
-  select(medication) {
-    this.medication.emit(medication);
+  select(resource) {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.data = {
+      id: 1,
+      resource: resource
+    };
+    let resourceDialog : MatDialogRef<ResourceDialogComponent> = this.dialog.open( ResourceDialogComponent, dialogConfig);
   }
 }

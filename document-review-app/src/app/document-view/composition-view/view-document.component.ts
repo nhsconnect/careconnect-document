@@ -3,6 +3,8 @@ import {ActivatedRoute} from "@angular/router";
 import {FhirService} from "../../service/fhir.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {PatientEprService} from "../../service/patient-epr.service";
+import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
+import {ResourceDialogComponent} from "../../component/resource-dialog/resource-dialog.component";
 
 @Component({
   selector: 'app-view-document',
@@ -25,6 +27,7 @@ export class ViewDocumentComponent implements OnInit {
   constructor(private route: ActivatedRoute
   , private fhirService : FhirService
   ,private modalService: NgbModal
+  ,public dialog: MatDialog
   ,private  patientEprService : PatientEprService) { }
 
   ngOnInit() {
@@ -100,8 +103,18 @@ export class ViewDocumentComponent implements OnInit {
   }
 
   openResource(resource ){
-    this.resource = resource;
-    let modalIssueRef = this.modalService.open( this.modalResource,{ size: 'lg',windowClass: 'dark-modal' });
+
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.data = {
+      id: 1,
+      resource: resource
+    };
+    let resourceDialog : MatDialogRef<ResourceDialogComponent> = this.dialog.open( ResourceDialogComponent, dialogConfig);
+    //resourceDialog.componentInstance.resource = this.resource;
+
   }
 
 

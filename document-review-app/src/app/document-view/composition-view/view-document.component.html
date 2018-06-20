@@ -65,11 +65,11 @@
         <mat-card>
             <mat-card-title class="d-flex justify-content-between">
                 <div>{{composition.title}}</div>
-              <div>   <button mat-raised-button  placement="top" (click)="openResource(composition)">
+              <div>   <button mat-raised-button  placement="top" (click)="openResource(composition)"><mat-icon>code</mat-icon>
                 Composition</button>
-                <button mat-raised-button placement="top" (click)="openResource(patient)">
+                <button mat-raised-button placement="top" (click)="openResource(patient)"><mat-icon>code</mat-icon>
                 Patient</button>
-                <span *ngIf="encounter != undefined"><button mat-raised-button  placement="top" (click)="openResource(encounter)">
+                <span *ngIf="encounter != undefined"><button mat-raised-button  placement="top" (click)="openResource(encounter)"><mat-icon>code</mat-icon>
                 Encounter</button></span>
               </div>
             </mat-card-title>
