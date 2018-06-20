@@ -19,7 +19,7 @@ export const environment = {
     cookie_domain: 'purple.testlab.nhs.uk'
   },
   smart: {
-    cardiac : 'http://127.0.0.1:8000/launch.html?iss=http://localhost:9090/careconnect-gateway-secure/STU3&launch=',
-    growthChart : 'http://127.0.0.1:9000/launch.html?iss=http://localhost:9090/careconnect-gateway-secure/STU3&launch='
+    cardiac : 'https://purple.testlab.nhs.uk/cardiac/launch.html?iss=https://purple.testlab.nhs.uk/smart-on-fhir-resource/STU3&launch=',
+    growthChart : 'https://purple.testlab.nhs.uk/gc/launch.html?iss=https://purple.testlab.nhs.uk/smart-on-fhir-resource/STU3&launch='
   }
 };
