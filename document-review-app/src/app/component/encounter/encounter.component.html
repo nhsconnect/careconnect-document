@@ -28,14 +28,14 @@
   <tbody>
   <tr *ngFor="let encounter of encounters">
     <td>
-      <span class="badge badge-light" >start</span>{{encounter.period.start | date: 'dd-MMM-yyyy HH:mm'}}
-      <span *ngIf="encounter.period.end !== undefined"> <span class="badge badge-light" >end</span>{{encounter.period.end | date: 'dd-MMM-yyyy HH:mm'}}</span>
+      <span class="badge badge-light" >start</span> {{encounter.period.start | date: 'dd-MMM-yyyy HH:mm'}}
+      <span *ngIf="encounter.period.end !== undefined"> <span class="badge badge-light" >end</span> {{encounter.period.end | date: 'dd-MMM-yyyy HH:mm'}}</span>
     </td>
     <td>
       <span *ngIf="encounter.type != undefined && encounter.type.length>0 && encounter.type[0].coding.length >0">
         <b>{{encounter.type[0].coding[0].display}}</b>
         <span *ngIf="isSNOMED(encounter.type[0].coding[0].system)">
-          <a (click)="getSNOMEDLink(encounter.type[0].coding[0])"> <span *ngIf="encounter.type[0].coding[0].code != undefined" class="fa fa-book" ngbTooltip="{{getCodeSystem(encounter.type[0].coding[0].system)}} {{encounter.type[0].coding[0].code}}"></span> </a>
+          &nbsp;<a (click)="getSNOMEDLink(encounter.type[0].coding[0])"> <span *ngIf="encounter.type[0].coding[0].code != undefined" class="fa fa-book" ngbTooltip="{{getCodeSystem(encounter.type[0].coding[0].system)}} {{encounter.type[0].coding[0].code}}"></span> </a>
         </span>
         <span *ngIf="!isSNOMED(encounter.type[0].coding[0].system)">
           <span *ngIf="encounter.type[0].coding[0].code != undefined" class="fa fa-book" ngbTooltip="{{getCodeSystem(encounter.type[0].coding[0].system)}} {{encounter.type[0].coding[0].code}}"></span>
