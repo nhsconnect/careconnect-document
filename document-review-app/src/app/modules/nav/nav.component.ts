@@ -121,7 +121,7 @@ menuToggle() {
   getGrowthChartAppUrl() : string {
     // This is a marker for entryPoint.sh to replace
     let url :string = 'SMART_GROWTH_CHART_URL';
-    if (url.indexOf('SMART_GROWTH_CHART') != -1) url = environment.smart.cardiac;
+    if (url.indexOf('SMART_GROWTH_CHART') != -1) url = environment.smart.growthChart;
     return url;
   }
 

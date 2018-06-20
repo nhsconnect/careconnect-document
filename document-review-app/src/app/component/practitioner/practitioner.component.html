@@ -3,7 +3,7 @@
   <div class="d-flex w-100 justify-content-between">
     <div *ngIf="practitioner != undefined">
       <span *ngFor="let name of practitioner.name">
-      <b>{{ name.prefix }} {{ name.family }}, {{name.given[0] }}</b>
+      <b>{{ getLastName() }}, {{getFirstName() }}</b>
         <div>
           <span *ngFor="let identifier of practitioner.identifier"><i>{{identifier.value}}</i></span>
         </div>
