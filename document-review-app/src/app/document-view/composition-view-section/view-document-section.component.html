@@ -3,29 +3,33 @@
     <div class="d-flex w-100 justify-content-between">
       {{section.title}}
 
-      <ng-template #modalContent let-c="close" let-d="dismiss">
-          <div class="modal-header">
+
+
+      <button mat-raised-button *ngIf="section.entry != undefined" placement="top" (click)="open()">
+        <mat-icon *ngIf="!showStructured">arrow_drop_down</mat-icon>
+        <mat-icon *ngIf="showStructured">arrow_drop_up</mat-icon>
+        Structured Content</button>
+      <button mat-button *ngIf="section.entry == undefined" disabled="true"  placement="top">
+        No Structured Content</button>
+    </div>
+  </mat-card-title>
+  <mat-card-content >
+    <div [innerHTML]="section.text.div"></div>
+  </mat-card-content>
+</mat-card>
+<span *ngIf="section.entry != undefined && showStructured">
+    <mat-card style="background-color: lightgray">
+          <!-- <mat-card-title>
             <h4>{{section.code.coding[0].display}}</h4>
+          </mat-card-title> -->
 
-            <span *ngIf="isSNOMED(section.code.coding[0].system)">
-        <a (click)="getSNOMEDLink(section.code.coding[0])">
-             <span *ngIf="section.code.coding[0].code != undefined" class="fa fa-book" ngbTooltip="{{getCodeSystem(section.code.coding[0].system)}} {{section.code.coding[0].code}}"></span>
-        </a></span>
+          <mat-card-content >
 
 
-            <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-
-           <div class="modal-body">
-
-                <div class="row">
-                <div class="col-lg-7">
                 <div *ngIf="section.entry != undefined">
-                  References {{section.entry.length}} entries
+                  <!-- References {{section.entry.length}} entries -->
 
-                  <br><br>
+<!--
                   <table >
                     <div *ngFor="let ent of entries" >
                       <tr>
@@ -48,7 +52,7 @@
                       </tr>
                     </div>
                  </table>
-
+-->
                   <span *ngIf="allergies.length>0">
                       <h4>Allergies</h4>
                       <app-allergy-intollerance [allergies]="allergies" (allergy)="onResoureSelected($event)"></app-allergy-intollerance>
@@ -97,22 +101,8 @@
                 <div *ngIf="section.entry == undefined">
                   No structured content referenced
                 </div>
-                 </div>
-                 <div class="col-lg-5">
-                   <app-resource-viewer></app-resource-viewer>
-                 </div>
-              </div>
-           </div>
 
-        </ng-template>
+           </mat-card-content>
 
-      <button mat-raised-button *ngIf="section.entry != undefined" placement="top" (click)="open(modalContent)">
-        Structured Content</button>
-      <button mat-button *ngIf="section.entry == undefined" disabled="true"  placement="top" (click)="open(modalContent)">
-        No Structured Content</button>
-    </div>
-  </mat-card-title>
-  <mat-card-content >
-    <div [innerHTML]="section.text.div"></div>
-  </mat-card-content>
-</mat-card>
+        </mat-card>
+</span>

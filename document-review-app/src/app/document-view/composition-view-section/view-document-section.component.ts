@@ -34,6 +34,7 @@ export class ViewDocumentSectionComponent implements OnInit {
   practitioners : fhir.Practitioner[];
   organisations : fhir.Organization[];
 
+  showStructured : boolean = false;
 
   constructor(private modalService: NgbModal
       , private linksService : LinksService
@@ -68,9 +69,8 @@ export class ViewDocumentSectionComponent implements OnInit {
     }
   }
 
-  open(content) {
-
-    this.modalService.open(content, { size: 'lg', windowClass: 'xlModal', backdrop: 'static' });
+  open() {
+    this.showStructured = !this.showStructured;
   }
 
   getReferencedItem(reference : string)  {
