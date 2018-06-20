@@ -1,12 +1,14 @@
 import {ErrorHandler, Injectable, Injector} from "@angular/core";
 import {HttpErrorResponse} from "@angular/common/http";
 
+
 @Injectable()
 export class ErrorsHandler implements ErrorHandler {
 
   constructor(
     // Because the ErrorHandler is created before the providers, we’ll have to use the Injector to get them.
-    private injector: Injector,
+    private injector: Injector
+
   ) { }
 
   handleError(error: Error | HttpErrorResponse ) {
@@ -19,6 +21,8 @@ export class ErrorsHandler implements ErrorHandler {
         // Handle Http Error (error.status === 403, 404...)
         if (error.status == 401) {
           console.log('Need to refresh access token');
+          localStorage.removeItem("access_token");
+
         }
       }
     }

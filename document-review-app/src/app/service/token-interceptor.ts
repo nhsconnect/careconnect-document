@@ -8,19 +8,17 @@ import {
   HttpResponse
 } from "@angular/common/http";
 import {Oauth2Service} from "./oauth2.service";
-import { Observable, Subject, asapScheduler, pipe, of, from, interval, merge, fromEvent } from 'rxjs';
-import { map, filter, catchError, mergeMap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { tap} from 'rxjs/operators';
 import {FhirService} from "./fhir.service";
+import {AuthService} from "./auth.service";
 
 
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
 
-
-  // https://ryanchenkie.com/angular-authentication-using-the-http-client-and-http-interceptors
-
-  constructor(private oauth2 : Oauth2Service, public fhir : FhirService) {}
+  constructor(private oauth2 : Oauth2Service, public fhir : FhirService, public authService : AuthService) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
@@ -32,23 +30,28 @@ export class TokenInterceptor implements HttpInterceptor {
              Authorization: `Bearer ${this.oauth2.getToken()}`
            }
          });
-         return next.handle(request);
-           /*
-           .pipe() tap((event: HttpEvent<any>) => {
+         return next.handle(request).pipe(
+           tap((event: HttpEvent<any>) => {
                if (event instanceof HttpResponse) {
                  // do stuff with response if you want
                }
              }, (err: any) => {
                if (err instanceof HttpErrorResponse) {
+                 console.log("Interceptor error");
                  if (err.status === 401) {
                    console.log('*** 401 401 401 401 401 ***');
-                   localStorage.removeItem('access_token')
-                   this.fhir.authoriseOAuth2();
+                   if (this.authService.getAccessToken() != undefined) {
+                     console.log('Removing access token and reauthorising');
+                     localStorage.removeItem('access_token')
+                     this.fhir.authoriseOAuth2();
+                   } else {
+                     console.log('No token found. Try logout?');
+                   }
 
                  }
                }
-             });
-*/
+             })
+         )
 
        } else {
          return next.handle(request);

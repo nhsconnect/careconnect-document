@@ -13,8 +13,8 @@
       <div *ngIf="medication.code !=undefined" >
         <b *ngIf="medication.code !=undefined">{{medication.code.coding[0].display}}</b>
         <span *ngIf="isSNOMED(medication.code.coding[0].system)">
-        <a (click)="getSNOMEDLink(medication.code.coding[0])"><span class="fa fa-book" ngbTooltip="{{getCodeSystem(medication.code.coding[0].system)}} {{medication.code.coding[0].code}}"></span></a>
-        <a (click)="getDMDLink(medication.code.coding[0])"><span class="fa fa-bookmark" ngbTooltip="{{getCodeSystem(medication.code.coding[0].system)}} {{medication.code.coding[0].code}}"></span></a>
+        &nbsp;<a (click)="getSNOMEDLink(medication.code.coding[0])"><span class="fa fa-book" ngbTooltip="{{getCodeSystem(medication.code.coding[0].system)}} {{medication.code.coding[0].code}}"></span></a>
+        &nbsp;<a (click)="getDMDLink(medication.code.coding[0])"><span class="fa fa-bookmark" ngbTooltip="{{getCodeSystem(medication.code.coding[0].system)}} {{medication.code.coding[0].code}}"></span></a>
           </span>
       </div>
     </td>
@@ -22,7 +22,7 @@
       {{medication.status}}
     </td>
     <td>
-      <button mat-raised-button  placement="top" (click)="select(medication)"><mat-icon>code</mat-icon></button>
+      <button mat-icon-button color="accent" (click)="select(medication)"><mat-icon>code</mat-icon></button>
     </td>
   </tr>
   </tbody>

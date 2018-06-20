@@ -59,6 +59,10 @@ export class AuthService {
     return localStorage.getItem("access_token");
   }
 
+  removeAccessToken() {
+    localStorage.removeItem("access_token");
+  }
+
   getCookieEventEmitter() {
 
     return this.cookieEvent;

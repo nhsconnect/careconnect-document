@@ -23,8 +23,8 @@
     <td>
       <div *ngIf="medication.medicationCodeableConcept !=undefined" >
         <b *ngIf="medication.medicationCodeableConcept !=undefined">{{medication.medicationCodeableConcept.coding[0].display}}</b>
-        <a (click)="getSNOMEDLink(medication.medicationCodeableConcept.coding[0])"><span class="fa fa-book" ngbTooltip="{{getCodeSystem(medication.medicationCodeableConcept.coding[0].system)}} {{medication.medicationCodeableConcept.coding[0].code}}"></span></a>
-        <a (click)="getDMDLink(medication.medicationCodeableConcept.coding[0])"><span class="fa fa-bookmark" ngbTooltip="{{getCodeSystem(medication.medicationCodeableConcept.coding[0].system)}} {{medication.medicationCodeableConcept.coding[0].code}}"></span></a>
+        &nbsp;<a (click)="getSNOMEDLink(medication.medicationCodeableConcept.coding[0])"><span class="fa fa-book" ngbTooltip="{{getCodeSystem(medication.medicationCodeableConcept.coding[0].system)}} {{medication.medicationCodeableConcept.coding[0].code}}"></span></a>
+        &nbsp;<a (click)="getDMDLink(medication.medicationCodeableConcept.coding[0])"><span class="fa fa-bookmark" ngbTooltip="{{getCodeSystem(medication.medicationCodeableConcept.coding[0].system)}} {{medication.medicationCodeableConcept.coding[0].code}}"></span></a>
       </div>
       <span *ngIf="medication.medicationReference !=undefined">
         <span *ngIf="medication.medicationReference.display != undefined">
@@ -59,7 +59,7 @@
         {{medication.dateAsserted}}
       </td>
     <td>
-      <button mat-raised-button  placement="top" (click)="select(medication)"><mat-icon>code</mat-icon></button>
+      <button mat-icon-button color="accent" (click)="select(medication)"><mat-icon>code</mat-icon></button>
     </td>
   </tr>
   </tbody>
