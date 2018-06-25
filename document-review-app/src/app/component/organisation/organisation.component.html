@@ -1,11 +1,62 @@
 <mat-card>
-  <div class="d-flex w-100 justify-content-between">
-    <div>
-      <span *ngIf="organisation !=undefined">
-        <b>{{ organisation.name }}</b>
-        <span *ngFor="let identifier of organisation.identifier"><i>{{identifier.value}}</i></span>
-        <div *ngIf="organisation.partOf != undefined"><i>{{organisation.partOf.display}}</i></div>
-      </span>
+
+  <mat-grid-list cols="4" rowHeight="2em">
+    <mat-grid-tile><div  class="d-flex w-100 justify-content-left">
+      <b>{{ organisation.name }}</b>
     </div>
+    </mat-grid-tile>
+    <mat-grid-tile>
+
+    </mat-grid-tile>
+    <mat-grid-tile>
+
+    </mat-grid-tile>
+    <mat-grid-tile>
+          <span *ngFor="let identifier of organisation.identifier">
+            <i>{{ getIdentifier(identifier) }}</i>
+            <b> {{identifier.value}}</b>
+          </span>
+    </mat-grid-tile>
+  </mat-grid-list>
+
+  <div *ngIf="detail && ((organisation.address !=undefined && organisation.address.length > 0) || (organisation.telecom !=undefined && organisation.telecom.length > 0))">
+
+    <mat-grid-list cols="3" rowHeight="8em">
+      <mat-grid-tile> <div  class="d-flex w-100 justify-content-left">
+        <div *ngIf="organisation.address != undefined && organisation.address.length>0">
+          <i>{{organisation.address[0].use}}</i>
+          <div *ngFor="let line of organisation.address[0].line">
+            <div>{{line}}</div>
+          </div>
+          <div>{{organisation.address[0].city}}</div>
+          <div>{{organisation.address[0].district}}</div>
+          <div>{{organisation.address[0].postalCode}}</div>
+        </div>
+      </div>
+      </mat-grid-tile>
+
+      <mat-grid-tile>
+        <div>
+          <div *ngFor="let telecom of organisation.telecom">
+            <div>{{telecom.use}}&nbsp;{{telecom.system}}</div>
+            <div><b>{{telecom.value}}</b></div>
+          </div>
+          <div *ngIf="organisation.telecom == undefined">
+            &nbsp;
+          </div>
+        </div>
+
+      </mat-grid-tile>
+    </mat-grid-list>
   </div>
+
+  <!--  <div class="d-flex w-100 justify-content-between">
+      <div>
+        <span *ngIf="organisation !=undefined">
+          <b>{{ organisation.name }}</b>
+          <span *ngFor="let identifier of organisation.identifier"><i>{{identifier.value}}</i></span>
+          <div *ngIf="organisation.partOf != undefined"><i>{{organisation.partOf.display}}</i></div>
+        </span>
+      </div>
+    </div> -->
 </mat-card>

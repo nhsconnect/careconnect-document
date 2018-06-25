@@ -8,7 +8,7 @@
   <tbody>
   <tr *ngFor="let practitioner of practitioners" >
     <td>
-    <app-practitioner [practitioner]="practitioner"  ></app-practitioner>
+    <app-practitioner [practitioner]="practitioner" [detail]="true" ></app-practitioner>
     </td>
     <td>
       <button mat-icon-button color="accent" style="background-color: lightgray" (click)="select(practitioner)"><mat-icon>code</mat-icon></button>

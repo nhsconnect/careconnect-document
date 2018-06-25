@@ -9,6 +9,8 @@ export class PractitionerComponent implements OnInit {
 
   @Input() practitioner : fhir.Practitioner;
 
+  @Input() detail : boolean;
+
   constructor() { }
 
   ngOnInit() {
@@ -23,6 +25,15 @@ export class PractitionerComponent implements OnInit {
     if (this.practitioner.name[0].family != undefined) name += this.practitioner.name[0].family.toUpperCase();
     return name;
 
+  }
+  getIdentifier(identifier : fhir.Identifier) : String {
+    let name : String = identifier.system
+    if (identifier.system == 'https://fhir.nhs.uk/Id/sds-user-id') {
+      name = 'SDS User Id';
+    } else {identifier.system == 'https://fhir.nhs.uk/Id/local-practitioner-identifier'} {
+      name = 'Local Id';
+    }
+    return name;
   }
   getFirstName() : String {
     if (this.practitioner == undefined) return "";

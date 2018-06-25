@@ -1,17 +1,58 @@
 
 <mat-card>
-  <div class="d-flex w-100 justify-content-between">
-    <div *ngIf="practitioner != undefined">
-      <span *ngFor="let name of practitioner.name">
-      <b>{{ getLastName() }}, {{getFirstName() }}</b>
-        <div>
-          <span *ngFor="let identifier of practitioner.identifier"><i>{{identifier.value}}</i></span>
+  <mat-card-content>
+
+    <mat-grid-list cols="4" rowHeight="2em">
+      <mat-grid-tile><div  class="d-flex w-100 justify-content-left">
+        <b>{{ getLastName() }}</b>
+        {{getFirstName() }}
+      </div>
+      </mat-grid-tile>
+      <mat-grid-tile>
+
+      </mat-grid-tile>
+      <mat-grid-tile>
+
+      </mat-grid-tile>
+      <mat-grid-tile>
+          <span *ngFor="let identifier of practitioner.identifier">
+            <i>{{ getIdentifier(identifier) }}</i>
+            <b> {{identifier.value}}</b>
+          </span>
+      </mat-grid-tile>
+    </mat-grid-list>
+
+
+    <div *ngIf="detail && ((practitioner.address !=undefined && practitioner.address.length > 0) || (practitioner.telecom !=undefined && practitioner.telecom.length > 0))">
+
+      <mat-grid-list cols="3" rowHeight="8em">
+        <mat-grid-tile> <div  class="d-flex w-100 justify-content-left">
+          <div *ngIf="practitioner.address != undefined && practitioner.address.length>0">
+            <i>{{practitioner.address[0].use}}</i>
+            <div *ngFor="let line of practitioner.address[0].line">
+              <div>{{line}}</div>
+            </div>
+            <div>{{practitioner.address[0].city}}</div>
+            <div>{{practitioner.address[0].district}}</div>
+            <div>{{practitioner.address[0].postalCode}}</div>
+          </div>
         </div>
-        <div *ngFor="let address of practitioner.address">
-          <span *ngFor="let line of address.line">{{ line }} </span>
-          {{ address.city }} {{ address.postalCode}}
-        </div>
-      </span>
+        </mat-grid-tile>
+        <mat-grid-tile>
+          <div>
+            <div *ngFor="let telecom of practitioner.telecom">
+              <div>{{telecom.use}}&nbsp;{{telecom.system}}</div>
+              <div><b>{{telecom.value}}</b></div>
+            </div>
+            <div *ngIf="practitioner.telecom == undefined">
+              &nbsp;
+            </div>
+          </div>
+
+        </mat-grid-tile>
+      </mat-grid-list>
     </div>
-  </div>
+
+
+  </mat-card-content>
 </mat-card>

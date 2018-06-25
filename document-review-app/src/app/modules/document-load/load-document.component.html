@@ -66,7 +66,7 @@ The document already exists on the system. Do you wish to replace?
 
 
         <div *ngIf="eprService.patient" >
-          <app-patient-item [patient]="eprService.patient" [detail]="true"></app-patient-item>
+          <app-patient [patient]="eprService.patient" [detail]="true"></app-patient>
           <br>
           <br>
         </div>
@@ -76,7 +76,7 @@ The document already exists on the system. Do you wish to replace?
            <span *ngIf="document != undefined && document.patient != undefined">
 
              <!-- <input class="form-control" type="text" id="subject" name="subject" [formControl]="documentForm.controls['subject']" [(ngModel)]="document.patientName" > -->
-             <app-patient-item [patient]="document.patient" [detail]="false"></app-patient-item>
+             <app-patient [patient]="document.patient" [detail]="false"></app-patient>
           </span>
            <br>
            <br>

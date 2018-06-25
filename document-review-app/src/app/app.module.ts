@@ -14,7 +14,7 @@ import {FhirService} from "./service/fhir.service";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import { ViewDocumentSectionComponent } from './document-view/composition-view-section/view-document-section.component';
 import { PatientSearchComponent } from './component/patient-search/patient-search.component';
-import {PatientItemComponent} from "./component/patient-detail/patient-item.component";
+
 import { FindDocumentComponent } from './modules/composition-find/find-document.component';
 import { CompositionComponent } from './component/composition/composition.component';
 import { PatientFindComponent } from './modules/patient-find/patient-find.component';
@@ -39,7 +39,7 @@ import { EprDocumentReferenceComponent } from './epr-modules/epr-document-refere
 import {AuthService} from "./service/auth.service";
 import {LoginComponent} from "./modules/login/login.component";
 
-import {environment} from "../environments/environment";
+
 import {LinksService} from "./service/links.service";
 import {PatientEprService} from "./service/patient-epr.service";
 import {ObservationDetailComponent} from "./component/observation-detail/observation-detail.component";
@@ -57,7 +57,7 @@ import { PractitionerComponent } from './component/practitioner/practitioner.com
 import {TestPipe} from "./modules/test-load/TestPipe";
 import {AuthGuard} from "./service/auth-guard";
 import {CookieService} from "angular2-cookie/core";
-import * as firebase from 'firebase';
+
 import {LogoutComponent} from "./modules/logout/logout.component";
 import { CallbackComponent } from './modules/callback/callback.component';
 import {ErrorsHandler} from "./service/errors-handler";
@@ -68,7 +68,7 @@ import {Oauth2Service} from "./service/oauth2.service";
 import { ResourceDialogComponent } from './component/resource-dialog/resource-dialog.component';
 import { TreeModule } from 'angular-tree-component';
 import { EprPatientComponent } from './epr-modules/epr-patient/epr-patient.component';
-import { PatientComponent } from './component/patient/patient.component';
+import { PatientListComponent } from './component/patient-list/patient-list.component';
 import { OrganisationListComponent } from './component/organisation-list/organisation-list.component';
 import { PractitionerListComponent } from './component/practitioner-list/practitioner-list.component';
 import { PdfViewerComponent } from './document-view/pdf-viewer/pdf-viewer.component';
@@ -97,6 +97,7 @@ import {CovalentHttpModule} from "@covalent/http";
 import {CovalentHighlightModule} from "@covalent/highlight";
 import {CovalentMarkdownModule} from "@covalent/markdown";
 import {CovalentDynamicFormsModule} from "@covalent/dynamic-forms";
+import {PatientComponent} from "./component/patient/patient.component";
 
 
 @NgModule({
@@ -108,7 +109,6 @@ import {CovalentDynamicFormsModule} from "@covalent/dynamic-forms";
     ViewDocumentSectionComponent,
     PatientFindComponent,
     PatientSearchComponent,
-    PatientItemComponent,
     FindDocumentComponent,
     CompositionComponent,
     PatientEprPatientRecordComponent,
@@ -145,6 +145,8 @@ import {CovalentDynamicFormsModule} from "@covalent/dynamic-forms";
     CallbackComponent,
     ResourceDialogComponent,
     EprPatientComponent,
+    PatientListComponent,
+    PatientFindComponent,
     PatientComponent,
     OrganisationListComponent,
     PractitionerListComponent,

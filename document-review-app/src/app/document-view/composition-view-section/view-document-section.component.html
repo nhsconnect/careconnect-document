@@ -29,37 +29,14 @@
                 <div *ngIf="section.entry != undefined">
                   <!-- References {{section.entry.length}} entries -->
 
-<!--
-                  <table >
-                    <div *ngFor="let ent of entries" >
-                      <tr>
-                        <td>{{ent.resource}}</td>
-                        <td *ngIf="ent.code!=undefined" [ngSwitch]="ent.resource">
-                          <span *ngIf="isSNOMED(ent.code)">
-                            <span *ngSwitchCase="'Medication'"><a href="{{getDMDLink(ent.code)}}" target="_blank">dm+d</a> <a href="{{getSNOMEDLink(ent.code)}}" target="_blank">SCT</a></span>
-                            <span *ngSwitchCase="'MedicationRequest'"><a href="{{getDMDLink(ent.code)}}" target="_blank">dm+d</a> <a href="{{getSNOMEDLink(ent.code)}}" target="_blank">SCT</a></span>
-                            <span *ngSwitchDefault><a href="{{getSNOMEDLink(ent.code)}}" target="_blank">SCT</a></span>
-                          </span>
-                          <span *ngIf="!isSNOMED(ent.code)">
-                            code=<i>{{ent.code}}</i>
-                          </span>
-                        </td>
-                        <td *ngIf="ent.code==undefined"></td>
-                        <td *ngIf="ent.display!=undefined">
-                         {{ent.display}}</td>
-                        <td *ngIf="ent.display==undefined">
-                        </td>
-                      </tr>
-                    </div>
-                 </table>
--->
+
                   <span *ngIf="allergies.length>0">
                       <h4>Allergies</h4>
                       <app-allergy-intollerance [allergies]="allergies" (allergy)="onResoureSelected($event)"></app-allergy-intollerance>
                   </span>
                   <span *ngIf="patients.length>0">
                       <h4>Patient</h4>
-                      <app-patient [patients]="patients" (patient)="onResoureSelected($event)"></app-patient>
+                      <app-patient-list [patients]="patients" (patient)="onResoureSelected($event)"></app-patient-list>
                   </span>
                   <span *ngIf="practitioners.length>0">
                       <h4>Practitioner</h4>
