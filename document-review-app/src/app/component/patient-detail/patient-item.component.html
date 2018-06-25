@@ -6,7 +6,7 @@
       {{ getFirstName() }}
     </div>
 
-    <div><i>Born: </i><b>{{patient.birthDate | date: 'dd-MMM-yyyy'}}</b></div>
+    <div><i>DOB: </i><b>{{patient.birthDate | date: 'dd-MMM-yyyy'}}</b></div>
     <div><i>Gender: </i><b>{{ patient.gender }}</b></div>
 
     <div><i>NHS No: </i><b>{{ getNHSIdentifier() }}</b></div>
