@@ -86,6 +86,7 @@ import {
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {MAT_MOMENT_DATE_FORMATS, MatMomentDateModule, MomentDateAdapter} from "@angular/material-moment-adapter";
 import {
+  CovalentDialogsModule,
   CovalentFileModule,
   CovalentJsonFormatterModule,
   CovalentLayoutModule, CovalentMenuModule,
@@ -192,7 +193,8 @@ import {CovalentDynamicFormsModule} from "@covalent/dynamic-forms";
     CovalentHighlightModule,
     CovalentMarkdownModule,
     CovalentJsonFormatterModule,
-    CovalentMenuModule
+    CovalentMenuModule,
+    CovalentDialogsModule
    // CovalentFileModule
 
 /*
