@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 
 import {HttpClient} from "@angular/common/http";
 import {AuthService} from "../../service/auth.service";
@@ -9,6 +9,7 @@ import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {FormControl, FormGroup, ValidationErrors, Validators} from "@angular/forms";
 import {DocumentRef} from "../../model/document-ref";
 import { v4 as uuid } from 'uuid';
+import {IAlertConfig, TdDialogService} from "@covalent/core";
 
 
 @Component({
@@ -62,7 +63,9 @@ export class LoadDocumentComponent implements OnInit {
   , public auth : AuthService
   , private fhirService : FhirService
   , public eprService : PatientEprService
-  , private modalService : NgbModal) { }
+  , private modalService : NgbModal
+  , private _dialogService: TdDialogService,
+              private _viewContainerRef: ViewContainerRef) { }
 
 
 
@@ -224,13 +227,14 @@ export class LoadDocumentComponent implements OnInit {
           this.response = data;
           if (resJson.id != undefined) {
             this.router.navigate(['doc/' + resJson.id]);
+          } else {
+               this.postOk('Bundle processed.')
+
           }
         },
         err => {
-         // console.log(err.statusText);
-         // console.log(err.message);
+
           console.log(err.error);
-          ///console.log(JSON.stringify(err));
 
           this.response = err.error;
           if (this.response.issue.length > 0) {
@@ -437,6 +441,15 @@ export class LoadDocumentComponent implements OnInit {
 
   }
 
+  postOk(message : string) {
+    let alertConfig : IAlertConfig = { message : message};
+    alertConfig.disableClose =  false; // defaults to false
+    alertConfig.viewContainerRef = this._viewContainerRef;
+    alertConfig.title = 'Posted'; //OPTIONAL, hides if not provided
+    alertConfig.closeButton = 'Ok'; //OPTIONAL, defaults to 'CLOSE'
+    alertConfig.width = '400px'; //OPTIONAL, defaults to 400px
+    this._dialogService.openAlert(alertConfig);
+  }
 
   onModalClick(content ) {
      console.log("Content = ");

@@ -18,10 +18,9 @@ export class OrganisationComponent implements OnInit {
 
   getIdentifier(identifier : fhir.Identifier) : String {
     let name : String = identifier.system
-    if (identifier.system == 'https://fhir.nhs.uk/Id/ods-organization-code') {
+    if (identifier.system.indexOf('ods-organization-code') != -1) {
+
       name = 'ODS Code';
-    } else {identifier.system == 'https://fhir.nhs.uk/Id/local-practitioner-identifier'} {
-      name = 'Local Id';
     }
     return name;
   }
