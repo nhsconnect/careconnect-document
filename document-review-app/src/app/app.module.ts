@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import {ErrorHandler, NgModule} from '@angular/core';
-import {FormBuilder, FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './/app-routing.module';
@@ -81,23 +81,24 @@ import {
   MatDatepickerModule, MatDialogModule, MatGridListModule, MatIcon, MatIconModule,
   MatInputModule, MatListModule, MatSelectModule,
 
-  MatSidenavModule, MatTableDataSource, MatTableModule, MatToolbarModule
+  MatSidenavModule,  MatTableModule, MatToolbarModule
 } from "@angular/material";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {MAT_MOMENT_DATE_FORMATS, MatMomentDateModule, MomentDateAdapter} from "@angular/material-moment-adapter";
 import {
   CovalentDialogsModule,
-  CovalentFileModule,
+
   CovalentJsonFormatterModule,
-  CovalentLayoutModule, CovalentMenuModule,
-  CovalentStepsModule,
-  TdFileUploadComponent
+  CovalentLayoutModule,
+  CovalentMenuModule
+
 } from "@covalent/core";
 import {CovalentHttpModule} from "@covalent/http";
 import {CovalentHighlightModule} from "@covalent/highlight";
 import {CovalentMarkdownModule} from "@covalent/markdown";
-import {CovalentDynamicFormsModule} from "@covalent/dynamic-forms";
+
 import {PatientComponent} from "./component/patient/patient.component";
+import {ObservationDataSource} from "./data-source/observation-data-source";
 
 
 @NgModule({
@@ -206,6 +207,7 @@ import {PatientComponent} from "./component/patient/patient.component";
   ],
   providers: [
     FhirService
+    ,ObservationDataSource
     , AuthService
     ,LinksService
     ,PatientEprService

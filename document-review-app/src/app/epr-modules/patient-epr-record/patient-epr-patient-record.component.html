@@ -1,14 +1,15 @@
-<mat-card>
+<mat-card *ngIf="tabid== 'documents' ">
   <mat-card-title>Documents</mat-card-title>
   <mat-card-content>
-<span ngSwitch="tabid"  id="tab-documents" >
-  <span *ngSwitchDefault>
     <app-epr-document-reference [documents]="documents" [documentsTotal]="documentsTotal"></app-epr-document-reference>
-  </span>
-</span>
   </mat-card-content>
 </mat-card>
-
+<mat-card *ngIf="tabid== 'observations' ">
+  <mat-card-title>Observation</mat-card-title>
+  <mat-card-content>
+    <app-epr-observation> [observations]="observations"</app-epr-observation>
+  </mat-card-content>
+</mat-card>
 <ngb-tab>
 <!--
 <ngb-tabset #tabs type="pills">

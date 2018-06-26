@@ -23,6 +23,7 @@
         <mat-nav-list>
           <span *ngIf="patientEprService.patient != undefined">
             <a mat-list-item routerLink="/epr/{{patientEprService.patient.id}}/documents"><mat-icon>note</mat-icon>Documents</a>
+            <a mat-list-item routerLink="/epr/{{patientEprService.patient.id}}/observations"><mat-icon>timeline</mat-icon>Observations</a>
           <!-- <mat-divider></mat-divider>
             Smart on FHIR Apps
             <mat-divider></mat-divider>

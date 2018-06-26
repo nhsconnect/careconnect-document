@@ -14,7 +14,6 @@ import {
 
 import {HttpErrorResponse} from '@angular/common/http';
 import {FhirService} from "../../service/fhir.service";
-import { Router} from "@angular/router";
 import {AuthService} from "../../service/auth.service";
 import {NEVER} from "rxjs/internal/observable/never";
 

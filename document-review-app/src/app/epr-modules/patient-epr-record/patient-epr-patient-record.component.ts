@@ -45,8 +45,7 @@ export class PatientEprPatientRecordComponent implements OnInit {
 
   patient : fhir.Patient;
 
-  encounterEnabled = false;
-  encounterDate = undefined;
+  tabid : string = undefined;
 
   page : number;
 
@@ -67,8 +66,8 @@ export class PatientEprPatientRecordComponent implements OnInit {
     let id = this.route.snapshot.paramMap.get('docid');
     this.selectPatientEPR(id);
 
-    let tabid = this.route.snapshot.paramMap.get('tabid');
-    console.log("Tab = "+tabid);
+    this.tabid = this.route.snapshot.paramMap.get('tabid');
+    console.log("Tab = "+this.tabid);
    /* if (tabid != undefined) {
        this.tabs.select(tabid);
     }

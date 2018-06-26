@@ -3,6 +3,8 @@ import {LinksService} from "../../service/links.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {ResourceDialogComponent} from "../resource-dialog/resource-dialog.component";
 import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
+import {ObservationDataSource} from "../../data-source/observation-data-source";
+import {FhirService} from "../../service/fhir.service";
 
 @Component({
   selector: 'app-observation',
@@ -21,9 +23,17 @@ export class ObservationComponent implements OnInit {
 
   selectedObs : fhir.Observation;
 
-  constructor(private linksService : LinksService,private modalService: NgbModal, public dialog: MatDialog) { }
+  dataSource : ObservationDataSource;
+
+  displayedColumns = ['id'];
+
+  constructor(private linksService : LinksService,private modalService: NgbModal
+              , public dialog: MatDialog
+    ,public fhirService : FhirService) { }
 
   ngOnInit() {
+  //  this.dataSource = new ObservationDataSource(this.fhirService);
+    this.dataSource.connect("2")
   }
 
 
