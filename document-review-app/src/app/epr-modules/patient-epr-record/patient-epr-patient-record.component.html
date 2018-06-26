@@ -7,7 +7,7 @@
 <mat-card *ngIf="tabid== 'observations' ">
   <mat-card-title>Observation</mat-card-title>
   <mat-card-content>
-    <app-epr-observation> [observations]="observations"</app-epr-observation>
+    <app-observation [patientId]="patientId" [observations]="observations"></app-observation>
   </mat-card-content>
 </mat-card>
 <ngb-tab>

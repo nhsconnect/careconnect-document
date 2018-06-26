@@ -6,6 +6,7 @@ import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
 import {ObservationDataSource} from "../../data-source/observation-data-source";
 import {FhirService} from "../../service/fhir.service";
 
+
 @Component({
   selector: 'app-observation',
   templateUrl: './observation.component.html',
@@ -17,7 +18,7 @@ export class ObservationComponent implements OnInit {
 
   @Input() showDetail : boolean = false;
 
-  @Input() patient : fhir.Patient;
+  @Input() patientId : string;
 
   @Output() observation = new EventEmitter<any>();
 
@@ -25,15 +26,18 @@ export class ObservationComponent implements OnInit {
 
   dataSource : ObservationDataSource;
 
-  displayedColumns = ['id'];
+  displayedColumns = ['date', 'code','codelink','category', 'status','value', 'resource'];
 
-  constructor(private linksService : LinksService,private modalService: NgbModal
-              , public dialog: MatDialog
-    ,public fhirService : FhirService) { }
+  constructor(private linksService : LinksService,
+              private modalService: NgbModal,
+              public dialog: MatDialog,
+              public fhirService : FhirService) { }
 
   ngOnInit() {
-  //  this.dataSource = new ObservationDataSource(this.fhirService);
-    this.dataSource.connect("2")
+    console.log('Patient id = '+this.patientId);
+    this.dataSource = new ObservationDataSource(this.fhirService, this.patientId);
+    console.log('calling connect');
+    //this.dataSource.connect(this.patientId);
   }
 
 
@@ -67,9 +71,6 @@ export class ObservationComponent implements OnInit {
     return this.linksService.isSNOMED(system);
   }
 
-  getPatientId(observation : fhir.Observation) : string {
-    return '1177';
-  }
 
   onClick(content , observation : fhir.Observation) {
     console.log("Clicked - "+ observation.id);

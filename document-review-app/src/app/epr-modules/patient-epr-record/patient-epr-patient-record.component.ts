@@ -4,7 +4,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {NgbTabset} from "@ng-bootstrap/ng-bootstrap";
 import {LinksService} from "../../service/links.service";
 import {PatientEprService} from "../../service/patient-epr.service";
-import {AuthService} from "../../service/auth.service";
+
 
 
 
@@ -45,6 +45,8 @@ export class PatientEprPatientRecordComponent implements OnInit {
 
   patient : fhir.Patient;
 
+  patientId : string;
+
   tabid : string = undefined;
 
   page : number;
@@ -57,14 +59,13 @@ export class PatientEprPatientRecordComponent implements OnInit {
   constructor(private fhirService: FhirService,
               private route: ActivatedRoute,
               private linksService : LinksService,
-              private patientEprService : PatientEprService,
-              public authService : AuthService
+              private patientEprService : PatientEprService
               ) { }
 
 
   ngOnInit() {
-    let id = this.route.snapshot.paramMap.get('docid');
-    this.selectPatientEPR(id);
+    this.patientId = this.route.snapshot.paramMap.get('patientId');
+    this.selectPatientEPR(this.patientId);
 
     this.tabid = this.route.snapshot.paramMap.get('tabid');
     console.log("Tab = "+this.tabid);
@@ -156,6 +157,8 @@ export class PatientEprPatientRecordComponent implements OnInit {
       }
     );
     */
+
+    /* Called when required
     if (this.fhirService.hasScope("Observation")) {
 
       this.fhirService.getEPRObservations(patientId).subscribe(data => {
@@ -168,7 +171,7 @@ export class PatientEprPatientRecordComponent implements OnInit {
           }
         }
       );
-    }
+    } */
     if (this.fhirService.hasScope("Procedure")) {
       this.fhirService.getEPRProcedures(patientId).subscribe(data => {
           this.procedures = [];

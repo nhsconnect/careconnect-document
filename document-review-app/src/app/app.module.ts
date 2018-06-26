@@ -26,7 +26,6 @@ import { ProcedureComponent } from './component/procedure/procedure.component';
 import { ObservationComponent } from './component/observation/observation.component';
 import { AllergyIntolleranceComponent } from './component/allergy-intollerance/allergy-intollerance.component';
 import { EncounterComponent } from './component/encounter/encounter.component';
-import { EprObservationComponent } from './epr-modules/epr-observation/epr-observation.component';
 import { MedicationRequestComponent } from './component/medication-request/medication-request.component';
 import { MedicationComponent } from './component/medication/medication.component';
 import { EprPrescriptionComponent } from './epr-modules/epr-prescription/epr-prescription.component';
@@ -79,9 +78,9 @@ import {
   DateAdapter, MAT_DATE_FORMATS,
   MAT_DATE_LOCALE, MatButtonModule, MatCardModule,
   MatDatepickerModule, MatDialogModule, MatGridListModule, MatIcon, MatIconModule,
-  MatInputModule, MatListModule, MatSelectModule,
+  MatInputModule, MatListModule, MatPaginatorModule, MatSelectModule,
 
-  MatSidenavModule,  MatTableModule, MatToolbarModule
+  MatSidenavModule, MatTableModule, MatToolbarModule
 } from "@angular/material";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {MAT_MOMENT_DATE_FORMATS, MatMomentDateModule, MomentDateAdapter} from "@angular/material-moment-adapter";
@@ -120,7 +119,7 @@ import {ObservationDataSource} from "./data-source/observation-data-source";
     ObservationComponent,
     AllergyIntolleranceComponent,
     EncounterComponent,
-    EprObservationComponent,
+
     MedicationRequestComponent,
     MedicationComponent,
     EprPrescriptionComponent,
@@ -184,6 +183,8 @@ import {ObservationDataSource} from "./data-source/observation-data-source";
     MatTableModule,
     MatGridListModule,
     MatDialogModule,
+    MatPaginatorModule,
+
 
     CovalentLayoutModule,
 
@@ -207,7 +208,7 @@ import {ObservationDataSource} from "./data-source/observation-data-source";
   ],
   providers: [
     FhirService
-    ,ObservationDataSource
+    //,ObservationDataSource
     , AuthService
     ,LinksService
     ,PatientEprService
