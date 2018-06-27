@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import {tokenNotExpired} from "angular2-jwt";
+import { JwtHelperService } from '@auth0/angular-jwt';
+
 
 @Injectable()
 export class Oauth2Service {
@@ -10,9 +11,10 @@ export class Oauth2Service {
   public isAuthenticated(): boolean {
     // get the token
     const token = this.getToken();
+    const helper = new JwtHelperService();
     // return a boolean reflecting
     // whether or not the token is expired
-    return tokenNotExpired(null, token);
+    return helper.isTokenExpired(token);
   }
 
 }

@@ -3,10 +3,10 @@ import {EventEmitter, Injectable} from '@angular/core';
 
 import {Router} from '@angular/router';
 import {User} from "../model/user";
-import {CookieService} from "angular2-cookie/core";
 import {KeycloakService} from "./keycloak.service";
 import {environment} from "../../environments/environment";
-import { Observable, Subject, asapScheduler, pipe, of, from, interval, merge, fromEvent } from 'rxjs';
+import {CookieService} from "ngx-cookie";
+
 
 
 
@@ -16,9 +16,6 @@ export class AuthService {
     this._User = value;
   }
 
- // private user: Observable<firebase.User>;
-
-  //public userDetails: firebase.User = null;
 
   private semaphore : boolean = false;
 

@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import {CookieService} from "angular2-cookie/core";
+
 import {ActivatedRoute, Router} from "@angular/router";
 import {AuthService} from "../../service/auth.service";
 import {KeycloakService} from "../../service/keycloak.service";
 import {environment} from "../../../environments/environment";
+import {CookieService} from "ngx-cookie";
 
 @Component({
   selector: 'app-logout',

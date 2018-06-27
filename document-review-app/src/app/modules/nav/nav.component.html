@@ -23,15 +23,16 @@
         <mat-nav-list>
           <span *ngIf="patientEprService.patient != undefined">
             <a mat-list-item routerLink="/epr/{{patientEprService.patient.id}}/documents"><mat-icon>note</mat-icon>Documents</a>
+          <!-- Menu for testing components
             <a mat-list-item routerLink="/epr/{{patientEprService.patient.id}}/encounters"><mat-icon fontSet="fa" fontIcon="fa-user-md"></mat-icon>Encounters</a>
             <a mat-list-item routerLink="/epr/{{patientEprService.patient.id}}/observations"><mat-icon fontSet="fa" fontIcon="fa-heartbeat"></mat-icon>Observations</a>
             <a mat-list-item routerLink="/epr/{{patientEprService.patient.id}}/immunisations"><mat-icon>timeline</mat-icon>Immunisations</a>
             <a mat-list-item routerLink="/epr/{{patientEprService.patient.id}}/conditions"><mat-icon>local_hotel</mat-icon>Conditions</a>
             <a mat-list-item routerLink="/epr/{{patientEprService.patient.id}}/procedures"><mat-icon fontSet="fa" fontIcon="fa-stethoscope"></mat-icon>Procedures</a>
             <a mat-list-item routerLink="/epr/{{patientEprService.patient.id}}/prescriptions"><mat-icon fontSet="fa" fontIcon="fa-file-prescription"></mat-icon>Prescriptions</a>
-            <a mat-list-item routerLink="/epr/{{patientEprService.patient.id}}/medicationbag"><mat-icon fontSet="fa" fontIcon="fa-file-prescription"></mat-icon>Medication Bag</a>
-             <a mat-list-item routerLink="/epr/{{patientEprService.patient.id}}/allergy"><mat-icon fontSet="fa" fontIcon="fa-file-prescription"></mat-icon>Allergies</a>
-
+            <a mat-list-item routerLink="/epr/{{patientEprService.patient.id}}/medicationbag"><mat-icon fontSet="fas" fontIcon="fa-file-prescription"></mat-icon>Medication Bag</a>
+             <a mat-list-item routerLink="/epr/{{patientEprService.patient.id}}/allergy"><mat-icon fontSet="fas" fontIcon="fa-file-prescription"></mat-icon>Allergies</a>
+-->
             <!-- <mat-divider></mat-divider>
               Smart on FHIR Apps
               <mat-divider></mat-divider>

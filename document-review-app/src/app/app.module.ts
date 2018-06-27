@@ -6,12 +6,12 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './/app-routing.module';
 import { LoadDocumentComponent } from './modules/document-load/load-document.component';
 import { NavComponent } from './modules/nav/nav.component';
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
-import {FileUploadModule} from "ng2-file-upload";
+import { FileUploadModule } from "ng2-file-upload";
 import { ViewDocumentComponent } from './document-view/composition-view/view-document.component';
-import {FhirService} from "./service/fhir.service";
-import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
+import { FhirService } from "./service/fhir.service";
+import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
 import { ViewDocumentSectionComponent } from './document-view/composition-view-section/view-document-section.component';
 import { PatientSearchComponent } from './component/patient-search/patient-search.component';
 
@@ -55,7 +55,7 @@ import { OrganisationComponent } from './component/organisation/organisation.com
 import { PractitionerComponent } from './component/practitioner/practitioner.component';
 import {TestPipe} from "./modules/test-load/TestPipe";
 import {AuthGuard} from "./service/auth-guard";
-import {CookieService} from "angular2-cookie/core";
+
 
 import {LogoutComponent} from "./modules/logout/logout.component";
 import { CallbackComponent } from './modules/callback/callback.component';
@@ -98,6 +98,7 @@ import {CovalentMarkdownModule} from "@covalent/markdown";
 
 import {PatientComponent} from "./component/patient/patient.component";
 import {MedicationDialogComponent} from "./component/medication-dialog/medication-dialog.component";
+import {CookieModule, CookieService} from "ngx-cookie";
 
 
 @NgModule({
@@ -161,6 +162,8 @@ import {MedicationDialogComponent} from "./component/medication-dialog/medicatio
   ],
   imports: [
     BrowserModule,
+    CookieModule
+      .forRoot(),
     FormsModule,
     ReactiveFormsModule,
     AppRoutingModule,

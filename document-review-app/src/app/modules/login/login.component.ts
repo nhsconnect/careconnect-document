@@ -4,8 +4,9 @@ import {ActivatedRoute, Params, Router} from '@angular/router';
 import {FhirService} from "../../service/fhir.service";
 import {PatientEprService} from "../../service/patient-epr.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {CookieService} from "angular2-cookie/core";
+
 import {KeycloakService} from "../../service/keycloak.service";
+
 
 @Component({
   selector: 'app-login',
@@ -33,7 +34,7 @@ export class LoginComponent implements OnInit {
               private patientMessage : PatientEprService
               ,private modalService: NgbModal
               ,private activatedRoute: ActivatedRoute
-              ,private _cookieService:CookieService
+             // ,private _cookieService:CookieService
               ,public keycloak : KeycloakService
     ) {
   }
