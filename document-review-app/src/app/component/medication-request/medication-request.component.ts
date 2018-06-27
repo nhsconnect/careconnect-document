@@ -4,6 +4,8 @@ import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {FhirService} from "../../service/fhir.service";
 import {ResourceDialogComponent} from "../resource-dialog/resource-dialog.component";
 import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
+import {MedicationStatementDataSource} from "../../data-source/medication-statement-data-source";
+import {MedicationRequestDataSource} from "../../data-source/medication-request-data-source";
 
 @Component({
   selector: 'app-medication-request',
@@ -20,14 +22,28 @@ export class MedicationRequestComponent implements OnInit {
 
   @Output() medicationRequest = new EventEmitter<any>();
 
+  @Input() patientId : string;
+
+  dataSource : MedicationRequestDataSource;
+
+  displayedColumns = ['medication', 'medicationlink','status','dose','route','routelink','form', 'authored', 'status', 'resource'];
+
+
   constructor(private linksService : LinksService
     ,private modalService: NgbModal
     ,private fhirService : FhirService,
               public dialog: MatDialog) { }
 
   ngOnInit() {
+    if (this.patientId != undefined) {
+      this.dataSource = new MedicationRequestDataSource(this.fhirService, this.patientId, []);
+    } else {
+      this.dataSource = new MedicationRequestDataSource(this.fhirService, undefined, this.medicationRequests);
+    }
   }
-
+  isSNOMED(system: string) : boolean {
+    return this.linksService.isSNOMED(system);
+  }
   getCodeSystem(system : string) : string {
     return this.linksService.getCodeSystem(system);
   }

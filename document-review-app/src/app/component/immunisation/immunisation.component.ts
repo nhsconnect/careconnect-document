@@ -2,6 +2,9 @@ import {Component, Input, OnInit} from '@angular/core';
 import {LinksService} from "../../service/links.service";
 import {ResourceDialogComponent} from "../resource-dialog/resource-dialog.component";
 import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
+import {ProcedureDataSource} from "../../data-source/procedure-data-source";
+import {ImmunizationDataSource} from "../../data-source/immunization-data-source";
+import {FhirService} from "../../service/fhir.service";
 
 @Component({
   selector: 'app-immunisation',
@@ -12,9 +15,22 @@ export class ImmunisationComponent implements OnInit {
 
   @Input() immunisations : fhir.Immunization[];
 
-  constructor(private linksService : LinksService, public dialog: MatDialog) { }
+  @Input() patientId : string;
+
+  dataSource : ImmunizationDataSource;
+
+  displayedColumns = ['date', 'code','codelink','status',  'resource'];
+
+  constructor(private linksService : LinksService,
+              public dialog: MatDialog,
+              public fhirService : FhirService) { }
 
   ngOnInit() {
+    if (this.patientId != undefined) {
+      this.dataSource = new ImmunizationDataSource(this.fhirService, this.patientId, []);
+    } else {
+      this.dataSource = new ImmunizationDataSource(this.fhirService, undefined, this.immunisations);
+    }
   }
   getCodeSystem(system : string) : string {
     return this.linksService.getCodeSystem(system);

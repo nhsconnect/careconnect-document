@@ -97,7 +97,7 @@ import {CovalentHighlightModule} from "@covalent/highlight";
 import {CovalentMarkdownModule} from "@covalent/markdown";
 
 import {PatientComponent} from "./component/patient/patient.component";
-import {ObservationDataSource} from "./data-source/observation-data-source";
+import {MedicationDialogComponent} from "./component/medication-dialog/medication-dialog.component";
 
 
 @NgModule({
@@ -151,11 +151,13 @@ import {ObservationDataSource} from "./data-source/observation-data-source";
     OrganisationListComponent,
     PractitionerListComponent,
     PdfViewerComponent,
-    ImgViewerComponent
+    ImgViewerComponent,
+    MedicationDialogComponent
     //TdFileUploadComponent
   ],
   entryComponents: [
-    ResourceDialogComponent
+    ResourceDialogComponent,
+    MedicationDialogComponent
   ],
   imports: [
     BrowserModule,

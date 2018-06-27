@@ -6,6 +6,7 @@ import {ResourceDialogComponent} from "../resource-dialog/resource-dialog.compon
 import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
 import {ProcedureDataSource} from "../../data-source/procedure-data-source";
 import {MedicationStatementDataSource} from "../../data-source/medication-statement-data-source";
+import {MedicationDialogComponent} from "../medication-dialog/medication-dialog.component";
 
 @Component({
   selector: 'app-medication-statement',
@@ -57,9 +58,12 @@ export class MedicationStatementComponent implements OnInit {
     return this.linksService.isSNOMED(system);
   }
 
-  onClick(content , medicationStatement : fhir.MedicationStatement) {
+  onClick(medicationStatement : fhir.MedicationStatement) {
+
+
     console.log("Clicked - " + medicationStatement.id);
     this.selectedMeds = [];
+
     if (this.meds.length> 0) {
 
       if (medicationStatement.medicationReference != null) {
@@ -70,7 +74,15 @@ export class MedicationStatementComponent implements OnInit {
             this.selectedMeds.push(medtemp);
           }
         }
-        this.modalService.open(content, {windowClass: 'dark-modal'});
+        const dialogConfig = new MatDialogConfig();
+
+        dialogConfig.disableClose = true;
+        dialogConfig.autoFocus = true;
+        dialogConfig.data = {
+          id: 1,
+          medications: this.selectedMeds
+        };
+        let resourceDialog : MatDialogRef<MedicationDialogComponent> = this.dialog.open( MedicationDialogComponent, dialogConfig);
       }
     } else {
       let reference = medicationStatement.medicationReference.reference;
@@ -87,8 +99,15 @@ export class MedicationStatementComponent implements OnInit {
           },
           () => {
             console.log("Content = ");
-            console.log(content);
-            this.modalService.open(content, {windowClass: 'dark-modal'});
+            const dialogConfig = new MatDialogConfig();
+
+            dialogConfig.disableClose = true;
+            dialogConfig.autoFocus = true;
+            dialogConfig.data = {
+              id: 1,
+              medications: this.selectedMeds
+            };
+            let resourceDialog : MatDialogRef<MedicationDialogComponent> = this.dialog.open( MedicationDialogComponent, dialogConfig);
           }
         );
       }
