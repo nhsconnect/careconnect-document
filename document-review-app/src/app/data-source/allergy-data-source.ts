@@ -1,7 +1,8 @@
 import {DataSource} from "@angular/cdk/table";
 import {FhirService} from "../service/fhir.service";
-import {Observable } from "rxjs/observable";
+
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {Observable} from "rxjs/Observable";
 
 export class AllergyIntoleranceDataSource extends DataSource<any> {
   constructor(public fhirService : FhirService,
