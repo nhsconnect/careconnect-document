@@ -4,6 +4,8 @@ import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {FhirService} from "../../service/fhir.service";
 import {ResourceDialogComponent} from "../resource-dialog/resource-dialog.component";
 import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
+import {ProcedureDataSource} from "../../data-source/procedure-data-source";
+import {MedicationStatementDataSource} from "../../data-source/medication-statement-data-source";
 
 @Component({
   selector: 'app-medication-statement',
@@ -18,6 +20,13 @@ export class MedicationStatementComponent implements OnInit {
 
   @Output() medicationStatement = new EventEmitter<any>();
 
+  @Input() patientId : string;
+
+  dataSource : MedicationStatementDataSource;
+
+  displayedColumns = ['medication', 'medicationlink','status','dose','route','routelink','form', 'asserted', 'resource'];
+
+
   selectedMeds : fhir.Medication[];
 
   constructor(private linksService : LinksService
@@ -26,7 +35,11 @@ export class MedicationStatementComponent implements OnInit {
               public dialog: MatDialog) { }
 
   ngOnInit() {
-
+    if (this.patientId != undefined) {
+      this.dataSource = new MedicationStatementDataSource(this.fhirService, this.patientId, []);
+    } else {
+      this.dataSource = new MedicationStatementDataSource(this.fhirService, undefined, this.medicationStatements);
+    }
   }
 
   getCodeSystem(system : string) : string {
@@ -39,6 +52,9 @@ export class MedicationStatementComponent implements OnInit {
   getSNOMEDLink(code : fhir.Coding) {
     window.open(this.linksService.getSNOMEDLink(code), "_blank");
 
+  }
+  isSNOMED(system: string) : boolean {
+    return this.linksService.isSNOMED(system);
   }
 
   onClick(content , medicationStatement : fhir.MedicationStatement) {

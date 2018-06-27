@@ -381,6 +381,14 @@ export class FhirService {
 
   }
 
+  getEPRMedicationStatements(patientId: string): Observable<fhir.Bundle> {
+
+    const url = this.getEPRUrl()  + `/MedicationStatement?patient=${patientId}`;
+
+    return this.http.get<fhir.Bundle>(url,{ 'headers' : this.getEPRHeaders()});
+
+  }
+
   getEPRMedication(medicationId: string): Observable<fhir.Medication> {
 
     const url = this.getEPRUrl()  + `/Medication/${medicationId}`;

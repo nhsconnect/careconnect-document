@@ -4,7 +4,9 @@ import {Observable } from "rxjs/observable";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 export class ProcedureDataSource extends DataSource<any> {
-  constructor(public fhirService : FhirService, public patientId : string
+  constructor(public fhirService : FhirService,
+              public patientId : string,
+              public procedures : fhir.Procedure[]
   ) {
     super();
   }
@@ -20,15 +22,22 @@ export class ProcedureDataSource extends DataSource<any> {
 
     this.dataStore = { procedures: [] };
 
-    this.fhirService.getEPRProcedures(this.patientId).subscribe((bundle => {
-      if (bundle != undefined && bundle.entry != undefined) {
-        for (let entry of bundle.entry) {
-          this.dataStore.procedures.push(<fhir.Procedure> entry.resource);
-
-        }
+    if (this.procedures != []) {
+      for (let procedure of this.procedures) {
+        this.dataStore.procedures.push(<fhir.Procedure> procedure);
       }
       _procedures.next(Object.assign({}, this.dataStore).procedures);
-    }));
+    } else if (this.patientId != undefined) {
+      this.fhirService.getEPRProcedures(this.patientId).subscribe((bundle => {
+        if (bundle != undefined && bundle.entry != undefined) {
+          for (let entry of bundle.entry) {
+            this.dataStore.procedures.push(<fhir.Procedure> entry.resource);
+
+          }
+        }
+        _procedures.next(Object.assign({}, this.dataStore).procedures);
+      }));
+    }
 
    return _procedures.asObservable();
   }

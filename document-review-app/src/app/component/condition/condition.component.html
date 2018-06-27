@@ -29,7 +29,7 @@
     </ng-container>
 
     <ng-container matColumnDef="codelink">
-      <th mat-header-cell *matHeaderCellDef> </th>
+      <th mat-header-cell *matHeaderCellDef width="5%"> </th>
       <td mat-cell *matCellDef="let condition">
       <span *ngIf="condition.code.coding[0].code != undefined" >
         <span *ngIf="isSNOMED(condition.code.coding[0].system)">
@@ -52,7 +52,7 @@
     </ng-container>
 
     <ng-container matColumnDef="categorylink">
-      <th mat-header-cell *matHeaderCellDef> </th>
+      <th mat-header-cell *matHeaderCellDef width="5%"> </th>
       <td mat-cell *matCellDef="let condition">
          <span *ngIf="condition.category != undefined && condition.category[0].coding != undefined">
 
@@ -80,8 +80,8 @@
     </ng-container>
 
     <ng-container matColumnDef="resource">
-      <th mat-header-cell *matHeaderCellDef> </th>
-      <td mat-cell *matCellDef="let condition">  <button mat-icon-button color="accent" style="background-color: lightgray" (click)="select(condition)"><mat-icon>code</mat-icon></button>  </td>
+      <th mat-header-cell *matHeaderCellDef width="5%">FHIR</th>
+      <td mat-cell *matCellDef="let condition">  <button mat-icon-button color="accent"  (click)="select(condition)"><mat-icon>code</mat-icon></button>  </td>
     </ng-container>
 
 

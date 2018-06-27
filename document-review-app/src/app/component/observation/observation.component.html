@@ -35,7 +35,7 @@
   </ng-container>
 
   <ng-container matColumnDef="codelink">
-    <th mat-header-cell *matHeaderCellDef> </th>
+    <th mat-header-cell *matHeaderCellDef width="5%"> </th>
     <td mat-cell *matCellDef="let observation">
       <span *ngIf="observation.code.coding[0].code != undefined" >
         <span *ngIf="isSNOMED(observation.code.coding[0].system)">
@@ -55,8 +55,8 @@
   </ng-container>
 
   <ng-container matColumnDef="resource">
-    <th mat-header-cell *matHeaderCellDef> </th>
-    <td mat-cell *matCellDef="let observation">  <button mat-icon-button color="accent" style="background-color: lightgray" (click)="select(observation)"><mat-icon>code</mat-icon></button>  </td>
+    <th mat-header-cell *matHeaderCellDef width="5%">FHIR</th>
+    <td mat-cell *matCellDef="let observation">  <button mat-icon-button color="accent" (click)="select(observation)"><mat-icon>code</mat-icon></button>  </td>
   </ng-container>
 
 

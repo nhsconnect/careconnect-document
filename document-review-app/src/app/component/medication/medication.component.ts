@@ -2,6 +2,9 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {LinksService} from "../../service/links.service";
 import {ResourceDialogComponent} from "../resource-dialog/resource-dialog.component";
 import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
+import {MedicationDataSource} from "../../data-source/medication-data-source";
+import {MedicationStatementDataSource} from "../../data-source/medication-statement-data-source";
+import {FhirService} from "../../service/fhir.service";
 
 @Component({
   selector: 'app-medication',
@@ -11,11 +14,18 @@ import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
 export class MedicationComponent implements OnInit {
 
   @Input() medications : fhir.Medication[];
-  constructor(private linksService : LinksService, public dialog: MatDialog) { }
+  constructor(private linksService : LinksService,
+              public dialog: MatDialog,
+              public fhirService : FhirService) { }
 
   @Output() medication = new EventEmitter<any>();
 
+  dataSource : MedicationDataSource;
+
+  displayedColumns = ['medication', 'medicationlink','medicationlinkDMD', 'resource'];
+
   ngOnInit() {
+    this.dataSource = new MedicationDataSource(this.fhirService,  this.medications);
   }
   getCodeSystem(system : string) : string {
     return this.linksService.getCodeSystem(system);

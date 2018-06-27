@@ -28,7 +28,7 @@
     </ng-container>
 
     <ng-container matColumnDef="codelink">
-      <th mat-header-cell *matHeaderCellDef> </th>
+      <th mat-header-cell *matHeaderCellDef width="5%"> </th>
       <td mat-cell *matCellDef="let allergy">
       <span *ngIf="allergy.code.coding[0].code != undefined" >
         <span *ngIf="isSNOMED(allergy.code.coding[0].system)">
@@ -81,8 +81,8 @@
     </ng-container>
 
     <ng-container matColumnDef="resource">
-      <th mat-header-cell *matHeaderCellDef> </th>
-      <td mat-cell *matCellDef="let allergy">  <button mat-icon-button color="accent" style="background-color: lightgray" (click)="select(allergy)"><mat-icon>code</mat-icon></button>  </td>
+      <th mat-header-cell *matHeaderCellDef width="5%">FHIR</th>
+      <td mat-cell *matCellDef="let allergy">  <button mat-icon-button color="accent"  (click)="select(allergy)"><mat-icon>code</mat-icon></button>  </td>
     </ng-container>
 
 

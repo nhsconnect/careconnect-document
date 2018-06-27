@@ -2,6 +2,9 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {LinksService} from "../../service/links.service";
 import {ResourceDialogComponent} from "../resource-dialog/resource-dialog.component";
 import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
+import {ConditionDataSource} from "../../data-source/condition-data-source";
+import {ProcedureDataSource} from "../../data-source/procedure-data-source";
+import {FhirService} from "../../service/fhir.service";
 
 @Component({
   selector: 'app-procedure',
@@ -14,9 +17,22 @@ export class ProcedureComponent implements OnInit {
 
   @Output() procedure = new EventEmitter<any>();
 
-  constructor(private linksService : LinksService, public dialog: MatDialog) { }
+  @Input() patientId : string;
+
+  dataSource : ProcedureDataSource;
+
+  displayedColumns = ['performed', 'code','codelink','status', 'bodysite', 'complication', 'resource'];
+
+  constructor(private linksService : LinksService,
+              public dialog: MatDialog,
+              public fhirService : FhirService) { }
 
   ngOnInit() {
+    if (this.patientId != undefined) {
+      this.dataSource = new ProcedureDataSource(this.fhirService, this.patientId, []);
+    } else {
+      this.dataSource = new ProcedureDataSource(this.fhirService, undefined, this.procedures);
+    }
   }
 
   getCodeSystem(system : string) : string {
