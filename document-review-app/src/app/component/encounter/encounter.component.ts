@@ -3,6 +3,9 @@ import {LinksService} from "../../service/links.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {ResourceDialogComponent} from "../resource-dialog/resource-dialog.component";
 import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
+import {ConditionDataSource} from "../../data-source/condition-data-source";
+import {FhirService} from "../../service/fhir.service";
+import {EncounterDataSource} from "../../data-source/encounter-data-source";
 
 @Component({
   selector: 'app-encounter',
@@ -21,11 +24,23 @@ export class EncounterComponent implements OnInit {
 
   selectedEncounter : fhir.Encounter;
 
+  @Input() patientId : string;
+
+  dataSource : EncounterDataSource;
+
+  displayedColumns = ['start','end', 'type','typelink','provider','participant', 'resource'];
+
   constructor(private linksService : LinksService
-    ,private modalService: NgbModal,
-              public dialog: MatDialog) { }
+    , private modalService: NgbModal
+    , public dialog: MatDialog
+    , public fhirService : FhirService) { }
 
   ngOnInit() {
+    if (this.patientId != undefined) {
+      this.dataSource = new EncounterDataSource(this.fhirService, this.patientId, []);
+    } else {
+      this.dataSource = new EncounterDataSource(this.fhirService, undefined, this.encounters);
+    }
   }
   getCodeSystem(system : string) : string {
     return this.linksService.getCodeSystem(system);

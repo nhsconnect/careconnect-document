@@ -171,7 +171,7 @@ export class PatientEprPatientRecordComponent implements OnInit {
           }
         }
       );
-    } */
+    }
     if (this.fhirService.hasScope("Procedure")) {
       this.fhirService.getEPRProcedures(patientId).subscribe(data => {
           this.procedures = [];
@@ -235,6 +235,7 @@ export class PatientEprPatientRecordComponent implements OnInit {
         }
       );
     }
+    */
     if (this.fhirService.hasScope("DocumentReference")) {
       this.fhirService.getEPRDocuments(patientId).subscribe(data => {
           this.documents = [];

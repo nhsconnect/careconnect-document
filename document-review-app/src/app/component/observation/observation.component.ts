@@ -35,7 +35,11 @@ export class ObservationComponent implements OnInit {
 
   ngOnInit() {
     console.log('Patient id = '+this.patientId);
-    this.dataSource = new ObservationDataSource(this.fhirService, this.patientId);
+    if (this.patientId != undefined) {
+      this.dataSource = new ObservationDataSource(this.fhirService, this.patientId, []);
+    } else {
+      this.dataSource = new ObservationDataSource(this.fhirService, undefined, this.observations);
+    }
     console.log('calling connect');
     //this.dataSource.connect(this.patientId);
   }

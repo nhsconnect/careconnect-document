@@ -4,32 +4,44 @@ import {Observable } from "rxjs/Observable";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 export class ObservationDataSource extends DataSource<any> {
-  constructor(public fhirService : FhirService, public patientId : string
-  ) {
-    super();
-  }
+
+  //observations: fhir.Observation[]
 
   private dataStore: {
-    obs: fhir.Observation[]
+    observations: fhir.Observation[]
   };
+
+
+  constructor(public fhirService : FhirService, public patientId : string, public observations: fhir.Observation[]
+  ) {
+    super();
+
+  }
+
 
   connect(): Observable<fhir.Observation[]> {
 
     console.log('Obs DataSource connect '+this.patientId);
     let _obs : BehaviorSubject<fhir.Observation[]> =<BehaviorSubject<fhir.Observation[]>>new BehaviorSubject([]);;
 
-    this.dataStore = { obs: [] };
+    this.dataStore = { observations: [] };
 
-    this.fhirService.getEPRObservations(this.patientId).subscribe((bundle => {
-      if (bundle != undefined && bundle.entry != undefined) {
-        for (let entry of bundle.entry) {
-          this.dataStore.obs.push(<fhir.Observation> entry.resource);
-
-        }
+    if (this.observations != []) {
+      for (let observation of this.observations) {
+        this.dataStore.observations.push( observation);
       }
-      _obs.next(Object.assign({}, this.dataStore).obs);
-    }));
+      _obs.next(Object.assign({}, this.dataStore).observations);
+    } else if (this.patientId != undefined) {
+      this.fhirService.getEPRObservations(this.patientId).subscribe((bundle => {
+        if (bundle != undefined && bundle.entry != undefined) {
+          for (let entry of bundle.entry) {
+            this.dataStore.observations.push(<fhir.Observation> entry.resource);
 
+          }
+        }
+        _obs.next(Object.assign({}, this.dataStore).observations);
+      }));
+    }
    return _obs.asObservable();
   }
 

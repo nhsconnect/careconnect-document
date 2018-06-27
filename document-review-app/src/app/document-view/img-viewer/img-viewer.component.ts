@@ -23,7 +23,7 @@ export class ImgViewerComponent implements OnInit {
     ,private modalService: NgbModal) { }
 
   ngOnInit() {
-    let id = this.route.snapshot.paramMap.get('docid');
+    let id = this.route.snapshot.paramMap.get('binaryId');
     this.getDocument(id);
   }
 

@@ -30,7 +30,7 @@ export class PdfViewerComponent implements OnInit {
 
 
   ngOnInit() {
-    let id = this.route.snapshot.paramMap.get('docid');
+    let id = this.route.snapshot.paramMap.get('binaryId');
     this.getDocument(id);
   }
 
