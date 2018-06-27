@@ -23,12 +23,7 @@ export class MedicationStatementDataSource extends DataSource<any> {
 
     this.dataStore = { medicationStatements: [] };
 
-    if (this.medicationStatements != []) {
-      for (let procedure of this.medicationStatements) {
-        this.dataStore.medicationStatements.push(<fhir.MedicationStatement> procedure);
-      }
-      _medicationStatements.next(Object.assign({}, this.dataStore).medicationStatements);
-    } else if (this.patientId != undefined) {
+    if (this.patientId != undefined) {
       this.fhirService.getEPRMedicationStatements(this.patientId).subscribe((bundle => {
         if (bundle != undefined && bundle.entry != undefined) {
           for (let entry of bundle.entry) {
@@ -38,6 +33,12 @@ export class MedicationStatementDataSource extends DataSource<any> {
         }
         _medicationStatements.next(Object.assign({}, this.dataStore).medicationStatements);
       }));
+    } else
+    if (this.medicationStatements != []) {
+      for (let procedure of this.medicationStatements) {
+        this.dataStore.medicationStatements.push(<fhir.MedicationStatement> procedure);
+      }
+      _medicationStatements.next(Object.assign({}, this.dataStore).medicationStatements);
     }
 
    return _medicationStatements.asObservable();

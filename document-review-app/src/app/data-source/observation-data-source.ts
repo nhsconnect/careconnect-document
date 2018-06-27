@@ -22,16 +22,11 @@ export class ObservationDataSource extends DataSource<any> {
   connect(): Observable<fhir.Observation[]> {
 
     console.log('Obs DataSource connect '+this.patientId);
-    let _obs : BehaviorSubject<fhir.Observation[]> =<BehaviorSubject<fhir.Observation[]>>new BehaviorSubject([]);;
+    let _obs : BehaviorSubject<fhir.Observation[]> =<BehaviorSubject<fhir.Observation[]>>new BehaviorSubject([]);
 
     this.dataStore = { observations: [] };
 
-    if (this.observations != []) {
-      for (let observation of this.observations) {
-        this.dataStore.observations.push( observation);
-      }
-      _obs.next(Object.assign({}, this.dataStore).observations);
-    } else if (this.patientId != undefined) {
+     if (this.patientId != undefined) {
       this.fhirService.getEPRObservations(this.patientId).subscribe((bundle => {
         if (bundle != undefined && bundle.entry != undefined) {
           for (let entry of bundle.entry) {
@@ -41,7 +36,13 @@ export class ObservationDataSource extends DataSource<any> {
         }
         _obs.next(Object.assign({}, this.dataStore).observations);
       }));
-    }
+    } else if (this.observations != [] && this.observations != undefined) {
+       console.log('Observation not null');
+       for (let observation of this.observations) {
+         this.dataStore.observations.push( observation);
+       }
+       _obs.next(Object.assign({}, this.dataStore).observations);
+     }
    return _obs.asObservable();
   }
 

@@ -1,73 +1,64 @@
-<mat-card >
+<mat-card  *ngIf="tabid== 'documents' ">
   <mat-card-title>Documents</mat-card-title>
   <mat-card-content>
     <app-epr-document-reference [documents]="documents" [documentsTotal]="documentsTotal"></app-epr-document-reference>
   </mat-card-content>
 </mat-card>
+
 <mat-card *ngIf="tabid== 'observations' ">
   <mat-card-title>Observation</mat-card-title>
   <mat-card-content>
-    <app-observation [patientId]="patientId" [observations]="observations"></app-observation>
+    <app-observation [patientId]="patientId" ></app-observation>
   </mat-card-content>
 </mat-card>
-<ngb-tab>
-<!--
-<ngb-tabset #tabs type="pills">
-  <span *ngIf="authService.permission != undefined && authService.permission.eprUser">
-  <ngb-tab  id="tab-summary" >
-    <ng-template ngbTabTitle><b>Summary</b></ng-template>
-    <ng-template ngbTabContent>
-      <br>
-     <b>Conditions</b>
-        <app-epr-condition [conditions]="conditions" [conditionTotal]="conditionTotal"></app-epr-condition>
-      <br>
-      <b>Allergies</b>
-      <app-epr-allergy-intollerance [allergies]="allergies" [allergiesTotal]="allergiesTotal"></app-epr-allergy-intollerance>
-    </ng-template>
-  </ngb-tab>
-
-  <ngb-tab  id="tab-timeline" >
-    <ng-template ngbTabTitle><b>Timeline</b></ng-template>
-    <ng-template ngbTabContent>
-      <br>
-      <app-patient-timeline [patient]="patient" [conditions]="conditions" [procedures]="procedures" [encounters]="encounters"></app-patient-timeline>
-    </ng-template>
-  </ngb-tab>
-  <ngb-tab  id="tab-prescriptions">
-    <ng-template ngbTabTitle><b>Prescriptions</b></ng-template>
-    <ng-template ngbTabContent>
-      <app-epr-prescription [prescriptions]="prescriptions" [presTotal]="presTotal"></app-epr-prescription>
-    </ng-template>
-  </ngb-tab>
-
-  <ngb-tab  id="tab-procedures" >
-    <ng-template ngbTabTitle><b>Procedures</b></ng-template>
-    <ng-template ngbTabContent>
-      <app-epr-procedure [procedures]="procedures" [procTotal]="procTotal"></app-epr-procedure>
-    </ng-template>
-  </ngb-tab>
-
-  <ngb-tab  id="tab-observations" >
-    <ng-template ngbTabTitle><b>Observations</b></ng-template>
-    <ng-template ngbTabContent>
-      <app-epr-observation [observations]="observations" [obsTotal]="obsTotal"></app-epr-observation>
-    </ng-template>
-  </ngb-tab>
-  <ngb-tab  id="tab-immunisation" >
-    <ng-template ngbTabTitle><b>Immunisation</b></ng-template>
-    <ng-template ngbTabContent>
-      <app-epr-immunisation [immunisations]="immunisations" [immsTotal]="immsTotal"></app-epr-immunisation>
-    </ng-template>
-  </ngb-tab>
-    <ngb-tab id="tab-encounters" >
-    <ng-template ngbTabTitle><b>Encounters</b></ng-template>
-    <ng-template ngbTabContent>
-      <app-epr-encounter [encounters]="encounters"></app-epr-encounter>
-    </ng-template>
-  </ngb-tab>
-    </span>
 
 
-</ngb-tabset>
--->
+<mat-card *ngIf="tabid== 'immunisations' ">
+  <mat-card-title>Immunisation</mat-card-title>
+  <mat-card-content>
+    <app-immunisation [patientId]="patientId" ></app-immunisation>
+  </mat-card-content>
+</mat-card>
+
+<mat-card *ngIf="tabid== 'conditions' ">
+  <mat-card-title>Conditions</mat-card-title>
+  <mat-card-content>
+    <app-condition [patientId]="patientId" ></app-condition>
+  </mat-card-content>
+</mat-card>
+
+<mat-card *ngIf="tabid== 'encounters' ">
+  <mat-card-title>Encounters</mat-card-title>
+  <mat-card-content>
+    <app-encounter [patientId]="patientId" ></app-encounter>
+  </mat-card-content>
+</mat-card>
+
+<mat-card *ngIf="tabid== 'procedures' ">
+  <mat-card-title>Procedures</mat-card-title>
+  <mat-card-content>
+    <app-procedure [patientId]="patientId" ></app-procedure>
+  </mat-card-content>
+</mat-card>
+
+<mat-card *ngIf="tabid== 'prescriptions' ">
+  <mat-card-title>Prescriptions</mat-card-title>
+  <mat-card-content>
+    <app-medication-request [patientId]="patientId" ></app-medication-request>
+  </mat-card-content>
+</mat-card>
+
+<mat-card *ngIf="tabid== 'medicationbag' ">
+  <mat-card-title>Statement</mat-card-title>
+  <mat-card-content>
+    <app-medication-statement [patientId]="patientId" ></app-medication-statement>
+  </mat-card-content>
+</mat-card>
+
+<mat-card *ngIf="tabid== 'allergy' ">
+  <mat-card-title>Allergy and Intollerances</mat-card-title>
+  <mat-card-content>
+    <app-allergy-intollerance [patientId]="patientId" ></app-allergy-intollerance>
+  </mat-card-content>
+</mat-card>
 

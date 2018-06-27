@@ -24,12 +24,7 @@ export class AllergyIntoleranceDataSource extends DataSource<any> {
 
     this.dataStore = { allergies: [] };
 
-    if (this.allergies != []) {
-      for (let encounter of this.allergies) {
-        this.dataStore.allergies.push(<fhir.AllergyIntolerance> encounter);
-      }
-      _allergies.next(Object.assign({}, this.dataStore).allergies);
-    } else if (this.patientId != undefined) {
+    if (this.patientId != undefined) {
       this.fhirService.getEPRAllergies(this.patientId).subscribe((bundle => {
         if (bundle != undefined && bundle.entry != undefined) {
           for (let entry of bundle.entry) {
@@ -39,6 +34,12 @@ export class AllergyIntoleranceDataSource extends DataSource<any> {
         }
         _allergies.next(Object.assign({}, this.dataStore).allergies);
       }));
+    } else
+    if (this.allergies != []) {
+      for (let encounter of this.allergies) {
+        this.dataStore.allergies.push(<fhir.AllergyIntolerance> encounter);
+      }
+      _allergies.next(Object.assign({}, this.dataStore).allergies);
     }
    return _allergies.asObservable();
   }

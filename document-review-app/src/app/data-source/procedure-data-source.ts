@@ -22,12 +22,7 @@ export class ProcedureDataSource extends DataSource<any> {
 
     this.dataStore = { procedures: [] };
 
-    if (this.procedures != []) {
-      for (let procedure of this.procedures) {
-        this.dataStore.procedures.push(<fhir.Procedure> procedure);
-      }
-      _procedures.next(Object.assign({}, this.dataStore).procedures);
-    } else if (this.patientId != undefined) {
+    if (this.patientId != undefined) {
       this.fhirService.getEPRProcedures(this.patientId).subscribe((bundle => {
         if (bundle != undefined && bundle.entry != undefined) {
           for (let entry of bundle.entry) {
@@ -37,6 +32,12 @@ export class ProcedureDataSource extends DataSource<any> {
         }
         _procedures.next(Object.assign({}, this.dataStore).procedures);
       }));
+    } else
+    if (this.procedures != []) {
+      for (let procedure of this.procedures) {
+        this.dataStore.procedures.push(<fhir.Procedure> procedure);
+      }
+      _procedures.next(Object.assign({}, this.dataStore).procedures);
     }
 
    return _procedures.asObservable();

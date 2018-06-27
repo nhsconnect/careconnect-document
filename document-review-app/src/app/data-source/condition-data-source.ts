@@ -23,12 +23,7 @@ export class ConditionDataSource extends DataSource<any> {
 
     this.dataStore = { conditions: [] };
 
-    if (this.conditions != []) {
-       for (let condition of this.conditions) {
-         this.dataStore.conditions.push(<fhir.Condition> condition);
-       }
-      _conditions.next(Object.assign({}, this.dataStore).conditions);
-    } else if (this.patientId != undefined) {
+    if (this.patientId != undefined) {
       this.fhirService.getEPRConditions(this.patientId).subscribe((bundle => {
         if (bundle != undefined && bundle.entry != undefined) {
           for (let entry of bundle.entry) {
@@ -38,6 +33,12 @@ export class ConditionDataSource extends DataSource<any> {
         }
         _conditions.next(Object.assign({}, this.dataStore).conditions);
       }));
+    } else
+    if (this.conditions != []) {
+       for (let condition of this.conditions) {
+         this.dataStore.conditions.push(<fhir.Condition> condition);
+       }
+      _conditions.next(Object.assign({}, this.dataStore).conditions);
     }
 
 

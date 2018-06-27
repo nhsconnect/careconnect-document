@@ -1,6 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {FhirService} from "../../service/fhir.service";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
 import {NgbTabset} from "@ng-bootstrap/ng-bootstrap";
 import {LinksService} from "../../service/links.service";
 import {PatientEprService} from "../../service/patient-epr.service";
@@ -59,7 +59,8 @@ export class PatientEprPatientRecordComponent implements OnInit {
   constructor(private fhirService: FhirService,
               private route: ActivatedRoute,
               private linksService : LinksService,
-              private patientEprService : PatientEprService
+              private patientEprService : PatientEprService,
+              private router : Router
               ) { }
 
 
@@ -69,10 +70,22 @@ export class PatientEprPatientRecordComponent implements OnInit {
 
     this.tabid = this.route.snapshot.paramMap.get('tabid');
     console.log("Tab = "+this.tabid);
-   /* if (tabid != undefined) {
-       this.tabs.select(tabid);
+    if (this.tabid == undefined ) {
+      this.tabid = "documents";
     }
-*/
+
+    this.router.events.subscribe((val) => {
+      // see also
+      // console.log(val instanceof NavigationEnd);
+      if (val instanceof NavigationEnd) {
+        console.log(this.route.snapshot.paramMap.get('tabid'));
+        this.tabid = this.route.snapshot.paramMap.get('tabid');
+        if (this.tabid == undefined ) {
+          this.tabid = "documents";
+        }
+      }
+    });
+
   }
 
 

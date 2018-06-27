@@ -24,12 +24,7 @@ export class EncounterDataSource extends DataSource<any> {
 
     this.dataStore = { encounters: [] };
 
-    if (this.encounters != []) {
-      for (let encounter of this.encounters) {
-        this.dataStore.encounters.push(<fhir.Encounter> encounter);
-      }
-      _encounters.next(Object.assign({}, this.dataStore).encounters);
-    } else if (this.patientId != undefined) {
+    if (this.patientId != undefined) {
       this.fhirService.getEPREncounters(this.patientId).subscribe((bundle => {
         if (bundle != undefined && bundle.entry != undefined) {
           for (let entry of bundle.entry) {
@@ -39,6 +34,12 @@ export class EncounterDataSource extends DataSource<any> {
         }
         _encounters.next(Object.assign({}, this.dataStore).encounters);
       }));
+    } else
+    if (this.encounters != []) {
+      for (let encounter of this.encounters) {
+        this.dataStore.encounters.push(<fhir.Encounter> encounter);
+      }
+      _encounters.next(Object.assign({}, this.dataStore).encounters);
     }
    return _encounters.asObservable();
   }

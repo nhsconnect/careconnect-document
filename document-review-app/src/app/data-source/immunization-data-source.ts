@@ -22,12 +22,7 @@ export class ImmunizationDataSource extends DataSource<any> {
 
     this.dataStore = { immunisations: [] };
 
-    if (this.immunisations != []) {
-      for (let immunisation of this.immunisations) {
-        this.dataStore.immunisations.push(<fhir.Immunization> immunisation);
-      }
-      _immunisations.next(Object.assign({}, this.dataStore).immunisations);
-    } else if (this.patientId != undefined) {
+    if (this.patientId != undefined) {
       this.fhirService.getEPRImmunisations(this.patientId).subscribe((bundle => {
         if (bundle != undefined && bundle.entry != undefined) {
           for (let entry of bundle.entry) {
@@ -36,8 +31,13 @@ export class ImmunizationDataSource extends DataSource<any> {
           }
         }
         _immunisations.next(Object.assign({}, this.dataStore).immunisations);
-      }));
-    }
+      }))
+    } else if (this.immunisations != []) {
+        for (let immunisation of this.immunisations) {
+          this.dataStore.immunisations.push(<fhir.Immunization> immunisation);
+        }
+        _immunisations.next(Object.assign({}, this.dataStore).immunisations);
+      };
 
    return _immunisations.asObservable();
   }

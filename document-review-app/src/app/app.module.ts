@@ -77,7 +77,7 @@ import {ImageViewerModule} from '@hallysonh/ngx-imageviewer';
 import {
   DateAdapter, MAT_DATE_FORMATS,
   MAT_DATE_LOCALE, MatButtonModule, MatCardModule,
-  MatDatepickerModule, MatDialogModule, MatGridListModule, MatIcon, MatIconModule,
+  MatDatepickerModule, MatDialogModule, MatGridListModule, MatIcon, MatIconRegistry, MatIconModule,
   MatInputModule, MatListModule, MatPaginatorModule, MatSelectModule,
 
   MatSidenavModule, MatTableModule, MatToolbarModule
@@ -217,7 +217,8 @@ import {MedicationDialogComponent} from "./component/medication-dialog/medicatio
     ,AuthGuard
     ,CookieService
     ,KeycloakService
-    ,Oauth2Service,
+    ,Oauth2Service
+    ,MatIconRegistry,
     {
       provide: ErrorHandler,
       useClass: ErrorsHandler,
@@ -233,4 +234,9 @@ import {MedicationDialogComponent} from "./component/medication-dialog/medicatio
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  constructor(
+    public matIconRegistry: MatIconRegistry) {
+    matIconRegistry.registerFontClassAlias('fontawesome', 'fa');
+  }
+}

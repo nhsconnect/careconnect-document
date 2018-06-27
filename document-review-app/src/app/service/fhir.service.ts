@@ -151,7 +151,7 @@ export class FhirService {
       redirect_uris : [document.baseURI+"/callback"],
       client_uri : document.baseURI,
       grant_types: ["authorization_code"],
-      scope: "user/Patient.read user/DocumentReference.read user/Observation.read user/Binary.read user/Bundle.write smart/orchestrate_launch"
+      scope: "user/Patient.read user/DocumentReference.read user/*.read user/Binary.read user/Bundle.write smart/orchestrate_launch"
     });
 
     let headers = new HttpHeaders( {'Content-Type': 'application/json '} );

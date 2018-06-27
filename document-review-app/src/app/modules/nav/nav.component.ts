@@ -36,7 +36,7 @@ export class NavComponent implements OnInit {
 
   subPatient : any;
 
-  showMenu : boolean = true;
+  showMenu : boolean = false;
 
 
 
