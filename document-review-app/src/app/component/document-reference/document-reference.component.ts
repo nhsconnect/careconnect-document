@@ -5,7 +5,7 @@ import {IAlertConfig, TdDialogService} from "@covalent/core";
 import {ConditionDataSource} from "../../data-source/condition-data-source";
 import {DocumentReferenceDataSource} from "../../data-source/document-reference-data-source";
 import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
-import {ResourceDialogComponent} from "../resource-dialog/resource-dialog.component";
+import {ResourceDialogComponent} from "../../dialog/resource-dialog/resource-dialog.component";
 import {LinksService} from "../../service/links.service";
 
 @Component({

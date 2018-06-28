@@ -1,6 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {ResourceDialogComponent} from "../resource-dialog/resource-dialog.component";
-import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
+
 
 @Component({
   selector: 'app-patient-list',
@@ -16,19 +15,9 @@ export class PatientListComponent implements OnInit {
   @Output() patient = new EventEmitter<any>();
 
 
-  constructor( public dialog: MatDialog) { }
+  constructor() { }
 
   ngOnInit() {
   }
-  select(resource) {
-    const dialogConfig = new MatDialogConfig();
 
-    dialogConfig.disableClose = true;
-    dialogConfig.autoFocus = true;
-    dialogConfig.data = {
-      id: 1,
-      resource: resource
-    };
-    let resourceDialog : MatDialogRef<ResourceDialogComponent> = this.dialog.open( ResourceDialogComponent, dialogConfig);
-  }
 }

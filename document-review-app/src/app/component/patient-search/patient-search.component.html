@@ -10,7 +10,7 @@
 
   <div *ngFor="let patient of patients$ | async" >
     <a (click)="selectPatient(patient)">
-        <app-patient [patient] = "patient" [detail]="true"></app-patient>
+        <app-patient [patient] = "patient" [detail]="true" [showResourceLink]="false"></app-patient>
     </a>
   </div>
 </div>

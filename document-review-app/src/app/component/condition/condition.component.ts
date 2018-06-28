@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {LinksService} from "../../service/links.service";
-import {ResourceDialogComponent} from "../resource-dialog/resource-dialog.component";
+import {ResourceDialogComponent} from "../../dialog/resource-dialog/resource-dialog.component";
 import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
 import {ConditionDataSource} from "../../data-source/condition-data-source";
 import {FhirService} from "../../service/fhir.service";

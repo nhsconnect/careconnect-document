@@ -21,7 +21,7 @@
           </span>
       </mat-grid-tile>
       <mat-grid-tile width="5%">
-        <button mat-icon-button color="accent"  ngbTooltip="View FHIR resource" (click)="select(practitioner)"><mat-icon>code</mat-icon></button>
+        <span *ngIf="showResourceLink"><button mat-icon-button color="accent"  ngbTooltip="View FHIR resource" (click)="select(practitioner)"><mat-icon>code</mat-icon></button></span>
       </mat-grid-tile>
     </mat-grid-list>
 

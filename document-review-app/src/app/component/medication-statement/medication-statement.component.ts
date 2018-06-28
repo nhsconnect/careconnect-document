@@ -2,11 +2,11 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {LinksService} from "../../service/links.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {FhirService} from "../../service/fhir.service";
-import {ResourceDialogComponent} from "../resource-dialog/resource-dialog.component";
+import {ResourceDialogComponent} from "../../dialog/resource-dialog/resource-dialog.component";
 import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
 import {ProcedureDataSource} from "../../data-source/procedure-data-source";
 import {MedicationStatementDataSource} from "../../data-source/medication-statement-data-source";
-import {MedicationDialogComponent} from "../medication-dialog/medication-dialog.component";
+import {MedicationDialogComponent} from "../../dialog/medication-dialog/medication-dialog.component";
 
 @Component({
   selector: 'app-medication-statement',

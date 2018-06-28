@@ -10,6 +10,9 @@ import {FormControl, FormGroup, ValidationErrors, Validators} from "@angular/for
 import {DocumentRef} from "../../model/document-ref";
 import { v4 as uuid } from 'uuid';
 import {IAlertConfig, TdDialogService} from "@covalent/core";
+import {IConfirmConfig} from "@covalent/core/dialogs/services/dialog.service";
+import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
+import {IssueDialogComponent} from "../../dialog/issue-dialog/issue-dialog.component";
 
 
 @Component({
@@ -27,7 +30,6 @@ export class LoadDocumentComponent implements OnInit {
 
   formData: FormData = undefined;
 
-  modalReference ;
 
   notFhir :boolean;
 
@@ -52,20 +54,18 @@ export class LoadDocumentComponent implements OnInit {
   public loadComplete :EventEmitter<any> = new EventEmitter();
 
 
-  @ViewChild('modalDuplicate') modalDuplicate;
-
-  @ViewChild('modalIssue') modalIssue;
 
   @ViewChild('docCreated') inputCreated;
 
-  constructor(private http: HttpClient
-              ,private router: Router
-  , public auth : AuthService
-  , private fhirService : FhirService
-  , public eprService : PatientEprService
-  , private modalService : NgbModal
-  , private _dialogService: TdDialogService,
-              private _viewContainerRef: ViewContainerRef) { }
+  constructor(private http: HttpClient,
+              private router: Router,
+              public auth : AuthService,
+              private fhirService : FhirService,
+              public eprService : PatientEprService,
+              private modalService : NgbModal,
+              private _dialogService: TdDialogService,
+              private _viewContainerRef: ViewContainerRef,
+              public dialog: MatDialog) { }
 
 
 
@@ -239,12 +239,12 @@ export class LoadDocumentComponent implements OnInit {
           this.response = err.error;
           if (this.response.issue.length > 0) {
             if (this.response.issue[0].diagnostics.indexOf('FHIR Document already exists') > -1) {
-              this.modalReference = this.modalService.open(this.modalDuplicate, {windowClass: 'dark-modal'});
+             this.warnDuplicate();
             } else {
-              this.modalReference = this.modalService.open(this.modalIssue, {windowClass: 'dark-modal'});
+              this.showIssue(this.response) ;
             }
           } else {
-            this.modalReference = this.modalService.open(this.modalIssue, {windowClass: 'dark-modal'});
+            this.showIssue(this.response);
           }
         }
       );
@@ -365,7 +365,7 @@ export class LoadDocumentComponent implements OnInit {
           console.log(err.error);
           this.response = err.error;
 
-          this.modalReference = this.modalService.open(this.modalIssue, {windowClass: 'dark-modal'});
+          this.showIssue(this.response);
 
         }
       );
@@ -392,9 +392,6 @@ export class LoadDocumentComponent implements OnInit {
     return result;
   }
 
-  onNoClick( ) {
-    this.modalReference.close();
-  }
 
   specialityChanged(event) {
     console.log(event);
@@ -414,7 +411,7 @@ export class LoadDocumentComponent implements OnInit {
   onReplaceClick() {
     if (!this.getFormValidationErrors()) return;
 
-    this.modalReference.close();
+    //this.modalReference.close();
     let file : File = <File> this.formData.get('uploadFile');
     console.log('clicked FileName = '+file.name);
 
@@ -426,7 +423,7 @@ export class LoadDocumentComponent implements OnInit {
           this.router.navigate(['doc/'+resJson.id ] );
         } else {
 
-          this.modalReference = this.modalService.open(this.modalIssue, {windowClass: 'dark-modal'});
+          this.showIssue(this.response);
         }
       },
       err  => {
@@ -435,7 +432,7 @@ export class LoadDocumentComponent implements OnInit {
 
         this.response = err.error;
 
-        this.modalReference = this.modalService.open(this.modalIssue, {windowClass: 'dark-modal'});
+        this.showIssue(this.response)
 
       } );
 
@@ -451,12 +448,31 @@ export class LoadDocumentComponent implements OnInit {
     this._dialogService.openAlert(alertConfig);
   }
 
-  onModalClick(content ) {
-     console.log("Content = ");
-     console.log(content);
-     this.modalReference = this.modalService.open(content, {windowClass: 'dark-modal'});
+  warnDuplicate() {
+    let alertConfig : IConfirmConfig = { message : "The document already exists on the system. Do you wish to replace?" };
+    alertConfig.disableClose =  false; // defaults to false
+    alertConfig.viewContainerRef = this._viewContainerRef;
+    alertConfig.title = 'Warning'; //OPTIONAL, hides if not provided
+    alertConfig.cancelButton = 'No';
+    alertConfig.acceptButton = 'Yes'; //OPTIONAL, defaults to 'ACCEPT'
+    alertConfig.width = '400px'; //OPTIONAL, defaults to 400px
+    this._dialogService.openConfirm(alertConfig).afterClosed().subscribe((accept: boolean) => {
+      if (accept) {
+        this.onReplaceClick();
+      }
+    } );
+  }
 
+  showIssue(operationOutcome : fhir.OperationOutcome) {
+    const dialogConfig = new MatDialogConfig();
 
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.data = {
+      id: 1,
+      operationOutcome : operationOutcome
+    };
+    let resourceDialog : MatDialogRef<IssueDialogComponent> = this.dialog.open( IssueDialogComponent, dialogConfig);
   }
 
   getFormValidationErrors() :boolean {
@@ -474,6 +490,7 @@ export class LoadDocumentComponent implements OnInit {
     });
     return result;
   }
+
 
 
 

@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {LinksService} from "../../service/links.service";
-import {ResourceDialogComponent} from "../resource-dialog/resource-dialog.component";
+import {ResourceDialogComponent} from "../../dialog/resource-dialog/resource-dialog.component";
 import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
 import {ProcedureDataSource} from "../../data-source/procedure-data-source";
 import {ImmunizationDataSource} from "../../data-source/immunization-data-source";

@@ -1,5 +1,7 @@
 
 import { Component, OnInit, Input } from '@angular/core';
+import {ResourceDialogComponent} from "../../dialog/resource-dialog/resource-dialog.component";
+import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
 
 
 @Component({
@@ -12,7 +14,9 @@ export class PatientComponent implements OnInit {
 
   @Input() detail : boolean;
 
-  constructor() {
+  @Input() showResourceLink : boolean = true;
+
+  constructor( private dialog : MatDialog) {
 
   }
 
@@ -70,6 +74,18 @@ export class PatientComponent implements OnInit {
     }
     return NHSNumber;
 
+  }
+
+  select(resource) {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.data = {
+      id: 1,
+      resource: resource
+    };
+    let resourceDialog : MatDialogRef<ResourceDialogComponent> = this.dialog.open( ResourceDialogComponent, dialogConfig);
   }
 
 }

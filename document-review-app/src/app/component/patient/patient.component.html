@@ -10,6 +10,7 @@
     <div><i>Gender: </i><b>{{ patient.gender }}</b></div>
 
     <div><i>NHS No: </i><b>{{ getNHSIdentifier() }}</b></div>
+    <span *ngIf="showResourceLink"><button mat-icon-button color="accent"  (click)="select(patient)"><mat-icon>code</mat-icon></button></span>
   </div>
 
 

@@ -1,10 +1,11 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {FhirService} from "../../../service/fhir.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {PatientEprService} from "../../../service/patient-epr.service";
 import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
-import {ResourceDialogComponent} from "../../resource-dialog/resource-dialog.component";
+import {ResourceDialogComponent} from "../../../dialog/resource-dialog/resource-dialog.component";
+import {IAlertConfig, TdDialogService} from "@covalent/core";
 
 @Component({
   selector: 'app-view-document',
@@ -16,19 +17,14 @@ export class ViewDocumentComponent implements OnInit {
   @Input() document : fhir.Bundle;
   @Input() systemType : string;
 
-  @ViewChild('modalWait') modalWait;
 
-  @ViewChild('modalIssue') modalIssue;
-
-  @ViewChild('modalResource') modalResource;
-
-
-
-  constructor(private route: ActivatedRoute
-  , private fhirService : FhirService
-  ,private modalService: NgbModal
-  ,public dialog: MatDialog
-  ,private  patientEprService : PatientEprService) { }
+  constructor(private route: ActivatedRoute,
+            private fhirService : FhirService,
+            private modalService: NgbModal,
+            public dialog: MatDialog,
+  //,private  patientEprService : PatientEprService,
+              private _dialogService: TdDialogService,
+              private _viewContainerRef: ViewContainerRef) { }
 
   ngOnInit() {
 
@@ -57,7 +53,7 @@ export class ViewDocumentComponent implements OnInit {
 
     this.docId = id;
 
-    let modalWaitRef = this.modalService.open( this.modalWait,{ windowClass: 'dark-modal' });
+  //  let modalWaitRef = this.modalService.open( this.modalWait,{ windowClass: 'dark-modal' });
 
     this.fhirService.getBinary(id).subscribe( document => {
       let binary : fhir.Binary = document;
@@ -65,15 +61,15 @@ export class ViewDocumentComponent implements OnInit {
       this.document = JSON.parse(atob(binary.content));
     }, err=>{
 
-        modalWaitRef.close();
 
-        let modalIssueRef = this.modalService.open( this.modalIssue,{ windowClass: 'dark-modal' });
+
+        this.showWarnDlg("Unable to load document");
 
       },
       ()=> {
 
         this.getComposition();
-        modalWaitRef.close();
+      //  modalWaitRef.close();
       }
 
       );
@@ -177,4 +173,15 @@ export class ViewDocumentComponent implements OnInit {
 
 
   }
+
+  showWarnDlg(message : string) {
+    let alertConfig : IAlertConfig = { message : message};
+    alertConfig.disableClose =  false; // defaults to false
+    alertConfig.viewContainerRef = this._viewContainerRef;
+    alertConfig.title = 'Warning'; //OPTIONAL, hides if not provided
+    alertConfig.closeButton = 'Ok'; //OPTIONAL, defaults to 'CLOSE'
+    alertConfig.width = '400px'; //OPTIONAL, defaults to 400px
+    this._dialogService.openAlert(alertConfig);
+  }
+
 }

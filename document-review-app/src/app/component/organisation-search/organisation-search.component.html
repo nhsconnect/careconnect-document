@@ -10,7 +10,7 @@
 
   <div *ngFor="let organisation of organisations$ | async" >
     <a (click)="selectOrganisation(organisation)">
-      <app-organisation [organisation]="organisation"></app-organisation>
+      <app-organisation [organisation]="organisation" [showResourceLink]="false"></app-organisation>
     </a>
   </div>
 </div>

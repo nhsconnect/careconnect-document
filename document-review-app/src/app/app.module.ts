@@ -9,10 +9,10 @@ import { NavComponent } from './modules/nav/nav.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { FileUploadModule } from "ng2-file-upload";
-import { ViewDocumentComponent } from './component/binary-view/composition-view/view-document.component';
+import { ViewDocumentComponent } from './component/binary/composition-view/view-document.component';
 import { FhirService } from "./service/fhir.service";
 import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
-import { ViewDocumentSectionComponent } from './component/binary-view/composition-view-section/view-document-section.component';
+import { ViewDocumentSectionComponent } from './component/binary/composition-view-section/view-document-section.component';
 import { PatientSearchComponent } from './component/patient-search/patient-search.component';
 
 import { FindDocumentComponent } from './modules/composition-find/find-document.component';
@@ -28,8 +28,6 @@ import { AllergyIntolleranceComponent } from './component/allergy-intollerance/a
 import { EncounterComponent } from './component/encounter/encounter.component';
 import { MedicationRequestComponent } from './component/medication-request/medication-request.component';
 import { MedicationComponent } from './component/medication/medication.component';
-
-import { TestLoadComponent } from './modules/test-load/test-load.component';
 
 import { DocumentReferenceCardComponent } from './component/document-reference-card/document-reference-card.component';
 import { DocumentReferenceComponent } from './component/document-reference/document-reference.component';
@@ -51,7 +49,7 @@ import { PractitionerSearchComponent } from './component/practitioner-search/pra
 import { OrganisationSearchComponent } from './component/organisation-search/organisation-search.component';
 import { OrganisationComponent } from './component/organisation/organisation.component';
 import { PractitionerComponent } from './component/practitioner/practitioner.component';
-import {TestPipe} from "./modules/test-load/TestPipe";
+
 import {AuthGuard} from "./service/auth-guard";
 
 
@@ -62,15 +60,15 @@ import {ErrorsHandler} from "./service/errors-handler";
 import {KeycloakService} from "./service/keycloak.service";
 import {TokenInterceptor} from "./service/token-interceptor";
 import {Oauth2Service} from "./service/oauth2.service";
-import { ResourceDialogComponent } from './component/resource-dialog/resource-dialog.component';
+import { ResourceDialogComponent } from './dialog/resource-dialog/resource-dialog.component';
 import { TreeModule } from 'angular-tree-component';
 
 import { PatientListComponent } from './component/patient-list/patient-list.component';
 import { OrganisationListComponent } from './component/organisation-list/organisation-list.component';
 import { PractitionerListComponent } from './component/practitioner-list/practitioner-list.component';
-import { PdfViewerComponent } from './component/binary-view/pdf-viewer/pdf-viewer.component';
+import { PdfViewerComponent } from './component/binary/pdf-viewer/pdf-viewer.component';
 import {PdfViewerModule} from "ng2-pdf-viewer";
-import { ImgViewerComponent } from './component/binary-view/img-viewer/img-viewer.component';
+import { ImgViewerComponent } from './component/binary/img-viewer/img-viewer.component';
 import {ImageViewerModule} from '@hallysonh/ngx-imageviewer';
 import {
   DateAdapter, MAT_DATE_FORMATS,
@@ -95,8 +93,12 @@ import {CovalentHighlightModule} from "@covalent/highlight";
 import {CovalentMarkdownModule} from "@covalent/markdown";
 
 import {PatientComponent} from "./component/patient/patient.component";
-import {MedicationDialogComponent} from "./component/medication-dialog/medication-dialog.component";
+import {MedicationDialogComponent} from "./dialog/medication-dialog/medication-dialog.component";
 import {CookieModule, CookieService} from "ngx-cookie";
+import {IssueDialogComponent} from "./dialog/issue-dialog/issue-dialog.component";
+import {LocationDialogComponent} from "./dialog/location-dialog/location-dialog.component";
+import {PractitionerDialogComponent} from "./dialog/practitioner-dialog/practitioner-dialog.component";
+import {OrganisationDialogComponent} from "./dialog/organisation-dialog/organisation-dialog.component";
 
 
 @NgModule({
@@ -122,8 +124,6 @@ import {CookieModule, CookieService} from "ngx-cookie";
     MedicationRequestComponent,
     MedicationComponent,
 
-    TestLoadComponent,
-
     DocumentReferenceCardComponent,
     DocumentReferenceComponent,
     LoginComponent,
@@ -138,7 +138,6 @@ import {CookieModule, CookieService} from "ngx-cookie";
     OrganisationSearchComponent,
     OrganisationComponent,
     PractitionerComponent,
-    TestPipe,
     CallbackComponent,
     ResourceDialogComponent,
 
@@ -149,12 +148,20 @@ import {CookieModule, CookieService} from "ngx-cookie";
     PractitionerListComponent,
     PdfViewerComponent,
     ImgViewerComponent,
-    MedicationDialogComponent
-    //TdFileUploadComponent
+    MedicationDialogComponent,
+    IssueDialogComponent,
+    LocationDialogComponent,
+    PractitionerDialogComponent,
+    OrganisationDialogComponent
+
   ],
   entryComponents: [
     ResourceDialogComponent,
-    MedicationDialogComponent
+    MedicationDialogComponent,
+    IssueDialogComponent,
+    LocationDialogComponent,
+    PractitionerDialogComponent,
+    OrganisationDialogComponent
   ],
   imports: [
     BrowserModule,

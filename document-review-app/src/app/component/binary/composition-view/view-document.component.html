@@ -1,47 +1,9 @@
-<ng-template id="modalWait" #modalWait let-c="close" let-d="dismiss">
-  <div class="modal-header">
-    <h4>Loading</h4>
-  </div>
-  <div class="modal-body">
-    <div class="progress">
-      <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 75%"></div>
-    </div>
-  </div>
-</ng-template>
-
-<ng-template id="modalResource" #modalResource let-c="close" let-d="dismiss">
-  <div class="modal-header">
-    <h4>{{resource.resourceType}}</h4>
-    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-
-  <div class="modal-body">
-
-    <div class="row">
-       <app-resource-viewer [resource]="resource"></app-resource-viewer>
-    </div>
-  </div>
-
-</ng-template>
 
 
 
-<ng-template id="modalIssue" #modalIssue let-c="close" let-d="dismiss">
-  <div class="modal-header">
 
-    <h4>Warning</h4>
-    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-      <div class="card-body">
-        Unable to Load document.
-      </div>
-  </div>
-</ng-template>
+
+
 <mat-card>
   <mat-card-title>FHIR Document</mat-card-title>
   <mat-card-content>
@@ -59,11 +21,11 @@
         <mat-card>
             <mat-card-title class="d-flex justify-content-between">
                 <div>{{composition.title}}</div>
-              <div>   <button mat-raised-button  placement="top" (click)="openResource(composition)"><mat-icon>code</mat-icon>
+              <div>   <button mat-raised-button  placement="top" (click)="openResource(composition)"><mat-icon color="accent">code</mat-icon>
                 Composition</button>
-                <button mat-raised-button placement="top" (click)="openResource(patient)"><mat-icon>code</mat-icon>
+                <button mat-raised-button placement="top" (click)="openResource(patient)"><mat-icon color="accent">code</mat-icon>
                 Patient</button>
-                <span *ngIf="encounter != undefined"><button mat-raised-button  placement="top" (click)="openResource(encounter)"><mat-icon>code</mat-icon>
+                <span *ngIf="encounter != undefined"><button mat-raised-button  placement="top" (click)="openResource(encounter)"><mat-icon color="accent">code</mat-icon>
                 Encounter</button></span>
               </div>
             </mat-card-title>

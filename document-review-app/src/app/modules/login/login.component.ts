@@ -3,7 +3,6 @@ import {AuthService} from '../../service/auth.service';
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import {FhirService} from "../../service/fhir.service";
 import {PatientEprService} from "../../service/patient-epr.service";
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 
 import {KeycloakService} from "../../service/keycloak.service";
 
@@ -32,9 +31,8 @@ export class LoginComponent implements OnInit {
               private router: Router,
               private  fhirService : FhirService,
               private patientMessage : PatientEprService
-              ,private modalService: NgbModal
+
               ,private activatedRoute: ActivatedRoute
-             // ,private _cookieService:CookieService
               ,public keycloak : KeycloakService
     ) {
   }
@@ -93,10 +91,6 @@ export class LoginComponent implements OnInit {
 
   }
 
-  showError(content ) {
-
-    this.modalService.open(content,{ windowClass: 'dark-modal' });
-  }
 
 
 /*

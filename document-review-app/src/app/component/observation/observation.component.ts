@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {LinksService} from "../../service/links.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {ResourceDialogComponent} from "../resource-dialog/resource-dialog.component";
+import {ResourceDialogComponent} from "../../dialog/resource-dialog/resource-dialog.component";
 import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
 import {ObservationDataSource} from "../../data-source/observation-data-source";
 import {FhirService} from "../../service/fhir.service";
@@ -29,7 +29,7 @@ export class ObservationComponent implements OnInit {
   displayedColumns = ['date', 'code','codelink','category', 'status','value', 'resource'];
 
   constructor(private linksService : LinksService,
-              private modalService: NgbModal,
+             // private modalService: NgbModal,
               public dialog: MatDialog,
               public fhirService : FhirService) { }
 
@@ -75,6 +75,7 @@ export class ObservationComponent implements OnInit {
     return this.linksService.isSNOMED(system);
   }
 
+  /*
 
   onClick(content , observation : fhir.Observation) {
     console.log("Clicked - "+ observation.id);
@@ -82,6 +83,7 @@ export class ObservationComponent implements OnInit {
     //this.router.navigate(['./medicalrecord/'+this.getPatientId(this.observation.subject.reference)+'/observation/'+this.observation.code.coding[0].code ] );
     this.modalService.open(content, { windowClass: 'dark-modal' });
   }
+  */
 
   getSNOMEDLink(code : fhir.Coding) {
     if (this.linksService.isSNOMED(code.system)) {

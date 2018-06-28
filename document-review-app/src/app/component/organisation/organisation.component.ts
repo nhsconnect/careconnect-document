@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
-import {ResourceDialogComponent} from "../resource-dialog/resource-dialog.component";
+import {ResourceDialogComponent} from "../../dialog/resource-dialog/resource-dialog.component";
 
 @Component({
   selector: 'app-organisation',
@@ -12,6 +12,8 @@ export class OrganisationComponent implements OnInit {
   @Input() organisation : fhir.Organization;
 
   @Input() detail : boolean;
+
+  @Input() showResourceLink : boolean = true;
 
   constructor(public dialog: MatDialog) { }
 
