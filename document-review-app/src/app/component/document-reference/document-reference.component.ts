@@ -22,6 +22,10 @@ export class DocumentReferenceComponent implements OnInit {
 
   @Input() patientId : string;
 
+  practitioners : fhir.Practitioner[];
+
+  organisations : fhir.Organization[];
+
   dataSource : DocumentReferenceDataSource;
 
   displayedColumns = ['created','type','typelink', 'author','authorLink', 'custodian', 'custodianLink', 'mime', 'status', 'open','resource'];
@@ -92,13 +96,13 @@ export class DocumentReferenceComponent implements OnInit {
 
   showCustodian(document) {
 
-    let organisations : fhir.Organization[];
+    this.organisations = [];
 
     this.bundleService.getResource(document.custodian.reference).subscribe( (organisation) => {
 
       if (organisation != undefined && organisation.resourceType === "Organization") {
 
-        organisations.push(<fhir.Organization> organisation);
+        this.organisations.push(<fhir.Organization> organisation);
 
         const dialogConfig = new MatDialogConfig();
 
@@ -106,7 +110,7 @@ export class DocumentReferenceComponent implements OnInit {
         dialogConfig.autoFocus = true;
         dialogConfig.data = {
           id: 1,
-          organisations : organisations
+          organisations : this.organisations
         };
         let resourceDialog : MatDialogRef<OrganisationDialogComponent> = this.dialog.open( OrganisationDialogComponent, dialogConfig);
 
@@ -117,12 +121,12 @@ export class DocumentReferenceComponent implements OnInit {
 
   showAuthors(document : fhir.DocumentReference) {
 
-    let practitioners : fhir.Practitioner[];
+    this.practitioners = [];
 
     for (let practitionerReference of document.author) {
-      let practitioner = this.bundleService.getResource(practitionerReference.reference).subscribe((practitioner) => {
+      this.bundleService.getResource(practitionerReference.reference).subscribe((practitioner) => {
           if (practitioner != undefined && practitioner.resourceType === "Practitioner") {
-            practitioners.push(<fhir.Practitioner> practitioner);
+            this.practitioners.push(<fhir.Practitioner> practitioner);
           }
         }
       );
