@@ -69,22 +69,24 @@ export class MedicationStatementComponent implements OnInit {
 
       if (medicationStatement.medicationReference != null) {
         console.log("medicationReference - " + medicationStatement.medicationReference.reference);
-        let medtemp = this.bundleService.getResource(medicationStatement.medicationReference.reference);
-        if (medtemp != undefined && medtemp.resourceType === "Medication") {
-          console.log('meds list ' + medtemp.id);
-          this.selectedMeds.push(<fhir.Medication> medtemp);
+        this.bundleService.getResource(medicationStatement.medicationReference.reference).subscribe(
+          (medtemp) => {
+            if (medtemp != undefined && medtemp.resourceType === "Medication") {
+              console.log('meds list ' + medtemp.id);
+              this.selectedMeds.push(<fhir.Medication> medtemp);
 
-          const dialogConfig = new MatDialogConfig();
+              const dialogConfig = new MatDialogConfig();
 
-          dialogConfig.disableClose = true;
-          dialogConfig.autoFocus = true;
-          dialogConfig.data = {
-            id: 1,
-            medications: this.selectedMeds
-          };
-          let resourceDialog: MatDialogRef<MedicationDialogComponent> = this.dialog.open(MedicationDialogComponent, dialogConfig);
-        }
-
+              dialogConfig.disableClose = true;
+              dialogConfig.autoFocus = true;
+              dialogConfig.data = {
+                id: 1,
+                medications: this.selectedMeds
+              };
+              let resourceDialog: MatDialogRef<MedicationDialogComponent> = this.dialog.open(MedicationDialogComponent, dialogConfig);
+            }
+          }
+        )
       }
     } else {
       let reference = medicationStatement.medicationReference.reference;

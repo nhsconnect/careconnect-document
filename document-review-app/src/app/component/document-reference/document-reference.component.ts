@@ -2,11 +2,12 @@ import {Component, Input, OnInit, ViewContainerRef} from '@angular/core';
 import {Router} from "@angular/router";
 import {FhirService} from "../../service/fhir.service";
 import {IAlertConfig, TdDialogService} from "@covalent/core";
-import {ConditionDataSource} from "../../data-source/condition-data-source";
 import {DocumentReferenceDataSource} from "../../data-source/document-reference-data-source";
 import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
 import {ResourceDialogComponent} from "../../dialog/resource-dialog/resource-dialog.component";
 import {LinksService} from "../../service/links.service";
+import {BundleService} from "../../service/bundle.service";
+import {OrganisationDialogComponent} from "../../dialog/organisation-dialog/organisation-dialog.component";
 
 @Component({
   selector: 'app-document-reference',
@@ -23,14 +24,15 @@ export class DocumentReferenceComponent implements OnInit {
 
   dataSource : DocumentReferenceDataSource;
 
-  displayedColumns = ['created','type','typelink', 'author', 'custodian', 'mime', 'status', 'open','resource'];
+  displayedColumns = ['created','type','typelink', 'author','authorLink', 'custodian', 'custodianLink', 'mime', 'status', 'open','resource'];
 
   constructor(private router: Router, private FhirService : FhirService,
               private _dialogService: TdDialogService,
               private _viewContainerRef: ViewContainerRef,
               public fhirService : FhirService,
               private linksService : LinksService,
-              public dialog: MatDialog) { }
+              public dialog: MatDialog,
+              public bundleService : BundleService) { }
 
   ngOnInit() {
     if (this.patientId != undefined) {
@@ -85,6 +87,45 @@ export class DocumentReferenceComponent implements OnInit {
       alertConfig.closeButton = 'Close'; //OPTIONAL, defaults to 'CLOSE'
       alertConfig.width = '400px'; //OPTIONAL, defaults to 400px
       this._dialogService.openAlert(alertConfig);
+    }
+  }
+
+  showCustodian(document) {
+
+    let organisations : fhir.Organization[];
+
+    this.bundleService.getResource(document.custodian.reference).subscribe( (organisation) => {
+
+      if (organisation != undefined && organisation.resourceType === "Organization") {
+
+        organisations.push(<fhir.Organization> organisation);
+
+        const dialogConfig = new MatDialogConfig();
+
+        dialogConfig.disableClose = true;
+        dialogConfig.autoFocus = true;
+        dialogConfig.data = {
+          id: 1,
+          organisations : organisations
+        };
+        let resourceDialog : MatDialogRef<OrganisationDialogComponent> = this.dialog.open( OrganisationDialogComponent, dialogConfig);
+
+      }
+    });
+
+  }
+
+  showAuthors(document : fhir.DocumentReference) {
+
+    let practitioners : fhir.Practitioner[];
+
+    for (let practitionerReference of document.author) {
+      let practitioner = this.bundleService.getResource(practitionerReference.reference).subscribe((practitioner) => {
+          if (practitioner != undefined && practitioner.resourceType === "Practitioner") {
+            practitioners.push(<fhir.Practitioner> practitioner);
+          }
+        }
+      );
     }
   }
 

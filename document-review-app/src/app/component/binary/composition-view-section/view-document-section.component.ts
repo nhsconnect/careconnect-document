@@ -80,107 +80,110 @@ export class ViewDocumentSectionComponent implements OnInit {
 
   getReferencedItem(reference : string)  {
     //console.log("In getReferenced and medications count = "+this.medications.length);
-    let resource = this.bundleService.getResource(reference);
-    if (resource != undefined) {
+    let resource = this.bundleService.getResource(reference).subscribe(
+      (resource) => {
+      if (resource != undefined) {
 
-        switch(resource.resourceType) {
-          case "AllergyIntolerance" :
-            let allergyIntolerance: fhir.AllergyIntolerance = <fhir.AllergyIntolerance> resource;
-            this.allergies.push(allergyIntolerance);
-            break;
-          case "Condition" :
-            let condition: fhir.Condition = <fhir.Condition> resource;
-            this.conditions.push(condition);
+          switch(resource.resourceType) {
+            case "AllergyIntolerance" :
+              let allergyIntolerance: fhir.AllergyIntolerance = <fhir.AllergyIntolerance> resource;
+              this.allergies.push(allergyIntolerance);
+              break;
+            case "Condition" :
+              let condition: fhir.Condition = <fhir.Condition> resource;
+              this.conditions.push(condition);
 
-            break;
-          case "Encounter" :
-            let encounter: fhir.Encounter = <fhir.Encounter> resource;
-            this.encounters.push(encounter);
-            break;
-          case "List" :
-            let list: fhir.List = <fhir.List> resource;
-            if (list.entry != undefined) {
-              if (list.code != undefined && list.code.coding.length > 0) {
-                this.entries.push({
-                  "resource": "List"
-                  , "code" : list.code.coding[0].code
-                  , "display" : "Entries "+list.entry.length
-                });
-              } else {
-                this.entries.push({
-                  "resource": "List"
-                  , "display" : "Entries "+list.entry.length
-                });
-              }
-
-              for (let entry of list.entry) {
-
-                if (entry.item != undefined && entry.item.reference != undefined) {
-                 // console.log(entry.item.reference);
-                  this.getReferencedItem(entry.item.reference);
-                }
-                else {
+              break;
+            case "Encounter" :
+              let encounter: fhir.Encounter = <fhir.Encounter> resource;
+              this.encounters.push(encounter);
+              break;
+            case "List" :
+              let list: fhir.List = <fhir.List> resource;
+              if (list.entry != undefined) {
+                if (list.code != undefined && list.code.coding.length > 0) {
                   this.entries.push({
-                    "resource": "Error"
-                    , "display" : "Missing Reference"
+                    "resource": "List"
+                    , "code" : list.code.coding[0].code
+                    , "display" : "Entries "+list.entry.length
+                  });
+                } else {
+                  this.entries.push({
+                    "resource": "List"
+                    , "display" : "Entries "+list.entry.length
                   });
                 }
+
+                for (let entry of list.entry) {
+
+                  if (entry.item != undefined && entry.item.reference != undefined) {
+                   // console.log(entry.item.reference);
+                    this.getReferencedItem(entry.item.reference);
+                  }
+                  else {
+                    this.entries.push({
+                      "resource": "Error"
+                      , "display" : "Missing Reference"
+                    });
+                  }
+                }
               }
-            }
-            break;
-          case "Medication" :
-            let medication :fhir.Medication = <fhir.Medication> resource;
-            //medication.id = resource.fullUrl;
+              break;
+            case "Medication" :
+              let medication :fhir.Medication = <fhir.Medication> resource;
+              //medication.id = resource.fullUrl;
 
-              this.medications.push(medication);
+                this.medications.push(medication);
 
-            break;
-          case "MedicationRequest" :
-            let medicationRequest :fhir.MedicationRequest = <fhir.MedicationRequest> resource;
-            this.prescriptions.push(medicationRequest);
-            if (medicationRequest.medicationReference != undefined) {
-             this.getReferencedItem(medicationRequest.medicationReference.reference);
-            }
+              break;
+            case "MedicationRequest" :
+              let medicationRequest :fhir.MedicationRequest = <fhir.MedicationRequest> resource;
+              this.prescriptions.push(medicationRequest);
+              if (medicationRequest.medicationReference != undefined) {
+               this.getReferencedItem(medicationRequest.medicationReference.reference);
+              }
 
-            break;
-          case "MedicationStatement" :
-            let medicationStatement :fhir.MedicationStatement = <fhir.MedicationStatement> resource;
-            this.medicationStatements.push(medicationStatement);
-            if (medicationStatement.medicationReference != undefined) {
-              this.getReferencedItem(medicationStatement.medicationReference.reference);
-            }
-            break;
-          case "Observation" :
-            let observation :fhir.Observation = <fhir.Observation> resource;
-            this.observations.push(observation);
-            break;
-          case "Procedure" :
-            let procedure :fhir.Procedure = <fhir.Procedure> resource;
-            this.procedures.push(procedure)
-            break;
-          case "Patient" :
-            let patient :fhir.Patient = <fhir.Patient> resource;
-            this.patients.push(patient);
-            break;
-          case "Practitioner":
-            let practitioner : fhir.Practitioner = <fhir.Practitioner> resource;
-            this.practitioners.push(practitioner);
-            break;
-          case "Organization":
-            let organization : fhir.Organization = <fhir.Organization> resource;
-            this.organisations.push(organization);
-            break;
-          case "Location":
-            let location : fhir.Location = <fhir.Location> resource;
-            console.log('Pushed Location '+ resource);
-            this.locations.push(location);
-            break;
-          default : this.entries.push({
-            "resource": resource.resourceType
+              break;
+            case "MedicationStatement" :
+              let medicationStatement :fhir.MedicationStatement = <fhir.MedicationStatement> resource;
+              this.medicationStatements.push(medicationStatement);
+              if (medicationStatement.medicationReference != undefined) {
+                this.getReferencedItem(medicationStatement.medicationReference.reference);
+              }
+              break;
+            case "Observation" :
+              let observation :fhir.Observation = <fhir.Observation> resource;
+              this.observations.push(observation);
+              break;
+            case "Procedure" :
+              let procedure :fhir.Procedure = <fhir.Procedure> resource;
+              this.procedures.push(procedure)
+              break;
+            case "Patient" :
+              let patient :fhir.Patient = <fhir.Patient> resource;
+              this.patients.push(patient);
+              break;
+            case "Practitioner":
+              let practitioner : fhir.Practitioner = <fhir.Practitioner> resource;
+              this.practitioners.push(practitioner);
+              break;
+            case "Organization":
+              let organization : fhir.Organization = <fhir.Organization> resource;
+              this.organisations.push(organization);
+              break;
+            case "Location":
+              let location : fhir.Location = <fhir.Location> resource;
+              console.log('Pushed Location '+ resource);
+              this.locations.push(location);
+              break;
+            default : this.entries.push({
+              "resource": resource.resourceType
 
-          });
+            });
+          }
         }
       }
+    );
 
 
   }

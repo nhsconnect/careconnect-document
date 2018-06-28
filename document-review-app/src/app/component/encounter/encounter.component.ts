@@ -68,14 +68,18 @@ export class EncounterComponent implements OnInit {
     this.locations = [];
     for (let reference of encounter.location) {
       console.log(reference.location.reference);
-      let resource : fhir.Resource = this.bundleService.getResource(reference.location.reference);
-      if (resource != undefined && resource.resourceType === "Location") {
-        console.log("Location "+reference.location.reference);
-        this.locations.push(<fhir.Location> resource);
-      } else {
+      this.bundleService.getResource(reference.location.reference).subscribe(
+        (resource) => {
+
+          if (resource != undefined && resource.resourceType === "Location") {
+            console.log("Location " + reference.location.reference);
+            this.locations.push(<fhir.Location> resource);
+          }
+        }
+      );
 
       }
-    }
+
       const dialogConfig = new MatDialogConfig();
 
       dialogConfig.disableClose = true;
@@ -88,26 +92,26 @@ export class EncounterComponent implements OnInit {
 
   }
 
-  showOrganisation(reference) {
+  showOrganisation(encounter) {
     const dialogConfig = new MatDialogConfig();
 
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
     dialogConfig.data = {
       id: 1,
-      organisations : reference
+      organisations : encounter
     };
     let resourceDialog : MatDialogRef<OrganisationDialogComponent> = this.dialog.open( OrganisationDialogComponent, dialogConfig);
   }
 
-  showPractitioner(reference) {
+  showPractitioner(encounter) {
     const dialogConfig = new MatDialogConfig();
 
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
     dialogConfig.data = {
       id: 1,
-      practitioners: reference
+      practitioners: encounter
     };
     let resourceDialog : MatDialogRef<PractitionerDialogComponent> = this.dialog.open( PractitionerDialogComponent, dialogConfig);
   }

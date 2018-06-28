@@ -333,6 +333,12 @@ export class FhirService {
 
   }
 
+  getResource(reference : string ) : Observable<fhir.Resource> {
+    const url = this.getEPRUrl()  + '/' + reference;
+
+    return this.http.get<fhir.Resource>(url,{ 'headers' : this.getEPRHeaders()});
+  }
+
   getEPRAllergies(patientId: string): Observable<fhir.Bundle> {
 
     const url = this.getEPRUrl()  + `/AllergyIntolerance?patient=${patientId}`;
