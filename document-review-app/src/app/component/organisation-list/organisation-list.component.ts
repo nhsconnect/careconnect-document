@@ -18,15 +18,5 @@ export class OrganisationListComponent implements OnInit {
   ngOnInit() {
   }
 
-  select(resource) {
-    const dialogConfig = new MatDialogConfig();
 
-    dialogConfig.disableClose = true;
-    dialogConfig.autoFocus = true;
-    dialogConfig.data = {
-      id: 1,
-      resource: resource
-    };
-    let resourceDialog : MatDialogRef<ResourceDialogComponent> = this.dialog.open( ResourceDialogComponent, dialogConfig);
-  }
 }

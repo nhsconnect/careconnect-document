@@ -2,8 +2,8 @@ import {Component, Input, OnInit} from '@angular/core';
 
 import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 import {isNumber} from "util";
-import {LinksService} from "../../service/links.service";
-import {PatientEprService} from "../../service/patient-epr.service";
+import {LinksService} from "../../../service/links.service";
+import {PatientEprService} from "../../../service/patient-epr.service";
 import {MatDialog} from "@angular/material";
 
 @Component({

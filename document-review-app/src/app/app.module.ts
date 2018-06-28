@@ -9,17 +9,17 @@ import { NavComponent } from './modules/nav/nav.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { FileUploadModule } from "ng2-file-upload";
-import { ViewDocumentComponent } from './document-view/composition-view/view-document.component';
+import { ViewDocumentComponent } from './component/binary-view/composition-view/view-document.component';
 import { FhirService } from "./service/fhir.service";
 import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
-import { ViewDocumentSectionComponent } from './document-view/composition-view-section/view-document-section.component';
+import { ViewDocumentSectionComponent } from './component/binary-view/composition-view-section/view-document-section.component';
 import { PatientSearchComponent } from './component/patient-search/patient-search.component';
 
 import { FindDocumentComponent } from './modules/composition-find/find-document.component';
 import { CompositionComponent } from './component/composition/composition.component';
 import { PatientFindComponent } from './modules/patient-find/patient-find.component';
-import { PatientEprPatientRecordComponent } from './epr-modules/patient-epr-record/patient-epr-patient-record.component';
-import { EprEncounterComponent } from './epr-modules/epr-encounter/epr-encounter.component';
+import { PatientEprPatientRecordComponent } from './modules/epr-record/patient-epr-patient-record.component';
+
 import { MedicationStatementComponent } from './component/medication-statement/medication-statement.component';
 import { ConditionComponent } from './component/condition/condition.component';
 import { ProcedureComponent } from './component/procedure/procedure.component';
@@ -28,13 +28,11 @@ import { AllergyIntolleranceComponent } from './component/allergy-intollerance/a
 import { EncounterComponent } from './component/encounter/encounter.component';
 import { MedicationRequestComponent } from './component/medication-request/medication-request.component';
 import { MedicationComponent } from './component/medication/medication.component';
-import { EprPrescriptionComponent } from './epr-modules/epr-prescription/epr-prescription.component';
-import { EprProcedureComponent } from './epr-modules/epr-procedure/epr-procedure.component';
+
 import { TestLoadComponent } from './modules/test-load/test-load.component';
-import { EprConditionComponent } from './epr-modules/epr-condition/epr-condition.component';
-import { EprAllergyIntolleranceComponent } from './epr-modules/epr-allergy-intollerance/epr-allergy-intollerance.component';
+
+import { DocumentReferenceCardComponent } from './component/document-reference-card/document-reference-card.component';
 import { DocumentReferenceComponent } from './component/document-reference/document-reference.component';
-import { EprDocumentReferenceComponent } from './epr-modules/epr-document-reference/epr-document-reference.component';
 import {AuthService} from "./service/auth.service";
 import {LoginComponent} from "./modules/login/login.component";
 
@@ -44,10 +42,10 @@ import {PatientEprService} from "./service/patient-epr.service";
 import {ObservationDetailComponent} from "./component/observation-detail/observation-detail.component";
 import {Ng2GoogleChartsModule} from "ng2-google-charts";
 import {CareGoogleChartComponent} from "./component/care-google-chart/care-google-chart.component";
-import { EprImmunisationComponent } from './epr-modules/epr-immunisation/epr-immunisation.component';
+
 import { ImmunisationComponent } from './component/immunisation/immunisation.component';
 
-import { PatientTimelineComponent } from './epr-modules/patient-timeline/patient-timeline.component';
+import { PatientTimelineComponent } from './component/patient-timeline/patient-timeline.component';
 import { EncounterDetailComponent } from './component/encounter-detail/encounter-detail.component';
 import { PractitionerSearchComponent } from './component/practitioner-search/practitioner-search.component';
 import { OrganisationSearchComponent } from './component/organisation-search/organisation-search.component';
@@ -66,13 +64,13 @@ import {TokenInterceptor} from "./service/token-interceptor";
 import {Oauth2Service} from "./service/oauth2.service";
 import { ResourceDialogComponent } from './component/resource-dialog/resource-dialog.component';
 import { TreeModule } from 'angular-tree-component';
-import { EprPatientComponent } from './epr-modules/epr-patient/epr-patient.component';
+
 import { PatientListComponent } from './component/patient-list/patient-list.component';
 import { OrganisationListComponent } from './component/organisation-list/organisation-list.component';
 import { PractitionerListComponent } from './component/practitioner-list/practitioner-list.component';
-import { PdfViewerComponent } from './document-view/pdf-viewer/pdf-viewer.component';
+import { PdfViewerComponent } from './component/binary-view/pdf-viewer/pdf-viewer.component';
 import {PdfViewerModule} from "ng2-pdf-viewer";
-import { ImgViewerComponent } from './document-view/img-viewer/img-viewer.component';
+import { ImgViewerComponent } from './component/binary-view/img-viewer/img-viewer.component';
 import {ImageViewerModule} from '@hallysonh/ngx-imageviewer';
 import {
   DateAdapter, MAT_DATE_FORMATS,
@@ -113,7 +111,7 @@ import {CookieModule, CookieService} from "ngx-cookie";
     FindDocumentComponent,
     CompositionComponent,
     PatientEprPatientRecordComponent,
-    EprEncounterComponent,
+
     MedicationStatementComponent,
     ConditionComponent,
     ProcedureComponent,
@@ -123,18 +121,16 @@ import {CookieModule, CookieService} from "ngx-cookie";
 
     MedicationRequestComponent,
     MedicationComponent,
-    EprPrescriptionComponent,
-    EprProcedureComponent,
+
     TestLoadComponent,
-    EprConditionComponent,
-    EprAllergyIntolleranceComponent,
+
+    DocumentReferenceCardComponent,
     DocumentReferenceComponent,
-    EprDocumentReferenceComponent,
     LoginComponent,
     LogoutComponent,
     CareGoogleChartComponent,
     ObservationDetailComponent,
-    EprImmunisationComponent,
+
     ImmunisationComponent,
     PatientTimelineComponent,
     EncounterDetailComponent,
@@ -145,7 +141,7 @@ import {CookieModule, CookieService} from "ngx-cookie";
     TestPipe,
     CallbackComponent,
     ResourceDialogComponent,
-    EprPatientComponent,
+
     PatientListComponent,
     PatientFindComponent,
     PatientComponent,

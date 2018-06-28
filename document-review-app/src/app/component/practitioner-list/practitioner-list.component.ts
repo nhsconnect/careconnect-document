@@ -17,7 +17,7 @@ export class PractitionerListComponent implements OnInit {
 
   ngOnInit() {
   }
-
+/*
   select(resource) {
     const dialogConfig = new MatDialogConfig();
 
@@ -29,4 +29,5 @@ export class PractitionerListComponent implements OnInit {
     };
     let resourceDialog : MatDialogRef<ResourceDialogComponent> = this.dialog.open( ResourceDialogComponent, dialogConfig);
   }
+  */
 }

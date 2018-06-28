@@ -1,4 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
+import {ResourceDialogComponent} from "../resource-dialog/resource-dialog.component";
 
 @Component({
   selector: 'app-practitioner',
@@ -11,7 +13,7 @@ export class PractitionerComponent implements OnInit {
 
   @Input() detail : boolean;
 
-  constructor() { }
+  constructor(public dialog: MatDialog) { }
 
   ngOnInit() {
   }
@@ -46,6 +48,17 @@ export class PractitionerComponent implements OnInit {
     if (this.practitioner.name[0].prefix != undefined && this.practitioner.name[0].prefix.length>0) name += " (" + this.practitioner.name[0].prefix[0] +")" ;
     return name;
 
+  }
+  select(resource) {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.data = {
+      id: 1,
+      resource: resource
+    };
+    let resourceDialog : MatDialogRef<ResourceDialogComponent> = this.dialog.open( ResourceDialogComponent, dialogConfig);
   }
 
 }

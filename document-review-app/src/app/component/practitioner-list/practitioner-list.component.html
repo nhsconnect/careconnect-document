@@ -1,8 +1,8 @@
 <table class="table" >
   <thead>
   <tr>
-    <th scope="col" width="95%"></th>
-    <th scope="col" width="5%"></th>
+    <th scope="col" width="100%"></th>
+    <!--<th scope="col" width="5%"></th> -->
   </tr>
   </thead>
   <tbody>
@@ -10,9 +10,13 @@
     <td>
     <app-practitioner [practitioner]="practitioner" [detail]="true" ></app-practitioner>
     </td>
-    <td>
-      <button mat-icon-button color="accent" style="background-color: lightgray" (click)="select(practitioner)"><mat-icon>code</mat-icon></button>
-    </td>
+   <!-- <td>
+      <mat-card>
+        <mat-card-content>
+      <button mat-icon-button color="accent"  ngbTooltip="View FHIR resource" (click)="select(practitioner)"><mat-icon>code</mat-icon></button>
+        </mat-card-content>
+      </mat-card>
+    </td> -->
   </tr>
   </tbody>
 </table>

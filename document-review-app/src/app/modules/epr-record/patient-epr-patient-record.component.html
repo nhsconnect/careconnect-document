@@ -1,7 +1,7 @@
 <mat-card  *ngIf="tabid== 'documents' ">
   <mat-card-title>Documents</mat-card-title>
   <mat-card-content>
-    <app-epr-document-reference [documents]="documents" [documentsTotal]="documentsTotal"></app-epr-document-reference>
+    <app-document-reference [patientId]="patientId" [documents]="documents" [documentsTotal]="documentsTotal"></app-document-reference>
   </mat-card-content>
 </mat-card>
 

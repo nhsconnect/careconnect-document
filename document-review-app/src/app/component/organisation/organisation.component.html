@@ -1,6 +1,6 @@
 <mat-card>
 
-  <mat-grid-list cols="4" rowHeight="2em">
+  <mat-grid-list cols="5" rowHeight="2em">
     <mat-grid-tile><div  class="d-flex w-100 justify-content-left">
       <b>{{ organisation.name }}</b>
     </div>
@@ -16,6 +16,9 @@
             <i>{{ getIdentifier(identifier) }}</i>
             <b> {{identifier.value}}</b>
           </span>
+    </mat-grid-tile>
+    <mat-grid-tile width="5%">
+      <button mat-icon-button color="accent"  ngbTooltip="View FHIR resource" (click)="select(organisation)"><mat-icon>code</mat-icon></button>
     </mat-grid-tile>
   </mat-grid-list>
 

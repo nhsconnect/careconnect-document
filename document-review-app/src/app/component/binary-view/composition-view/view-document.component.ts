@@ -1,10 +1,10 @@
 import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
-import {FhirService} from "../../service/fhir.service";
+import {FhirService} from "../../../service/fhir.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {PatientEprService} from "../../service/patient-epr.service";
+import {PatientEprService} from "../../../service/patient-epr.service";
 import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
-import {ResourceDialogComponent} from "../../component/resource-dialog/resource-dialog.component";
+import {ResourceDialogComponent} from "../../resource-dialog/resource-dialog.component";
 
 @Component({
   selector: 'app-view-document',

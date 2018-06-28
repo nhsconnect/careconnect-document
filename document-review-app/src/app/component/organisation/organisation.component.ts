@@ -1,4 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
+import {ResourceDialogComponent} from "../resource-dialog/resource-dialog.component";
 
 @Component({
   selector: 'app-organisation',
@@ -11,7 +13,7 @@ export class OrganisationComponent implements OnInit {
 
   @Input() detail : boolean;
 
-  constructor() { }
+  constructor(public dialog: MatDialog) { }
 
   ngOnInit() {
   }
@@ -23,6 +25,17 @@ export class OrganisationComponent implements OnInit {
       name = 'ODS Code';
     }
     return name;
+  }
+  select(resource) {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.data = {
+      id: 1,
+      resource: resource
+    };
+    let resourceDialog : MatDialogRef<ResourceDialogComponent> = this.dialog.open( ResourceDialogComponent, dialogConfig);
   }
 
 }
