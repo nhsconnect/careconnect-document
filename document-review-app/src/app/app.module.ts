@@ -99,6 +99,8 @@ import {IssueDialogComponent} from "./dialog/issue-dialog/issue-dialog.component
 import {LocationDialogComponent} from "./dialog/location-dialog/location-dialog.component";
 import {PractitionerDialogComponent} from "./dialog/practitioner-dialog/practitioner-dialog.component";
 import {OrganisationDialogComponent} from "./dialog/organisation-dialog/organisation-dialog.component";
+import {LocationComponent} from "./component/location/location.component";
+import {BundleService} from "./service/bundle.service";
 
 
 @NgModule({
@@ -152,7 +154,8 @@ import {OrganisationDialogComponent} from "./dialog/organisation-dialog/organisa
     IssueDialogComponent,
     LocationDialogComponent,
     PractitionerDialogComponent,
-    OrganisationDialogComponent
+    OrganisationDialogComponent,
+    LocationComponent
 
   ],
   entryComponents: [
@@ -224,6 +227,7 @@ import {OrganisationDialogComponent} from "./dialog/organisation-dialog/organisa
     ,CookieService
     ,KeycloakService
     ,Oauth2Service
+    ,BundleService
     ,MatIconRegistry,
     {
       provide: ErrorHandler,

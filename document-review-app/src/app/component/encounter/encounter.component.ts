@@ -1,14 +1,14 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {LinksService} from "../../service/links.service";
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {ResourceDialogComponent} from "../../dialog/resource-dialog/resource-dialog.component";
 import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
-import {ConditionDataSource} from "../../data-source/condition-data-source";
+
 import {FhirService} from "../../service/fhir.service";
 import {EncounterDataSource} from "../../data-source/encounter-data-source";
 import {LocationDialogComponent} from "../../dialog/location-dialog/location-dialog.component";
 import {OrganisationDialogComponent} from "../../dialog/organisation-dialog/organisation-dialog.component";
 import {PractitionerDialogComponent} from "../../dialog/practitioner-dialog/practitioner-dialog.component";
+import {BundleService} from "../../service/bundle.service";
 
 @Component({
   selector: 'app-encounter',
@@ -18,6 +18,8 @@ import {PractitionerDialogComponent} from "../../dialog/practitioner-dialog/prac
 export class EncounterComponent implements OnInit {
 
   @Input() encounters : fhir.Encounter[];
+
+  locations : fhir.Location[];
 
   @Input() showDetail : boolean = false;
 
@@ -33,10 +35,10 @@ export class EncounterComponent implements OnInit {
 
   displayedColumns = ['start','end', 'type','typelink','provider','providerLink','participant','participantLink', 'locationLink','resource'];
 
-  constructor(private linksService : LinksService
-   // , private modalService: NgbModal
-    , public dialog: MatDialog
-    , public fhirService : FhirService) { }
+  constructor(private linksService : LinksService,
+    public bundleService : BundleService,
+    public dialog: MatDialog,
+    public fhirService : FhirService) { }
 
   ngOnInit() {
     if (this.patientId != undefined) {
@@ -60,16 +62,30 @@ export class EncounterComponent implements OnInit {
     }
   }
 
-  showLocation(reference) {
-    const dialogConfig = new MatDialogConfig();
+  showLocation(encounter) {
 
-    dialogConfig.disableClose = true;
-    dialogConfig.autoFocus = true;
-    dialogConfig.data = {
-      id: 1,
-      locations: reference
-    };
-    let resourceDialog : MatDialogRef<LocationDialogComponent> = this.dialog.open( LocationDialogComponent, dialogConfig);
+
+    this.locations = [];
+    for (let reference of encounter.location) {
+      console.log(reference.location.reference);
+      let resource : fhir.Resource = this.bundleService.getResource(reference.location.reference);
+      if (resource != undefined && resource.resourceType === "Location") {
+        console.log("Location "+reference.location.reference);
+        this.locations.push(<fhir.Location> resource);
+      } else {
+
+      }
+    }
+      const dialogConfig = new MatDialogConfig();
+
+      dialogConfig.disableClose = true;
+      dialogConfig.autoFocus = true;
+      dialogConfig.data = {
+        id: 1,
+        locations: this.locations
+      };
+      let resourceDialog: MatDialogRef<LocationDialogComponent> = this.dialog.open(LocationDialogComponent, dialogConfig);
+
   }
 
   showOrganisation(reference) {

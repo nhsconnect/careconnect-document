@@ -6,6 +6,7 @@ import {PatientEprService} from "../../../service/patient-epr.service";
 import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
 import {ResourceDialogComponent} from "../../../dialog/resource-dialog/resource-dialog.component";
 import {IAlertConfig, TdDialogService} from "@covalent/core";
+import {BundleService} from "../../../service/bundle.service";
 
 @Component({
   selector: 'app-view-document',
@@ -22,7 +23,7 @@ export class ViewDocumentComponent implements OnInit {
             private fhirService : FhirService,
             private modalService: NgbModal,
             public dialog: MatDialog,
-  //,private  patientEprService : PatientEprService,
+            public bundleService : BundleService,
               private _dialogService: TdDialogService,
               private _viewContainerRef: ViewContainerRef) { }
 
@@ -59,9 +60,8 @@ export class ViewDocumentComponent implements OnInit {
       let binary : fhir.Binary = document;
       //console.log(atob(binary.content));
       this.document = JSON.parse(atob(binary.content));
+      this.bundleService.setBundle(this.document);
     }, err=>{
-
-
 
         this.showWarnDlg("Unable to load document");
 

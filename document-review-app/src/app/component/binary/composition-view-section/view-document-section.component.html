@@ -4,13 +4,16 @@
       {{section.title}}
 
 
-
+    <div>
       <button mat-raised-button *ngIf="section.entry != undefined" placement="top" (click)="open()">
         <mat-icon *ngIf="!showStructured">arrow_drop_down</mat-icon>
         <mat-icon *ngIf="showStructured">arrow_drop_up</mat-icon>
         Structured Content</button>
       <button mat-button *ngIf="section.entry == undefined" disabled="true"  placement="top">
         No Structured Content</button>
+      <button mat-icon-button color="accent"  ngbTooltip="View Section" (click)="select(section)"><mat-icon>code</mat-icon></button>
+
+    </div>
     </div>
   </mat-card-title>
   <mat-card-content >
@@ -56,7 +59,7 @@
                   </span>
                   <span *ngIf="medicationStatements.length>0">
                       <h4>Medication Statement</h4>
-                      <app-medication-statement [medicationStatements]="medicationStatements" [meds]="medications" (medicationStatement)="onResoureSelected($event)"></app-medication-statement>
+                      <app-medication-statement [medicationStatements]="medicationStatements" (medicationStatement)="onResoureSelected($event)"></app-medication-statement>
                   </span>
                   <span *ngIf="conditions.length>0">
                       <h4>Conditions</h4>
@@ -72,7 +75,7 @@
                   </span>
                   <span *ngIf="prescriptions.length>0">
                       <h4>Prescriptions</h4>
-                      <app-medication-request [medicationRequests]="prescriptions" [meds]="medications" (medicationRequest)="onResoureSelected($event)"></app-medication-request>
+                      <app-medication-request [medicationRequests]="prescriptions" (medicationRequest)="onResoureSelected($event)"></app-medication-request>
                   </span>
                 </div>
                 <div *ngIf="section.entry == undefined">

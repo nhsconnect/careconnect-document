@@ -4,9 +4,9 @@ import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {FhirService} from "../../service/fhir.service";
 import {ResourceDialogComponent} from "../../dialog/resource-dialog/resource-dialog.component";
 import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
-import {ProcedureDataSource} from "../../data-source/procedure-data-source";
 import {MedicationStatementDataSource} from "../../data-source/medication-statement-data-source";
 import {MedicationDialogComponent} from "../../dialog/medication-dialog/medication-dialog.component";
+import {BundleService} from "../../service/bundle.service";
 
 @Component({
   selector: 'app-medication-statement',
@@ -17,7 +17,7 @@ export class MedicationStatementComponent implements OnInit {
 
   @Input() medicationStatements : fhir.MedicationStatement[];
 
-  @Input() meds : fhir.Medication[] = [];
+  meds : fhir.Medication[] = [];
 
   @Output() medicationStatement = new EventEmitter<any>();
 
@@ -30,9 +30,10 @@ export class MedicationStatementComponent implements OnInit {
 
   selectedMeds : fhir.Medication[];
 
-  constructor(private linksService : LinksService
-      ,private modalService: NgbModal
-      ,private fhirService : FhirService,
+  constructor(private linksService : LinksService,
+              private modalService: NgbModal,
+              private fhirService : FhirService,
+              private bundleService : BundleService,
               public dialog: MatDialog) { }
 
   ngOnInit() {
@@ -64,25 +65,26 @@ export class MedicationStatementComponent implements OnInit {
     console.log("Clicked - " + medicationStatement.id);
     this.selectedMeds = [];
 
-    if (this.meds.length> 0) {
+    if (this.bundleService.getBundle() != undefined) {
 
       if (medicationStatement.medicationReference != null) {
         console.log("medicationReference - " + medicationStatement.medicationReference.reference);
-        for(let medtemp of this.meds) {
-          console.log('meds list '+medtemp.id)
-          if (medtemp.id == medicationStatement.medicationReference.reference) {
-            this.selectedMeds.push(medtemp);
-          }
-        }
-        const dialogConfig = new MatDialogConfig();
+        let medtemp = this.bundleService.getResource(medicationStatement.medicationReference.reference);
+        if (medtemp != undefined && medtemp.resourceType === "Medication") {
+          console.log('meds list ' + medtemp.id);
+          this.selectedMeds.push(<fhir.Medication> medtemp);
 
-        dialogConfig.disableClose = true;
-        dialogConfig.autoFocus = true;
-        dialogConfig.data = {
-          id: 1,
-          medications: this.selectedMeds
-        };
-        let resourceDialog : MatDialogRef<MedicationDialogComponent> = this.dialog.open( MedicationDialogComponent, dialogConfig);
+          const dialogConfig = new MatDialogConfig();
+
+          dialogConfig.disableClose = true;
+          dialogConfig.autoFocus = true;
+          dialogConfig.data = {
+            id: 1,
+            medications: this.selectedMeds
+          };
+          let resourceDialog: MatDialogRef<MedicationDialogComponent> = this.dialog.open(MedicationDialogComponent, dialogConfig);
+        }
+
       }
     } else {
       let reference = medicationStatement.medicationReference.reference;

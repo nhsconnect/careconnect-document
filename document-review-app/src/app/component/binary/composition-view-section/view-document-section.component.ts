@@ -4,7 +4,9 @@ import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 import {isNumber} from "util";
 import {LinksService} from "../../../service/links.service";
 import {PatientEprService} from "../../../service/patient-epr.service";
-import {MatDialog} from "@angular/material";
+import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
+import {BundleService} from "../../../service/bundle.service";
+import {ResourceDialogComponent} from "../../../dialog/resource-dialog/resource-dialog.component";
 
 @Component({
   selector: 'app-view-document-section',
@@ -14,8 +16,6 @@ import {MatDialog} from "@angular/material";
 export class ViewDocumentSectionComponent implements OnInit {
 
   @Input() section : fhir.CompositionSection;
-
-  @Input() document : fhir.Bundle;
 
 
   // Reference for modal size https://stackoverflow.com/questions/46977398/ng-bootstrap-modal-size
@@ -34,13 +34,15 @@ export class ViewDocumentSectionComponent implements OnInit {
   patients : fhir.Patient[];
   practitioners : fhir.Practitioner[];
   organisations : fhir.Organization[];
+  locations : fhir.Location[];
 
   showStructured : boolean = false;
 
-  constructor(private modalService: NgbModal
-              ,public dialog: MatDialog
-      , private linksService : LinksService
-      ,public patientEPRService : PatientEprService
+  constructor(private modalService: NgbModal,
+              public dialog: MatDialog,
+              private linksService : LinksService,
+              public patientEPRService : PatientEprService,
+              public bundleService : BundleService 
   ) { }
 
   ngOnInit() {
@@ -56,6 +58,7 @@ export class ViewDocumentSectionComponent implements OnInit {
     this.patients=[];
     this.practitioners=[];
     this.organisations=[];
+
     this.getPopover(this.section);
 
   }
@@ -77,25 +80,25 @@ export class ViewDocumentSectionComponent implements OnInit {
 
   getReferencedItem(reference : string)  {
     //console.log("In getReferenced and medications count = "+this.medications.length);
-    for (let resource of this.document.entry) {
-      if (resource.fullUrl === reference || resource.resource.id === reference ) {
+    let resource = this.bundleService.getResource(reference);
+    if (resource != undefined) {
 
-        switch(resource.resource.resourceType) {
+        switch(resource.resourceType) {
           case "AllergyIntolerance" :
-            let allergyIntolerance: fhir.AllergyIntolerance = <fhir.AllergyIntolerance> resource.resource;
+            let allergyIntolerance: fhir.AllergyIntolerance = <fhir.AllergyIntolerance> resource;
             this.allergies.push(allergyIntolerance);
             break;
           case "Condition" :
-            let condition: fhir.Condition = <fhir.Condition> resource.resource;
+            let condition: fhir.Condition = <fhir.Condition> resource;
             this.conditions.push(condition);
 
             break;
           case "Encounter" :
-            let encounter: fhir.Encounter = <fhir.Encounter> resource.resource;
+            let encounter: fhir.Encounter = <fhir.Encounter> resource;
             this.encounters.push(encounter);
             break;
           case "List" :
-            let list: fhir.List = <fhir.List> resource.resource;
+            let list: fhir.List = <fhir.List> resource;
             if (list.entry != undefined) {
               if (list.code != undefined && list.code.coding.length > 0) {
                 this.entries.push({
@@ -126,14 +129,14 @@ export class ViewDocumentSectionComponent implements OnInit {
             }
             break;
           case "Medication" :
-            let medication :fhir.Medication = <fhir.Medication> resource.resource;
-            medication.id = resource.fullUrl;
+            let medication :fhir.Medication = <fhir.Medication> resource;
+            //medication.id = resource.fullUrl;
 
               this.medications.push(medication);
 
             break;
           case "MedicationRequest" :
-            let medicationRequest :fhir.MedicationRequest = <fhir.MedicationRequest> resource.resource;
+            let medicationRequest :fhir.MedicationRequest = <fhir.MedicationRequest> resource;
             this.prescriptions.push(medicationRequest);
             if (medicationRequest.medicationReference != undefined) {
              this.getReferencedItem(medicationRequest.medicationReference.reference);
@@ -141,39 +144,44 @@ export class ViewDocumentSectionComponent implements OnInit {
 
             break;
           case "MedicationStatement" :
-            let medicationStatement :fhir.MedicationStatement = <fhir.MedicationStatement> resource.resource;
+            let medicationStatement :fhir.MedicationStatement = <fhir.MedicationStatement> resource;
             this.medicationStatements.push(medicationStatement);
             if (medicationStatement.medicationReference != undefined) {
               this.getReferencedItem(medicationStatement.medicationReference.reference);
             }
             break;
           case "Observation" :
-            let observation :fhir.Observation = <fhir.Observation> resource.resource;
+            let observation :fhir.Observation = <fhir.Observation> resource;
             this.observations.push(observation);
             break;
           case "Procedure" :
-            let procedure :fhir.Procedure = <fhir.Procedure> resource.resource;
+            let procedure :fhir.Procedure = <fhir.Procedure> resource;
             this.procedures.push(procedure)
             break;
           case "Patient" :
-            let patient :fhir.Patient = <fhir.Patient> resource.resource;
+            let patient :fhir.Patient = <fhir.Patient> resource;
             this.patients.push(patient);
             break;
           case "Practitioner":
-            let practitioner : fhir.Practitioner = <fhir.Practitioner> resource.resource;
+            let practitioner : fhir.Practitioner = <fhir.Practitioner> resource;
             this.practitioners.push(practitioner);
             break;
           case "Organization":
-            let organization : fhir.Organization = <fhir.Organization> resource.resource;
+            let organization : fhir.Organization = <fhir.Organization> resource;
             this.organisations.push(organization);
             break;
+          case "Location":
+            let location : fhir.Location = <fhir.Location> resource;
+            console.log('Pushed Location '+ resource);
+            this.locations.push(location);
+            break;
           default : this.entries.push({
-            "resource": resource.resource.resourceType
+            "resource": resource.resourceType
 
           });
         }
       }
-    }
+
 
   }
 
@@ -194,6 +202,18 @@ export class ViewDocumentSectionComponent implements OnInit {
   onResoureSelected(event ) {
     this.resource = event;
     this.patientEPRService.setResource(event);
+  }
+
+  select(resource) {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.data = {
+      id: 1,
+      resource: resource
+    };
+    let resourceDialog : MatDialogRef<ResourceDialogComponent> = this.dialog.open( ResourceDialogComponent, dialogConfig);
   }
 
 }

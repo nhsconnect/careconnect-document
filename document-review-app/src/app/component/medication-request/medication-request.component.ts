@@ -6,6 +6,7 @@ import {ResourceDialogComponent} from "../../dialog/resource-dialog/resource-dia
 import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
 import {MedicationStatementDataSource} from "../../data-source/medication-statement-data-source";
 import {MedicationRequestDataSource} from "../../data-source/medication-request-data-source";
+import {BundleService} from "../../service/bundle.service";
 
 @Component({
   selector: 'app-medication-request',
@@ -18,7 +19,7 @@ export class MedicationRequestComponent implements OnInit {
 
   @Input() showDetail : boolean = false;
 
-  @Input() meds : fhir.Medication[];
+  meds : fhir.Medication[];
 
   @Output() medicationRequest = new EventEmitter<any>();
 
@@ -29,9 +30,10 @@ export class MedicationRequestComponent implements OnInit {
   displayedColumns = ['medication', 'medicationlink','status','dose','route','routelink','form', 'authored', 'status', 'resource'];
 
 
-  constructor(private linksService : LinksService
-    ,private modalService: NgbModal
-    ,private fhirService : FhirService,
+  constructor(private linksService : LinksService,
+              private modalService: NgbModal,
+              private fhirService : FhirService,
+              private bundleService : BundleService,
               public dialog: MatDialog) { }
 
   ngOnInit() {

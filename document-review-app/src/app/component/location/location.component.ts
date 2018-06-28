@@ -1,31 +1,32 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {LinksService} from "../../service/links.service";
+import {Component, Input, OnInit} from '@angular/core';
+import {LocationDataSource} from "../../data-source/location-data-source";
+import {FhirService} from "../../service/fhir.service";
 import {ResourceDialogComponent} from "../../dialog/resource-dialog/resource-dialog.component";
 import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
-import {MedicationDataSource} from "../../data-source/medication-data-source";
-import {FhirService} from "../../service/fhir.service";
+import {LinksService} from "../../service/links.service";
+
 
 @Component({
-  selector: 'app-medication',
-  templateUrl: './medication.component.html',
-  styleUrls: ['./medication.component.css']
+  selector: 'app-location',
+  templateUrl: './location.component.html',
+  styleUrls: ['./location.component.css']
 })
-export class MedicationComponent implements OnInit {
+export class LocationComponent implements OnInit {
 
-  @Input() medications : fhir.Medication[];
-  constructor(private linksService : LinksService,
-              public dialog: MatDialog,
-              public fhirService : FhirService) { }
+  @Input() locations : fhir.Location[];
 
-  @Output() medication = new EventEmitter<any>();
+  dataSource : LocationDataSource;
 
-  dataSource : MedicationDataSource;
+  displayedColumns = ['location',  'resource'];
 
-  displayedColumns = ['medication', 'medicationlink','medicationlinkDMD', 'resource'];
+  constructor(public fhirService : FhirService,
+              private linksService : LinksService,
+              public dialog: MatDialog) { }
 
   ngOnInit() {
-    this.dataSource = new MedicationDataSource(this.fhirService,  this.medications);
+    this.dataSource = new LocationDataSource(this.fhirService,  this.locations);
   }
+
   getCodeSystem(system : string) : string {
     return this.linksService.getCodeSystem(system);
   }
@@ -51,4 +52,5 @@ export class MedicationComponent implements OnInit {
     };
     let resourceDialog : MatDialogRef<ResourceDialogComponent> = this.dialog.open( ResourceDialogComponent, dialogConfig);
   }
+
 }

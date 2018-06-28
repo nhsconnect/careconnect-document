@@ -76,34 +76,3 @@
   </table>
 
 </div>
-<!--
-<table class="table">
-  <thead>
-  <tr>
-    <th scope="col" width="50%">Medication</th>
-    <th scope="col">Status</th>
-    <th scope="col" width="5%"></th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr *ngFor="let medication of medications">
-    <td>
-
-      <div *ngIf="medication.code !=undefined" >
-        <b *ngIf="medication.code !=undefined">{{medication.code.coding[0].display}}</b>
-        <span *ngIf="isSNOMED(medication.code.coding[0].system)">
-        &nbsp;<a (click)="getSNOMEDLink(medication.code.coding[0])"><span class="fa fa-book" ngbTooltip="{{getCodeSystem(medication.code.coding[0].system)}} {{medication.code.coding[0].code}}"></span></a>
-        &nbsp;<a (click)="getDMDLink(medication.code.coding[0])"><span class="fa fa-bookmark" ngbTooltip="{{getCodeSystem(medication.code.coding[0].system)}} {{medication.code.coding[0].code}}"></span></a>
-          </span>
-      </div>
-    </td>
-    <td>
-      {{medication.status}}
-    </td>
-    <td>
-      <button mat-icon-button color="accent" style="background-color: lightgray" (click)="select(medication)"><mat-icon>code</mat-icon></button>
-    </td>
-  </tr>
-  </tbody>
-</table>
--->

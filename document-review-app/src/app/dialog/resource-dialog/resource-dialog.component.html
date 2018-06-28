@@ -1,4 +1,12 @@
-<h2 mat-dialog-title>Resource Detail <span *ngIf="resource !=undefined">[ {{resource.resourceType}} ]</span></h2>
+<h2 mat-dialog-title>
+   <span *ngIf="resource !=undefined">
+     <span *ngIf="resource.resourceType != undefined">
+      Resource Detail [ {{resource.resourceType}} ]
+     </span>
+     <span *ngIf="resource.resourceType == undefined">
+      Composition.section
+     </span>
+   </span></h2>
 <mat-dialog-content>
 
 <td-json-formatter *ngIf="resource!=undefined" [data]="resource" key="root" [levelsOpen]="4">
