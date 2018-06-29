@@ -1,26 +1,70 @@
-<mat-card>
+<div>
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
-  <mat-grid-list cols="5" rowHeight="2em">
-    <mat-grid-tile><div  class="d-flex w-100 justify-content-left">
-      <b>{{ organisation.name }}</b>
-    </div>
-    </mat-grid-tile>
-    <mat-grid-tile>
+    <!--- Note that these columns can be defined in any order.
+          The actual rendered columns are set as a property on the row definition" -->
 
-    </mat-grid-tile>
-    <mat-grid-tile>
+    <!-- Position Column -->
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef> No. </th>
+      <td mat-cell *matCellDef="let organisation"> {{organisation.id}} </td>
+    </ng-container>
 
-    </mat-grid-tile>
-    <mat-grid-tile>
-          <span *ngFor="let identifier of organisation.identifier">
+
+
+    <ng-container matColumnDef="organisation">
+      <th mat-header-cell *matHeaderCellDef > Organisation </th>
+      <td mat-cell *matCellDef="let organisation">
+
+        <b >{{organisation.name}}</b>
+
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="identifier">
+      <th mat-header-cell *matHeaderCellDef > Identifier </th>
+      <td mat-cell *matCellDef="let organisation">
+
+        <span *ngFor="let identifier of organisation.identifier">
             <i>{{ getIdentifier(identifier) }}</i>
             <b> {{identifier.value}}</b>
           </span>
-    </mat-grid-tile>
-    <mat-grid-tile width="5%">
-      <span *ngIf="showResourceLink"> <button mat-icon-button color="accent"  ngbTooltip="View FHIR resource" (click)="select(organisation)"><mat-icon>code</mat-icon></button></span>
-    </mat-grid-tile>
-  </mat-grid-list>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="contact">
+      <th mat-header-cell *matHeaderCellDef > Contact </th>
+      <td mat-cell *matCellDef="let organisation">
+
+
+          <div *ngFor="let telecom of organisation.telecom">
+            <i>{{telecom.use}}&nbsp;{{telecom.system}}</i>
+            <b>{{telecom.value}}</b>
+          </div>
+
+
+
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="resource">
+      <th mat-header-cell *matHeaderCellDef width="5%"> FHIR </th>
+      <td mat-cell *matCellDef="let organisation">
+        <button mat-icon-button color="accent"  ngbTooltip="View FHIR resource" (click)="select(organisation)"><mat-icon>code</mat-icon></button>
+      </td>
+    </ng-container>
+
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+</div>
+
+<!--
+<mat-card>
+
+
 
   <div *ngIf="detail && ((organisation.address !=undefined && organisation.address.length > 0) || (organisation.telecom !=undefined && organisation.telecom.length > 0))">
 
@@ -39,27 +83,10 @@
       </mat-grid-tile>
 
       <mat-grid-tile>
-        <div>
-          <div *ngFor="let telecom of organisation.telecom">
-            <div>{{telecom.use}}&nbsp;{{telecom.system}}</div>
-            <div><b>{{telecom.value}}</b></div>
-          </div>
-          <div *ngIf="organisation.telecom == undefined">
-            &nbsp;
-          </div>
-        </div>
+
 
       </mat-grid-tile>
     </mat-grid-list>
   </div>
-
-  <!--  <div class="d-flex w-100 justify-content-between">
-      <div>
-        <span *ngIf="organisation !=undefined">
-          <b>{{ organisation.name }}</b>
-          <span *ngFor="let identifier of organisation.identifier"><i>{{identifier.value}}</i></span>
-          <div *ngIf="organisation.partOf != undefined"><i>{{organisation.partOf.display}}</i></div>
-        </span>
-      </div>
-    </div> -->
 </mat-card>
+-->

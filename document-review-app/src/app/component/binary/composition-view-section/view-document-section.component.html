@@ -39,15 +39,15 @@
                   </span>
                   <span *ngIf="patients.length>0">
                       <h4>Patient</h4>
-                      <app-patient-list [patients]="patients" (patient)="onResoureSelected($event)"></app-patient-list>
+                      <app-patient [patients]="patients" (patient)="onResoureSelected($event)"></app-patient>
                   </span>
                   <span *ngIf="practitioners.length>0">
                       <h4>Practitioner</h4>
-                      <app-practitioner-list [practitioners]="practitioners" (practitioner)="onResoureSelected($event)"></app-practitioner-list>
+                      <app-practitioner [practitioners]="practitioners" (practitioner)="onResoureSelected($event)"></app-practitioner>
                   </span>
                   <span *ngIf="organisations.length>0">
                       <h4>Organisation</h4>
-                      <app-organisation-list [organisations]="organisations" (organisation)="onResoureSelected($event)"></app-organisation-list>
+                      <app-organisation [organisations]="organisations" (organisation)="onResoureSelected($event)"></app-organisation>
                   </span>
                   <span *ngIf="observations.length>0">
                       <h4>Observations</h4>

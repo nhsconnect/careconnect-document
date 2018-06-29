@@ -20,7 +20,7 @@ export class OrganisationDialogComponent implements OnInit {
 
     @Inject(MAT_DIALOG_DATA) data) {
     this.organisations = data.organisations;
-    this.organisationId = data.organisationId;
+    //this.organisationId = data.organisationId;
   }
 
   @Input()

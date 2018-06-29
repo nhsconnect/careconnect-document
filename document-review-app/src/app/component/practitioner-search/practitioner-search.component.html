@@ -9,7 +9,7 @@
 
   <div *ngFor="let practitioner of practitioners$ | async" >
     <a (click)="selectPractitioner(practitioner)">
-      <app-practitioner [practitioner]="practitioner" [showResourceLink]="false"></app-practitioner>
+      <app-practitioner [practitioners]="practitioner" [showResourceLink]="false"></app-practitioner>
     </a>
   </div>
 </div>

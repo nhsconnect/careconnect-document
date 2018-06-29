@@ -1,6 +1,9 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
 import {ResourceDialogComponent} from "../../dialog/resource-dialog/resource-dialog.component";
+import {OrganisationDataSource} from "../../data-source/organisation-data-source";
+import {PractitionerDataSource} from "../../data-source/practitioner-data-source";
+import {FhirService} from "../../service/fhir.service";
 
 @Component({
   selector: 'app-practitioner',
@@ -9,24 +12,27 @@ import {ResourceDialogComponent} from "../../dialog/resource-dialog/resource-dia
 })
 export class PractitionerComponent implements OnInit {
 
-  @Input() practitioner : fhir.Practitioner;
-
-  @Input() detail : boolean;
+  @Input() practitioners : fhir.Practitioner[];
 
   @Input() showResourceLink : boolean = true;
 
-  constructor(public dialog: MatDialog) { }
+  constructor(public dialog: MatDialog,
+              public fhirService : FhirService) { }
 
+  dataSource : PractitionerDataSource;
+
+  displayedColumns = ['practitioner', 'identifier', 'contact', 'resource'];
   ngOnInit() {
+    this.dataSource = new PractitionerDataSource(this.fhirService,  this.practitioners);
   }
 
-  getLastName() : String {
-    if (this.practitioner == undefined) return "";
-    if (this.practitioner.name == undefined || this.practitioner.name.length == 0)
+  getLastName(practitioner : fhir.Practitioner) : String {
+    if (practitioner == undefined) return "";
+    if (practitioner.name == undefined || practitioner.name.length == 0)
       return "";
 
     let name = "";
-    if (this.practitioner.name[0].family != undefined) name += this.practitioner.name[0].family.toUpperCase();
+    if (practitioner.name[0].family != undefined) name += practitioner.name[0].family.toUpperCase();
     return name;
 
   }
@@ -39,15 +45,15 @@ export class PractitionerComponent implements OnInit {
     }
     return name;
   }
-  getFirstName() : String {
-    if (this.practitioner == undefined) return "";
-    if (this.practitioner.name == undefined || this.practitioner.name.length == 0)
+  getFirstName(practitioner : fhir.Practitioner) : String {
+    if (practitioner == undefined) return "";
+    if (practitioner.name == undefined || practitioner.name.length == 0)
       return "";
     // Move to address
     let name = "";
-    if (this.practitioner.name[0].given != undefined && this.practitioner.name[0].given.length>0) name += ", "+ this.practitioner.name[0].given[0];
+    if (practitioner.name[0].given != undefined && practitioner.name[0].given.length>0) name += ", "+ practitioner.name[0].given[0];
 
-    if (this.practitioner.name[0].prefix != undefined && this.practitioner.name[0].prefix.length>0) name += " (" + this.practitioner.name[0].prefix[0] +")" ;
+    if (practitioner.name[0].prefix != undefined && practitioner.name[0].prefix.length>0) name += " (" + practitioner.name[0].prefix[0] +")" ;
     return name;
 
   }

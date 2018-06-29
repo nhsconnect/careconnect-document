@@ -4,15 +4,15 @@ export class DocumentRef {
 
   private _type : string;
 
-  private _patient : fhir.Patient;
+  private _patients : fhir.Patient[];
 
   private _file : File;
 
   private _docDate : Date;
 
-  private _organisation : fhir.Organization;
+  private _organisations : fhir.Organization[];
 
-  private _practitioner : fhir.Practitioner;
+  private _practitioners : fhir.Practitioner[];
 
   private _service : string;
 
@@ -41,8 +41,8 @@ export class DocumentRef {
     this._service = value;
   }
 
-  set patient(value: fhir.Patient) {
-    this._patient = value;
+  set patients(value: fhir.Patient[]) {
+    this._patients = value;
   }
 
   set file(value: File) {
@@ -53,17 +53,17 @@ export class DocumentRef {
     this._docDate = value;
   }
 
-  set organisation(value: fhir.Organization) {
-    this._organisation = value;
+  set organisations(value: fhir.Organization[]) {
+    this._organisations= value;
   }
 
-  set practitioner(value: fhir.Practitioner) {
-    this._practitioner = value;
+  set practitioners(value: fhir.Practitioner[]) {
+    this._practitioners = value;
   }
 
 
-  get patient(): fhir.Patient {
-    return this._patient;
+  get patients(): fhir.Patient[] {
+    return this._patients;
   }
 
   get file(): File {
@@ -74,35 +74,12 @@ export class DocumentRef {
     return this._docDate;
   }
 
-  get organisation(): fhir.Organization {
-    return this._organisation;
+  get organisations(): fhir.Organization[] {
+    return this._organisations;
   }
 
-  get practitioner(): fhir.Practitioner {
-    return this._practitioner;
+  get practitioners(): fhir.Practitioner[] {
+    return this._practitioners;
   }
 
-  get patientName() : string {
-    let retStr : string = "";
-    if (this._patient.name.length == 0) return "";
-    if (this._patient.name[0].prefix != undefined) retStr = retStr + this._patient.name[0].prefix + " ";
-    for (let forename of this._patient.name[0].given) {
-      retStr = retStr + forename + " ";
-    }
-    if (this._patient.name[0].family != undefined) retStr = retStr + this._patient.name[0].family + " ";
-
-    return retStr;
-  }
-
-  get practitionerName() : string {
-    let retStr : string = "";
-    if (this._practitioner.name.length == 0) return "";
-    if (this._practitioner.name[0].prefix != undefined) retStr = retStr + this._practitioner.name[0].prefix + " ";
-    for (let forename of this._practitioner.name[0].given) {
-      retStr = retStr + forename + " ";
-    }
-    if (this._practitioner.name[0].family != undefined) retStr = retStr + this._practitioner.name[0].family + " ";
-
-    return retStr;
-  }
 }

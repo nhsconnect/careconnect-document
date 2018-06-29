@@ -2,6 +2,9 @@ import {Component, Input, OnInit} from '@angular/core';
 import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
 import {ResourceDialogComponent} from "../../dialog/resource-dialog/resource-dialog.component";
 
+import {OrganisationDataSource} from "../../data-source/organisation-data-source";
+import {FhirService} from "../../service/fhir.service";
+
 @Component({
   selector: 'app-organisation',
   templateUrl: './organisation.component.html',
@@ -9,15 +12,19 @@ import {ResourceDialogComponent} from "../../dialog/resource-dialog/resource-dia
 })
 export class OrganisationComponent implements OnInit {
 
-  @Input() organisation : fhir.Organization;
-
-  @Input() detail : boolean;
+  @Input() organisations : fhir.Organization[];
 
   @Input() showResourceLink : boolean = true;
 
-  constructor(public dialog: MatDialog) { }
+  dataSource : OrganisationDataSource;
+
+  displayedColumns = ['organisation', 'identifier', 'contact', 'resource'];
+
+  constructor(public dialog: MatDialog,
+              public fhirService : FhirService) { }
 
   ngOnInit() {
+    this.dataSource = new OrganisationDataSource(this.fhirService,  this.organisations);
   }
 
   getIdentifier(identifier : fhir.Identifier) : String {

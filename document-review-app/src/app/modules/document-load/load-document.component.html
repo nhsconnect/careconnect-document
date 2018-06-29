@@ -30,35 +30,38 @@
 
 
         <div *ngIf="eprService.patient" >
-          <app-patient [patient]="eprService.patient" [detail]="true"></app-patient>
+          <app-patient [patients]="eprService.patient" ></app-patient>
           <br>
           <br>
         </div>
          <div *ngIf="eprService.patient == undefined" >
-           <app-patient-search (patientSelected)="closePat($event)"></app-patient-search>
-           <span *ngIf="document != undefined && document.patient != undefined">
-
-             <!-- <input class="form-control" type="text" id="subject" name="subject" [formControl]="documentForm.controls['subject']" [(ngModel)]="document.patientName" > -->
-             <app-patient [patient]="document.patient" [detail]="false"></app-patient>
-          </span>
+           <span *ngIf="document != undefined && document.patients == undefined">
+              <app-patient-search (patientSelected)="closePat($event)"></app-patient-search>
+           </span>
+             <span *ngIf="document != undefined && document.patients != undefined">
+                <app-patient [patients]="document.patients"></app-patient>
+            </span>
            <br>
            <br>
         </div>
           <div>
+             <span *ngIf="document != undefined && document.practitioners == undefined">
           <app-practitioner-search (practitionerSelected)="closePrac($event)"></app-practitioner-search>
-          <span *ngIf="document != undefined && document.practitioner != undefined">
+             </span>
+          <span *ngIf="document != undefined && document.practitioners != undefined">
 
             <!-- <input class="form-control" type="text" id="author" name="author" [formControl]="documentForm.controls['author']" [(ngModel)]="document.practitionerName" > -->
-            <app-practitioner [practitioner]="document.practitioner"></app-practitioner>
+            <app-practitioner [practitioners]="document.practitioners"></app-practitioner>
           </span>
           <br>
           <br>
         </div>
         <div>
+                   <span *ngIf="document != undefined && document.organisations == undefined">
           <app-organisation-search (organisationSelected)="closeOrg($event)"> </app-organisation-search>
-         <span *ngIf="document != undefined && document.organisation != undefined">
-
-             <app-organisation [organisation]="document.organisation"></app-organisation>
+                   </span>
+         <span *ngIf="document != undefined && document.organisations != undefined">
+             <app-organisation [organisations]="document.organisations"></app-organisation>
           </span>
           <br>
           <br>

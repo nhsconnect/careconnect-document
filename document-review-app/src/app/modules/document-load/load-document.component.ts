@@ -71,7 +71,9 @@ export class LoadDocumentComponent implements OnInit {
 
   ngOnInit() :void {
       if (this.eprService.patient != undefined) {
-        this.document.patient = this.eprService.patient;
+        let patients : fhir.Patient[] = [];
+        patients.push(this.eprService.patient);
+        this.document.patients = patients;
       }
 /*
       this.fhirService.getNHSDValueSet('NRLS-RecordType-1').subscribe(
@@ -143,9 +145,9 @@ export class LoadDocumentComponent implements OnInit {
 
     this.documentReferenceFG = new FormGroup({
       'fileName' : this.fileName,
-    'subject': new FormControl({ value : this.document.patient, disabled : true}, [ Validators.required]),
-    'custodian': new FormControl({ value : this.document.organisation, disabled : true}, [ Validators.required]),
-    'author' : new FormControl({ value : this.document.practitioner, disabled : true}, [ Validators.required]),
+    'subject': new FormControl({ value : this.document.patients, disabled : true}, [ Validators.required]),
+    'custodian': new FormControl({ value : this.document.organisations, disabled : true}, [ Validators.required]),
+    'author' : new FormControl({ value : this.document.practitioners, disabled : true}, [ Validators.required]),
     'type' : new FormControl(this.document.type, [ Validators.required]),
     'service' : new FormControl(this.document.service),
     'speciality' : new FormControl(this.document.speciality),
@@ -160,22 +162,26 @@ export class LoadDocumentComponent implements OnInit {
   }
 
 
-  closeOrg(organization) {
+  closeOrg(organization : fhir.Organization) {
     console.log("Selected Organisation "+organization.id);
-    this.document.organisation = organization;
-   // this.modalReference.close();
+    let organizations :fhir.Organization[] = [];
+    organizations.push(organization);
+    this.document.organisations = organizations;
   }
 
-  closePrac(practitioner) {
+  closePrac(practitioner :fhir.Practitioner) {
     console.log("selected practitioner "+practitioner.id);
-    this.document.practitioner = practitioner;
-    //this.modalReference.close();
+    let practitioners : fhir.Practitioner[] = [];
+    practitioners.push(practitioner);
+    this.document.practitioners = practitioners;
   }
 
-  closePat(patient) {
+  closePat(patient : fhir.Patient) {
     console.log("selected patient "+patient.id);
-    this.document.patient = patient;
-    //this.modalReference.close();
+    let patients : fhir.Patient[] = [];
+    patients.push(patient);
+    this.document.patients = patients;
+
   }
 
   // https://stackoverflow.com/questions/40214772/file-upload-in-angular
@@ -265,18 +271,21 @@ export class LoadDocumentComponent implements OnInit {
       console.log('service display '+ this.getDisplayFromCode(this.document.service,this.facilityCodes));
 
       binary.resourceType= 'Binary';
-      let orignialPatientId = this.document.patient.id;
-      this.document.patient.id = uuid();
-      this.document.patient.resourceType = 'Patient';
-      this.document.organisation.id = uuid();
-      this.document.organisation.resourceType = 'Organization';
-      this.document.practitioner.id = uuid();
-      this.document.practitioner.resourceType = 'Practitioner';
+      let patient = this.document.patients[0];
+      let orignialPatientId = patient.id;
+      patient.id = uuid();
+      patient.resourceType = 'Patient';
+      let organisation = this.document.organisations[0];
+      organisation.id = uuid();
+      organisation.resourceType = 'Organization';
+      let practitioner = this.document.practitioners[0];
+      practitioner.id = uuid();
+      practitioner.resourceType = 'Practitioner';
 
       let documentReference : fhir.DocumentReference = <fhir.DocumentReference>{};
       documentReference.id = uuid();
       documentReference.subject = {};
-      documentReference.subject.reference = 'urn:uuid:'+this.document.patient.id;
+      documentReference.subject.reference = 'urn:uuid:'+patient.id;
 
       let date = new Date(this.document.docDate.toString());
       console.log(date.toISOString());
@@ -292,11 +301,11 @@ export class LoadDocumentComponent implements OnInit {
 
       documentReference.author = [];
       documentReference.author.push({
-        "reference": "urn:uuid:"+this.document.practitioner.id
+        "reference": "urn:uuid:"+practitioner.id
       });
 
       documentReference.custodian = {};
-      documentReference.custodian.reference = 'urn:uuid:'+ this.document.organisation.id;
+      documentReference.custodian.reference = 'urn:uuid:'+ organisation.id;
 
       documentReference.context = {};
       documentReference.context.practiceSetting = {};
@@ -340,16 +349,16 @@ export class LoadDocumentComponent implements OnInit {
         resource : binary
       } );
       bundle.entry.push({
-        fullUrl : "urn:uuid:"+this.document.patient.id,
-        resource : this.document.patient
+        fullUrl : "urn:uuid:"+patient.id,
+        resource : patient
       } );
       bundle.entry.push({
-        fullUrl : "urn:uuid:"+this.document.practitioner.id,
-        resource : this.document.practitioner
+        fullUrl : "urn:uuid:"+practitioner.id,
+        resource : practitioner
       } );
       bundle.entry.push({
-        fullUrl : "urn:uuid:"+this.document.organisation.id,
-        resource : this.document.organisation
+        fullUrl : "urn:uuid:"+organisation.id,
+        resource : organisation
       } );
 
 

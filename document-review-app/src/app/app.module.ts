@@ -63,9 +63,6 @@ import {Oauth2Service} from "./service/oauth2.service";
 import { ResourceDialogComponent } from './dialog/resource-dialog/resource-dialog.component';
 import { TreeModule } from 'angular-tree-component';
 
-import { PatientListComponent } from './component/patient-list/patient-list.component';
-import { OrganisationListComponent } from './component/organisation-list/organisation-list.component';
-import { PractitionerListComponent } from './component/practitioner-list/practitioner-list.component';
 import { PdfViewerComponent } from './component/binary/pdf-viewer/pdf-viewer.component';
 import {PdfViewerModule} from "ng2-pdf-viewer";
 import { ImgViewerComponent } from './component/binary/img-viewer/img-viewer.component';
@@ -143,11 +140,8 @@ import {BundleService} from "./service/bundle.service";
     CallbackComponent,
     ResourceDialogComponent,
 
-    PatientListComponent,
     PatientFindComponent,
     PatientComponent,
-    OrganisationListComponent,
-    PractitionerListComponent,
     PdfViewerComponent,
     ImgViewerComponent,
     MedicationDialogComponent,

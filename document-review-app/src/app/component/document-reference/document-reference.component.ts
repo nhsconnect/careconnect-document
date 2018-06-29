@@ -8,6 +8,7 @@ import {ResourceDialogComponent} from "../../dialog/resource-dialog/resource-dia
 import {LinksService} from "../../service/links.service";
 import {BundleService} from "../../service/bundle.service";
 import {OrganisationDialogComponent} from "../../dialog/organisation-dialog/organisation-dialog.component";
+import {PractitionerDialogComponent} from "../../dialog/practitioner-dialog/practitioner-dialog.component";
 
 @Component({
   selector: 'app-document-reference',
@@ -28,7 +29,7 @@ export class DocumentReferenceComponent implements OnInit {
 
   dataSource : DocumentReferenceDataSource;
 
-  displayedColumns = ['created','type','typelink', 'author','authorLink', 'custodian', 'custodianLink', 'mime', 'status', 'open','resource'];
+  displayedColumns = ['open', 'created','type','typelink', 'author','authorLink', 'custodian', 'custodianLink', 'mime', 'status', 'resource'];
 
   constructor(private router: Router, private FhirService : FhirService,
               private _dialogService: TdDialogService,
@@ -108,6 +109,7 @@ export class DocumentReferenceComponent implements OnInit {
 
         dialogConfig.disableClose = true;
         dialogConfig.autoFocus = true;
+       // dialogConfig.width="800px";
         dialogConfig.data = {
           id: 1,
           organisations : this.organisations
@@ -127,6 +129,17 @@ export class DocumentReferenceComponent implements OnInit {
       this.bundleService.getResource(practitionerReference.reference).subscribe((practitioner) => {
           if (practitioner != undefined && practitioner.resourceType === "Practitioner") {
             this.practitioners.push(<fhir.Practitioner> practitioner);
+
+            const dialogConfig = new MatDialogConfig();
+
+            dialogConfig.disableClose = true;
+            dialogConfig.autoFocus = true;
+           // dialogConfig.width="800px";
+            dialogConfig.data = {
+              id: 1,
+              practitioners : this.practitioners
+            };
+            let resourceDialog : MatDialogRef<PractitionerDialogComponent> = this.dialog.open( PractitionerDialogComponent, dialogConfig);
           }
         }
       );
