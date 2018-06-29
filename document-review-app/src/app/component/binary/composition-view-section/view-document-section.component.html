@@ -77,6 +77,14 @@
                       <h4>Prescriptions</h4>
                       <app-medication-request [medicationRequests]="prescriptions" (medicationRequest)="onResoureSelected($event)"></app-medication-request>
                   </span>
+                  <span *ngIf="roles.length>0">
+                      <h4>PractitionerRole</h4>
+                      <app-practitioner-role [roles]="roles" (practitionerRole)="onResoureSelected($event)"></app-practitioner-role>
+                  </span>
+                  <span *ngIf="services.length>0">
+                      <h4>HealthcareService</h4>
+                      <app-healthcare-service [services]="services" (healthcareService)="onResoureSelected($event)"></app-healthcare-service>
+                  </span>
                 </div>
                 <div *ngIf="section.entry == undefined">
                   No structured content referenced

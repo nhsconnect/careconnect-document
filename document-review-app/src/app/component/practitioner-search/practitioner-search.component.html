@@ -6,10 +6,6 @@
     </mat-form-field>
   </form>
 
+     <app-practitioner [practitionersObservable]="practitioners$" [useObservable]="true" (practitioner)="selectPractitioner($event)" [showResourceLink]="false"></app-practitioner>
 
-  <div *ngFor="let practitioner of practitioners$ | async" >
-    <a (click)="selectPractitioner(practitioner)">
-      <app-practitioner [practitioners]="practitioner" [showResourceLink]="false"></app-practitioner>
-    </a>
-  </div>
 </div>

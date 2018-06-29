@@ -6,7 +6,9 @@ import {Observable} from "rxjs/Observable";
 export class PractitionerDataSource extends DataSource<any> {
   constructor(public fhirService : FhirService,
 
-              public practitioners : fhir.Practitioner[]
+              public practitioners : fhir.Practitioner[],
+              public practitionersObservable : Observable<fhir.Practitioner[]>,
+              public useObservable : boolean = false
   ) {
     super();
   }
@@ -17,6 +19,11 @@ export class PractitionerDataSource extends DataSource<any> {
 
   connect(): Observable<fhir.Practitioner[]> {
 
+    console.log('calling data service');
+    if (this.useObservable) {
+      console.log('Practitioners Observable ');
+      return this.practitionersObservable;
+    }
 
     let _practitioners : BehaviorSubject<fhir.Practitioner[]> =<BehaviorSubject<fhir.Practitioner[]>>new BehaviorSubject([]);;
 

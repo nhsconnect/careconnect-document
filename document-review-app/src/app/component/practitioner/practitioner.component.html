@@ -45,6 +45,13 @@
       </td>
     </ng-container>
 
+    <ng-container matColumnDef="select">
+      <th mat-header-cell *matHeaderCellDef width="8%"> Select </th>
+      <td mat-cell *matCellDef="let practitioner">
+        <button mat-icon-button color="accent"  ngbTooltip="Select Practitioner" (click)="selectPractitioner(practitioner)"><mat-icon>collections_bookmark</mat-icon></button>
+      </td>
+    </ng-container>
+
     <ng-container matColumnDef="resource">
       <th mat-header-cell *matHeaderCellDef width="5%"> FHIR </th>
       <td mat-cell *matCellDef="let practitioner">

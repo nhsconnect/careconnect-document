@@ -54,6 +54,7 @@ export class PractitionerSearchComponent implements OnInit {
 
   // Push a search term into the observable stream.
   search(term: string): void {
+    console.log('key up ' + term);
     this.searchTerms.next(term);
   }
 

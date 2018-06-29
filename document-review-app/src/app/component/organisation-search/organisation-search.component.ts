@@ -20,8 +20,8 @@ export class OrganisationSearchComponent implements OnInit {
 
   @Output() organisationSelected : EventEmitter<fhir.Organization> = new EventEmitter();
 
-  constructor(private fhirService: FhirService,
-              private router: Router
+  constructor(private fhirService: FhirService
+
   ) {}
 
   ngOnInit(): void {

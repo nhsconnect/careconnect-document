@@ -35,6 +35,8 @@ export class ViewDocumentSectionComponent implements OnInit {
   practitioners : fhir.Practitioner[];
   organisations : fhir.Organization[];
   locations : fhir.Location[];
+  roles : fhir.PractitionerRole[];
+  services : fhir.HealthcareService[];
 
   showStructured : boolean = false;
 
@@ -58,6 +60,8 @@ export class ViewDocumentSectionComponent implements OnInit {
     this.patients=[];
     this.practitioners=[];
     this.organisations=[];
+    this.roles=[];
+    this.services=[];
 
     this.getPopover(this.section);
 
@@ -82,9 +86,9 @@ export class ViewDocumentSectionComponent implements OnInit {
     //console.log("In getReferenced and medications count = "+this.medications.length);
     let resource = this.bundleService.getResource(reference).subscribe(
       (resource) => {
-      if (resource != undefined) {
+        if (resource != undefined) {
 
-          switch(resource.resourceType) {
+          switch (resource.resourceType) {
             case "AllergyIntolerance" :
               let allergyIntolerance: fhir.AllergyIntolerance = <fhir.AllergyIntolerance> resource;
               this.allergies.push(allergyIntolerance);
@@ -104,86 +108,93 @@ export class ViewDocumentSectionComponent implements OnInit {
                 if (list.code != undefined && list.code.coding.length > 0) {
                   this.entries.push({
                     "resource": "List"
-                    , "code" : list.code.coding[0].code
-                    , "display" : "Entries "+list.entry.length
+                    , "code": list.code.coding[0].code
+                    , "display": "Entries " + list.entry.length
                   });
                 } else {
                   this.entries.push({
                     "resource": "List"
-                    , "display" : "Entries "+list.entry.length
+                    , "display": "Entries " + list.entry.length
                   });
                 }
 
                 for (let entry of list.entry) {
 
                   if (entry.item != undefined && entry.item.reference != undefined) {
-                   // console.log(entry.item.reference);
+                    // console.log(entry.item.reference);
                     this.getReferencedItem(entry.item.reference);
                   }
                   else {
                     this.entries.push({
                       "resource": "Error"
-                      , "display" : "Missing Reference"
+                      , "display": "Missing Reference"
                     });
                   }
                 }
               }
               break;
             case "Medication" :
-              let medication :fhir.Medication = <fhir.Medication> resource;
+              let medication: fhir.Medication = <fhir.Medication> resource;
               //medication.id = resource.fullUrl;
 
-                this.medications.push(medication);
+              this.medications.push(medication);
 
               break;
             case "MedicationRequest" :
-              let medicationRequest :fhir.MedicationRequest = <fhir.MedicationRequest> resource;
+              let medicationRequest: fhir.MedicationRequest = <fhir.MedicationRequest> resource;
               this.prescriptions.push(medicationRequest);
               if (medicationRequest.medicationReference != undefined) {
-               this.getReferencedItem(medicationRequest.medicationReference.reference);
+                this.getReferencedItem(medicationRequest.medicationReference.reference);
               }
 
               break;
             case "MedicationStatement" :
-              let medicationStatement :fhir.MedicationStatement = <fhir.MedicationStatement> resource;
+              let medicationStatement: fhir.MedicationStatement = <fhir.MedicationStatement> resource;
               this.medicationStatements.push(medicationStatement);
               if (medicationStatement.medicationReference != undefined) {
                 this.getReferencedItem(medicationStatement.medicationReference.reference);
               }
               break;
             case "Observation" :
-              let observation :fhir.Observation = <fhir.Observation> resource;
+              let observation: fhir.Observation = <fhir.Observation> resource;
               this.observations.push(observation);
               break;
             case "Procedure" :
-              let procedure :fhir.Procedure = <fhir.Procedure> resource;
+              let procedure: fhir.Procedure = <fhir.Procedure> resource;
               this.procedures.push(procedure)
               break;
             case "Patient" :
-              let patient :fhir.Patient = <fhir.Patient> resource;
+              let patient: fhir.Patient = <fhir.Patient> resource;
               this.patients.push(patient);
               break;
             case "Practitioner":
-              let practitioner : fhir.Practitioner = <fhir.Practitioner> resource;
+              let practitioner: fhir.Practitioner = <fhir.Practitioner> resource;
               this.practitioners.push(practitioner);
               break;
+            case "PractitionerRole":
+              let practitionerRole: fhir.PractitionerRole = <fhir.PractitionerRole> resource;
+              this.roles.push(practitionerRole);
+              break;
             case "Organization":
-              let organization : fhir.Organization = <fhir.Organization> resource;
+              let organization: fhir.Organization = <fhir.Organization> resource;
               this.organisations.push(organization);
               break;
+            case "HealthcareService":
+              let service: fhir.HealthcareService = <fhir.HealthcareService> resource;
+              this.services.push(service);
+              break;
             case "Location":
-              let location : fhir.Location = <fhir.Location> resource;
-              console.log('Pushed Location '+ resource);
+              let location: fhir.Location = <fhir.Location> resource;
+
               this.locations.push(location);
               break;
-            default : this.entries.push({
-              "resource": resource.resourceType
-
-            });
+            default :
+              console.log('**** missing ' + resource.resourceType);
+              this.entries.push(resource.resourceType);
           }
         }
-      }
-    );
+      })
+
 
 
   }

@@ -98,6 +98,8 @@ import {PractitionerDialogComponent} from "./dialog/practitioner-dialog/practiti
 import {OrganisationDialogComponent} from "./dialog/organisation-dialog/organisation-dialog.component";
 import {LocationComponent} from "./component/location/location.component";
 import {BundleService} from "./service/bundle.service";
+import {PractitionerRoleComponent} from './component/practitioner-role/practitioner-role.component';
+import {HealthcareServiceComponent} from "./component/healthcare-service/healthcare-service.component";
 
 
 @NgModule({
@@ -149,7 +151,9 @@ import {BundleService} from "./service/bundle.service";
     LocationDialogComponent,
     PractitionerDialogComponent,
     OrganisationDialogComponent,
-    LocationComponent
+    LocationComponent,
+    PractitionerRoleComponent,
+    HealthcareServiceComponent
 
   ],
   entryComponents: [

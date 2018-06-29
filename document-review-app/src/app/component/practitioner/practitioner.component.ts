@@ -1,9 +1,10 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
 import {ResourceDialogComponent} from "../../dialog/resource-dialog/resource-dialog.component";
 import {OrganisationDataSource} from "../../data-source/organisation-data-source";
 import {PractitionerDataSource} from "../../data-source/practitioner-data-source";
 import {FhirService} from "../../service/fhir.service";
+import {Observable} from "rxjs/Observable";
 
 @Component({
   selector: 'app-practitioner',
@@ -14,7 +15,13 @@ export class PractitionerComponent implements OnInit {
 
   @Input() practitioners : fhir.Practitioner[];
 
+  @Input() practitionersObservable :Observable<fhir.Practitioner[]>;
+
+  @Input() useObservable : boolean = false;
+
   @Input() showResourceLink : boolean = true;
+
+  @Output() practitioner = new EventEmitter<any>();
 
   constructor(public dialog: MatDialog,
               public fhirService : FhirService) { }
@@ -23,7 +30,14 @@ export class PractitionerComponent implements OnInit {
 
   displayedColumns = ['practitioner', 'identifier', 'contact', 'resource'];
   ngOnInit() {
-    this.dataSource = new PractitionerDataSource(this.fhirService,  this.practitioners);
+    if (!this.showResourceLink) {
+      this.displayedColumns = ['select','practitioner', 'identifier', 'contact'];
+    }
+    if (this.useObservable) {
+      this.dataSource = new PractitionerDataSource(this.fhirService,undefined, this.practitionersObservable,this.useObservable);
+    } else {
+      this.dataSource = new PractitionerDataSource(this.fhirService,  this.practitioners,undefined, this.useObservable);
+    }
   }
 
   getLastName(practitioner : fhir.Practitioner) : String {
@@ -57,6 +71,11 @@ export class PractitionerComponent implements OnInit {
     return name;
 
   }
+
+  selectPractitioner(practitioner : fhir.Practitioner) {
+    this.practitioner.emit(practitioner);
+  }
+
   select(resource) {
     const dialogConfig = new MatDialogConfig();
 

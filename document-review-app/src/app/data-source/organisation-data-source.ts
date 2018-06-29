@@ -6,7 +6,9 @@ import {Observable} from "rxjs/Observable";
 export class OrganisationDataSource extends DataSource<any> {
   constructor(public fhirService : FhirService,
 
-              public organisations : fhir.Organization[]
+              public organisations : fhir.Organization[],
+              public organisationsObservable : Observable<fhir.Organization[]>,
+              public useObservable : boolean = false
   ) {
     super();
   }
@@ -16,7 +18,11 @@ export class OrganisationDataSource extends DataSource<any> {
   };
 
   connect(): Observable<fhir.Organization[]> {
-
+    console.log('calling data service');
+    if (this.useObservable) {
+      console.log('Organization Observable ');
+      return this.organisationsObservable;
+    }
 
     let _organisations : BehaviorSubject<fhir.Organization[]> =<BehaviorSubject<fhir.Organization[]>>new BehaviorSubject([]);;
 

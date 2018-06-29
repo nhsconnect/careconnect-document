@@ -7,11 +7,7 @@
     </mat-form-field>
   </form>
 
-  <app-organisation [organisations]="organisations$ | async" [showResourceLink]="false"></app-organisation>
+  <app-organisation [organisationsObservable]="organisations$" [useObservable]="true" [showResourceLink]="false" (organisation)="selectOrganisation($event)"></app-organisation>
 
-  <div *ngFor="let organisation of organisations$ | async" >
-    <a (click)="selectOrganisation(organisation)">
-      <app-organisation [organisations]="organisation" [showResourceLink]="false"></app-organisation>
-    </a>
-  </div>
+
 </div>
