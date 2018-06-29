@@ -5,6 +5,7 @@ import {OrganisationDataSource} from "../../data-source/organisation-data-source
 import {PractitionerDataSource} from "../../data-source/practitioner-data-source";
 import {FhirService} from "../../service/fhir.service";
 import {Observable} from "rxjs/Observable";
+import {BundleService} from "../../service/bundle.service";
 
 @Component({
   selector: 'app-practitioner',
@@ -21,23 +22,31 @@ export class PractitionerComponent implements OnInit {
 
   @Input() showResourceLink : boolean = true;
 
+  roles : fhir.PractitionerRole[] = [];
+
   @Output() practitioner = new EventEmitter<any>();
 
   constructor(public dialog: MatDialog,
-              public fhirService : FhirService) { }
+              public fhirService : FhirService,
+              public bundleService : BundleService ) { }
 
   dataSource : PractitionerDataSource;
 
-  displayedColumns = ['practitioner', 'identifier', 'contact', 'resource'];
+  displayedColumns = ['practitioner', 'identifier', 'contact','roles', 'resource'];
   ngOnInit() {
     if (!this.showResourceLink) {
-      this.displayedColumns = ['select','practitioner', 'identifier', 'contact'];
+      this.displayedColumns = ['select','practitioner', 'identifier','roles', 'contact'];
     }
     if (this.useObservable) {
       this.dataSource = new PractitionerDataSource(this.fhirService,undefined, this.practitionersObservable,this.useObservable);
     } else {
       this.dataSource = new PractitionerDataSource(this.fhirService,  this.practitioners,undefined, this.useObservable);
+
     }
+  }
+
+  getRoles(practitioner : fhir.PractitionerRole) : fhir.PractitionerRole[] {
+    return this.bundleService.getPractitionerReference(practitioner.id);
   }
 
   getLastName(practitioner : fhir.Practitioner) : String {

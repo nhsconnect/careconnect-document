@@ -20,6 +20,24 @@ export class BundleService {
     return this.bundle;
   }
 
+  public getPractitionerReference(reference : string)  : fhir.PractitionerRole[] {
+    let roles : fhir.PractitionerRole[] = [];
+    console.log(reference);
+    if (this.bundle != undefined && reference.indexOf('/') == -1) {
+      for (let entry of this.bundle.entry) {
+        if (entry.resource.resourceType == 'PractitionerRole') {
+          console.log(entry.resource.id);
+          console.log(reference);
+          let role: fhir.PractitionerRole = <fhir.PractitionerRole> entry.resource;
+          if (role.practitioner != undefined && role.practitioner.reference === reference) {
+            console.log(entry.resource.resourceType);
+            roles.push(<fhir.PractitionerRole> entry.resource);
+          }
+        }
+      }
+    }
+    return roles;
+  }
 
   public getResource(reference : string) : Observable<fhir.Resource> {
     console.log("Bundle Get Reference = " +reference);
