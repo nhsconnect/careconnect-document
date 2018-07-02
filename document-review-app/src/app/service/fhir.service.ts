@@ -133,7 +133,7 @@ export class FhirService {
     if (localStorage.getItem('access_token')!= undefined) {
       // access token is present so forgo access token retrieval
       this.authService.updateUser();
-      this.router.navigateByUrl('home');
+      this.router.navigateByUrl('epr');
     } else {
 
       const url = this.authoriseUri + '?client_id=' + clientId + '&response_type=code&redirect_uri='+document.baseURI+'/callback&aud=https://test.careconnect.nhs.uk';
@@ -292,6 +292,7 @@ export class FhirService {
 
     let headers :HttpHeaders = this.getEPRHeaders(false);
     headers.append('Content-Type',contentType);
+    headers.append('Prefer','return=representation');
     const url = this.getEPRUrl() + `/Bundle`;
 
     return this.http.post<fhir.Bundle>(url,document,{ 'headers' :headers});
@@ -310,6 +311,8 @@ export class FhirService {
 
     let headers :HttpHeaders = this.getEPRHeaders(false);
     headers.append('Content-Type',contentType);
+    headers.append('Prefer','return=representation');
+
     // TODO Get real id from XML Bundle
     const url = this.getEPRUrl() + `/Bundle`;
     let params = new HttpParams();
@@ -355,6 +358,13 @@ export class FhirService {
 
   }
 
+  getDocumentReference(documentId: string): Observable<fhir.DocumentReference> {
+
+    const url = this.getEPRUrl()  + `/DocumentReference/${documentId}`;
+
+    return this.http.get<fhir.DocumentReference>(url,{ 'headers' : this.getEPRHeaders()});
+
+  }
 
   getEPREncounter(encounterId: string): Observable<fhir.Bundle> {
 

@@ -17,7 +17,14 @@ export class ViewDocumentComponent implements OnInit {
 
   @Input() document : fhir.Bundle;
   @Input() systemType : string;
+  @Input() binaryId : string;
 
+  composition : fhir.Composition = undefined;
+  patient : fhir.Patient = undefined;
+  encounter : fhir.Encounter = undefined;
+  sections : fhir.CompositionSection[] = [];
+  resource : any = undefined;
+  docId : string;
 
   constructor(private route: ActivatedRoute,
             private fhirService : FhirService,
@@ -32,7 +39,7 @@ export class ViewDocumentComponent implements OnInit {
 
     if (this.systemType != "EPR") {
       this.systemType="FDMS";
-      let id = this.route.snapshot.paramMap.get('binaryId');
+      let id = this.binaryId;
       this.getDocument(id);
     } else {
 
@@ -43,16 +50,11 @@ export class ViewDocumentComponent implements OnInit {
   }
 
 
-  composition : fhir.Composition = undefined;
-  patient : fhir.Patient = undefined;
-  encounter : fhir.Encounter = undefined;
-  sections : fhir.CompositionSection[] = [];
-  resource : any = undefined;
-  docId : string;
+
 
   getDocument(id : string): void {
 
-    this.docId = id;
+    this.docId = this.binaryId;
 
   //  let modalWaitRef = this.modalService.open( this.modalWait,{ windowClass: 'dark-modal' });
 

@@ -92,13 +92,13 @@
     </ng-container>
 
     <ng-container matColumnDef="open">
-      <th mat-header-cell *matHeaderCellDef width="5%">Open</th>
+      <th mat-header-cell *matHeaderCellDef >Open</th>
       <td mat-cell *matCellDef="let document">
 
         <button mat-icon-button color="accent" ngbTooltip="View document" (click)="selectDocument(document)"><mat-icon>collections_bookmark</mat-icon></button> </td>
     </ng-container>
     <ng-container matColumnDef="resource">
-      <th mat-header-cell *matHeaderCellDef width="5%">FHIR</th>
+      <th mat-header-cell *matHeaderCellDef >FHIR</th>
       <td mat-cell *matCellDef="let document">  <button mat-icon-button color="accent" ngbTooltip="View FHIR resource" (click)="select(document)"><mat-icon>code</mat-icon></button>  </td>
     </ng-container>
 
@@ -108,13 +108,4 @@
   </table>
 
 </div>
-<!--
-<br>
 
-  <div *ngFor="let document of documents">
-    <a (click)="selectDocument(document)" >
-
-      <app-document-reference-card [document] = "document"></app-document-reference-card>
-    </a>
-  </div>
--->

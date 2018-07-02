@@ -5,7 +5,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './/app-routing.module';
 import { LoadDocumentComponent } from './modules/document-load/load-document.component';
-import { NavComponent } from './modules/nav/nav.component';
+import { EprComponent } from './modules/epr/epr.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { FileUploadModule } from "ng2-file-upload";
@@ -18,7 +18,7 @@ import { PatientSearchComponent } from './component/patient-search/patient-searc
 import { FindDocumentComponent } from './modules/composition-find/find-document.component';
 import { CompositionComponent } from './component/composition/composition.component';
 import { PatientFindComponent } from './modules/patient-find/patient-find.component';
-import { PatientEprPatientRecordComponent } from './modules/epr-record/patient-epr-patient-record.component';
+import { EprRecordComponent } from './modules/epr-record/epr-record.component';
 
 import { MedicationStatementComponent } from './component/medication-statement/medication-statement.component';
 import { ConditionComponent } from './component/condition/condition.component';
@@ -29,7 +29,6 @@ import { EncounterComponent } from './component/encounter/encounter.component';
 import { MedicationRequestComponent } from './component/medication-request/medication-request.component';
 import { MedicationComponent } from './component/medication/medication.component';
 
-import { DocumentReferenceCardComponent } from './component/document-reference-card/document-reference-card.component';
 import { DocumentReferenceComponent } from './component/document-reference/document-reference.component';
 import {AuthService} from "./service/auth.service";
 import {LoginComponent} from "./modules/login/login.component";
@@ -81,7 +80,7 @@ import {
   CovalentDialogsModule,
 
   CovalentJsonFormatterModule,
-  CovalentLayoutModule,
+  CovalentLayoutModule, CovalentMediaModule,
   CovalentMenuModule
 
 } from "@covalent/core";
@@ -100,20 +99,22 @@ import {LocationComponent} from "./component/location/location.component";
 import {BundleService} from "./service/bundle.service";
 import {PractitionerRoleComponent} from './component/practitioner-role/practitioner-role.component';
 import {HealthcareServiceComponent} from "./component/healthcare-service/healthcare-service.component";
+import {RouterModule} from "@angular/router";
+import {BinaryComponent} from './component/binary/binary/binary.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     LoadDocumentComponent,
-    NavComponent,
+    EprComponent,
     ViewDocumentComponent,
     ViewDocumentSectionComponent,
     PatientFindComponent,
     PatientSearchComponent,
     FindDocumentComponent,
     CompositionComponent,
-    PatientEprPatientRecordComponent,
+    EprRecordComponent,
 
     MedicationStatementComponent,
     ConditionComponent,
@@ -125,7 +126,6 @@ import {HealthcareServiceComponent} from "./component/healthcare-service/healthc
     MedicationRequestComponent,
     MedicationComponent,
 
-    DocumentReferenceCardComponent,
     DocumentReferenceComponent,
     LoginComponent,
     LogoutComponent,
@@ -153,7 +153,8 @@ import {HealthcareServiceComponent} from "./component/healthcare-service/healthc
     OrganisationDialogComponent,
     LocationComponent,
     PractitionerRoleComponent,
-    HealthcareServiceComponent
+    HealthcareServiceComponent,
+    BinaryComponent
 
   ],
   entryComponents: [
@@ -166,6 +167,8 @@ import {HealthcareServiceComponent} from "./component/healthcare-service/healthc
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
+    RouterModule.forRoot([]),
     CookieModule
       .forRoot(),
     FormsModule,
@@ -178,7 +181,7 @@ import {HealthcareServiceComponent} from "./component/healthcare-service/healthc
     TreeModule,
     PdfViewerModule,
     ImageViewerModule,
-    BrowserAnimationsModule,
+
     MatSidenavModule,
     MatInputModule,
     MatMomentDateModule,
@@ -207,7 +210,8 @@ import {HealthcareServiceComponent} from "./component/healthcare-service/healthc
     CovalentMarkdownModule,
     CovalentJsonFormatterModule,
     CovalentMenuModule,
-    CovalentDialogsModule
+    CovalentDialogsModule,
+    CovalentMediaModule
    // CovalentFileModule
 
 /*

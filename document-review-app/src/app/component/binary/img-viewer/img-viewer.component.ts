@@ -17,6 +17,8 @@ export class ImgViewerComponent implements OnInit {
 
   @Input() document : any;
 
+  @Input() binaryId : string;
+
   constructor(private route: ActivatedRoute,
           private fhirService : FhirService,
           private modalService: NgbModal,
@@ -25,8 +27,8 @@ export class ImgViewerComponent implements OnInit {
               ) { }
 
   ngOnInit() {
-    let id = this.route.snapshot.paramMap.get('binaryId');
-    this.getDocument(id);
+    //let id = this.route.snapshot.paramMap.get('binaryId');
+    this.getDocument(this.binaryId);
   }
 
   getDocument(id : string): void {

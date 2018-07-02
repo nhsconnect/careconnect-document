@@ -1,6 +1,8 @@
 <h2 mat-dialog-title>Issue</h2>
 <mat-dialog-content>
+
   <div *ngFor="let issue of operationOutcome.issue">
+    <b>{{issue.code}}</b>
     <div>{{issue.diagnostics}}</div>
   </div>
 </mat-dialog-content>

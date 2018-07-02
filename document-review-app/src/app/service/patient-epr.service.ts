@@ -8,9 +8,15 @@ export class PatientEprService {
 
   resource : any = undefined;
 
+  section : string;
+
+  documentReference : fhir.DocumentReference;
+
   private patientChangeEvent : EventEmitter<fhir.Patient> = new EventEmitter();
 
   private resourceChangeEvent : EventEmitter<any> = new EventEmitter();
+
+  private sectionChangeEvent : EventEmitter<string> = new EventEmitter();
 
   set(patient: fhir.Patient) {
 
@@ -29,9 +35,22 @@ export class PatientEprService {
     return this.resourceChangeEvent;
   }
 
+  getSectionChangeEvent() {
+    return this.sectionChangeEvent;
+  }
+
+  setSection(section : string) {
+    this.section = section;
+    this.sectionChangeEvent.emit(section);
+  }
+
   setResource(resource) {
     this.resource = resource;
     this.resourceChangeEvent.emit(resource);
+  }
+
+  setDocumentReference(document : fhir.DocumentReference) {
+    this.documentReference = document;
   }
 
 }

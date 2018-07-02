@@ -1,28 +1,78 @@
-import { Component, OnInit } from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {AuthService} from "../../service/auth.service";
-import {Router} from "@angular/router";
 import {PatientEprService} from "../../service/patient-epr.service";
 
 import {User} from "../../model/user";
 
 import {FhirService} from "../../service/fhir.service";
 import {environment} from "../../../environments/environment";
+import {TdDigitsPipe, TdLayoutManageListComponent, TdMediaService, TdRotateAnimation} from "@covalent/core";
+import {DatePipe} from "@angular/common";
+import {MatDialog, MatIconRegistry} from "@angular/material";
+import {DomSanitizer} from "@angular/platform-browser";
 
 @Component({
-  selector: 'app-nav',
-  templateUrl: './nav.component.html',
-  styleUrls: ['./nav.component.css']
+  selector: 'app-epr',
+  templateUrl: './epr.component.html',
+  styleUrls: ['./epr.component.css'],
+  animations: [
+    TdRotateAnimation()
+  ]
 })
-export class NavComponent implements OnInit {
+export class EprComponent implements AfterViewInit {
 
-  constructor(public authService: AuthService,
+
+  // https://stackblitz.com/edit/covalent-dashboard?file=app%2Fapp.component.ts
+
+  @ViewChild('manageList') manageList: TdLayoutManageListComponent;
+ // @ViewChild('dialogContent') template: TemplateRef<any>;
+
+  public miniNav: boolean = true;
+
+  constructor(
+    public media: TdMediaService,
+    public dialog: MatDialog,
+    private _changeDetectorRef: ChangeDetectorRef,
+    private _iconRegistry: MatIconRegistry,
+    private _domSanitizer: DomSanitizer,
+    public authService: AuthService,
               private fhirService : FhirService,
               public patientEprService : PatientEprService,
             ) {
 
   }
 
-  title="FHIR DocumentRef Viewer";
+  routes = [ {
+    title: 'Logout',
+    route: '/logout',
+    icon: 'exit_to_app',
+  }
+  ];
+
+  btnRoutes = [{
+    title: 'Patient',
+    href: 'patient',
+    icon: 'person',
+  }, {
+    title: 'Import Document',
+    href: 'loaddocument',
+    icon: 'note_addd',
+  }
+  ];
+
+
+  usermenu = [{
+    title: 'Profile',
+    route: '/',
+    icon: 'account_box',
+  }, {
+    title: 'Settings',
+    route: '/',
+    icon: 'settings',
+  },
+  ];
+
+  name="Clinical Assurance Tool";
 
 
   patient : fhir.Patient;
@@ -38,7 +88,9 @@ export class NavComponent implements OnInit {
 
   showMenu : boolean = false;
 
+  section = 'documents';
 
+  href :string = 'patient';
 
   ngOnInit() {
 
@@ -57,9 +109,48 @@ export class NavComponent implements OnInit {
     this.authService.setCookie();
   }
 
-menuToggle() {
-    this.showMenu = !this.showMenu;
-}
+  ngAfterViewInit(): void {
+    // broadcast to all listener observables when loading the page
+    this.media.broadcast();
+    this._changeDetectorRef.detectChanges();
+  }
+
+  toggleMiniNav(): void {
+    this.miniNav = !this.miniNav;
+    setTimeout(() => {
+      this.manageList.sidenav._animationStarted.emit()
+    });
+  }
+  selectSection(section : string) {
+
+    this.patientEprService.setSection(section);
+    this.section = section;
+  }
+
+  menuClick(href : string) {
+    if (href=='patient') {
+      this.patientEprService.set(undefined);
+    }
+    this.href= href;
+  }
+/*
+  openTemplate() {
+    this.dialog.open(this.template, this.config);
+  }
+*/
+  // NGX Charts Axis
+  axisDigits(val: any): any {
+    return new TdDigitsPipe().transform(val);
+  }
+
+  axisDate(val: string): string {
+    return new DatePipe('en').transform(val, 'hh a');
+  }
+
+  menuToggle() {
+      this.showMenu = !this.showMenu;
+  }
+
   growthApp() {
 
     let launch : string = undefined;
@@ -83,6 +174,13 @@ menuToggle() {
     );
     this.authService.setCookie();
 
+  }
+
+  selectPatient(patient : fhir.Patient) {
+    if (patient !=undefined) {
+      this.patientEprService.set(patient);
+      this.href='epr';
+    }
   }
 
   cardiacApp() {

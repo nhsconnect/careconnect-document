@@ -22,6 +22,8 @@ export class PdfViewerComponent implements OnInit {
   totalPages: number;
   isLoaded: boolean = false;
 
+  @Input() binaryId : string;
+
   constructor(private route: ActivatedRoute,
               private fhirService : FhirService,
               private modalService: NgbModal,
@@ -30,8 +32,8 @@ export class PdfViewerComponent implements OnInit {
 
 
   ngOnInit() {
-    let id = this.route.snapshot.paramMap.get('binaryId');
-    this.getDocument(id);
+
+    this.getDocument(this.binaryId);
   }
 
 

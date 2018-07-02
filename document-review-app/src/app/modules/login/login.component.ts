@@ -64,7 +64,7 @@ export class LoginComponent implements OnInit {
           this.subscription = this.fhirService.getOAuthChangeEmitter()
             .subscribe(item => {
               console.log("The Call back ran");
-              this.router.navigate(['home']);
+              this.router.navigate(['epr']);
             });
           this.performLogins();
 

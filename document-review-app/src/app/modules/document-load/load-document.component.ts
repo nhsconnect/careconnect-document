@@ -232,7 +232,10 @@ export class LoadDocumentComponent implements OnInit {
           let resJson: fhir.OperationOutcome = data;
           this.response = data;
           if (resJson.id != undefined) {
-            this.router.navigate(['doc/' + resJson.id]);
+            this.fhirService.getDocumentReference(resJson.id).subscribe( (document) => {
+              this.eprService.documentReference = document;
+              this.eprService.setSection('binary');
+            })
           } else {
                this.postOk('Bundle processed.')
 
@@ -243,8 +246,8 @@ export class LoadDocumentComponent implements OnInit {
           console.log(err.error);
 
           this.response = err.error;
-          if (this.response.issue.length > 0) {
-            if (this.response.issue[0].diagnostics.indexOf('FHIR Document already exists') > -1) {
+          if (this.response.issue != undefined && this.response.issue.length > 0) {
+            if (this.response.issue[0].diagnostics!=undefined && this.response.issue[0].diagnostics.indexOf('FHIR Document already exists') > -1) {
              this.warnDuplicate();
             } else {
               this.showIssue(this.response) ;
@@ -367,7 +370,9 @@ export class LoadDocumentComponent implements OnInit {
           let resJson: fhir.OperationOutcome = data;
           this.response = data;
           console.log(data);
-          this.router.navigate(['epr/' + orignialPatientId]);
+          this.eprService.setSection('document');
+          this.eprService.set(patient);
+          //this.router.navigate(['epr/' + orignialPatientId]);
         },
         err => {
 
@@ -428,8 +433,12 @@ export class LoadDocumentComponent implements OnInit {
         console.log(data);
         let resJson :fhir.OperationOutcome =data;
         this.response = data;
-        if (resJson.id !=undefined) {
-          this.router.navigate(['doc/'+resJson.id ] );
+
+        if (resJson.id != undefined) {
+            this.fhirService.getDocumentReference(resJson.id).subscribe( (document) => {
+              this.eprService.documentReference = document;
+              this.eprService.setSection('binary');
+            })
         } else {
 
           this.showIssue(this.response);

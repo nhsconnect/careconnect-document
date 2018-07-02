@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {FhirService} from "../../service/fhir.service";
 import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
 import {NgbTabset} from "@ng-bootstrap/ng-bootstrap";
@@ -10,10 +10,10 @@ import {PatientEprService} from "../../service/patient-epr.service";
 
 @Component({
   selector: 'app-patient-epr-patient-record',
-  templateUrl: './patient-epr-patient-record.component.html',
-  styleUrls: ['./patient-epr-patient-record.component.css']
+  templateUrl: './epr-record.component.html',
+  styleUrls: ['./epr-record.component.css']
 })
-export class PatientEprPatientRecordComponent implements OnInit {
+export class EprRecordComponent implements OnInit {
 
   composition : fhir.Bundle = undefined;
 
@@ -43,11 +43,10 @@ export class PatientEprPatientRecordComponent implements OnInit {
   immunisations : fhir.Immunization[];
   immsTotal : number;
 
-  patient : fhir.Patient;
-
   patientId : string;
 
-  tabid : string = undefined;
+  @Input()
+  section : string = undefined;
 
   page : number;
 
@@ -65,27 +64,34 @@ export class PatientEprPatientRecordComponent implements OnInit {
 
 
   ngOnInit() {
-    this.patientId = this.route.snapshot.paramMap.get('patientId');
+    this.patientId = this.patientEprService.patient.id;
+
     this.selectPatientEPR(this.patientId);
 
-    this.tabid = this.route.snapshot.paramMap.get('tabid');
-    console.log("Tab = "+this.tabid);
-    if (this.tabid == undefined ) {
-      this.tabid = "documents";
+    this.patientEprService.getSectionChangeEvent().subscribe( (section) => {
+        console.log("Section = "+this.section);
+        this.section = section;
+      }
+    );
+
+    console.log("Section = "+this.section);
+    if (this.section == undefined ) {
+      this.section = "documents";
     }
 
+    /*
     this.router.events.subscribe((val) => {
       // see also
       // console.log(val instanceof NavigationEnd);
       if (val instanceof NavigationEnd) {
         console.log(this.route.snapshot.paramMap.get('tabid'));
-        this.tabid = this.route.snapshot.paramMap.get('tabid');
-        if (this.tabid == undefined ) {
-          this.tabid = "documents";
+        this.section = this.route.snapshot.paramMap.get('tabid');
+        if (this.section == undefined ) {
+          this.section = "documents";
         }
       }
     });
-
+*/
   }
 
 
@@ -126,6 +132,7 @@ export class PatientEprPatientRecordComponent implements OnInit {
     }
   }
 
+
   selectPatientEPR(patientId : string) {
 
     if (this.fhirService.hasScope("Encounter")) {
@@ -140,7 +147,7 @@ export class PatientEprPatientRecordComponent implements OnInit {
         }
       );
     }
-
+/*
     this.fhirService.getEPRPatient(patientId).subscribe(document => {
         this.patient = document;
         this.patientEprService.set(document);
@@ -152,6 +159,9 @@ export class PatientEprPatientRecordComponent implements OnInit {
        }
       }
     );
+    */
+
+
     /*
 
     Needs a Composition creation service which has currently been disabled 12/Apr/2018

@@ -9,6 +9,7 @@ import {LinksService} from "../../service/links.service";
 import {BundleService} from "../../service/bundle.service";
 import {OrganisationDialogComponent} from "../../dialog/organisation-dialog/organisation-dialog.component";
 import {PractitionerDialogComponent} from "../../dialog/practitioner-dialog/practitioner-dialog.component";
+import {PatientEprService} from "../../service/patient-epr.service";
 
 @Component({
   selector: 'app-document-reference',
@@ -31,10 +32,11 @@ export class DocumentReferenceComponent implements OnInit {
 
   displayedColumns = ['open', 'created','type','typelink', 'author','authorLink', 'custodian', 'custodianLink', 'mime', 'status', 'resource'];
 
-  constructor(private router: Router, private FhirService : FhirService,
+  constructor(private router: Router,
               private _dialogService: TdDialogService,
               private _viewContainerRef: ViewContainerRef,
               public fhirService : FhirService,
+              private patientEprService : PatientEprService,
               private linksService : LinksService,
               public dialog: MatDialog,
               public bundleService : BundleService) { }
@@ -64,26 +66,10 @@ export class DocumentReferenceComponent implements OnInit {
   selectDocument(document : fhir.DocumentReference) {
    // console.log("DocumentRef clicked = " + document.id);
     if (document.content != undefined && document.content.length> 0) {
-      let array: string[] = document.content[0].attachment.url.split('/');
-      let documentId: string = array[array.length - 1];
-      // console.log("DocumentRef Id = "+documentId);
 
-      if (documentId != undefined && document.content[0].attachment.contentType == 'application/fhir+xml') {
-        this.router.navigate(['doc/' + documentId]);
-      } else if (documentId != undefined && document.content[0].attachment.contentType == 'application/pdf') {
-        this.router.navigate(['pdf/' + documentId]);
-      } else if (documentId != undefined && document.content[0].attachment.contentType.indexOf('image') != -1) {
-        this.router.navigate(['img/' + documentId]);
-      }
+      this.patientEprService.setDocumentReference(document);
+      this.patientEprService.setSection('binary');
 
-      else {
-        this.FhirService.getBinaryRaw(documentId).subscribe(
-          (res) => {
-            var fileURL = URL.createObjectURL(res);
-            window.open(fileURL);
-          }
-        );
-      }
     } else {
       let alertConfig : IAlertConfig = { message : 'Unable to locate document.'};
       alertConfig.disableClose =  false; // defaults to false
