@@ -229,17 +229,17 @@ export class LoadDocumentComponent implements OnInit {
 
       this.fhirService.postBundle(file, this.getContentType(file)).subscribe(data => {
           console.log(data);
-          let resJson: fhir.OperationOutcome = data;
-          this.response = data;
-          if (resJson.id != undefined) {
-            this.fhirService.getDocumentReference(resJson.id).subscribe( (document) => {
-              this.eprService.documentReference = document;
-              this.eprService.setSection('binary');
-            })
-          } else {
-               this.postOk('Bundle processed.')
 
+
+          for (let entry of data.entry) {
+            if (entry.resource.resourceType == 'Patient') {
+              this.eprService.patient = <fhir.Patient> entry.resource;
+            }
+            if (entry.resource.resourceType == 'DocumentReference') {
+              this.eprService.documentReference = <fhir.DocumentReference> entry.resource;
+            }
           }
+          this.eprService.setSection('binary');
         },
         err => {
 
@@ -274,7 +274,12 @@ export class LoadDocumentComponent implements OnInit {
       console.log('service display '+ this.getDisplayFromCode(this.document.service,this.facilityCodes));
 
       binary.resourceType= 'Binary';
-      let patient = this.document.patients[0];
+      let patient :fhir.Patient = undefined;
+      if (this.eprService.patient != undefined) {
+        patient = this.eprService.patient;
+      } else {
+        patient = this.document.patients[0];
+      }
       let orignialPatientId = patient.id;
       patient.id = uuid();
       patient.resourceType = 'Patient';
@@ -365,14 +370,18 @@ export class LoadDocumentComponent implements OnInit {
       } );
 
 
-      this.fhirService.postBundle(bundle, 'application/json+fhir').subscribe(data => {
+      this.fhirService.postBundle(bundle, 'application/json+fhir').subscribe(data  => {
           console.log(data);
-          let resJson: fhir.OperationOutcome = data;
-          this.response = data;
-          console.log(data);
-          this.eprService.setSection('document');
-          this.eprService.set(patient);
-          //this.router.navigate(['epr/' + orignialPatientId]);
+
+          for (let entry of data.entry) {
+            if (entry.resource.resourceType == 'DocumentReference') {
+              this.eprService.documentReference = <fhir.DocumentReference> entry.resource;
+            }
+            if (entry.resource.resourceType == 'Patient') {
+              this.eprService.patient = <fhir.Patient> entry.resource;
+            }
+          }
+          this.eprService.setSection('binary');
         },
         err => {
 
@@ -431,18 +440,15 @@ export class LoadDocumentComponent implements OnInit {
 
     this.fhirService.putBundle(file,this.getContentType(file)).subscribe( data => {
         console.log(data);
-        let resJson :fhir.OperationOutcome =data;
-        this.response = data;
-
-        if (resJson.id != undefined) {
-            this.fhirService.getDocumentReference(resJson.id).subscribe( (document) => {
-              this.eprService.documentReference = document;
-              this.eprService.setSection('binary');
-            })
-        } else {
-
-          this.showIssue(this.response);
+        for (let entry of data.entry) {
+          if (entry.resource.resourceType == 'Patient') {
+            this.eprService.patient = <fhir.Patient> entry.resource;
+          }
+          if (entry.resource.resourceType == 'DocumentReference') {
+            this.eprService.documentReference = <fhir.DocumentReference> entry.resource;
+          }
         }
+        this.eprService.setSection('binary');
       },
       err  => {
 

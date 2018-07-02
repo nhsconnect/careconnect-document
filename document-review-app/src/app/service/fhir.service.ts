@@ -288,7 +288,7 @@ export class FhirService {
 
 
 
-  postBundle(document: any,contentType : string) : Observable<any> {
+  postBundle(document: any,contentType : string) : Observable<fhir.Bundle> {
 
     let headers :HttpHeaders = this.getEPRHeaders(false);
     headers.append('Content-Type',contentType);
@@ -307,7 +307,7 @@ export class FhirService {
     return this.http.post<fhir.Bundle>(url,document,{ 'headers' :headers});
   }
 
-  putBundle(document: any,contentType : string) : Observable<any> {
+  putBundle(document: any,contentType : string) : Observable<fhir.Bundle> {
 
     let headers :HttpHeaders = this.getEPRHeaders(false);
     headers.append('Content-Type',contentType);

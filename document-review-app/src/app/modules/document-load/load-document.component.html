@@ -29,11 +29,6 @@
       <span *ngIf="notFhir">
 
 
-        <div *ngIf="eprService.patient" >
-          <app-patient [patients]="eprService.patient" ></app-patient>
-          <br>
-          <br>
-        </div>
          <div *ngIf="eprService.patient == undefined" >
            <span *ngIf="document != undefined && document.patients == undefined">
               <app-patient-search (patientSelected)="closePat($event)"></app-patient-search>

@@ -90,7 +90,7 @@ export class EprComponent implements AfterViewInit {
 
   section = 'documents';
 
-  href :string = 'patient';
+  href :string = 'loaddocument';
 
   ngOnInit() {
 
@@ -105,6 +105,11 @@ export class EprComponent implements AfterViewInit {
     this.subPatient = this.patientEprService.getPatientChangeEmitter()
       .subscribe( patient => {
         this.patient = patient;
+      });
+     this.patientEprService.getSectionChangeEvent()
+      .subscribe( section => {
+        this.href = 'epr';
+        this.section =section;
       });
     this.authService.setCookie();
   }
@@ -223,38 +228,38 @@ export class EprComponent implements AfterViewInit {
     return url;
   }
 
-  getLastName() : String {
-    if (this.patient == undefined) return "";
-    if (this.patient.name == undefined || this.patient.name.length == 0)
+  getLastName(patient :fhir.Patient) : String {
+    if (patient == undefined) return "";
+    if (patient.name == undefined || patient.name.length == 0)
       return "";
 
     let name = "";
-    if (this.patient.name[0].family != undefined) name += this.patient.name[0].family.toUpperCase();
+    if (patient.name[0].family != undefined) name += patient.name[0].family.toUpperCase();
     return name;
 
   }
-  getFirstName() : String {
-    if (this.patient == undefined) return "";
-    if (this.patient.name == undefined || this.patient.name.length == 0)
+  getFirstName(patient :fhir.Patient) : String {
+    if (patient == undefined) return "";
+    if (patient.name == undefined || patient.name.length == 0)
       return "";
     // Move to address
     let name = "";
-    if (this.patient.name[0].given != undefined && this.patient.name[0].given.length>0) name += ", "+ this.patient.name[0].given[0];
+    if (patient.name[0].given != undefined && patient.name[0].given.length>0) name += ", "+ patient.name[0].given[0];
 
-    if (this.patient.name[0].prefix != undefined && this.patient.name[0].prefix.length>0) name += " (" + this.patient.name[0].prefix[0] +")" ;
+    if (patient.name[0].prefix != undefined && patient.name[0].prefix.length>0) name += " (" + patient.name[0].prefix[0] +")" ;
     return name;
 
   }
 
-  getNHSIdentifier() : String {
-    if (this.patient == undefined) return "";
-    if (this.patient.identifier == undefined || this.patient.identifier.length == 0)
+  getNHSIdentifier(patient : fhir.Patient) : String {
+    if (patient == undefined) return "";
+    if (patient.identifier == undefined || patient.identifier.length == 0)
       return "";
     // Move to address
     var NHSNumber :String = "";
-    for (var f=0;f<this.patient.identifier.length;f++) {
-      if (this.patient.identifier[f].system.includes("nhs-number") )
-        NHSNumber = this.patient.identifier[f].value;
+    for (var f=0;f<patient.identifier.length;f++) {
+      if (patient.identifier[f].system.includes("nhs-number") )
+        NHSNumber = patient.identifier[f].value;
     }
     return NHSNumber;
 

@@ -24,12 +24,21 @@ export class TokenInterceptor implements HttpInterceptor {
 
     // FHIR resource requests only
        if ((request.url.indexOf(this.fhir.getEPRUrl()) !== -1) && (request.url.indexOf('metadate') == -1 )) {
-         console.log('Does token need refreshing '+ !this.oauth2.isAuthenticated());
-         request = request.clone({
-           setHeaders: {
-             Authorization: `Bearer ${this.oauth2.getToken()}`
-           }
-         });
+         console.log('Does token need refreshing ' + !this.oauth2.isAuthenticated());
+         if (request.method == "PUT" || request.method == "POST") {
+           request = request.clone({
+             setHeaders: {
+               Authorization: `Bearer ${this.oauth2.getToken()}`,
+               Prefer : 'return=representation'
+             }
+           });
+         } else {
+           request = request.clone({
+             setHeaders: {
+               Authorization: `Bearer ${this.oauth2.getToken()}`
+             }
+           });
+         }
          return next.handle(request).pipe(
            tap((event: HttpEvent<any>) => {
                if (event instanceof HttpResponse) {

@@ -81,18 +81,18 @@
 
                 <span *ngIf="patientEprService.patient != undefined">
 
-                    <span> &nbsp;  <b>{{ getLastName() }}</b> {{ getFirstName() }}</span>
+                    <span> &nbsp;  <b>{{ getLastName(patientEprService.patient) }}</b> {{ getFirstName(patientEprService.patient) }}</span>
                     <span class="fill-remaining-space"></span>
                     <span>
-                       &nbsp; <i>DOB: </i><b>{{patient.birthDate | date: 'dd-MMM-yyyy'}}</b>
+                       &nbsp; <i>DOB: </i><b>{{patientEprService.patient.birthDate | date: 'dd-MMM-yyyy'}}</b>
                     </span>
                     <span class="fill-remaining-space"></span>
                     <span>
-                       &nbsp;<i>Gender: </i><b>{{ patient.gender }}</b>
+                       &nbsp;<i>Gender: </i><b>{{ patientEprService.patient.gender }}</b>
                     </span>
                     <span class="fill-remaining-space"></span>
                     <span>
-                       &nbsp;<i>NHS No: </i><b>{{ getNHSIdentifier() }}</b>
+                       &nbsp;<i>NHS No: </i><b>{{ getNHSIdentifier(patientEprService.patient) }}</b>
                     </span>
                 </span>
                 <span *ngIf="patientEprService.patient == undefined">
