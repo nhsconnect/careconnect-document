@@ -27,7 +27,8 @@ export class BundleService {
     let _roles: BehaviorSubject<fhir.PractitionerRole[]> =<BehaviorSubject<fhir.PractitionerRole[]>>new BehaviorSubject([]);
 
 
-    console.log(reference);
+    console.log('BundleService.getRolesForPractitioner ref='+reference);
+
     if (this.bundle != undefined && reference.indexOf('/') == -1) {
       for (let entry of this.bundle.entry) {
         if (entry.resource.resourceType == 'PractitionerRole') {

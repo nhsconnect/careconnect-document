@@ -22,13 +22,17 @@ export class PractitionerRoleDialogComponent implements OnInit {
   {
 
     this.practitioner = data.practitioner;
+    this.useBundle = data.useBundle;
   }
 
   practitioner : fhir.Practitioner;
 
+  useBundle : boolean ;
 
 
   ngOnInit() {
+
+    //console.log('practitioner role dialog '+this.useBundle);
 
 
 

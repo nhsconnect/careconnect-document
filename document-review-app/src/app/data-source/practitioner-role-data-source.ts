@@ -25,6 +25,8 @@ export class PractitionerRoleDataSource extends DataSource<any> {
 
     this.dataStore = { roles : [] };
 
+    console.log('PractitionerRole.connect useBundle = '+this.useBundle);
+
     if (!this.useBundle) {
       this.fhirService.searchPractitionerRoleByPractitioner(this.practitioner.id).subscribe(bundle => {
         if (bundle != undefined && bundle.entry != undefined) {

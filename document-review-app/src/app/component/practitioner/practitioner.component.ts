@@ -6,7 +6,7 @@ import {PractitionerDataSource} from "../../data-source/practitioner-data-source
 import {FhirService} from "../../service/fhir.service";
 import {Observable} from "rxjs/Observable";
 import {BundleService} from "../../service/bundle.service";
-import {MedicationDialogComponent} from "../../dialog/medication-dialog/medication-dialog.component";
+
 import {PractitionerRoleDialogComponent} from "../../dialog/practitioner-role-dialog/practitioner-role-dialog.component";
 
 @Component({
@@ -22,6 +22,8 @@ export class PractitionerComponent implements OnInit {
 
   @Input() useObservable : boolean = false;
 
+  @Input() useBundle : boolean = false;
+
   @Input() showResourceLink : boolean = true;
 
   roles : fhir.PractitionerRole[] = [];
@@ -35,7 +37,10 @@ export class PractitionerComponent implements OnInit {
   dataSource : PractitionerDataSource;
 
   displayedColumns = ['practitioner', 'identifier', 'contact','roles', 'resource'];
+
   ngOnInit() {
+    console.log('Use Bundle = ' +this.useBundle);
+
     if (!this.showResourceLink) {
       this.displayedColumns = ['select','practitioner', 'identifier','roles', 'contact'];
     }
@@ -87,14 +92,16 @@ export class PractitionerComponent implements OnInit {
 
   showRoles(practitioner : fhir.Practitioner) {
 
-    console.log('Calling roles dialog for Practitioner '+ practitioner.id);
+   // console.log('Calling roles dialog for Practitioner '+ practitioner.id + ' useBundle = '+this.useBundle);
+
     const dialogConfig = new MatDialogConfig();
 
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
     dialogConfig.data = {
       id: 1,
-      practitioner: practitioner
+      practitioner: practitioner,
+      useBundle : this.useBundle
     };
     let resourceDialog: MatDialogRef<PractitionerRoleDialogComponent> = this.dialog.open(PractitionerRoleDialogComponent, dialogConfig);
   }

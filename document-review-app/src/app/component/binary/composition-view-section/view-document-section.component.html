@@ -43,7 +43,7 @@
                   </span>
                   <span *ngIf="practitioners.length>0">
                       <h4>Practitioner</h4>
-                      <app-practitioner [practitioners]="practitioners" (practitioner)="onResoureSelected($event)"></app-practitioner>
+                      <app-practitioner [practitioners]="practitioners" [useBundle]="true" (practitioner)="onResoureSelected($event)"></app-practitioner>
                   </span>
                   <span *ngIf="organisations.length>0">
                       <h4>Organisation</h4>

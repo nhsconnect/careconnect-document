@@ -170,17 +170,13 @@ export class ViewDocumentSectionComponent implements OnInit {
               break;
             case "Practitioner":
               let practitioner: fhir.Practitioner = <fhir.Practitioner> resource;
+              practitioner.id = reference.replace('urn:uuid:','');
               this.practitioners.push(practitioner);
-              /*
-              this.bundleService.getRolesForPractitioner(practitioner.id).subscribe(
-                data => {
-                  this.roles = data;
-                }
-              );
-              */
+
               break;
             case "PractitionerRole":
               let practitionerRole: fhir.PractitionerRole = <fhir.PractitionerRole> resource;
+              practitionerRole.id = reference.replace('urn:uuid:','');
               this.roles.push(practitionerRole);
               break;
             case "Organization":

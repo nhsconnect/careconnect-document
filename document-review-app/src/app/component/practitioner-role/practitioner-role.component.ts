@@ -32,7 +32,7 @@ export class PractitionerRoleComponent implements OnInit {
   displayedColumns = ['role', 'specialty', 'organisation','organisationLink','resource'];
 
   ngOnInit() {
-    this.dataSource = new PractitionerRoleDataSource(this.fhirService, this.bundleService, this.practitioner);
+    this.dataSource = new PractitionerRoleDataSource(this.fhirService, this.bundleService, this.practitioner, this.useBundle);
   }
 
   select(resource) {
