@@ -87,7 +87,7 @@ export class PractitionerComponent implements OnInit {
 
   showRoles(practitioner : fhir.Practitioner) {
 
-    console.log('Calling roles dialog for Practitioner '+ practitioner.name.);
+    console.log('Calling roles dialog for Practitioner '+ practitioner.id);
     const dialogConfig = new MatDialogConfig();
 
     dialogConfig.disableClose = true;
