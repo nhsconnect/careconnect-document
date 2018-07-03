@@ -20,8 +20,13 @@ export class BundleService {
     return this.bundle;
   }
 
-  public getPractitionerReference(reference : string)  : fhir.PractitionerRole[] {
-    let roles : fhir.PractitionerRole[] = [];
+  public getRolesForPractitioner(reference : string)  : Observable<fhir.PractitionerRole[]> {
+
+
+    let roles : fhir.PractitionerRole[]  = [];
+    let _roles: BehaviorSubject<fhir.PractitionerRole[]> =<BehaviorSubject<fhir.PractitionerRole[]>>new BehaviorSubject([]);
+
+
     console.log(reference);
     if (this.bundle != undefined && reference.indexOf('/') == -1) {
       for (let entry of this.bundle.entry) {
@@ -35,8 +40,19 @@ export class BundleService {
           }
         }
       }
+      _roles.next(roles);
+      return _roles;
+    } else {
+      this.fhirService.searchPractitionerRoleByPractitioner(reference).subscribe(bundle => {
+        for (let entry of bundle.entry) {
+          console.log(entry.resource.id);
+          let role: fhir.PractitionerRole = <fhir.PractitionerRole> entry.resource;
+          roles.push(<fhir.PractitionerRole> entry.resource);
+        }
+        _roles.next(roles);
+        return _roles;
+      });
     }
-    return roles;
   }
 
   public getResource(reference : string) : Observable<fhir.Resource> {
@@ -57,8 +73,8 @@ export class BundleService {
     } else {
       return this.fhirService.getResource(reference);
     }
-      return _resource;
-    }
+    return _resource;
+  }
 
 
 }

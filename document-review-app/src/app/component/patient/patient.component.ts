@@ -2,13 +2,13 @@
 import {Component, OnInit, Input, EventEmitter, Output} from '@angular/core';
 import {ResourceDialogComponent} from "../../dialog/resource-dialog/resource-dialog.component";
 import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
-import {OrganisationDataSource} from "../../data-source/organisation-data-source";
 import {PatientDataSource} from "../../data-source/patient-data-source";
 import {FhirService} from "../../service/fhir.service";
 import {Observable} from "rxjs/Observable";
 import {PractitionerDialogComponent} from "../../dialog/practitioner-dialog/practitioner-dialog.component";
 import {OrganisationDialogComponent} from "../../dialog/organisation-dialog/organisation-dialog.component";
-import {BundleService} from 'app/service/bundle.service';
+import {BundleService} from "../../service/bundle.service";
+
 
 
 @Component({

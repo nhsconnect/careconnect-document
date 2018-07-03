@@ -493,6 +493,14 @@ export class FhirService {
 
   }
 
+  searchPractitionerRoleByPractitioner(practitioner: string): Observable<fhir.Bundle> {
+    let url =  this.getEPRUrl();
+
+      url =  this.getEPRUrl();
+      return this.http.get<fhir.Bundle>(url + `/PractitionerRole?practitioner=${practitioner}`, { 'headers' : this.getEPRHeaders() });
+
+  }
+
   searchPractitioners(term: string): Observable<fhir.Bundle> {
     let url =  this.getEPRUrl();
     if (!isNaN(parseInt(term))) {

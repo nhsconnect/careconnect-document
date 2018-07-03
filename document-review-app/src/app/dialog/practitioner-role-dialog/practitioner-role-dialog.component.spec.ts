@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PractitionerDialogComponent } from './practitioner-dialog.component';
+import { PractitionerRoleDialogComponent } from './practitioner-role-dialog.component';
 
 describe('PractitionerRoleDialogComponent', () => {
-  let component: PractitionerDialogComponent;
-  let fixture: ComponentFixture<PractitionerDialogComponent>;
+  let component: PractitionerRoleDialogComponent;
+  let fixture: ComponentFixture<PractitionerRoleDialogComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PractitionerDialogComponent ]
+      declarations: [ PractitionerRoleDialogComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PractitionerDialogComponent);
+    fixture = TestBed.createComponent(PractitionerRoleDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

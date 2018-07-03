@@ -1,6 +1,7 @@
 import {Component, Inject, Input, OnInit} from '@angular/core';
 
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
+import {Observable} from "rxjs/Observable";
 
 declare var $: any;
 
@@ -20,7 +21,8 @@ export class OrganisationDialogComponent implements OnInit {
 
     @Inject(MAT_DIALOG_DATA) data) {
     this.organisations = data.organisations;
-    //this.organisationId = data.organisationId;
+    this.organisationsObservable = data.organisationsObservable;
+    this.useObservable =data.useObservable;
   }
 
   @Input()
@@ -29,6 +31,10 @@ export class OrganisationDialogComponent implements OnInit {
   @Input()
   organisationId : string;
 
+  @Input()
+  useObservable : boolean = false;
+
+  organisationsObservable : Observable<fhir.Organization>;
 
   ngOnInit() {
 

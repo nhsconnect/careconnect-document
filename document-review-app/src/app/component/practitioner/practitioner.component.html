@@ -48,9 +48,7 @@
     <ng-container matColumnDef="roles">
       <th mat-header-cell *matHeaderCellDef width="8%"> Roles </th>
       <td mat-cell *matCellDef="let practitioner">
-        <span *ngIf="roles !=undefined && roles.length > 0">
-        <button mat-icon-button color="accent"  ngbTooltip="Select Practitioner" (click)="selectPractitioner(practitioner)"><mat-icon>collections_bookmark</mat-icon></button>
-          </span>
+        <button mat-icon-button color="accent"  ngbTooltip="Show Roles" (click)="showRoles(practitioner)"><mat-icon>group</mat-icon></button>
       </td>
     </ng-container>
 

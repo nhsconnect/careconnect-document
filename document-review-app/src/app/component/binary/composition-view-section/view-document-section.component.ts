@@ -74,6 +74,7 @@ export class ViewDocumentSectionComponent implements OnInit {
     if (section.entry != undefined) {
       for (let entry  of section.entry) {
         this.getReferencedItem(entry.reference);
+
       }
     }
   }
@@ -170,6 +171,13 @@ export class ViewDocumentSectionComponent implements OnInit {
             case "Practitioner":
               let practitioner: fhir.Practitioner = <fhir.Practitioner> resource;
               this.practitioners.push(practitioner);
+              /*
+              this.bundleService.getRolesForPractitioner(practitioner.id).subscribe(
+                data => {
+                  this.roles = data;
+                }
+              );
+              */
               break;
             case "PractitionerRole":
               let practitionerRole: fhir.PractitionerRole = <fhir.PractitionerRole> resource;

@@ -1,11 +1,13 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
 import {ResourceDialogComponent} from "../../dialog/resource-dialog/resource-dialog.component";
-import {OrganisationDataSource} from "../../data-source/organisation-data-source";
+
 import {PractitionerDataSource} from "../../data-source/practitioner-data-source";
 import {FhirService} from "../../service/fhir.service";
 import {Observable} from "rxjs/Observable";
 import {BundleService} from "../../service/bundle.service";
+import {MedicationDialogComponent} from "../../dialog/medication-dialog/medication-dialog.component";
+import {PractitionerRoleDialogComponent} from "../../dialog/practitioner-role-dialog/practitioner-role-dialog.component";
 
 @Component({
   selector: 'app-practitioner',
@@ -45,9 +47,7 @@ export class PractitionerComponent implements OnInit {
     }
   }
 
-  getRoles(practitioner : fhir.PractitionerRole) : fhir.PractitionerRole[] {
-    return this.bundleService.getPractitionerReference(practitioner.id);
-  }
+
 
   getLastName(practitioner : fhir.Practitioner) : String {
     if (practitioner == undefined) return "";
@@ -83,6 +83,20 @@ export class PractitionerComponent implements OnInit {
 
   selectPractitioner(practitioner : fhir.Practitioner) {
     this.practitioner.emit(practitioner);
+  }
+
+  showRoles(practitioner : fhir.Practitioner) {
+
+    console.log('Calling roles dialog for Practitioner '+ practitioner.name.);
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.data = {
+      id: 1,
+      practitioner: practitioner
+    };
+    let resourceDialog: MatDialogRef<PractitionerRoleDialogComponent> = this.dialog.open(PractitionerRoleDialogComponent, dialogConfig);
   }
 
   select(resource) {
