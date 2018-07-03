@@ -5,6 +5,9 @@ import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
 import {ConditionDataSource} from "../../data-source/condition-data-source";
 import {ProcedureDataSource} from "../../data-source/procedure-data-source";
 import {FhirService} from "../../service/fhir.service";
+import {PractitionerDialogComponent} from "../../dialog/practitioner-dialog/practitioner-dialog.component";
+import {EncounterDialogComponent} from "../../dialog/encounter-dialog/encounter-dialog.component";
+import {BundleService} from "../../service/bundle.service";
 
 @Component({
   selector: 'app-procedure',
@@ -19,11 +22,14 @@ export class ProcedureComponent implements OnInit {
 
   @Input() patientId : string;
 
+  @Input() useBundle :boolean = false;
+
   dataSource : ProcedureDataSource;
 
-  displayedColumns = ['performed', 'code','codelink','status', 'bodysite', 'complication', 'resource'];
+  displayedColumns = ['performed', 'code','codelink','status', 'bodysite', 'complication','contextLink', 'resource'];
 
   constructor(private linksService : LinksService,
+              public bundleService : BundleService,
               public dialog: MatDialog,
               public fhirService : FhirService) { }
 
@@ -46,6 +52,31 @@ export class ProcedureComponent implements OnInit {
     if (this.linksService.isSNOMED(code.system)) {
       window.open(this.linksService.getSNOMEDLink(code), "_blank");
     }
+  }
+
+  showEncounter(procedure : fhir.Procedure) {
+    let contexts = [];
+
+
+    this.bundleService.getResource(procedure.context.reference).subscribe((encounter) => {
+        if (encounter != undefined && encounter.resourceType === "Encounter") {
+          contexts.push(<fhir.Encounter> encounter);
+
+          const dialogConfig = new MatDialogConfig();
+
+          dialogConfig.disableClose = true;
+          dialogConfig.autoFocus = true;
+          // dialogConfig.width="800px";
+          dialogConfig.data = {
+            id: 1,
+            encounters : contexts,
+            useBundle : this.useBundle
+          };
+          let resourceDialog: MatDialogRef<EncounterDialogComponent> = this.dialog.open(EncounterDialogComponent, dialogConfig);
+        }
+      }
+    );
+
   }
   select(resource) {
     const dialogConfig = new MatDialogConfig();

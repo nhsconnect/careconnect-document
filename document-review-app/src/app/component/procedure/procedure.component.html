@@ -75,6 +75,14 @@
       <td mat-cell *matCellDef="let procedure"> {{procedure.status}} </td>
     </ng-container>
 
+    <ng-container matColumnDef="contextLink">
+      <th mat-header-cell *matHeaderCellDef width="5%">Visit</th>
+      <td mat-cell *matCellDef="let procedure">
+        <span *ngIf="procedure.context != undefined">
+          <button mat-icon-button color="accent"  ngbTooltip="View Encounter" (click)="showEncounter(procedure)"><mat-icon>today</mat-icon></button>
+        </span>
+      </td>
+    </ng-container>
 
     <ng-container matColumnDef="resource">
       <th mat-header-cell *matHeaderCellDef width="5%">FHIR</th>

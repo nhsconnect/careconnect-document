@@ -5,30 +5,30 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
 declare var $: any;
 
 @Component({
-  selector: 'app-practitioner-dialog',
-  templateUrl: './practitioner-dialog.component.html',
-  styleUrls: ['./practitioner-dialog.component.css']
+  selector: 'app-encounter-dialog',
+  templateUrl: './encounter-dialog.component.html',
+  styleUrls: ['./encounter-dialog.component.css']
 })
-export class PractitionerDialogComponent implements OnInit {
+export class EncounterDialogComponent implements OnInit {
 
 
   //https://stackoverflow.com/questions/44987260/how-to-add-jstree-to-angular-2-application-using-typescript-with-types-jstree
 
 
   constructor(
-    public dialogRef: MatDialogRef<PractitionerDialogComponent>,
+    public dialogRef: MatDialogRef<EncounterDialogComponent>,
 
     @Inject(MAT_DIALOG_DATA) data) {
-    this.practitioners = data.practitioners;
-    this.practitionerId = data.practitionerId;
+    this.encounters = data.encounters;
+    this.encounterId = data.encounterId;
     this.useBundle = data.useBundle;
   }
 
   @Input()
-  practitioners : fhir.Practitioner[];
+  encounters : fhir.Encounter[];
 
   @Input()
-  practitionerId : string;
+  encounterId : string;
 
   useBundle : boolean;
 

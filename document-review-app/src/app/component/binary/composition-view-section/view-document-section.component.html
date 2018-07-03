@@ -55,7 +55,7 @@
                   </span>
                   <span *ngIf="encounters.length>0">
                       <h4>Encounter</h4>
-                      <app-encounter [encounters]="encounters" (encounter)="onResoureSelected($event)"></app-encounter>
+                      <app-encounter [encounters]="encounters" [useBundle]="true" (encounter)="onResoureSelected($event)"></app-encounter>
                   </span>
                   <span *ngIf="medicationStatements.length>0">
                       <h4>Medication Statement</h4>
@@ -63,11 +63,11 @@
                   </span>
                   <span *ngIf="conditions.length>0">
                       <h4>Conditions</h4>
-                      <app-condition [conditions]="conditions" (condition)="onResoureSelected($event)"></app-condition>
+                      <app-condition [conditions]="conditions" [useBundle]="true" (condition)="onResoureSelected($event)"></app-condition>
                   </span>
                   <span *ngIf="procedures.length>0">
                       <h4>Procedure</h4>
-                      <app-procedure [procedures]="procedures" (procedure)="onResoureSelected($event)"></app-procedure>
+                      <app-procedure [procedures]="procedures" [useBundle]="true" (procedure)="onResoureSelected($event)"></app-procedure>
                   </span>
                   <span *ngIf="medications.length > 0">
                       <h4>Medications</h4>

@@ -39,7 +39,16 @@ export class PractitionerRoleDataSource extends DataSource<any> {
         _roles.next(Object.assign({}, this.dataStore).roles);
       });
     } else {
-      this.bundleService.getRolesForPractitioner(this.practitioner.id);
+      this.bundleService.getRolesForPractitioner(this.practitioner.id).subscribe(roles => {
+        if (roles != undefined ) {
+          for (let role of roles) {
+            console.log('role = ' + role);
+            this.dataStore.roles.push(<fhir.PractitionerRole> role);
+
+          }
+        }
+        _roles.next(Object.assign({}, this.dataStore).roles);
+      });
     }
     return _roles.asObservable();
   }

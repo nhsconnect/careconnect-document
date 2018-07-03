@@ -102,6 +102,7 @@ import {HealthcareServiceComponent} from "./component/healthcare-service/healthc
 import {RouterModule} from "@angular/router";
 import {BinaryComponent} from './component/binary/binary/binary.component';
 import {PractitionerRoleDialogComponent} from "./dialog/practitioner-role-dialog/practitioner-role-dialog.component";
+import {EncounterDialogComponent} from "./dialog/encounter-dialog/encounter-dialog.component";
 
 
 @NgModule({
@@ -156,7 +157,8 @@ import {PractitionerRoleDialogComponent} from "./dialog/practitioner-role-dialog
     PractitionerRoleComponent,
     HealthcareServiceComponent,
     BinaryComponent,
-    PractitionerRoleDialogComponent
+    PractitionerRoleDialogComponent,
+    EncounterDialogComponent
   ],
   entryComponents: [
     ResourceDialogComponent,
@@ -165,7 +167,8 @@ import {PractitionerRoleDialogComponent} from "./dialog/practitioner-role-dialog
     LocationDialogComponent,
     PractitionerDialogComponent,
     OrganisationDialogComponent,
-    PractitionerRoleDialogComponent
+    PractitionerRoleDialogComponent,
+    EncounterDialogComponent
   ],
   imports: [
     BrowserModule,
