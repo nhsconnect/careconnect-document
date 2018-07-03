@@ -31,6 +31,8 @@ export class EncounterComponent implements OnInit {
 
   @Input() patientId : string;
 
+  @Input() useBundle :boolean = false;
+
   dataSource : EncounterDataSource;
 
   displayedColumns = ['start','end', 'type','typelink','provider','providerLink','participant','participantLink', 'locationLink','resource'];
@@ -62,7 +64,7 @@ export class EncounterComponent implements OnInit {
     }
   }
 
-  showLocation(encounter) {
+  showLocation(encounter : fhir.Encounter) {
 
 
     this.locations = [];
@@ -92,28 +94,53 @@ export class EncounterComponent implements OnInit {
 
   }
 
-  showOrganisation(encounter) {
-    const dialogConfig = new MatDialogConfig();
+  showOrganisation(encounter : fhir.Encounter) {
+    let organisations = [];
 
-    dialogConfig.disableClose = true;
-    dialogConfig.autoFocus = true;
-    dialogConfig.data = {
-      id: 1,
-      organisations : encounter
-    };
-    let resourceDialog : MatDialogRef<OrganisationDialogComponent> = this.dialog.open( OrganisationDialogComponent, dialogConfig);
+    this.bundleService.getResource(encounter.serviceProvider.reference).subscribe((organisation) => {
+
+      if (organisation != undefined && organisation.resourceType === "Organization") {
+
+        organisations.push(<fhir.Organization> organisation);
+
+        const dialogConfig = new MatDialogConfig();
+
+        dialogConfig.disableClose = true;
+        dialogConfig.autoFocus = true;
+        // dialogConfig.width="800px";
+        dialogConfig.data = {
+          id: 1,
+          organisations: organisations
+        };
+        let resourceDialog: MatDialogRef<OrganisationDialogComponent> = this.dialog.open(OrganisationDialogComponent, dialogConfig);
+
+      }
+    });
   }
 
-  showPractitioner(encounter) {
-    const dialogConfig = new MatDialogConfig();
+  showPractitioner(encounter :fhir.Encounter) {
+    let practitioners = [];
 
-    dialogConfig.disableClose = true;
-    dialogConfig.autoFocus = true;
-    dialogConfig.data = {
-      id: 1,
-      practitioners: encounter
-    };
-    let resourceDialog : MatDialogRef<PractitionerDialogComponent> = this.dialog.open( PractitionerDialogComponent, dialogConfig);
+    for (let practitionerReference of encounter.participant) {
+      this.bundleService.getResource(practitionerReference.individual.reference).subscribe((practitioner) => {
+          if (practitioner != undefined && practitioner.resourceType === "Practitioner") {
+            practitioners.push(<fhir.Practitioner> practitioner);
+
+            const dialogConfig = new MatDialogConfig();
+
+            dialogConfig.disableClose = true;
+            dialogConfig.autoFocus = true;
+            // dialogConfig.width="800px";
+            dialogConfig.data = {
+              id: 1,
+              practitioners: practitioners,
+              useBundle : this.useBundle
+            };
+            let resourceDialog: MatDialogRef<PractitionerDialogComponent> = this.dialog.open(PractitionerDialogComponent, dialogConfig);
+          }
+        }
+      );
+    }
   }
   select(resource) {
     const dialogConfig = new MatDialogConfig();

@@ -21,6 +21,7 @@ export class PractitionerDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) data) {
     this.practitioners = data.practitioners;
     this.practitionerId = data.practitionerId;
+    this.useBundle = data.use;
   }
 
   @Input()
@@ -28,6 +29,8 @@ export class PractitionerDialogComponent implements OnInit {
 
   @Input()
   practitionerId : string;
+
+  useBundle : boolean;
 
 
   ngOnInit() {
