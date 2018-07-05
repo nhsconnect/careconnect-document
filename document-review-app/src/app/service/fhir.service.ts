@@ -133,7 +133,7 @@ export class FhirService {
     if (localStorage.getItem('access_token')!= undefined) {
       // access token is present so forgo access token retrieval
       this.authService.updateUser();
-      this.router.navigateByUrl('epr');
+      this.router.navigateByUrl('fdms');
     } else {
 
       const url = this.authoriseUri + '?client_id=' + clientId + '&response_type=code&redirect_uri='+document.baseURI+'/callback&aud=https://test.careconnect.nhs.uk';
