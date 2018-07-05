@@ -18,7 +18,18 @@
   </span> -->
   <span >
     <div>
-
+      <!-- needs cdk sorting covalent2?
+      <td-file-upload #singleFileUpload [(ngModel)]="files" (select)="selectEvent($event)" (upload)="uploadEvent($event)" (cancel)="cancelEvent()"  required>
+        <mat-icon>file_upload</mat-icon><span>{{ singleFileUpload.value?.name }}</span>
+        <ng-template td-file-input-label>
+          <mat-icon>attach_file</mat-icon>
+          <span>
+            Choose a file...
+            <span [hidden]="!singleFileUpload?.required">*</span>
+          </span>
+        </ng-template>
+      </td-file-upload>
+      -->
       <input type="file" id="fileName2" name="fileName2" class="ng-hide" (change)="fileChange($event)" placeholder="Upload file" accept=".json,.xml,.pdf,.doc,.docx,.jpg,.html" [formControl]="documentForm.controls['fileName']" formControlName="fileName">
      <!-- <label for="fileName2" class="md-button md-raised md-primary">Choose files</label> -->
       <div *ngIf="fileName.invalid && (fileName.dirty)"

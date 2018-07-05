@@ -77,11 +77,11 @@ import {
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {MAT_MOMENT_DATE_FORMATS, MatMomentDateModule, MomentDateAdapter} from "@angular/material-moment-adapter";
 import {
-  CovalentDialogsModule,
+  CovalentDialogsModule, CovalentFileModule,
 
   CovalentJsonFormatterModule,
   CovalentLayoutModule, CovalentMediaModule,
-  CovalentMenuModule, CovalentNotificationsModule
+  CovalentMenuModule, CovalentNotificationsModule, TdFileInputComponent
 
 } from "@covalent/core";
 import {CovalentHttpModule} from "@covalent/http";
@@ -222,6 +222,7 @@ import {PingComponent} from "./modules/ping/ping.component";
     CovalentDialogsModule,
     CovalentMediaModule,
     CovalentNotificationsModule
+
    // CovalentFileModule
 
 /*
