@@ -35,7 +35,7 @@ import {LoginComponent} from "./modules/login/login.component";
 
 
 import {LinksService} from "./service/links.service";
-import {PatientEprService} from "./service/patient-epr.service";
+import {EprService} from "./service/epr.service";
 import {ObservationDetailComponent} from "./component/observation-detail/observation-detail.component";
 import {Ng2GoogleChartsModule} from "ng2-google-charts";
 import {CareGoogleChartComponent} from "./component/care-google-chart/care-google-chart.component";
@@ -72,7 +72,7 @@ import {
   MatDatepickerModule, MatDialogModule, MatGridListModule, MatIcon, MatIconRegistry, MatIconModule,
   MatInputModule, MatListModule, MatPaginatorModule, MatSelectModule,
 
-  MatSidenavModule, MatTableModule, MatToolbarModule
+  MatSidenavModule, MatTableModule, MatToolbarModule, MatSnackBarModule, MatMenuModule
 } from "@angular/material";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {MAT_MOMENT_DATE_FORMATS, MatMomentDateModule, MomentDateAdapter} from "@angular/material-moment-adapter";
@@ -81,7 +81,7 @@ import {
 
   CovalentJsonFormatterModule,
   CovalentLayoutModule, CovalentMediaModule,
-  CovalentMenuModule
+  CovalentMenuModule, CovalentNotificationsModule
 
 } from "@covalent/core";
 import {CovalentHttpModule} from "@covalent/http";
@@ -203,6 +203,8 @@ import {PingComponent} from "./modules/ping/ping.component";
     MatGridListModule,
     MatDialogModule,
     MatPaginatorModule,
+    MatMenuModule,
+    MatSnackBarModule,
 
 
     CovalentLayoutModule,
@@ -218,7 +220,8 @@ import {PingComponent} from "./modules/ping/ping.component";
     CovalentJsonFormatterModule,
     CovalentMenuModule,
     CovalentDialogsModule,
-    CovalentMediaModule
+    CovalentMediaModule,
+    CovalentNotificationsModule
    // CovalentFileModule
 
 /*
@@ -231,7 +234,7 @@ import {PingComponent} from "./modules/ping/ping.component";
     //,ObservationDataSource
     , AuthService
     ,LinksService
-    ,PatientEprService
+    ,EprService
     ,AuthGuard
     ,CookieService
     ,KeycloakService

@@ -1,6 +1,6 @@
 import {Component, Inject, Input, OnInit} from '@angular/core';
 import integer = fhir.integer;
-import {PatientEprService} from "../../service/patient-epr.service";
+import {EprService} from "../../service/epr.service";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
 
 declare var $: any;
@@ -18,7 +18,7 @@ export class ResourceDialogComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<ResourceDialogComponent>,
-    public patientEPRService : PatientEprService,
+    public patientEPRService : EprService,
     @Inject(MAT_DIALOG_DATA) data) {
     this.resource = data.resource;
   }

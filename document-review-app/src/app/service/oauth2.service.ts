@@ -14,7 +14,16 @@ export class Oauth2Service {
     const helper = new JwtHelperService();
     // return a boolean reflecting
     // whether or not the token is expired
+
     return helper.isTokenExpired(token);
+  }
+
+  public getUser() : string {
+    const token = this.getToken();
+    const helper = new JwtHelperService();
+    console.log('Token '+token);
+    let retStr = helper.decodeToken(token)
+    return retStr;
   }
 
 }

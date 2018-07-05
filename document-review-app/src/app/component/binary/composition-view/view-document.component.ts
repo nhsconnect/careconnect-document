@@ -2,7 +2,7 @@ import {Component, Input, OnInit, ViewChild, ViewContainerRef} from '@angular/co
 import {ActivatedRoute} from "@angular/router";
 import {FhirService} from "../../../service/fhir.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {PatientEprService} from "../../../service/patient-epr.service";
+import {EprService} from "../../../service/epr.service";
 import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
 import {ResourceDialogComponent} from "../../../dialog/resource-dialog/resource-dialog.component";
 import {IAlertConfig, TdDialogService} from "@covalent/core";

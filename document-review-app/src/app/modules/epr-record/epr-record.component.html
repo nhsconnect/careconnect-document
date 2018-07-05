@@ -20,7 +20,7 @@
   </mat-card-content>
 </mat-card>
 
-<mat-card *ngIf="section== 'conditions' ">
+<mat-card *ngIf="section== 'conditions' || section== 'summary' ">
   <mat-card-title>Conditions</mat-card-title>
   <mat-card-content>
     <app-condition [patientId]="patientId" ></app-condition>
@@ -48,14 +48,14 @@
   </mat-card-content>
 </mat-card>
 
-<mat-card *ngIf="section== 'medicationbag' ">
+<mat-card *ngIf="section== 'medicationbag' || section== 'summary'  ">
   <mat-card-title>Statement</mat-card-title>
   <mat-card-content>
     <app-medication-statement [patientId]="patientId" ></app-medication-statement>
   </mat-card-content>
 </mat-card>
 
-<mat-card *ngIf="section== 'allergy' ">
+<mat-card *ngIf="section== 'allergy' || section== 'summary' ">
   <mat-card-title>Allergy and Intollerances</mat-card-title>
   <mat-card-content>
     <app-allergy-intollerance [patientId]="patientId" ></app-allergy-intollerance>

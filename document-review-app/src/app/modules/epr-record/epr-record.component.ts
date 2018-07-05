@@ -3,7 +3,7 @@ import {FhirService} from "../../service/fhir.service";
 import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
 import {NgbTabset} from "@ng-bootstrap/ng-bootstrap";
 import {LinksService} from "../../service/links.service";
-import {PatientEprService} from "../../service/patient-epr.service";
+import {EprService} from "../../service/epr.service";
 
 
 
@@ -58,7 +58,7 @@ export class EprRecordComponent implements OnInit {
   constructor(private fhirService: FhirService,
               private route: ActivatedRoute,
               private linksService : LinksService,
-              private patientEprService : PatientEprService,
+              private patientEprService : EprService,
               private router : Router
               ) { }
 
@@ -66,7 +66,7 @@ export class EprRecordComponent implements OnInit {
   ngOnInit() {
     this.patientId = this.patientEprService.patient.id;
 
-    this.selectPatientEPR(this.patientId);
+    //this.selectPatientEPR(this.patientId);
 
     this.patientEprService.getSectionChangeEvent().subscribe( (section) => {
         console.log("Section = "+this.section);
@@ -79,37 +79,10 @@ export class EprRecordComponent implements OnInit {
       this.section = "documents";
     }
 
-    /*
-    this.router.events.subscribe((val) => {
-      // see also
-      // console.log(val instanceof NavigationEnd);
-      if (val instanceof NavigationEnd) {
-        console.log(this.route.snapshot.paramMap.get('tabid'));
-        this.section = this.route.snapshot.paramMap.get('tabid');
-        if (this.section == undefined ) {
-          this.section = "documents";
-        }
-      }
-    });
-*/
+
   }
 
 
-/*
-  selectEncounter(encounter : fhir.Encounter) {
-    this.encounterEnabled = true;
-    this.encounterDate = encounter.period.start;
-
-    this.fhirService.getEPREncounter(encounter.id).subscribe(
-      document => {
-        this.encounterdoc = document;
-        this.tabs.select("tab-encounterdoc");
-
-
-      }
-    )
-  }
-*/
   isSNOMED(system: string) : boolean {
     if (system == undefined) return false;
     if (system == "http://snomed.info/sct")
@@ -132,144 +105,4 @@ export class EprRecordComponent implements OnInit {
     }
   }
 
-
-  selectPatientEPR(patientId : string) {
-
-    if (this.fhirService.hasScope("Encounter")) {
-      this.fhirService.getEPREncounters(patientId).subscribe(data => {
-          this.encounters = [];
-          if (data.entry != undefined) {
-            this.encTotal = data.total;
-            for (let entNo = 0; entNo < data.entry.length; entNo++) {
-              this.encounters.push(<fhir.Encounter>data.entry[entNo].resource);
-            }
-          }
-        }
-      );
-    }
-/*
-    this.fhirService.getEPRPatient(patientId).subscribe(document => {
-        this.patient = document;
-        this.patientEprService.set(document);
-      },
-      error => {
-        console.log(error);
-       if (error.status = 401) {
-        // this.authService.logout();
-       }
-      }
-    );
-    */
-
-
-    /*
-
-    Needs a Composition creation service which has currently been disabled 12/Apr/2018
-
-    this.fhirService.getEPRSCRDocument(patientId).subscribe(document => {
-        this.composition = document;
-        console.log("Bundle Retrieved");
-        if (document.entry != undefined) {
-
-          for (let entNo = 0; entNo < document.entry.length; entNo++) {
-            if (document.entry[entNo].resource.resourceType==="Patient")
-                this.patient = <fhir.Patient> document.entry[entNo].resource;
-          }
-        }
-          }, err => {
-      }
-    );
-    */
-
-    /* Called when required
-    if (this.fhirService.hasScope("Observation")) {
-
-      this.fhirService.getEPRObservations(patientId).subscribe(data => {
-          this.observations = [];
-          if (data.entry != undefined) {
-            this.obsTotal = data.total;
-            for (let entNo = 0; entNo < data.entry.length; entNo++) {
-              this.observations.push(<fhir.Observation>data.entry[entNo].resource);
-            }
-          }
-        }
-      );
-    }
-    if (this.fhirService.hasScope("Procedure")) {
-      this.fhirService.getEPRProcedures(patientId).subscribe(data => {
-          this.procedures = [];
-          if (data.entry != undefined) {
-            this.procTotal = data.total;
-            for (let entNo = 0; entNo < data.entry.length; entNo++) {
-              this.procedures.push(<fhir.Procedure>data.entry[entNo].resource);
-            }
-          }
-        }
-      );
-    }
-
-    if (this.fhirService.hasScope("MedicationRequest")) {
-      this.fhirService.getEPRMedicationRequests(patientId).subscribe(data => {
-          this.prescriptions = [];
-          if (data.entry != undefined) {
-            this.presTotal = data.total;
-            for (let entNo = 0; entNo < data.entry.length; entNo++) {
-              this.prescriptions.push(<fhir.MedicationRequest>data.entry[entNo].resource);
-            }
-          }
-        }
-      );
-    }
-
-    if (this.fhirService.hasScope("Condition")) {
-      this.fhirService.getEPRConditions(patientId).subscribe(data => {
-          this.conditions = [];
-          if (data.entry != undefined) {
-            this.conditionTotal = data.total;
-            for (let entNo = 0; entNo < data.entry.length; entNo++) {
-              this.conditions.push(<fhir.Condition>data.entry[entNo].resource);
-            }
-          }
-        }
-      );
-    }
-
-    if (this.fhirService.hasScope("Immunization")) {
-      this.fhirService.getEPRImmunisations(patientId).subscribe(data => {
-          this.immunisations = [];
-          if (data.entry != undefined) {
-            this.immsTotal = data.total;
-            for (let entNo = 0; entNo < data.entry.length; entNo++) {
-              this.immunisations.push(<fhir.Immunization>data.entry[entNo].resource);
-            }
-          }
-        }
-      );
-    }
-    if (this.fhirService.hasScope("AllergyIntolerance")) {
-      this.fhirService.getEPRAllergies(patientId).subscribe(data => {
-          this.allergies = [];
-          if (data.entry != undefined) {
-            this.allergiesTotal = data.total;
-            for (let entNo = 0; entNo < data.entry.length; entNo++) {
-              this.allergies.push(<fhir.AllergyIntolerance>data.entry[entNo].resource);
-            }
-          }
-        }
-      );
-    }
-    */
-    if (this.fhirService.hasScope("DocumentReference")) {
-      this.fhirService.getEPRDocuments(patientId).subscribe(data => {
-          this.documents = [];
-          if (data.entry != undefined) {
-            this.documentsTotal = data.total;
-            for (let entNo = 0; entNo < data.entry.length; entNo++) {
-              this.documents.push(<fhir.DocumentReference>data.entry[entNo].resource);
-            }
-          }
-        }
-      );
-    }
-  }
 }

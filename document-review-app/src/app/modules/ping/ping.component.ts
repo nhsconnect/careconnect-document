@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {AuthService} from '../../service/auth.service';
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import {FhirService} from "../../service/fhir.service";
-import {PatientEprService} from "../../service/patient-epr.service";
+import {EprService} from "../../service/epr.service";
 
 import {KeycloakService} from "../../service/keycloak.service";
 
@@ -10,7 +10,7 @@ import {KeycloakService} from "../../service/keycloak.service";
 @Component({
   selector: 'app-ping',
   templateUrl: './ping.component.html',
-  styleUrls: ['./PINGlogin.component.css']
+  styleUrls: ['./ping.component.css']
 })
 export class PingComponent implements OnInit {
 

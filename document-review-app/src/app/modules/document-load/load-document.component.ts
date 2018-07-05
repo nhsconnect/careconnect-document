@@ -4,7 +4,7 @@ import {HttpClient} from "@angular/common/http";
 import {AuthService} from "../../service/auth.service";
 import {FhirService} from "../../service/fhir.service";
 import {Router} from "@angular/router";
-import {PatientEprService} from "../../service/patient-epr.service";
+import {EprService} from "../../service/epr.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {FormControl, FormGroup, ValidationErrors, Validators} from "@angular/forms";
 import {DocumentRef} from "../../model/document-ref";
@@ -61,7 +61,7 @@ export class LoadDocumentComponent implements OnInit {
               private router: Router,
               public auth : AuthService,
               private fhirService : FhirService,
-              public eprService : PatientEprService,
+              public eprService : EprService,
               private modalService : NgbModal,
               private _dialogService: TdDialogService,
               private _viewContainerRef: ViewContainerRef,
@@ -154,6 +154,8 @@ export class LoadDocumentComponent implements OnInit {
     'created' : new FormControl(this.document.docDate, [ Validators.required])
 
     });
+
+
 
     // Assign current form group
     console.log('composition validation');

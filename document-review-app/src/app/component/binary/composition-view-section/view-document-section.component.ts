@@ -3,7 +3,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 import {isNumber} from "util";
 import {LinksService} from "../../../service/links.service";
-import {PatientEprService} from "../../../service/patient-epr.service";
+import {EprService} from "../../../service/epr.service";
 import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
 import {BundleService} from "../../../service/bundle.service";
 import {ResourceDialogComponent} from "../../../dialog/resource-dialog/resource-dialog.component";
@@ -43,7 +43,7 @@ export class ViewDocumentSectionComponent implements OnInit {
   constructor(private modalService: NgbModal,
               public dialog: MatDialog,
               private linksService : LinksService,
-              public patientEPRService : PatientEprService,
+              public patientEPRService : EprService,
               public bundleService : BundleService 
   ) { }
 

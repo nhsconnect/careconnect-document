@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {PatientEprService} from "../../service/patient-epr.service";
+import {EprService} from "../../service/epr.service";
 import {Router} from "@angular/router";
 
 @Component({
@@ -9,7 +9,7 @@ import {Router} from "@angular/router";
 })
 export class PatientFindComponent implements OnInit {
 
-  constructor(private patientChange : PatientEprService,  private router: Router) { }
+  constructor(private patientChange : EprService, private router: Router) { }
 
   ngOnInit() {
     this.patientChange.clear();

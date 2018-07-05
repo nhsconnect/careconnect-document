@@ -41,7 +41,7 @@ export class FhirService {
                 ,private authService: AuthService
                 , private router: Router
                 , private platformLocation: PlatformLocation
-                , private oauth2 : Oauth2Service
+                , private oauth2service : Oauth2Service
                 ) { }
 
   getHeaders(contentType : boolean = true ): HttpHeaders {
@@ -132,8 +132,16 @@ export class FhirService {
 
     if (localStorage.getItem('access_token')!= undefined) {
       // access token is present so forgo access token retrieval
+
       this.authService.updateUser();
-      this.router.navigateByUrl('fdms');
+      // Check token expiry
+      if (!this.oauth2service.isAuthenticated()) {
+        const url = this.authoriseUri + '?client_id=' + clientId + '&response_type=code&redirect_uri='+document.baseURI+'/callback&aud=https://test.careconnect.nhs.uk';
+        // Perform redirect to
+        window.location.href = url;
+      }
+      // if token is ok perform a PING (if above code is working we may remove this)
+      this.router.navigateByUrl('ping');
     } else {
 
       const url = this.authoriseUri + '?client_id=' + clientId + '&response_type=code&redirect_uri='+document.baseURI+'/callback&aud=https://test.careconnect.nhs.uk';

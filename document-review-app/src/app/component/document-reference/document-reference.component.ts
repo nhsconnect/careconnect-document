@@ -9,7 +9,7 @@ import {LinksService} from "../../service/links.service";
 import {BundleService} from "../../service/bundle.service";
 import {OrganisationDialogComponent} from "../../dialog/organisation-dialog/organisation-dialog.component";
 import {PractitionerDialogComponent} from "../../dialog/practitioner-dialog/practitioner-dialog.component";
-import {PatientEprService} from "../../service/patient-epr.service";
+import {EprService} from "../../service/epr.service";
 
 @Component({
   selector: 'app-document-reference',
@@ -36,7 +36,7 @@ export class DocumentReferenceComponent implements OnInit {
               private _dialogService: TdDialogService,
               private _viewContainerRef: ViewContainerRef,
               public fhirService : FhirService,
-              private patientEprService : PatientEprService,
+              private patientEprService : EprService,
               private linksService : LinksService,
               public dialog: MatDialog,
               public bundleService : BundleService) { }

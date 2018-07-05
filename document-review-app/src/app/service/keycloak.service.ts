@@ -61,6 +61,10 @@ export class KeycloakService {
     return KeycloakService.auth.authz.tokenParsed.preferred_username;
   }
 
+  static getUserEmail(): string {
+    return KeycloakService.auth.authz.tokenParsed.resource_access.toString();
+  }
+
   static getClientSecret() {
     // This is a marker for entryPoint.sh to replace
      let secret :string = 'KEYCLOAK_CLIENT_SECRET';

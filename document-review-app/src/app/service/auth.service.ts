@@ -42,7 +42,7 @@ export class AuthService {
 
 
   setLocalUser(User : User) {
-    console.log('User set');
+    if (User != undefined) console.log('User set ' + User.email + ' ' + User.userName );
     this._User = User;
     this.UserEvent.emit(this._User);
   }

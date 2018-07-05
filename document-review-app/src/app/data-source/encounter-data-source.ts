@@ -28,6 +28,7 @@ export class EncounterDataSource extends DataSource<any> {
       this.fhirService.getEPREncounters(this.patientId).subscribe((bundle => {
         if (bundle != undefined && bundle.entry != undefined) {
           for (let entry of bundle.entry) {
+            console.log(entry.resource._resourceType);
             this.dataStore.encounters.push(<fhir.Encounter> entry.resource);
 
           }

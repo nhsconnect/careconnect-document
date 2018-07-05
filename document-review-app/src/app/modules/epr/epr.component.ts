@@ -1,6 +1,6 @@
 import {AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {AuthService} from "../../service/auth.service";
-import {PatientEprService} from "../../service/patient-epr.service";
+import {EprService} from "../../service/epr.service";
 
 import {User} from "../../model/user";
 
@@ -10,6 +10,7 @@ import {TdDigitsPipe, TdLayoutManageListComponent, TdMediaService, TdRotateAnima
 import {DatePipe} from "@angular/common";
 import {MatDialog, MatIconRegistry} from "@angular/material";
 import {DomSanitizer} from "@angular/platform-browser";
+import {Oauth2Service} from "../../service/oauth2.service";
 
 @Component({
   selector: 'app-epr',
@@ -36,8 +37,9 @@ export class EprComponent implements AfterViewInit {
     private _iconRegistry: MatIconRegistry,
     private _domSanitizer: DomSanitizer,
     public authService: AuthService,
+              public outh2Service : Oauth2Service,
               private fhirService : FhirService,
-              public patientEprService : PatientEprService,
+              public eprService : EprService,
             ) {
 
   }
@@ -93,6 +95,11 @@ export class EprComponent implements AfterViewInit {
   href :string = 'loaddocument';
 
   ngOnInit() {
+   // console.log('Username = '+this.eprService.userName);
+   // console.log('User email = '+this.eprService.userEmail);
+
+
+   // TODO Get UserDetails from Token console.log('token '+this.outh2Service.getUser());
 
     this.subUser = this.authService.getUserEventEmitter()
       .subscribe(item => {
@@ -102,11 +109,11 @@ export class EprComponent implements AfterViewInit {
         this.email = this.user.email;
 
       });
-    this.subPatient = this.patientEprService.getPatientChangeEmitter()
+    this.subPatient = this.eprService.getPatientChangeEmitter()
       .subscribe( patient => {
         this.patient = patient;
       });
-     this.patientEprService.getSectionChangeEvent()
+     this.eprService.getSectionChangeEvent()
       .subscribe( section => {
         this.href = 'epr';
         this.section =section;
@@ -128,13 +135,13 @@ export class EprComponent implements AfterViewInit {
   }
   selectSection(section : string) {
 
-    this.patientEprService.setSection(section);
+    this.eprService.setSection(section);
     this.section = section;
   }
 
   menuClick(href : string) {
     if (href=='patient') {
-      this.patientEprService.set(undefined);
+      this.eprService.set(undefined);
     }
     this.href= href;
   }
@@ -163,7 +170,7 @@ export class EprComponent implements AfterViewInit {
     this.authService.getCookieEventEmitter().subscribe(
       ()=> {
         console.log('Smart Launch Growth Chart');
-        this.fhirService.launchSMART('growth_chart','4ae23017813e417d937e3ba21974581',this.patientEprService.patient.id).subscribe( response => {
+        this.fhirService.launchSMART('growth_chart','4ae23017813e417d937e3ba21974581',this.eprService.patient.id).subscribe( response => {
             launch = response.launch_id;
             console.log("Returned Launch = "+launch);
           },
@@ -183,7 +190,7 @@ export class EprComponent implements AfterViewInit {
 
   selectPatient(patient : fhir.Patient) {
     if (patient !=undefined) {
-      this.patientEprService.set(patient);
+      this.eprService.set(patient);
       this.href='epr';
     }
   }
@@ -197,7 +204,7 @@ export class EprComponent implements AfterViewInit {
     this.authService.getCookieEventEmitter().subscribe(
       ()=> {
         console.log('Smart Launch Cardiac');
-        this.fhirService.launchSMART('cardiac_risk', '4ae23017813e417d937e3ba21974582', this.patientEprService.patient.id).subscribe(response => {
+        this.fhirService.launchSMART('cardiac_risk', '4ae23017813e417d937e3ba21974582', this.eprService.patient.id).subscribe(response => {
             launch = response.launch_id;
             console.log("Returned Lauch = " + launch);
           },

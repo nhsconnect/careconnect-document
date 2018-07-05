@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewContainerRef} from '@angular/core';
-import {PatientEprService} from "../../../service/patient-epr.service";
+import {EprService} from "../../../service/epr.service";
 import {FhirService} from "../../../service/fhir.service";
 import {IAlertConfig, TdDialogService} from "@covalent/core";
 
@@ -18,7 +18,7 @@ export class BinaryComponent implements OnInit {
 
   public binaryId : string;
 
-  constructor(public patientEprService : PatientEprService,
+  constructor(public patientEprService : EprService,
               private fhirService : FhirService,
               private _dialogService: TdDialogService,
               private _viewContainerRef: ViewContainerRef) { }

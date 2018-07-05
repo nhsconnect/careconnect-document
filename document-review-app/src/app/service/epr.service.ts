@@ -1,14 +1,26 @@
 import {EventEmitter, Injectable} from '@angular/core';
-import {User} from "../model/user";
+
+import {FhirService} from "./fhir.service";
+
 
 @Injectable()
-export class PatientEprService {
+export class EprService {
 
   patient: fhir.Patient = undefined;
 
   resource : any = undefined;
 
   section : string;
+
+  userName : string;
+
+  userEmail : string;
+
+  patientAllergies : fhir.AllergyIntolerance[] = [];
+
+  constructor(
+    private fhirService : FhirService
+  ) { }
 
   documentReference : fhir.DocumentReference;
 
@@ -21,6 +33,21 @@ export class PatientEprService {
   set(patient: fhir.Patient) {
 
     this.patient = patient;
+
+    this.patientAllergies = [];
+
+    if (patient != undefined && patient.id != undefined) {
+      this.fhirService.getEPRAllergies(patient.id).subscribe(data => {
+
+          if (data.entry != undefined) {
+            for (let entry of data.entry) {
+              this.patientAllergies.push(<fhir.AllergyIntolerance> entry.resource);
+            }
+          }
+        }
+      );
+    }
+
     this.patientChangeEvent.emit(this.patient);
   }
   clear() {
