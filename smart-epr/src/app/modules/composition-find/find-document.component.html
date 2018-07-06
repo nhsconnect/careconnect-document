@@ -1,0 +1,8 @@
+<div class="container-fluid">
+    <div *ngFor="let composition of compositions">
+        <a (click)="selectComposition(composition.id)" >
+
+          <app-composition [composition] = "composition"></app-composition>
+        </a>
+    </div>
+</div>

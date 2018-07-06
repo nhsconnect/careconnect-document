@@ -23,7 +23,7 @@ docker build . -t thorlogic/ccri-app
 
 docker tag thorlogic/ccri-app thorlogic/ccri-app:stable
 
-docker push thorlogic/ccri-app
+_ng _
 
 ###Local test 
 
