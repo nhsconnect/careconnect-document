@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import {AuthService} from '../../service/auth.service';
-import {ActivatedRoute, Params, Router} from '@angular/router';
 import {FhirService} from "../../service/fhir.service";
-import {EprService} from "../../service/epr.service";
+import {Router} from "@angular/router";
 
-import {KeycloakService} from "../../service/keycloak.service";
+
+
 
 
 @Component({
@@ -25,7 +25,7 @@ export class PingComponent implements OnInit {
   ngOnInit() {
     // Perform a resource access to check access token.
     this.fhirService.getEPRPatient('1').subscribe( data => {
-      this.router.navigate(['fdms']);
+      this.router.navigate(['epr']);
     });
 
   }

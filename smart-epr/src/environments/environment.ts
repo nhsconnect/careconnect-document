@@ -4,19 +4,19 @@
 
 export const environment = {
   production: false,
-  keycloak: {
+  keycloakMac: {
     RootUrl: 'http://localhost:8080/auth',
     authServerUrl: 'http://localhost:8080/auth',
     realm : 'ReferenceImplementations',
     client_secret : '8e7d9a8c-d72c-4c74-94c3-83620e5007a4',
     client_id : 'ccri-cat'
   },
-  keycloakWin : {
+  keycloak : {
     RootUrl: 'http://localhost:8080/auth',
     authServerUrl: 'http://localhost:8080/auth',
     realm : 'ReferenceImplementations',
-    client_secret : 'e6f380d2-8e05-4807-9c63-56d92a40c894',
-    client_id : 'ccri-cat'
+    client_secret : 'cb97e2d6-73d0-4bb2-b98b-8d48ba3935aa',
+    client_id : 'smart-ehr'
   },
   cat : {
     eprUrl : 'http://127.0.0.1:9090/careconnect-gateway-secure/STU3',

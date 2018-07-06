@@ -3,7 +3,6 @@ import {AuthService} from '../../service/auth.service';
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import {FhirService} from "../../service/fhir.service";
 import {EprService} from "../../service/epr.service";
-
 import {KeycloakService} from "../../service/keycloak.service";
 
 

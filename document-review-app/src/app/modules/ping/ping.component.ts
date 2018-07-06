@@ -25,7 +25,7 @@ export class PingComponent implements OnInit {
   ngOnInit() {
     // Perform a resource access to check access token.
     this.fhirService.getEPRPatient('1').subscribe( data => {
-      this.router.navigate(['fdms']);
+      this.router.navigate(['edms']);
     });
 
   }

@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import {ErrorHandler, NgModule} from '@angular/core';
 
 import { AppComponent } from './app.component';
+
 import {BinaryComponent} from "../../../document-review-app/src/app/component/binary/binary/binary.component";
 import {PractitionerSearchComponent} from "../../../document-review-app/src/app/component/practitioner-search/practitioner-search.component";
 import {EncounterDialogComponent} from "../../../document-review-app/src/app/dialog/encounter-dialog/encounter-dialog.component";
@@ -10,47 +11,36 @@ import {PractitionerRoleComponent} from "../../../document-review-app/src/app/co
 import {MedicationComponent} from "../../../document-review-app/src/app/component/medication/medication.component";
 import {CompositionComponent} from "../../../document-review-app/src/app/component/composition/composition.component";
 import {MedicationRequestComponent} from "../../../document-review-app/src/app/component/medication-request/medication-request.component";
-import {PingComponent} from "../../../document-review-app/src/app/modules/ping/ping.component";
+
 import {MedicationDialogComponent} from "../../../document-review-app/src/app/dialog/medication-dialog/medication-dialog.component";
 import {HealthcareServiceComponent} from "../../../document-review-app/src/app/component/healthcare-service/healthcare-service.component";
-import {BundleService} from "../../../document-review-app/src/app/service/bundle.service";
 import {EncounterDetailComponent} from "../../../document-review-app/src/app/component/encounter-detail/encounter-detail.component";
-import {LogoutComponent} from "../../../document-review-app/src/app/modules/logout/logout.component";
 import {EncounterComponent} from "../../../document-review-app/src/app/component/encounter/encounter.component";
 import {ResourceDialogComponent} from "../../../document-review-app/src/app/dialog/resource-dialog/resource-dialog.component";
 import {ObservationComponent} from "../../../document-review-app/src/app/component/observation/observation.component";
 import {MedicationStatementComponent} from "../../../document-review-app/src/app/component/medication-statement/medication-statement.component";
-import {LinksService} from "../../../document-review-app/src/app/service/links.service";
 import {ImmunisationComponent} from "../../../document-review-app/src/app/component/immunisation/immunisation.component";
 import {IssueDialogComponent} from "../../../document-review-app/src/app/dialog/issue-dialog/issue-dialog.component";
 import {PdfViewerComponent} from "../../../document-review-app/src/app/component/binary/pdf-viewer/pdf-viewer.component";
-import {EprService} from "../../../document-review-app/src/app/service/epr.service";
 import {ImgViewerComponent} from "../../../document-review-app/src/app/component/binary/img-viewer/img-viewer.component";
 import {OrganisationSearchComponent} from "../../../document-review-app/src/app/component/organisation-search/organisation-search.component";
 import {ViewDocumentSectionComponent} from "../../../document-review-app/src/app/component/binary/composition-view-section/view-document-section.component";
 import {PractitionerRoleDialogComponent} from "../../../document-review-app/src/app/dialog/practitioner-role-dialog/practitioner-role-dialog.component";
 import {AllergyIntolleranceComponent} from "../../../document-review-app/src/app/component/allergy-intollerance/allergy-intollerance.component";
 import {DocumentReferenceComponent} from "../../../document-review-app/src/app/component/document-reference/document-reference.component";
-import {LoginComponent} from "../../../document-review-app/src/app/modules/login/login.component";
 import {OrganisationDialogComponent} from "../../../document-review-app/src/app/dialog/organisation-dialog/organisation-dialog.component";
-import {AppRoutingModule} from "../../../document-review-app/src/app/app-routing.module";
-import {ErrorsHandler} from "../../../document-review-app/src/app/service/errors-handler";
 import {PatientTimelineComponent} from "../../../document-review-app/src/app/component/patient-timeline/patient-timeline.component";
-import {AuthGuard} from "../../../document-review-app/src/app/service/auth-guard";
-import {CallbackComponent} from "../../../document-review-app/src/app/modules/callback/callback.component";
+
+
 import {ObservationDetailComponent} from "../../../document-review-app/src/app/component/observation-detail/observation-detail.component";
 import {LocationComponent} from "../../../document-review-app/src/app/component/location/location.component";
-import {TokenInterceptor} from "../../../document-review-app/src/app/service/token-interceptor";
-import {Oauth2Service} from "../../../document-review-app/src/app/service/oauth2.service";
 import {PractitionerDialogComponent} from "../../../document-review-app/src/app/dialog/practitioner-dialog/practitioner-dialog.component";
 import {PatientSearchComponent} from "../../../document-review-app/src/app/component/patient-search/patient-search.component";
 import {LoadDocumentComponent} from "../../../document-review-app/src/app/modules/document-load/load-document.component";
 import {PatientFindComponent} from "../../../document-review-app/src/app/modules/patient-find/patient-find.component";
-import {AuthService} from "../../../document-review-app/src/app/service/auth.service";
-import {EprComponent} from "../../../document-review-app/src/app/modules/epr/epr.component";
 import {ConditionComponent} from "../../../document-review-app/src/app/component/condition/condition.component";
-import {KeycloakService} from "../../../document-review-app/src/app/service/keycloak.service";
-import {FhirService} from "../../../document-review-app/src/app/service/fhir.service";
+
+
 import {ViewDocumentComponent} from "../../../document-review-app/src/app/component/binary/composition-view/view-document.component";
 import {PractitionerComponent} from "../../../document-review-app/src/app/component/practitioner/practitioner.component";
 import {OrganisationComponent} from "../../../document-review-app/src/app/component/organisation/organisation.component";
@@ -86,6 +76,22 @@ import {MAT_MOMENT_DATE_FORMATS, MatMomentDateModule, MomentDateAdapter} from "@
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {ImageViewerModule} from '@hallysonh/ngx-imageviewer';
 import {PdfViewerModule} from "ng2-pdf-viewer";
+import {AppRoutingModule} from "./app-routing.module";
+import {LoginComponent} from "./modules/login/login.component";
+import {LogoutComponent} from "./modules/logout/logout.component";
+import {PingComponent} from "./modules/ping/ping.component";
+import {EprComponent} from "./modules/epr/epr.component";
+import {CallbackComponent} from "./modules/callback/callback.component";
+import {FhirService} from "./service/fhir.service";
+import {AuthService} from "./service/auth.service";
+import {LinksService} from "./service/links.service";
+import {EprService} from "./service/epr.service";
+import {AuthGuard} from "./service/auth-guard";
+import {KeycloakService} from "./service/keycloak.service";
+import {Oauth2Service} from "./service/oauth2.service";
+import {BundleService} from "./service/bundle.service";
+import {ErrorsHandler} from "./service/errors-handler";
+import {TokenInterceptor} from "./service/token-interceptor";
 
 @NgModule({
   declarations: [
