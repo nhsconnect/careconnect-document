@@ -1,27 +1,31 @@
-# SmartEpr
+# SmartonFhir EHR
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.0.8.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.6.4.
+Install angular: Follow step 1 from https://angular.io/guide/quickstart
+
+Other steps 
+
+npm install --save @angular-devkit/core
+
+npm install -g ajv@^6.0.0
+
+npm install --save @types/fhir
+
 
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
-## Code scaffolding
+##Docker 
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
-## Build
+docker build . -t thorlogic/smart-ehr
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+docker tag thorlogic/smart-ehr thorlogic/smart-ehr:stable
 
-## Running unit tests
+docker push thorlogic/smart-ehr
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+###Local test 
 
-## Running end-to-end tests
+docker run -d -p 4200:80 --name ccri-app thorlogic/ccri-app 
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).

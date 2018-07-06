@@ -4,14 +4,14 @@
 
 export const environment = {
   production: false,
-  keycloakMac: {
+  keycloak: {
     RootUrl: 'http://localhost:8080/auth',
     authServerUrl: 'http://localhost:8080/auth',
     realm : 'ReferenceImplementations',
-    client_secret : '8e7d9a8c-d72c-4c74-94c3-83620e5007a4',
-    client_id : 'ccri-cat'
+    client_secret : '8d9bad99-5478-49d7-936b-3724af6b3f72',
+    client_id : 'smart-ehr'
   },
-  keycloak : {
+  keycloakWin : {
     RootUrl: 'http://localhost:8080/auth',
     authServerUrl: 'http://localhost:8080/auth',
     realm : 'ReferenceImplementations',
