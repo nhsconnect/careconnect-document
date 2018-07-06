@@ -5,14 +5,14 @@
 
 export const environment = {
   production: false,
-  keycloak: {
+  keycloakMac: {
     RootUrl: 'http://localhost:8080/auth',
     authServerUrl: 'http://localhost:8080/auth',
     realm : 'ReferenceImplementations',
     client_secret : '8e7d9a8c-d72c-4c74-94c3-83620e5007a4',
     client_id : 'ccri-cat'
   },
-  keycloakWin : {
+  keycloak : {
     RootUrl: 'http://localhost:8080/auth',
     authServerUrl: 'http://localhost:8080/auth',
     realm : 'ReferenceImplementations',

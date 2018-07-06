@@ -9,6 +9,7 @@ import {LocationDialogComponent} from "../../dialog/location-dialog/location-dia
 import {OrganisationDialogComponent} from "../../dialog/organisation-dialog/organisation-dialog.component";
 import {PractitionerDialogComponent} from "../../dialog/practitioner-dialog/practitioner-dialog.component";
 import {BundleService} from "../../service/bundle.service";
+import {MedicationDialogComponent} from "../../dialog/medication-dialog/medication-dialog.component";
 
 @Component({
   selector: 'app-encounter',
@@ -68,29 +69,57 @@ export class EncounterComponent implements OnInit {
 
 
     this.locations = [];
-    for (let reference of encounter.location) {
-      console.log(reference.location.reference);
-      this.bundleService.getResource(reference.location.reference).subscribe(
-        (resource) => {
 
-          if (resource != undefined && resource.resourceType === "Location") {
-            console.log("Location " + reference.location.reference);
-            this.locations.push(<fhir.Location> resource);
-          }
+    if (this.bundleService.getBundle() != undefined) {
+        for (let reference of encounter.location) {
+          console.log(reference.location.reference);
+          this.bundleService.getResource(reference.location.reference).subscribe(
+            (resource) => {
+
+              if (resource != undefined && resource.resourceType === "Location") {
+                console.log("Location " + reference.location.reference);
+                this.locations.push(<fhir.Location> resource);
+              }
+
+              const dialogConfig = new MatDialogConfig();
+              dialogConfig.disableClose = true;
+              dialogConfig.autoFocus = true;
+              dialogConfig.data = {
+                id: 1,
+                locations: this.locations
+              };
+              let resourceDialog: MatDialogRef<LocationDialogComponent> = this.dialog.open(LocationDialogComponent, dialogConfig);
+            }
+          );
         }
-      );
+    } else {
+      for (let reference of encounter.location) {
+        console.log(reference);
+        let refArray: string[] = reference.location.reference.split('/');
+        if (refArray.length>1) {
+          this.fhirService.getResource(reference.location.reference).subscribe(data => {
+              if (data != undefined) {
+                this.locations.push(<fhir.Location>data);
 
+              }
+              const dialogConfig = new MatDialogConfig();
+              dialogConfig.disableClose = true;
+              dialogConfig.autoFocus = true;
+              dialogConfig.data = {
+                id: 1,
+                locations: this.locations
+              };
+              let resourceDialog: MatDialogRef<LocationDialogComponent> = this.dialog.open(LocationDialogComponent, dialogConfig);
+            },
+            error1 => {
+            },
+            () => {
+
+            }
+          );
+        }
       }
-
-      const dialogConfig = new MatDialogConfig();
-
-      dialogConfig.disableClose = true;
-      dialogConfig.autoFocus = true;
-      dialogConfig.data = {
-        id: 1,
-        locations: this.locations
-      };
-      let resourceDialog: MatDialogRef<LocationDialogComponent> = this.dialog.open(LocationDialogComponent, dialogConfig);
+    }
 
   }
 
