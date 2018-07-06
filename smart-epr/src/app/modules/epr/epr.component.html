@@ -37,7 +37,7 @@
 
                <ng-template let-last="last" ngFor let-item [ngForOf]="eprService.patientAllergies">
                 <a mat-list-item>
-                  <mat-icon matListAvatar>warning</mat-icon>
+                  <mat-icon>warning</mat-icon>
                   <h4 mat-line>
                      <span *ngIf="item.code != undefined && item.code.coding.length > 0">
                         {{item.code.coding[0].display}}
@@ -91,12 +91,23 @@
           <mat-nav-list>
             <span *ngIf="eprService.patient != undefined">
                  <a mat-list-item (click)="selectSection('summary')" ngbTooltip="Summary"><mat-icon>home</mat-icon>
-                <span *ngIf="!miniNav" class="push-left-sm">Summary</span></a>
-              <a mat-list-item (click)="selectSection('documents')" ngbTooltip="Docs"><mat-icon>note</mat-icon>
-                <span *ngIf="!miniNav" class="push-left-sm">Documents</span></a>
+                  <span *ngIf="!miniNav" class="push-left-sm">Summary</span>
+                 </a>
+               <a mat-list-item (click)="selectSection('allergy')" ngbTooltip="Alerts"><mat-icon>warning</mat-icon>
+                <span *ngIf="!miniNav" class="push-left-sm">Allergies</span>
+              </a>
+                <a mat-list-item (click)="selectSection('documents')" ngbTooltip="Docs"><mat-icon>note</mat-icon>
+                  <span *ngIf="!miniNav" class="push-left-sm">Documents</span>
+                </a>
 
-              <a mat-list-item (click)="selectSection('encounters')" ngbTooltip="Visits"><mat-icon>insert_invitation</mat-icon>
-                <span *ngIf="!miniNav" class="push-left-sm">Encounters</span>
+                <a mat-list-item (click)="selectSection('encounters')" ngbTooltip="Visits"><mat-icon>insert_invitation</mat-icon>
+                  <span *ngIf="!miniNav" class="push-left-sm">Encounters</span>
+                </a>
+              <a mat-list-item (click)="selectSection('observations')" ngbTooltip="Obs."><mat-icon>timeline</mat-icon>
+                <span *ngIf="!miniNav" class="push-left-sm">Observations</span>
+              </a>
+              <a mat-list-item (click)="selectSection('prescriptions')" ngbTooltip="Medications"><mat-icon>colorize</mat-icon>
+                <span *ngIf="!miniNav" class="push-left-sm">Medications</span>
               </a>
             </span>
 

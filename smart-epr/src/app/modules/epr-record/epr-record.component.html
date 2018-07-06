@@ -41,14 +41,14 @@
   </mat-card-content>
 </mat-card>
 
-<mat-card *ngIf="section== 'prescriptions' ">
+<mat-card *ngIf="section== 'prescriptions' || section== 'summary' ">
   <mat-card-title>Prescriptions</mat-card-title>
   <mat-card-content>
     <app-medication-request [patientId]="patientId" ></app-medication-request>
   </mat-card-content>
 </mat-card>
 
-<mat-card *ngIf="section== 'medicationbag' || section== 'summary'  ">
+<mat-card *ngIf="section== 'prescriptions' || section== 'summary'  ">
   <mat-card-title>Statement</mat-card-title>
   <mat-card-content>
     <app-medication-statement [patientId]="patientId" ></app-medication-statement>

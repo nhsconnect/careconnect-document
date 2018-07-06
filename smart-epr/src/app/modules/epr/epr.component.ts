@@ -85,7 +85,7 @@ export class EprComponent implements AfterViewInit {
 
   showMenu : boolean = false;
 
-  section = 'documents';
+  section = 'summary';
 
   href :string = 'patient';
 
