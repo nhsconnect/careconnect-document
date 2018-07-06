@@ -1,0 +1,76 @@
+
+
+
+
+
+
+<mat-card>
+  <mat-card-title>FHIR Document</mat-card-title>
+  <mat-card-content>
+<span *ngIf="systemType==='FDMS'">
+    <div class="alert alert-primary">
+      <div class="d-flex justify-content-between container-fluid">
+
+        <strong>Generated from Structured Content</strong>
+
+      </div>
+    </div>
+
+     <div *ngIf="composition!=undefined" class="container-fluid">
+
+        <mat-card>
+            <mat-card-title class="d-flex justify-content-between">
+                <div>{{composition.title}}</div>
+              <div>   <button mat-raised-button  placement="top" (click)="openResource(composition)"><mat-icon color="accent">code</mat-icon>
+                Composition</button>
+                <button mat-raised-button placement="top" (click)="openResource(patient)"><mat-icon color="accent">code</mat-icon>
+                Patient</button>
+                <span *ngIf="encounter != undefined"><button mat-raised-button  placement="top" (click)="openResource(encounter)"><mat-icon color="accent">code</mat-icon>
+                Encounter</button></span>
+              </div>
+            </mat-card-title>
+            <mat-card-content>
+                <app-composition [composition] = "composition" [encounter]="encounter"></app-composition>
+            </mat-card-content>
+          </mat-card>
+     </div>
+    <br>
+     <div class="alert alert-primary">
+       <div class="d-flex justify-content-between">
+           <strong>Supplied Narrative Content</strong>
+         </div>
+     </div>
+ </span>
+<div *ngIf="composition!=undefined" class="container-fluid">
+  <div class="alert alert-info">
+    <div class="d-flex justify-content-between">
+      <div>
+    <strong>{{composition.title}}</strong>
+  {{composition.date | date: 'dd MMM yyyy HH:mm' }}
+      </div>
+      <div>
+
+          <button mat-raised-button (click)="downloadPDF()">Export PDF</button>
+          <button mat-raised-button (click)="downloadHTML()">Export html</button>
+        </div>
+
+    </div>
+  </div>
+
+  <div *ngIf="patient!=undefined && patient.text !=undefined" class="card card-default">
+
+      <div class="card-header">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>Patient</h5>
+          <button mat-raised-button>View Structured Content</button>
+        </div>
+      </div>
+    <div class="card-body" [innerHTML]="patient.text.div"></div>
+  </div>
+      <div *ngFor="let section of sections" >
+          <app-view-document-section [section] = "section" ></app-view-document-section>
+      </div>
+
+</div>
+  </mat-card-content>
+</mat-card>

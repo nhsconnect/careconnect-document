@@ -1,0 +1,13 @@
+<div id="search-results">
+
+
+  <form>
+    <mat-form-field class="input-half-width">
+      <input #searchBox matInput placeholder="Organisation Search (name)" (keyup)="search(searchBox.value)" >
+    </mat-form-field>
+  </form>
+
+  <app-organisation [organisationsObservable]="organisations$" [useObservable]="true" [showResourceLink]="false" (organisation)="selectOrganisation($event)"></app-organisation>
+
+
+</div>

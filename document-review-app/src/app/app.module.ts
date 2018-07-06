@@ -5,7 +5,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './/app-routing.module';
 import { LoadDocumentComponent } from './modules/document-load/load-document.component';
-import { EprComponent } from './modules/epr/epr.component';
+import { EdmsComponent } from './modules/edms/edms.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { FileUploadModule } from "ng2-file-upload";
@@ -18,7 +18,7 @@ import { PatientSearchComponent } from './component/patient-search/patient-searc
 import { FindDocumentComponent } from './modules/composition-find/find-document.component';
 import { CompositionComponent } from './component/composition/composition.component';
 import { PatientFindComponent } from './modules/patient-find/patient-find.component';
-import { EprRecordComponent } from './modules/epr-record/epr-record.component';
+import { EdmsRecordComponent } from './modules/edms-record/edms-record.component';
 
 import { MedicationStatementComponent } from './component/medication-statement/medication-statement.component';
 import { ConditionComponent } from './component/condition/condition.component';
@@ -110,14 +110,14 @@ import {PingComponent} from "./modules/ping/ping.component";
   declarations: [
     AppComponent,
     LoadDocumentComponent,
-    EprComponent,
+    EdmsComponent,
     ViewDocumentComponent,
     ViewDocumentSectionComponent,
     PatientFindComponent,
     PatientSearchComponent,
     FindDocumentComponent,
     CompositionComponent,
-    EprRecordComponent,
+    EdmsRecordComponent,
 
     MedicationStatementComponent,
     ConditionComponent,

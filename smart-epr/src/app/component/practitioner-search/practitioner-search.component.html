@@ -1,0 +1,11 @@
+<div id="search-results">
+
+  <form class="example-form">
+    <mat-form-field class="input-half-width">
+      <input #searchBox matInput placeholder="Consultant/GP Search (postcode)" (keyup)="search(searchBox.value)" >
+    </mat-form-field>
+  </form>
+
+     <app-practitioner [practitionersObservable]="practitioners$" [useObservable]="true" (practitioner)="selectPractitioner($event)" [showResourceLink]="false"></app-practitioner>
+
+</div>

@@ -55,10 +55,6 @@ export class EprComponent implements AfterViewInit {
     title: 'Patient',
     href: 'patient',
     icon: 'person',
-  }, {
-    title: 'Import Document',
-    href: 'loaddocument',
-    icon: 'note_addd',
   }
   ];
 
@@ -74,8 +70,7 @@ export class EprComponent implements AfterViewInit {
   },
   ];
 
-  name="Clinical Assurance Tool";
-
+  name="SMART-on-FHIR EPR";
 
   patient : fhir.Patient;
 
@@ -92,7 +87,7 @@ export class EprComponent implements AfterViewInit {
 
   section = 'documents';
 
-  href :string = 'loaddocument';
+  href :string = 'patient';
 
   ngOnInit() {
    // console.log('Username = '+this.eprService.userName);

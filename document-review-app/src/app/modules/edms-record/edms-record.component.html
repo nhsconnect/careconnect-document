@@ -1,0 +1,68 @@
+<mat-card  *ngIf="section== 'documents' ">
+  <mat-card-title>Documents</mat-card-title>
+  <mat-card-content>
+    <app-document-reference [patientId]="patientId" [documents]="documents" [documentsTotal]="documentsTotal"></app-document-reference>
+  </mat-card-content>
+</mat-card>
+
+<mat-card *ngIf="section== 'observations' ">
+  <mat-card-title>Observation</mat-card-title>
+  <mat-card-content>
+    <app-observation [patientId]="patientId" ></app-observation>
+  </mat-card-content>
+</mat-card>
+
+
+<mat-card *ngIf="section== 'immunisations' ">
+  <mat-card-title>Immunisation</mat-card-title>
+  <mat-card-content>
+    <app-immunisation [patientId]="patientId" ></app-immunisation>
+  </mat-card-content>
+</mat-card>
+
+<mat-card *ngIf="section== 'conditions' || section== 'summary' ">
+  <mat-card-title>Conditions</mat-card-title>
+  <mat-card-content>
+    <app-condition [patientId]="patientId" ></app-condition>
+  </mat-card-content>
+</mat-card>
+
+<mat-card *ngIf="section== 'encounters' ">
+  <mat-card-title>Encounters</mat-card-title>
+  <mat-card-content>
+    <app-encounter [patientId]="patientId" ></app-encounter>
+  </mat-card-content>
+</mat-card>
+
+<mat-card *ngIf="section== 'procedures' ">
+  <mat-card-title>Procedures</mat-card-title>
+  <mat-card-content>
+    <app-procedure [patientId]="patientId" ></app-procedure>
+  </mat-card-content>
+</mat-card>
+
+<mat-card *ngIf="section== 'prescriptions' ">
+  <mat-card-title>Prescriptions</mat-card-title>
+  <mat-card-content>
+    <app-medication-request [patientId]="patientId" ></app-medication-request>
+  </mat-card-content>
+</mat-card>
+
+<mat-card *ngIf="section== 'medicationbag' || section== 'summary'  ">
+  <mat-card-title>Statement</mat-card-title>
+  <mat-card-content>
+    <app-medication-statement [patientId]="patientId" ></app-medication-statement>
+  </mat-card-content>
+</mat-card>
+
+<mat-card *ngIf="section== 'allergy' || section== 'summary' ">
+  <mat-card-title>Allergy and Intollerances</mat-card-title>
+  <mat-card-content>
+    <app-allergy-intollerance [patientId]="patientId" ></app-allergy-intollerance>
+  </mat-card-content>
+</mat-card>
+
+<span *ngIf="section== 'binary' ">
+    <app-binary></app-binary>
+</span>
+

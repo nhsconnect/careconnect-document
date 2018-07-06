@@ -24,54 +24,7 @@
       <mat-icon>menu</mat-icon>
     </button>
     <div td-toolbar-content layout="row" layout-align="start center" flex>
-       <span *ngIf="eprService.patientAllergies.length >0">
-        <button mat-icon-button matTooltip="Alerts" [matMenuTriggerFor]="notificationsMenu">
-          <td-notification-count color="accent" [notifications]="eprService.patientAllergies.length">
-            <mat-icon>notifications</mat-icon>
-          </td-notification-count>
-        </button>
-        <mat-menu #notificationsMenu="matMenu">
-          <td-menu>
-            <div td-menu-header class="mat-subhead">Alerts</div>
-            <mat-nav-list dense>
 
-               <ng-template let-last="last" ngFor let-item [ngForOf]="eprService.patientAllergies">
-                <a mat-list-item>
-                  <mat-icon matListAvatar>warning</mat-icon>
-                  <h4 mat-line>
-                     <span *ngIf="item.code != undefined && item.code.coding.length > 0">
-                        {{item.code.coding[0].display}}
-                     </span>
-
-                  </h4>
-                  <p mat-line><i>clinicalStatus</i>&nbsp;{{item.clinicalStatus}}</p>
-                  <p mat-line><i>verificationStatus</i>&nbsp;{{item.verificationStatus}}</p>
-                </a>
-                <mat-divider *ngIf="!last"></mat-divider>
-              </ng-template>
-
-            </mat-nav-list>
-            <button mat-button color="accent" (click)="selectSection('allergy')"  td-menu-footer>
-              See All Allergies and Intollerances
-            </button>
-          </td-menu>
-        </mat-menu>
-      </span>
-   <!-- <span>
-        <button mat-icon-button matTooltip="More" [mat-menu-trigger-for]="more">
-          <mat-icon>more_vert</mat-icon>
-        </button>
-        <mat-menu xPosition="before" #more="matMenu">
-            <button mat-menu-item *ngIf="activeTheme === 'theme-dark'" (click)="theme('theme-light')">
-              <mat-icon>brightness_high</mat-icon>
-              <span>Light Mode</span>
-            </button>
-            <button mat-menu-item *ngIf="activeTheme != 'theme-dark'" (click)="theme('theme-dark')">
-              <mat-icon>brightness_low</mat-icon>
-              <span>Dark Mode</span>
-            </button>
-        </mat-menu>
-      </span> -->
     </div>
     <td-layout-manage-list #manageList
                            [opened]="media.registerQuery('gt-sm') | async"
@@ -90,14 +43,10 @@
           {{ eprService.userName}}
           <mat-nav-list>
             <span *ngIf="eprService.patient != undefined">
-                 <a mat-list-item (click)="selectSection('summary')" ngbTooltip="Summary"><mat-icon>home</mat-icon>
-                <span *ngIf="!miniNav" class="push-left-sm">Summary</span></a>
+
               <a mat-list-item (click)="selectSection('documents')" ngbTooltip="Docs"><mat-icon>note</mat-icon>
                 <span *ngIf="!miniNav" class="push-left-sm">Documents</span></a>
 
-              <a mat-list-item (click)="selectSection('encounters')" ngbTooltip="Visits"><mat-icon>insert_invitation</mat-icon>
-                <span *ngIf="!miniNav" class="push-left-sm">Encounters</span>
-              </a>
             </span>
 
           </mat-nav-list>
@@ -161,7 +110,7 @@
           <!-- Main Body -->
 
           <span *ngIf="eprService.patient!=undefined && href=='epr'">
-            <app-patient-epr-patient-record [section]="section"></app-patient-epr-patient-record>
+            <app-edms-record [section]="section"></app-edms-record>
           </span>
 
           <span *ngIf="href=='loaddocument'">

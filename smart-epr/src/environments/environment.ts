@@ -20,8 +20,8 @@ export const environment = {
   },
   cat : {
     eprUrl : 'http://127.0.0.1:9090/careconnect-gateway-secure/STU3',
-    client_id : 'clinical-assurance-tool',
-    client_secret : 'AM3ai-PGoZZRW-7osWbzvGlDBHjHq7M2aBlpNttreHeEyB5jequWy8fsHMVQP4JV0Kd0Fzrtu0iNEqGqguq69Qs',
+    client_id : 'nhs-smart-ehr',
+    client_secret : 'APa5oCe6SHhty_or2q34WpNcq0-X957n6p48TkAJw14YCtmZeQil60XvCfuByIPd8DlXyusxAGxp5_Z5UKlgZJU',
     cookie_domain : 'localhost'
   },
   smart: {

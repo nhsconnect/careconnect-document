@@ -3,52 +3,49 @@ import {ErrorHandler, NgModule} from '@angular/core';
 
 import { AppComponent } from './app.component';
 
-import {BinaryComponent} from "../../../document-review-app/src/app/component/binary/binary/binary.component";
-import {PractitionerSearchComponent} from "../../../document-review-app/src/app/component/practitioner-search/practitioner-search.component";
-import {EncounterDialogComponent} from "../../../document-review-app/src/app/dialog/encounter-dialog/encounter-dialog.component";
-import {CareGoogleChartComponent} from "../../../document-review-app/src/app/component/care-google-chart/care-google-chart.component";
-import {PractitionerRoleComponent} from "../../../document-review-app/src/app/component/practitioner-role/practitioner-role.component";
-import {MedicationComponent} from "../../../document-review-app/src/app/component/medication/medication.component";
-import {CompositionComponent} from "../../../document-review-app/src/app/component/composition/composition.component";
-import {MedicationRequestComponent} from "../../../document-review-app/src/app/component/medication-request/medication-request.component";
+import {BinaryComponent} from "./component/binary/binary/binary.component";
+import {PractitionerSearchComponent} from "./component/practitioner-search/practitioner-search.component";
+import {EncounterDialogComponent} from "./dialog/encounter-dialog/encounter-dialog.component";
+import {CareGoogleChartComponent} from "./component/care-google-chart/care-google-chart.component";
+import {PractitionerRoleComponent} from "./component/practitioner-role/practitioner-role.component";
+import {MedicationComponent} from "./component/medication/medication.component";
+import {CompositionComponent} from "./component/composition/composition.component";
+import {MedicationRequestComponent} from "./component/medication-request/medication-request.component";
 
-import {MedicationDialogComponent} from "../../../document-review-app/src/app/dialog/medication-dialog/medication-dialog.component";
-import {HealthcareServiceComponent} from "../../../document-review-app/src/app/component/healthcare-service/healthcare-service.component";
-import {EncounterDetailComponent} from "../../../document-review-app/src/app/component/encounter-detail/encounter-detail.component";
-import {EncounterComponent} from "../../../document-review-app/src/app/component/encounter/encounter.component";
-import {ResourceDialogComponent} from "../../../document-review-app/src/app/dialog/resource-dialog/resource-dialog.component";
-import {ObservationComponent} from "../../../document-review-app/src/app/component/observation/observation.component";
-import {MedicationStatementComponent} from "../../../document-review-app/src/app/component/medication-statement/medication-statement.component";
-import {ImmunisationComponent} from "../../../document-review-app/src/app/component/immunisation/immunisation.component";
-import {IssueDialogComponent} from "../../../document-review-app/src/app/dialog/issue-dialog/issue-dialog.component";
-import {PdfViewerComponent} from "../../../document-review-app/src/app/component/binary/pdf-viewer/pdf-viewer.component";
-import {ImgViewerComponent} from "../../../document-review-app/src/app/component/binary/img-viewer/img-viewer.component";
-import {OrganisationSearchComponent} from "../../../document-review-app/src/app/component/organisation-search/organisation-search.component";
-import {ViewDocumentSectionComponent} from "../../../document-review-app/src/app/component/binary/composition-view-section/view-document-section.component";
-import {PractitionerRoleDialogComponent} from "../../../document-review-app/src/app/dialog/practitioner-role-dialog/practitioner-role-dialog.component";
-import {AllergyIntolleranceComponent} from "../../../document-review-app/src/app/component/allergy-intollerance/allergy-intollerance.component";
-import {DocumentReferenceComponent} from "../../../document-review-app/src/app/component/document-reference/document-reference.component";
-import {OrganisationDialogComponent} from "../../../document-review-app/src/app/dialog/organisation-dialog/organisation-dialog.component";
-import {PatientTimelineComponent} from "../../../document-review-app/src/app/component/patient-timeline/patient-timeline.component";
+import {MedicationDialogComponent} from "./dialog/medication-dialog/medication-dialog.component";
+import {HealthcareServiceComponent} from "./component/healthcare-service/healthcare-service.component";
+import {EncounterDetailComponent} from "./component/encounter-detail/encounter-detail.component";
+import {EncounterComponent} from "./component/encounter/encounter.component";
+import {ObservationComponent} from "./component/observation/observation.component";
+import {MedicationStatementComponent} from "./component/medication-statement/medication-statement.component";
+import {ImmunisationComponent} from "./component/immunisation/immunisation.component";
+import {IssueDialogComponent} from "./dialog/issue-dialog/issue-dialog.component";
+import {PdfViewerComponent} from "./component/binary/pdf-viewer/pdf-viewer.component";
+import {ImgViewerComponent} from "./component/binary/img-viewer/img-viewer.component";
+import {OrganisationSearchComponent} from "./component/organisation-search/organisation-search.component";
+import {ViewDocumentSectionComponent} from "./component/binary/composition-view-section/view-document-section.component";
+import {PractitionerRoleDialogComponent} from "./dialog/practitioner-role-dialog/practitioner-role-dialog.component";
+import {AllergyIntolleranceComponent} from "./component/allergy-intollerance/allergy-intollerance.component";
+import {DocumentReferenceComponent} from "./component/document-reference/document-reference.component";
+import {OrganisationDialogComponent} from "./dialog/organisation-dialog/organisation-dialog.component";
 
 
-import {ObservationDetailComponent} from "../../../document-review-app/src/app/component/observation-detail/observation-detail.component";
-import {LocationComponent} from "../../../document-review-app/src/app/component/location/location.component";
-import {PractitionerDialogComponent} from "../../../document-review-app/src/app/dialog/practitioner-dialog/practitioner-dialog.component";
-import {PatientSearchComponent} from "../../../document-review-app/src/app/component/patient-search/patient-search.component";
-import {LoadDocumentComponent} from "../../../document-review-app/src/app/modules/document-load/load-document.component";
-import {PatientFindComponent} from "../../../document-review-app/src/app/modules/patient-find/patient-find.component";
-import {ConditionComponent} from "../../../document-review-app/src/app/component/condition/condition.component";
+import {ObservationDetailComponent} from "./component/observation-detail/observation-detail.component";
+import {LocationComponent} from "./component/location/location.component";
+import {PractitionerDialogComponent} from "./dialog/practitioner-dialog/practitioner-dialog.component";
+import {PatientSearchComponent} from "./component/patient-search/patient-search.component";
+import {PatientFindComponent} from "./modules/patient-find/patient-find.component";
+import {ConditionComponent} from "./component/condition/condition.component";
 
 
-import {ViewDocumentComponent} from "../../../document-review-app/src/app/component/binary/composition-view/view-document.component";
-import {PractitionerComponent} from "../../../document-review-app/src/app/component/practitioner/practitioner.component";
-import {OrganisationComponent} from "../../../document-review-app/src/app/component/organisation/organisation.component";
-import {ProcedureComponent} from "../../../document-review-app/src/app/component/procedure/procedure.component";
-import {PatientComponent} from "../../../document-review-app/src/app/component/patient/patient.component";
-import {LocationDialogComponent} from "../../../document-review-app/src/app/dialog/location-dialog/location-dialog.component";
-import {FindDocumentComponent} from "../../../document-review-app/src/app/modules/composition-find/find-document.component";
-import {EprRecordComponent} from "../../../document-review-app/src/app/modules/epr-record/epr-record.component";
+import {ViewDocumentComponent} from "./component/binary/composition-view/view-document.component";
+import {PractitionerComponent} from "./component/practitioner/practitioner.component";
+import {OrganisationComponent} from "./component/organisation/organisation.component";
+import {ProcedureComponent} from "./component/procedure/procedure.component";
+import {PatientComponent} from "./component/patient/patient.component";
+import {LocationDialogComponent} from "./dialog/location-dialog/location-dialog.component";
+
+import {EprRecordComponent} from "./modules/epr-record/epr-record.component";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {RouterModule} from "@angular/router";
@@ -92,17 +89,17 @@ import {Oauth2Service} from "./service/oauth2.service";
 import {BundleService} from "./service/bundle.service";
 import {ErrorsHandler} from "./service/errors-handler";
 import {TokenInterceptor} from "./service/token-interceptor";
+import {ResourceDialogComponent} from "./dialog/resource-dialog/resource-dialog.component";
 
 @NgModule({
   declarations: [
     AppComponent,
-    LoadDocumentComponent,
     EprComponent,
     ViewDocumentComponent,
     ViewDocumentSectionComponent,
     PatientFindComponent,
     PatientSearchComponent,
-    FindDocumentComponent,
+
     CompositionComponent,
     EprRecordComponent,
 
@@ -123,7 +120,7 @@ import {TokenInterceptor} from "./service/token-interceptor";
     ObservationDetailComponent,
 
     ImmunisationComponent,
-    PatientTimelineComponent,
+
     EncounterDetailComponent,
     PractitionerSearchComponent,
     OrganisationSearchComponent,
@@ -149,8 +146,7 @@ import {TokenInterceptor} from "./service/token-interceptor";
     EncounterDialogComponent,
     PingComponent
   ],
-  /*,
-  entryComponents: [
+   entryComponents: [
     ResourceDialogComponent,
     MedicationDialogComponent,
     IssueDialogComponent,
@@ -159,7 +155,7 @@ import {TokenInterceptor} from "./service/token-interceptor";
     OrganisationDialogComponent,
     PractitionerRoleDialogComponent,
     EncounterDialogComponent
-  ],*/
+  ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,

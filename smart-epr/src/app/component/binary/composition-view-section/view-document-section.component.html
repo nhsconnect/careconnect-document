@@ -1,0 +1,96 @@
+<mat-card>
+  <mat-card-title>
+    <div class="d-flex w-100 justify-content-between">
+      {{section.title}}
+
+
+    <div>
+      <button mat-raised-button *ngIf="section.entry != undefined" placement="top" (click)="open()">
+        <mat-icon *ngIf="!showStructured">arrow_drop_down</mat-icon>
+        <mat-icon *ngIf="showStructured">arrow_drop_up</mat-icon>
+        Structured Content</button>
+      <button mat-button *ngIf="section.entry == undefined" disabled="true"  placement="top">
+        No Structured Content</button>
+      <button mat-icon-button color="accent"  ngbTooltip="View Section" (click)="select(section)"><mat-icon>code</mat-icon></button>
+
+    </div>
+    </div>
+  </mat-card-title>
+  <mat-card-content >
+    <div [innerHTML]="section.text.div"></div>
+  </mat-card-content>
+</mat-card>
+<span *ngIf="section.entry != undefined && showStructured">
+    <mat-card style="background-color: aliceblue">
+          <!-- <mat-card-title>
+            <h4>{{section.code.coding[0].display}}</h4>
+          </mat-card-title> -->
+
+          <mat-card-content >
+
+
+                <div *ngIf="section.entry != undefined">
+                  <!-- References {{section.entry.length}} entries -->
+
+
+                  <span *ngIf="allergies.length>0">
+                      <h4>Allergies</h4>
+                      <app-allergy-intollerance [allergies]="allergies" (allergy)="onResoureSelected($event)"></app-allergy-intollerance>
+                  </span>
+                  <span *ngIf="patients.length>0">
+                      <h4>Patient</h4>
+                      <app-patient [patients]="patients" (patient)="onResoureSelected($event)"></app-patient>
+                  </span>
+                  <span *ngIf="practitioners.length>0">
+                      <h4>Practitioner</h4>
+                      <app-practitioner [practitioners]="practitioners" [useBundle]="true" (practitioner)="onResoureSelected($event)"></app-practitioner>
+                  </span>
+                  <span *ngIf="organisations.length>0">
+                      <h4>Organisation</h4>
+                      <app-organisation [organisations]="organisations" (organisation)="onResoureSelected($event)"></app-organisation>
+                  </span>
+                  <span *ngIf="observations.length>0">
+                      <h4>Observations</h4>
+                      <app-observation [observations]="observations" (observation)="onResoureSelected($event)"></app-observation>
+                  </span>
+                  <span *ngIf="encounters.length>0">
+                      <h4>Encounter</h4>
+                      <app-encounter [encounters]="encounters" [useBundle]="true" (encounter)="onResoureSelected($event)"></app-encounter>
+                  </span>
+                  <span *ngIf="medicationStatements.length>0">
+                      <h4>Medication Statement</h4>
+                      <app-medication-statement [medicationStatements]="medicationStatements" (medicationStatement)="onResoureSelected($event)"></app-medication-statement>
+                  </span>
+                  <span *ngIf="conditions.length>0">
+                      <h4>Conditions</h4>
+                      <app-condition [conditions]="conditions" [useBundle]="true" (condition)="onResoureSelected($event)"></app-condition>
+                  </span>
+                  <span *ngIf="procedures.length>0">
+                      <h4>Procedure</h4>
+                      <app-procedure [procedures]="procedures" [useBundle]="true" (procedure)="onResoureSelected($event)"></app-procedure>
+                  </span>
+                  <span *ngIf="medications.length > 0">
+                      <h4>Medications</h4>
+                      <app-medication [medications]="medications" (medication)="onResoureSelected($event)"></app-medication>
+                  </span>
+                  <span *ngIf="prescriptions.length>0">
+                      <h4>Prescriptions</h4>
+                      <app-medication-request [medicationRequests]="prescriptions" (medicationRequest)="onResoureSelected($event)"></app-medication-request>
+                  </span>
+                  <span *ngIf="roles.length>0">
+                      <h4>PractitionerRole</h4>
+                      <app-practitioner-role [roles]="roles" (practitionerRole)="onResoureSelected($event)"></app-practitioner-role>
+                  </span>
+                  <span *ngIf="services.length>0">
+                      <h4>HealthcareService</h4>
+                      <app-healthcare-service [services]="services" (healthcareService)="onResoureSelected($event)"></app-healthcare-service>
+                  </span>
+                </div>
+                <div *ngIf="section.entry == undefined">
+                  No structured content referenced
+                </div>
+
+           </mat-card-content>
+
+        </mat-card>
+</span>
