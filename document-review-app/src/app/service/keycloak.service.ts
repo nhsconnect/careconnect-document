@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
+import {EventEmitter, Injectable} from '@angular/core';
 import {environment} from "../../environments/environment";
+import {CookieService} from "ngx-cookie";
 
 declare let Keycloak: any;
 
@@ -12,7 +13,19 @@ export class KeycloakService {
 
    */
 
+
+  constructor(
+
+    private _cookieService: CookieService,
+
+  ) {
+
+  }
+
+
   static auth: any = {};
+
+  private cookieEvent : EventEmitter<any> = new EventEmitter();
 
   static init(): Promise<any> {
 
@@ -122,4 +135,46 @@ export class KeycloakService {
       }
     });
   }
+
+  getCookie() {
+
+    // This should also include a check for expired cookie, return undefined if it is.
+    return this._cookieService.get('ccri-token');
+  }
+
+  getCookieEventEmitter () {
+    return this.cookieEvent;
+  }
+
+  setCookie() {
+    let jwt: any = undefined;
+    if (this.getCookie() !=undefined) {
+      jwt = this._cookieService.get('ccri-token');
+    } else {
+      if (KeycloakService.auth != undefined && KeycloakService.auth.authz != undefined) {
+        jwt = KeycloakService.auth.authz.token;
+
+        this._cookieService.put('ccri-token', jwt, {
+          domain: this.getCookieDomain(),
+          path: '/',
+          expires: new Date((new Date()).getTime() + 3 * 60000)
+        });
+      }
+    }
+    if (jwt != undefined) {
+      this.cookieEvent.emit(jwt);
+    } else {
+      console.log('jwt not recorded')
+      //this.keycloakService.logout();
+    }
+  }
+
+  getCookieDomain() {
+
+    let cookieDomain :string = 'CAT_COOKIE_DOMAIN';
+    if (cookieDomain.indexOf('CAT_') != -1) cookieDomain = environment.oauth2.cookie_domain;
+    return cookieDomain;
+
+  }
+
 }

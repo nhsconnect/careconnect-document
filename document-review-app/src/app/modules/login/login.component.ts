@@ -23,11 +23,11 @@ export class LoginComponent implements OnInit {
 
   constructor(private authService: AuthService,
               private router: Router,
-              private  fhirService : FhirService,
+              private  fhirService: FhirService,
               private eprService : EprService
 
               ,private activatedRoute: ActivatedRoute
-              ,public keycloak : KeycloakService
+              ,public keycloakService : KeycloakService
     ) {
   }
 
@@ -50,7 +50,7 @@ export class LoginComponent implements OnInit {
 
   onKeyCloakComplete() {
     // Check logged in or login
-    this.keycloak.getToken().then(() => {
+    this.keycloakService.getToken().then(() => {
 
         // Set up a redirect for completion of OAuth2 login
         // This should only be called if OAuth2 has not been performed
@@ -74,7 +74,7 @@ export class LoginComponent implements OnInit {
     //console.log('Perform logins');
 
       // Set a call back for the CookieService
-      this.authService.getCookieEventEmitter()
+      this.keycloakService.getCookieEventEmitter()
           .subscribe(item => {
              // console.log('Cookie event '+this.logonRedirect);
               if (this.logonRedirect !== undefined) {
@@ -85,7 +85,7 @@ export class LoginComponent implements OnInit {
             }
           );
 
-      this.authService.setCookie();
+      this.keycloakService.setCookie();
 
   }
 

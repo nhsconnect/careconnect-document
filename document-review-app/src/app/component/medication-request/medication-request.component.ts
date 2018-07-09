@@ -7,6 +7,7 @@ import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
 import {MedicationStatementDataSource} from "../../data-source/medication-statement-data-source";
 import {MedicationRequestDataSource} from "../../data-source/medication-request-data-source";
 import {BundleService} from "../../service/bundle.service";
+import {MedicationDialogComponent} from "../../dialog/medication-dialog/medication-dialog.component";
 
 @Component({
   selector: 'app-medication-request',
@@ -20,6 +21,9 @@ export class MedicationRequestComponent implements OnInit {
   @Input() showDetail : boolean = false;
 
   meds : fhir.Medication[];
+
+
+  selectedMeds : fhir.Medication[];
 
   @Output() medicationRequest = new EventEmitter<any>();
 
@@ -58,29 +62,63 @@ export class MedicationRequestComponent implements OnInit {
 
   }
 
-  onClick(content , medicationRequest : fhir.MedicationRequest) {
+  onClick(medicationRequest : fhir.MedicationRequest) {
     console.log("Clicked - " + medicationRequest.id);
-    this.meds = [];
+    this.selectedMeds = [];
 
-    let reference = medicationRequest.medicationReference.reference;
-    console.log(reference);
-    let refArray: string[] = reference.split('/');
-    if (refArray.length>1) {
-      this.fhirService.getEPRMedication(refArray[refArray.length-1]).subscribe(data => {
-          if (data != undefined) {
-            this.meds.push(<fhir.Medication>data);
+    if (this.bundleService.getBundle() != undefined) {
+
+      if (medicationRequest.medicationReference != null) {
+        console.log("medicationReference - " + medicationRequest.medicationReference.reference);
+        this.bundleService.getResource(medicationRequest.medicationReference.reference).subscribe(
+          (medtemp) => {
+            if (medtemp != undefined && medtemp.resourceType === "Medication") {
+              console.log('meds list ' + medtemp.id);
+              this.selectedMeds.push(<fhir.Medication> medtemp);
+
+              const dialogConfig = new MatDialogConfig();
+
+              dialogConfig.disableClose = true;
+              dialogConfig.autoFocus = true;
+              dialogConfig.data = {
+                id: 1,
+                medications: this.selectedMeds
+              };
+              let resourceDialog: MatDialogRef<MedicationDialogComponent> = this.dialog.open(MedicationDialogComponent, dialogConfig);
+            }
           }
-        },
-        error1 => {
-        },
-        () => {
-        console.log("Content = ");
-          console.log(content);
-          this.modalService.open(content, {windowClass: 'dark-modal'});
-        }
-      );
+        )
+      }
+    } else {
+      let reference = medicationRequest.medicationReference.reference;
+      console.log(reference);
+      let refArray: string[] = reference.split('/');
+      if (refArray.length>1) {
+        this.fhirService.getEPRMedication(refArray[refArray.length - 1]).subscribe(data => {
+            if (data != undefined) {
+              this.meds.push(<fhir.Medication>data);
+              this.selectedMeds.push(<fhir.Medication>data);
+            }
+          },
+          error1 => {
+          },
+          () => {
+            console.log("Content = ");
+            const dialogConfig = new MatDialogConfig();
+
+            dialogConfig.disableClose = true;
+            dialogConfig.autoFocus = true;
+            dialogConfig.data = {
+              id: 1,
+              medications: this.selectedMeds
+            };
+            let resourceDialog : MatDialogRef<MedicationDialogComponent> = this.dialog.open( MedicationDialogComponent, dialogConfig);
+          }
+        );
+      }
     }
   }
+
   select(resource) {
     const dialogConfig = new MatDialogConfig();
 

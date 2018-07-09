@@ -24,8 +24,6 @@ export class AuthService {
 
   private UserEvent : EventEmitter<User> = new EventEmitter();
 
-  private cookieEvent : EventEmitter<any> = new EventEmitter();
-
   public auth : boolean = false;
 
 
@@ -33,8 +31,7 @@ export class AuthService {
   constructor(
              private router: Router,
              private oauth2 : Oauth2Service,
-             private _cookieService:CookieService,
-             private keycloakService : KeycloakService
+             private _cookieService:CookieService
               ) {
 
     this.updateUser();
@@ -58,39 +55,11 @@ export class AuthService {
   }
 
 
+  getLogonServer() {
 
-  getCookieEventEmitter() {
-
-    return this.cookieEvent;
-  }
-  setCookie() {
-      let jwt: any = undefined;
-      if (this.getCookie() !=undefined) {
-        jwt = this._cookieService.get('ccri-token');
-      } else {
-        if (KeycloakService.auth != undefined && KeycloakService.auth.authz != undefined) {
-          jwt = KeycloakService.auth.authz.token;
-
-          this._cookieService.put('ccri-token', jwt, {
-            domain: this.getCookieDomain(),
-            path: '/',
-            expires: new Date((new Date()).getTime() + 3 * 60000)
-          });
-        }
-      }
-      if (jwt != undefined) {
-        this.cookieEvent.emit(jwt);
-      } else {
-        console.log('jwt not recorded')
-        //this.keycloakService.logout();
-      }
-  }
-
-  getCookieDomain() {
-
-      let cookieDomain :string = 'CAT_COOKIE_DOMAIN';
-      if (cookieDomain.indexOf('CAT_') != -1) cookieDomain = environment.oauth2.cookie_domain;
-      return cookieDomain;
+    let loginUrl :string = 'LOGIN_URL';
+    if (loginUrl.indexOf('LOGIN_') != -1) loginUrl = environment.login;
+    return loginUrl;
 
   }
 
