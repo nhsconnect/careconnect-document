@@ -2,7 +2,7 @@ import {EventEmitter, Injectable, Output} from '@angular/core';
 import { Observable, Subject, asapScheduler, pipe, of, from, interval, merge, fromEvent } from 'rxjs';
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Oauth2token} from "../model/oauth2token";
-import {isNumber} from "util";
+
 import {AuthService} from "./auth.service";
 
 import {Router} from "@angular/router";
@@ -33,7 +33,7 @@ export class FhirService {
   public getEPRUrl(): string {
 
     let eprUrl :string = 'FHIR_SERVER_URL';
-    if (eprUrl.indexOf('FHIR_SERVER') != -1) eprUrl = environment.cat.eprUrl;
+    if (eprUrl.indexOf('FHIR_SERVER') != -1) eprUrl = environment.oauth2.eprUrl;
     return eprUrl;
   }
 
@@ -64,9 +64,11 @@ export class FhirService {
 
   authoriseOAuth2() : void  {
 
-
+    console.log('authoriseOAuth2');
     this.http.get<fhir.CapabilityStatement>(this.getEPRUrl()+'/metadata').subscribe(
       conformance  => {
+
+        console.log('conformance response');
 
         for (let rest of conformance.rest) {
           for (let extension of rest.security.extension) {
@@ -101,8 +103,8 @@ export class FhirService {
         // Check here for client id - need to store in database
         // If no registration then register client
         // Dynamic registration not present at the mo but   this.performRegister();
-
-        this.performAuthorise(environment.cat.client_id, this.getCatClientSecret());
+        console.log('call performAuthorise');
+        this.performAuthorise(environment.oauth2.client_id, this.getCatClientSecret());
 
         return this.authoriseUri;
       }
@@ -130,7 +132,7 @@ export class FhirService {
     localStorage.setItem("authoriseUri", this.authoriseUri);
     localStorage.setItem("tokenUri", this.tokenUri);
 
-    if (localStorage.getItem('access_token')!= undefined) {
+    if (this.oauth2service.getToken() !== undefined) {
       // access token is present so forgo access token retrieval
 
       this.authService.updateUser();
@@ -185,7 +187,7 @@ export class FhirService {
   getCatClientSecret() {
     // This is a marker for entryPoint.sh to replace
     let secret :string = 'SMART_OAUTH2_CLIENT_SECRET';
-    if (secret.indexOf('SECRET') != -1) secret = environment.cat.client_secret;
+    if (secret.indexOf('SECRET') != -1) secret = environment.oauth2.client_secret;
     return secret;
   }
 
@@ -193,7 +195,7 @@ export class FhirService {
   performGetAccessToken(authCode :string ) {
 
 
-    let bearerToken = 'Basic '+btoa(environment.cat.client_id+":"+this.getCatClientSecret());
+    let bearerToken = 'Basic '+btoa(environment.oauth2.client_id+":"+this.getCatClientSecret());
     let headers = new HttpHeaders( {'Authorization' : bearerToken});
     headers= headers.append('Content-Type','application/x-www-form-urlencoded');
 
@@ -210,9 +212,9 @@ export class FhirService {
         this.smartToken = response;
         console.log('OAuth2Token : '+response);
         this.authService.auth = true;
-        localStorage.setItem("access_token", this.smartToken.access_token);
+        this.oauth2service.setToken( this.smartToken.access_token);
 
-        localStorage.setItem("scope", this.smartToken.scope);
+        this.oauth2service.setScope(this.smartToken.scope);
 
         this.authService.updateUser();
       }
@@ -234,7 +236,7 @@ export class FhirService {
 
     // https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/119734296/Registering+a+Launch+Context
 
-    let bearerToken = 'Basic '+btoa(environment.cat.client_id+":"+this.getCatClientSecret());
+    let bearerToken = 'Basic '+btoa(environment.oauth2.client_id+":"+this.getCatClientSecret());
 
     const url = localStorage.getItem("tokenUri").replace('token', '') + 'Launch';
     let payload = JSON.stringify({launch_id: contextId, parameters: []});

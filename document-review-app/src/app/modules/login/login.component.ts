@@ -14,12 +14,6 @@ import {KeycloakService} from "../../service/keycloak.service";
 })
 export class LoginComponent implements OnInit {
 
-  user = {
-    email: '',
-    password: ''
-  };
-
-  errorMessage : string;
 
   logonRedirect : string = undefined;
 
@@ -77,11 +71,12 @@ export class LoginComponent implements OnInit {
 
   performLogins() :void {
 
+    //console.log('Perform logins');
 
       // Set a call back for the CookieService
       this.authService.getCookieEventEmitter()
           .subscribe(item => {
-
+             // console.log('Cookie event '+this.logonRedirect);
               if (this.logonRedirect !== undefined) {
                 window.location.href =this.logonRedirect;
               } else {

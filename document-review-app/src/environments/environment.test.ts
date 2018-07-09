@@ -12,7 +12,7 @@ export const environment = {
     client_secret : 'KEYCLOAK_CLIENT_SECRET',
     client_id : 'ccri-cat'
   },
-  cat : {
+  oauth2 : {
     eprUrl : 'https://purple.testlab.nhs.uk/smart-on-fhir-resource/STU3',
     client_id : 'clinical-assurance-tool',
     client_secret : 'SMART_OAUTH2_CLIENT_SECRET',

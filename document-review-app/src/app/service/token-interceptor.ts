@@ -12,6 +12,7 @@ import { Observable } from 'rxjs';
 import { tap} from 'rxjs/operators';
 import {FhirService} from "./fhir.service";
 import {AuthService} from "./auth.service";
+import {environment} from "../../environments/environment";
 
 
 
@@ -23,7 +24,7 @@ export class TokenInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
     // FHIR resource requests only
-       if ((request.url.indexOf(this.fhir.getEPRUrl()) !== -1) && (request.url.indexOf('metadate') == -1 )) {
+       if ((request.url.indexOf(this.fhir.getEPRUrl()) !== -1) && (request.url.indexOf('metadata') == -1 )) {
          console.log('Does token need refreshing ' + !this.oauth2.isAuthenticated());
          if (request.method == "PUT" || request.method == "POST") {
            request = request.clone({
@@ -51,7 +52,7 @@ export class TokenInterceptor implements HttpInterceptor {
                    console.log('*** 401 401 401 401 401 ***');
                    if (this.authService.getAccessToken() != undefined) {
                      console.log('Removing access token and reauthorising');
-                     localStorage.removeItem('access_token')
+                     this.oauth2.removeToken();
                      this.fhir.authoriseOAuth2();
                    } else {
                      console.log('No token found. Try logout?');

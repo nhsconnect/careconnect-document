@@ -6,6 +6,7 @@ import {User} from "../model/user";
 import {KeycloakService} from "./keycloak.service";
 import {environment} from "../../environments/environment";
 import {CookieService} from "ngx-cookie";
+import {Oauth2Service} from "./oauth2.service";
 
 
 
@@ -30,10 +31,10 @@ export class AuthService {
 
 
   constructor(
-             private router: Router
-
-            ,private _cookieService:CookieService
-             , private keycloakService : KeycloakService
+             private router: Router,
+             private oauth2 : Oauth2Service,
+             private _cookieService:CookieService,
+             private keycloakService : KeycloakService
               ) {
 
     this.updateUser();
@@ -53,12 +54,10 @@ export class AuthService {
     } else {
       console.log("User not undefined");
     }
-    return localStorage.getItem("access_token");
+    return this.oauth2.getToken();
   }
 
-  removeAccessToken() {
-    localStorage.removeItem("access_token");
-  }
+
 
   getCookieEventEmitter() {
 
@@ -90,7 +89,7 @@ export class AuthService {
   getCookieDomain() {
 
       let cookieDomain :string = 'CAT_COOKIE_DOMAIN';
-      if (cookieDomain.indexOf('CAT_') != -1) cookieDomain = environment.cat.cookie_domain;
+      if (cookieDomain.indexOf('CAT_') != -1) cookieDomain = environment.oauth2.cookie_domain;
       return cookieDomain;
 
   }
@@ -111,7 +110,7 @@ export class AuthService {
 
       let basicUser = new User();
 
-      basicUser.cat_access_token = localStorage.getItem("access_token");
+      basicUser.cat_access_token = this.oauth2.getToken();
 
       this.setLocalUser(basicUser);
   }

@@ -5,6 +5,7 @@ import {AuthService} from "../../service/auth.service";
 import {KeycloakService} from "../../service/keycloak.service";
 import {environment} from "../../../environments/environment";
 import {CookieService} from "ngx-cookie";
+import {Oauth2Service} from "../../service/oauth2.service";
 
 @Component({
   selector: 'app-logout',
@@ -20,7 +21,8 @@ export class LogoutComponent implements OnInit {
       ,private activatedRoute: ActivatedRoute
       ,private router: Router
       ,private _cookieService:CookieService
-      ,private keycloak : KeycloakService
+      ,private keycloak : KeycloakService,
+      private oauth2 : Oauth2Service
   ) { }
 
   ngOnInit(
@@ -34,7 +36,7 @@ export class LogoutComponent implements OnInit {
     }
     this._cookieService.remove('ccri-token');
 
-    localStorage.removeItem('access_token');
+    this.oauth2.removeToken();
 
     this.keycloak.logout();
 
