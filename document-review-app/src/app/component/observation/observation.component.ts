@@ -52,18 +52,40 @@ export class ObservationComponent implements OnInit {
 
     if (observation.valueQuantity != undefined ) {
       //console.log(observation.valueQuantity.value);
-      return observation.valueQuantity.value.toPrecision(4) + " " + observation.valueQuantity.unit;
+      let unit: string = "";
+      if (observation.valueQuantity.unit !== undefined) {
+        unit = observation.valueQuantity.unit;
+      }
+      return observation.valueQuantity.value.toPrecision(4) + " " + unit;
     }
 
     if (observation.component == undefined || observation.component.length < 2)
       return "";
     // Only coded for blood pressures at present
-    if (observation.component[0].valueQuantity == undefined )
+    if (observation.component[0].valueQuantity === undefined )
       return "";
-    if (observation.component[1].valueQuantity == undefined )
+    if (observation.component[1].valueQuantity === undefined )
       return "";
+    let unit0: string = "";
+    let unit1: string = "";
+    if (observation.component[0].valueQuantity.unit !== undefined) {
+      unit0 = observation.component[0].valueQuantity.unit;
+    }
+    if (observation.component[1].valueQuantity.unit !== undefined) {
+      unit1 = observation.component[1].valueQuantity.unit;
+    }
+    if (observation.component[0].code !== undefined && observation.component[0].code.coding !== undefined && observation.component[0].code.coding.length > 0) {
+      unit0 = observation.component[0].code.coding[0].display;
+    }
+    if (observation.component[1].code !== undefined && observation.component[1].code.coding !== undefined && observation.component[1].code.coding.length > 0) {
+      unit1 = observation.component[1].code.coding[0].display;
+    }
 
-    return observation.component[0].valueQuantity.value + "/"+ observation.component[1].valueQuantity.value + " " + observation.component[1].valueQuantity.unit;
+    if (unit0 === unit1 || unit1==="") {
+      return observation.component[0].valueQuantity.value + "/" + observation.component[1].valueQuantity.value + " " + unit0;
+    } else {
+      return observation.component[0].valueQuantity.value + "/" + observation.component[1].valueQuantity.value + " " + unit0 + "/" + unit1;
+    }
 
   }
 

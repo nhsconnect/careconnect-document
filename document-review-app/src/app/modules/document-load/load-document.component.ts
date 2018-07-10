@@ -9,7 +9,7 @@ import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {FormControl, FormGroup, ValidationErrors, Validators} from "@angular/forms";
 import {DocumentRef} from "../../model/document-ref";
 import { v4 as uuid } from 'uuid';
-import {IAlertConfig, TdDialogService} from "@covalent/core";
+import {IAlertConfig, TdDialogService, TdLoadingService} from "@covalent/core";
 import {IConfirmConfig} from "@covalent/core/dialogs/services/dialog.service";
 import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
 import {IssueDialogComponent} from "../../dialog/issue-dialog/issue-dialog.component";
@@ -51,8 +51,9 @@ export class LoadDocumentComponent implements OnInit {
 
   fileName : FormControl;
 
-  public loadComplete :EventEmitter<any> = new EventEmitter();
+  public loadComplete: EventEmitter<any> = new EventEmitter();
 
+  public progressBar: boolean = false;
 
 
   @ViewChild('docCreated') inputCreated;
@@ -70,6 +71,9 @@ export class LoadDocumentComponent implements OnInit {
 
 
   ngOnInit() :void {
+
+
+
       if (this.eprService.patient != undefined) {
         let patients : fhir.Patient[] = [];
         patients.push(this.eprService.patient);
@@ -164,6 +168,7 @@ export class LoadDocumentComponent implements OnInit {
   }
 
 
+
   closeOrg(organization : fhir.Organization) {
     console.log("Selected Organisation "+organization.id);
     let organizations :fhir.Organization[] = [];
@@ -222,6 +227,7 @@ export class LoadDocumentComponent implements OnInit {
     this.getFormValidationErrors();
   }
   onSubmitClick() {
+    this.progressBar = true;
     if (!this.getFormValidationErrors()) return;
 
     let file: File = <File> this.formData.get('uploadFile');
@@ -231,7 +237,8 @@ export class LoadDocumentComponent implements OnInit {
 
       this.fhirService.postBundle(file, this.getContentType(file)).subscribe(data => {
           console.log(data);
-
+          this.progressBar = false;
+          this.eprService.documentReference = undefined;
 
           for (let entry of data.entry) {
             if (entry.resource.resourceType == 'Patient') {
@@ -241,10 +248,14 @@ export class LoadDocumentComponent implements OnInit {
               this.eprService.documentReference = <fhir.DocumentReference> entry.resource;
             }
           }
-          this.eprService.setSection('binary');
+          if (this.eprService.documentReference !== undefined) {
+            this.eprService.setSection('binary');
+          } else {
+            this.eprService.setSection('documents');
+          }
         },
         err => {
-
+          this.progressBar = false;
           console.log(err.error);
 
           this.response = err.error;
@@ -374,7 +385,7 @@ export class LoadDocumentComponent implements OnInit {
 
       this.fhirService.postBundle(bundle, 'application/json+fhir').subscribe(data  => {
           console.log(data);
-
+          this.progressBar = false;
           for (let entry of data.entry) {
             if (entry.resource.resourceType == 'DocumentReference') {
               this.eprService.documentReference = <fhir.DocumentReference> entry.resource;
@@ -386,7 +397,7 @@ export class LoadDocumentComponent implements OnInit {
           this.eprService.setSection('binary');
         },
         err => {
-
+          this.progressBar = false;
           console.log(err.error);
           this.response = err.error;
 
@@ -435,13 +446,14 @@ export class LoadDocumentComponent implements OnInit {
 
   onReplaceClick() {
     if (!this.getFormValidationErrors()) return;
-
+    this.progressBar = true;
     //this.modalReference.close();
     let file : File = <File> this.formData.get('uploadFile');
     console.log('clicked FileName = '+file.name);
 
     this.fhirService.putBundle(file,this.getContentType(file)).subscribe( data => {
         console.log(data);
+        this.progressBar = false;
         for (let entry of data.entry) {
           if (entry.resource.resourceType == 'Patient') {
             this.eprService.patient = <fhir.Patient> entry.resource;
@@ -453,7 +465,7 @@ export class LoadDocumentComponent implements OnInit {
         this.eprService.setSection('binary');
       },
       err  => {
-
+        this.progressBar = false;
         console.log(err.message );
 
         this.response = err.error;

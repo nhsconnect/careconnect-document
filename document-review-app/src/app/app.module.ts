@@ -67,12 +67,29 @@ import {PdfViewerModule} from "ng2-pdf-viewer";
 import { ImgViewerComponent } from './component/binary/img-viewer/img-viewer.component';
 import {ImageViewerModule} from '@hallysonh/ngx-imageviewer';
 import {
-  DateAdapter, MAT_DATE_FORMATS,
-  MAT_DATE_LOCALE, MatButtonModule, MatCardModule,
-  MatDatepickerModule, MatDialogModule, MatGridListModule, MatIcon, MatIconRegistry, MatIconModule,
-  MatInputModule, MatListModule, MatPaginatorModule, MatSelectModule,
+  DateAdapter,
+  MAT_DATE_FORMATS,
+  MAT_DATE_LOCALE,
+  MatButtonModule,
+  MatCardModule,
+  MatDatepickerModule,
+  MatDialogModule,
+  MatGridListModule,
+  MatIcon,
+  MatIconRegistry,
+  MatIconModule,
+  MatInputModule,
+  MatListModule,
+  MatPaginatorModule,
+  MatSelectModule,
 
-  MatSidenavModule, MatTableModule, MatToolbarModule, MatSnackBarModule, MatMenuModule
+  MatSidenavModule,
+  MatTableModule,
+  MatToolbarModule,
+  MatSnackBarModule,
+  MatMenuModule,
+  MatProgressBarModule,
+  MatProgressSpinnerModule
 } from "@angular/material";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {MAT_MOMENT_DATE_FORMATS, MatMomentDateModule, MomentDateAdapter} from "@angular/material-moment-adapter";
@@ -104,6 +121,7 @@ import {BinaryComponent} from './component/binary/binary/binary.component';
 import {PractitionerRoleDialogComponent} from "./dialog/practitioner-role-dialog/practitioner-role-dialog.component";
 import {EncounterDialogComponent} from "./dialog/encounter-dialog/encounter-dialog.component";
 import {PingComponent} from "./modules/ping/ping.component";
+import {CovalentLoadingModule} from '@covalent/core';
 
 
 @NgModule({
@@ -205,6 +223,8 @@ import {PingComponent} from "./modules/ping/ping.component";
     MatPaginatorModule,
     MatMenuModule,
     MatSnackBarModule,
+    MatProgressBarModule,
+    MatProgressSpinnerModule,
 
 
     CovalentLayoutModule,
