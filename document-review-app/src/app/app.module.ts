@@ -121,7 +121,7 @@ import {BinaryComponent} from './component/binary/binary/binary.component';
 import {PractitionerRoleDialogComponent} from "./dialog/practitioner-role-dialog/practitioner-role-dialog.component";
 import {EncounterDialogComponent} from "./dialog/encounter-dialog/encounter-dialog.component";
 import {PingComponent} from "./modules/ping/ping.component";
-import {CovalentLoadingModule} from '@covalent/core';
+
 
 
 @NgModule({
