@@ -34,7 +34,7 @@ export class DocumentReferenceDataSource extends DataSource<any> {
         _documents.next(Object.assign({}, this.dataStore).documents);
       }));
     } else
-    if (this.documents != []) {
+    if (this.documents !== [] && this.documents !== undefined) {
        for (let document of this.documents) {
          this.dataStore.documents.push(<fhir.DocumentReference> document);
        }
