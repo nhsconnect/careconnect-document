@@ -277,7 +277,7 @@ export class LoadDocumentComponent implements OnInit {
   }
 
     buildBundle(base64file : string) :any {
-      let binary : fhir.Binary = {
+      let binary: fhir.Binary = {
         id : uuid(),
         contentType: this.getContentType(this.file),
         content: base64file
