@@ -131,6 +131,7 @@ export class FhirService {
 
     localStorage.setItem("authoriseUri", this.authoriseUri);
     localStorage.setItem("tokenUri", this.tokenUri);
+    localStorage.setItem("registerUri", this.registerUri);
 
     if (this.oauth2service.getToken() !== undefined) {
       // access token is present so forgo access token retrieval
@@ -155,6 +156,9 @@ export class FhirService {
 
 
   performRegister() {
+    if (this.registerUri === undefined) {
+      this.registerUri = localStorage.getItem("registerUri");
+    }
     const url = this.registerUri;
 
     let payload = JSON.stringify({ client_name : 'ClinicalAssuranceTool' ,
