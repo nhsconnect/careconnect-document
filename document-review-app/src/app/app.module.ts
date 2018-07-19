@@ -37,7 +37,6 @@ import {LoginComponent} from "./modules/login/login.component";
 import {LinksService} from "./service/links.service";
 import {EprService} from "./service/epr.service";
 import {ObservationDetailComponent} from "./component/observation-detail/observation-detail.component";
-import {Ng2GoogleChartsModule} from "ng2-google-charts";
 import {CareGoogleChartComponent} from "./component/care-google-chart/care-google-chart.component";
 
 import { ImmunisationComponent } from './component/immunisation/immunisation.component';
@@ -201,7 +200,6 @@ import {PingComponent} from "./modules/ping/ping.component";
     AppRoutingModule,
     FileUploadModule,
     HttpClientModule,
-    Ng2GoogleChartsModule,
     NgbModule.forRoot(),
     TreeModule,
     PdfViewerModule,
