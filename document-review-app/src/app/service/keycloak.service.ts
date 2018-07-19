@@ -154,6 +154,8 @@ export class KeycloakService {
       if (KeycloakService.auth != undefined && KeycloakService.auth.authz != undefined) {
         jwt = KeycloakService.auth.authz.token;
 
+        localStorage.setItem('ccri-jwt',jwt);
+
         this._cookieService.put('ccri-token', jwt, {
           domain: this.getCookieDomain(),
           path: '/',
