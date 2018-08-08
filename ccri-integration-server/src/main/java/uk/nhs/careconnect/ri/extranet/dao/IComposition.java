@@ -21,4 +21,6 @@ public interface IComposition {
     Bundle buildSummaryCareDocument(IGenericClient client, IdType patientId) throws Exception;
 
     Bundle buildEncounterDocument(IGenericClient client, IdType encounterId) throws Exception;
+
+    Bundle buildCarePlanDocument(IGenericClient client, IdType carePlanId) throws Exception;
 }

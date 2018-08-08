@@ -55,6 +55,17 @@ public class FhirBundleUtil {
                 allergyIntolerance.setPatient(getUUIDReference(allergyIntolerance.getPatient()));
             }
 
+            if (entry.getResource() instanceof CarePlan) {
+                CarePlan carePlan = (CarePlan) entry.getResource();
+                carePlan.setSubject(new Reference(uuidtag+patient.getId()));
+                if (carePlan.hasContext()) {
+                    carePlan.setContext(getUUIDReference(carePlan.getContext()));
+                }
+               for (Reference reference : carePlan.getSupportingInfo()) {
+                   reference.setReference(getUUIDReference(reference).getReference());
+               }
+            }
+
             if (entry.getResource() instanceof Condition) {
                 Condition condition = (Condition) entry.getResource();
                 condition.setSubject(getUUIDReference(condition.getSubject()));
@@ -126,6 +137,22 @@ public class FhirBundleUtil {
                 }
             }
 
+            if (entry.getResource() instanceof ListResource) {
+                ListResource list = (ListResource) entry.getResource();
+                list.setSubject(new Reference(uuidtag+patient.getId()));
+
+                for (ListResource.ListEntryComponent listEntry : list.getEntry()) {
+                    listEntry.setItem(getUUIDReference(listEntry.getItem()));
+                }
+
+                if (list.hasSource()) {
+                    list.setSource(getUUIDReference(list.getSource()));
+                }
+                if (list.hasEncounter()) {
+                    list.setEncounter(getUUIDReference(list.getEncounter()));
+                }
+
+            }
             if (entry.getResource() instanceof Location) {
                 Location location = (Location) entry.getResource();
 
@@ -202,7 +229,19 @@ public class FhirBundleUtil {
                     procedure.setContext(getUUIDReference(procedure.getContext()));
                 }
             }
-
+            if (entry.getResource() instanceof QuestionnaireResponse) {
+                QuestionnaireResponse form = (QuestionnaireResponse) entry.getResource();
+                form.setSubject(new Reference(uuidtag+patient.getId()));
+                if (form.hasContext()) {
+                    form.setContext(getUUIDReference(form.getContext()));
+                }
+                if (form.hasSource()) {
+                    form.setSource(getUUIDReference(form.getSource()));
+                }
+                if (form.hasAuthor()) {
+                    form.setAuthor(getUUIDReference(form.getAuthor()));
+                }
+            }
         }
     }
 
@@ -244,12 +283,15 @@ public class FhirBundleUtil {
             if (newReference != null) return newReference;
         }
         newReference = UUID.randomUUID().toString();
+        String simpleName = resource.getClass().getSimpleName();
+        if (simpleName.equals("ListResource")) simpleName="List";
         if (reference == null) {
             reference = newReference;
-            referenceMap.put(resource.getClass().getSimpleName()+"/"+reference,newReference);
+            referenceMap.put(simpleName+"/"+reference,newReference);
         } else {
-            log.info(resource.getClass().getSimpleName()+"/"+resource.getIdElement().getIdPart()+" [-] "+newReference);
-            referenceMap.put(resource.getClass().getSimpleName()+"/"+resource.getIdElement().getIdPart(),newReference);
+
+            log.info(simpleName+"/"+resource.getIdElement().getIdPart()+" [-] "+newReference);
+            referenceMap.put(simpleName+"/"+resource.getIdElement().getIdPart(),newReference);
         }
         log.info(reference +" [-] "+newReference);
         referenceMap.put(reference,newReference);

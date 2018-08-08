@@ -71,6 +71,103 @@ public class CompositionDao implements IComposition {
            return null;
     }
 
+    @Override
+    public Bundle buildCarePlanDocument(IGenericClient client, IdType carePlanId) throws Exception {
+        fhirBundleUtil = new FhirBundleUtil(Bundle.BundleType.DOCUMENT);
+        Bundle compositionBundle = new Bundle();
+
+        // Main resource of a FHIR Bundle is a Composition
+        composition = new Composition();
+        composition.setId(UUID.randomUUID().toString());
+        compositionBundle.addEntry().setResource(composition);
+
+        // composition.getMeta().addProfile(CareConnectProfile.Composition_1);
+        composition.setTitle("Care Plan Document");
+
+        composition.setDate(new Date());
+        composition.setStatus(Composition.CompositionStatus.FINAL);
+
+        Organization leedsTH = getOrganization(client,"RR8");
+        compositionBundle.addEntry().setResource(leedsTH);
+
+        composition.addAttester()
+                .setParty(new Reference("Organization/"+leedsTH.getIdElement().getIdPart()))
+                .addMode(Composition.CompositionAttestationMode.OFFICIAL);
+
+
+        Device device = new Device();
+        device.setId(UUID.randomUUID().toString());
+        device.getType().addCoding()
+                .setSystem("http://snomed.info/sct")
+                .setCode("58153004")
+                .setDisplay("Android");
+        device.setOwner(new Reference("Organization/"+leedsTH.getIdElement().getIdPart()));
+        compositionBundle.addEntry().setResource(device);
+
+        composition.addAuthor(new Reference("Device/"+device.getIdElement().getIdPart()));
+
+        composition.getType().addCoding()
+                .setCode("736373009")
+                .setDisplay("End of life care plan (record artifact)")
+                .setSystem(SNOMEDCT);
+
+        fhirBundleUtil.processBundleResources(compositionBundle);
+        fhirBundleUtil.processReferences();
+
+
+
+        Bundle carePlanBundle = getCarePlanBundle(client,carePlanId.getIdPart());
+        CarePlan carePlan = null;
+        for(Bundle.BundleEntryComponent entry : carePlanBundle.getEntry()) {
+            Resource resource =  entry.getResource();
+            if (carePlan == null && entry.getResource() instanceof CarePlan) {
+                carePlan = (CarePlan) entry.getResource();
+            }
+        }
+        String patientId = null;
+
+        if (carePlan!=null) {
+
+            patientId = carePlan.getSubject().getReferenceElement().getIdPart();
+            log.debug(carePlan.getSubject().getReferenceElement().getIdPart());
+
+
+            // This is a synthea patient
+            Bundle patientBundle = getPatientBundle(client, patientId);
+
+            fhirBundleUtil.processBundleResources(patientBundle);
+
+            if (fhirBundleUtil.getPatient() == null) throw new Exception("404 Patient not found");
+            composition.setSubject(new Reference("Patient/"+patientId));
+            patientId = fhirBundleUtil.getPatient().getId();
+        }
+
+        if (fhirBundleUtil.getPatient() == null) throw new UnprocessableEntityException();
+
+        fhirBundleUtil.processBundleResources(carePlanBundle);
+
+        fhirBundleUtil.processReferences();
+
+        FhirDocUtil fhirDoc = new FhirDocUtil(templateEngine);
+
+        composition.addSection(fhirDoc.getEncounterSection(fhirBundleUtil.getFhirDocument()));
+
+        //  Do we only include a section if it has data?
+
+        Composition.SectionComponent section = fhirDoc.getAdvanceTreatmentPreferencesSection(fhirBundleUtil.getFhirDocument());
+        composition.addSection(section);
+
+        section = fhirDoc.getDisabilitySection(fhirBundleUtil.getFhirDocument());
+        composition.addSection(section);
+
+        section = fhirDoc.getFunctionalStatusSection(fhirBundleUtil.getFhirDocument());
+        composition.addSection(section);
+
+        section = fhirDoc.getPreferencesSection(fhirBundleUtil.getFhirDocument());
+        composition.addSection(section);
+
+        return fhirBundleUtil.getFhirDocument();
+    }
 
     @Override
     public Bundle buildEncounterDocument(IGenericClient client, IdType encounterId) throws Exception {
@@ -302,6 +399,17 @@ public class CompositionDao implements IComposition {
                 .execute();
     }
 
+    private Bundle getConditionDisabilityBundle(IGenericClient client,String patientId) {
+
+        return client
+                .search()
+                .forResource(Condition.class)
+                .where(Condition.PATIENT.hasId(patientId))
+                .and(Condition.CLINICAL_STATUS.exactly().code("active"))
+                .returnBundle(Bundle.class)
+                .execute();
+    }
+
     private Bundle getEncounterBundleRev(IGenericClient client, String encounterId) {
 
         Bundle bundle = client
@@ -315,6 +423,20 @@ public class CompositionDao implements IComposition {
                 .execute();
         return bundle;
     }
+
+    private Bundle getCarePlanBundle(IGenericClient client, String carePlanId) {
+
+        Bundle bundle = client
+                .search()
+                .forResource(CarePlan.class)
+                .where(Patient.RES_ID.exactly().code(carePlanId))
+                .include(new Include("*"))
+                .count(100) // be careful of this TODO
+                .returnBundle(Bundle.class)
+                .execute();
+        return bundle;
+    }
+
     private Bundle getEncounterBundle(IGenericClient client,String patientId) {
 
         return client

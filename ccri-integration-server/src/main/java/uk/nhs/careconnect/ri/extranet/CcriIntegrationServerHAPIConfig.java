@@ -85,6 +85,7 @@ public class CcriIntegrationServerHAPIConfig extends RestfulServer {
 				,applicationContext.getBean(MedicationStatementExtranetProvider.class)
 				,applicationContext.getBean(ObservationExtranetProvider.class)
 				,applicationContext.getBean(ProcedureExtranetProvider.class)
+				,applicationContext.getBean(CarePlanExtranetProvider.class)
 		));
 
 		// Replace built in conformance provider (CapabilityStatement)

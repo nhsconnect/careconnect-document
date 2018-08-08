@@ -53,6 +53,80 @@ public class FhirDocUtil {
         return section;
     }
 
+
+
+    public Composition.SectionComponent getAdvanceTreatmentPreferencesSection(Bundle bundle) {
+        Composition.SectionComponent section = new Composition.SectionComponent();
+
+
+        section.getCode().addCoding()
+                .setSystem("http://snomed.info/sct")
+                .setCode("854851000000107")
+                .setDisplay("Advanced Treatment Preferences");
+        section.setTitle("Advanced Treatment Preferences");
+
+        section.getText().setDiv(getDiv("dummy")).setStatus(Narrative.NarrativeStatus.GENERATED);
+
+        return section;
+    }
+
+    public Composition.SectionComponent getFunctionalStatusSection(Bundle bundle) {
+        Composition.SectionComponent section = new Composition.SectionComponent();
+
+
+        section.getCode().addCoding()
+                .setSystem("http://snomed.info/sct")
+                .setCode("854851000000107")
+                .setDisplay("Functional Status");
+        section.setTitle("Functional Statues");
+
+        section.getText().setDiv(getDiv("dummy")).setStatus(Narrative.NarrativeStatus.GENERATED);
+
+        return section;
+    }
+
+    public Composition.SectionComponent getPreferencesSection(Bundle bundle) {
+        Composition.SectionComponent section = new Composition.SectionComponent();
+
+
+        section.getCode().addCoding()
+                .setSystem("http://snomed.info/sct")
+                .setCode("854851000000107")
+                .setDisplay("Preferences");
+        section.setTitle("Preferences");
+
+        section.getText().setDiv(getDiv("dummy")).setStatus(Narrative.NarrativeStatus.GENERATED);
+
+        return section;
+    }
+
+
+    public Composition.SectionComponent getDisabilitySection(Bundle bundle) {
+        Composition.SectionComponent section = new Composition.SectionComponent();
+
+        ArrayList<Condition> conditions = new ArrayList<>();
+
+        section.getCode().addCoding()
+                .setSystem("http://snomed.info/sct")
+                .setCode("854851000000107")
+                .setDisplay("Disability");
+        section.setTitle("Disability");
+
+        for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
+            if (entry.getResource() instanceof Condition) {
+                Condition condition = (Condition) entry.getResource();
+                section.getEntry().add(new Reference("urn:uuid:"+condition.getId()));
+                conditions.add(condition);
+            }
+        }
+        ctxThymeleaf.clearVariables();
+        ctxThymeleaf.setVariable("conditions", conditions);
+
+        section.getText().setDiv(getDiv("condition")).setStatus(Narrative.NarrativeStatus.GENERATED);
+
+        return section;
+    }
+
     public Composition.SectionComponent getMedicationStatementSection(Bundle bundle) {
         Composition.SectionComponent section = new Composition.SectionComponent();
 
