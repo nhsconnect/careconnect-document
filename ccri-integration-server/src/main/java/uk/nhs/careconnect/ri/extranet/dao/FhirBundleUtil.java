@@ -69,6 +69,9 @@ public class FhirBundleUtil {
             if (entry.getResource() instanceof Condition) {
                 Condition condition = (Condition) entry.getResource();
                 condition.setSubject(getUUIDReference(condition.getSubject()));
+                if (condition.hasAsserter()) {
+                    condition.setAsserter(getUUIDReference(condition.getAsserter()));
+                }
                 if (condition.hasContext()) {
                     condition.setContext(getUUIDReference(condition.getContext()));
                 }
