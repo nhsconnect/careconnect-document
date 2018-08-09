@@ -65,7 +65,20 @@ public class FhirDocUtil {
                 .setDisplay("Advanced Treatment Preferences");
         section.setTitle("Advanced Treatment Preferences");
 
-        section.getText().setDiv(getDiv("dummy")).setStatus(Narrative.NarrativeStatus.GENERATED);
+
+
+        ArrayList<QuestionnaireResponse> questionnaireResponses = new ArrayList<>();
+        for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
+            if (entry.getResource() instanceof QuestionnaireResponse) {
+                QuestionnaireResponse questionnaireResponse = (QuestionnaireResponse) entry.getResource();
+                section.getEntry().add(new Reference("urn:uuid:"+questionnaireResponse.getId()));
+                questionnaireResponses.add(questionnaireResponse);
+            }
+        }
+        ctxThymeleaf.clearVariables();
+        ctxThymeleaf.setVariable("questionnaireResponse", questionnaireResponses);
+        section.getText().setDiv(getDiv("advancedtreatmentpreferences")).setStatus(Narrative.NarrativeStatus.GENERATED);
+
 
         return section;
     }
@@ -78,9 +91,20 @@ public class FhirDocUtil {
                 .setSystem("http://snomed.info/sct")
                 .setCode("854851000000107")
                 .setDisplay("Functional Status");
-        section.setTitle("Functional Statues");
+        section.setTitle("Functional Status");
 
-        section.getText().setDiv(getDiv("dummy")).setStatus(Narrative.NarrativeStatus.GENERATED);
+        ArrayList<QuestionnaireResponse> questionnaireResponses = new ArrayList<>();
+        for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
+            if (entry.getResource() instanceof QuestionnaireResponse) {
+                QuestionnaireResponse questionnaireResponse = (QuestionnaireResponse) entry.getResource();
+                section.getEntry().add(new Reference("urn:uuid:"+questionnaireResponse.getId()));
+                questionnaireResponses.add(questionnaireResponse);
+            }
+        }
+        ctxThymeleaf.clearVariables();
+        ctxThymeleaf.setVariable("questionnaireResponse", questionnaireResponses);
+        section.getText().setDiv(getDiv("functionalstatus")).setStatus(Narrative.NarrativeStatus.GENERATED);
+
 
         return section;
     }
@@ -95,7 +119,18 @@ public class FhirDocUtil {
                 .setDisplay("Preferences");
         section.setTitle("Preferences");
 
-        section.getText().setDiv(getDiv("dummy")).setStatus(Narrative.NarrativeStatus.GENERATED);
+        ArrayList<QuestionnaireResponse> questionnaireResponses = new ArrayList<>();
+        for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
+            if (entry.getResource() instanceof QuestionnaireResponse) {
+                QuestionnaireResponse questionnaireResponse = (QuestionnaireResponse) entry.getResource();
+                section.getEntry().add(new Reference("urn:uuid:"+questionnaireResponse.getId()));
+                questionnaireResponses.add(questionnaireResponse);
+            }
+        }
+        ctxThymeleaf.clearVariables();
+        ctxThymeleaf.setVariable("questionnaireResponse", questionnaireResponses);
+        section.getText().setDiv(getDiv("preferences")).setStatus(Narrative.NarrativeStatus.GENERATED);
+
 
         return section;
     }

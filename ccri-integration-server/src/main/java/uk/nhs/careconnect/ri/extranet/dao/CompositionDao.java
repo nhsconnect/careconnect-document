@@ -95,16 +95,7 @@ public class CompositionDao implements IComposition {
                 .addMode(Composition.CompositionAttestationMode.OFFICIAL);
 
 
-        Device device = new Device();
-        device.setId(UUID.randomUUID().toString());
-        device.getType().addCoding()
-                .setSystem("http://snomed.info/sct")
-                .setCode("58153004")
-                .setDisplay("Android");
-        device.setOwner(new Reference("Organization/"+leedsTH.getIdElement().getIdPart()));
-        compositionBundle.addEntry().setResource(device);
 
-        composition.addAuthor(new Reference("Device/"+device.getIdElement().getIdPart()));
 
         composition.getType().addCoding()
                 .setCode("736373009")
@@ -124,6 +115,11 @@ public class CompositionDao implements IComposition {
                 carePlan = (CarePlan) entry.getResource();
             }
         }
+
+        for (Reference reference : carePlan.getAuthor()) {
+            composition.addAuthor(reference);
+        }
+
         String patientId = null;
 
         if (carePlan!=null) {
@@ -150,7 +146,6 @@ public class CompositionDao implements IComposition {
 
         FhirDocUtil fhirDoc = new FhirDocUtil(templateEngine);
 
-        composition.addSection(fhirDoc.getEncounterSection(fhirBundleUtil.getFhirDocument()));
 
         //  Do we only include a section if it has data?
 
@@ -415,7 +410,7 @@ public class CompositionDao implements IComposition {
         Bundle bundle = client
                 .search()
                 .forResource(Encounter.class)
-                .where(Patient.RES_ID.exactly().code(encounterId))
+                .where(Encounter.RES_ID.exactly().code(encounterId))
                 .revInclude(new Include("*"))
                 .include(new Include("*"))
                 .count(100) // be careful of this TODO
@@ -429,7 +424,7 @@ public class CompositionDao implements IComposition {
         Bundle bundle = client
                 .search()
                 .forResource(CarePlan.class)
-                .where(Patient.RES_ID.exactly().code(carePlanId))
+                .where(CarePlan.RES_ID.exactly().code(carePlanId))
                 .include(new Include("*"))
                 .count(100) // be careful of this TODO
                 .returnBundle(Bundle.class)
