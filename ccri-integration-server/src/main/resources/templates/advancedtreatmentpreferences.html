@@ -7,10 +7,10 @@
 
             <th:block th:each="item : ${form.getItem()}">
                 <th:block th:if="${item.getLinkId()} eq 'eolc-atp'">
-                    <b th:text="${item.getText()}">No description given</b>
+                    <p><b th:text="${item.getText()}">No description given</b></p>
                     <span th:each="subitem : ${item.getItem()}">
-                            <i th:text="${subitem.getText()}">No description given</i>
-                        </span>
+                            <p><i th:text="${subitem.getText()}">No description given</i></p>
+                    </span>
                 </th:block>
             </th:block>
         </th:block>

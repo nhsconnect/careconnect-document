@@ -149,7 +149,10 @@ public class CompositionDao implements IComposition {
 
         //  Do we only include a section if it has data?
 
-        Composition.SectionComponent section = fhirDoc.getAdvanceTreatmentPreferencesSection(fhirBundleUtil.getFhirDocument());
+        Composition.SectionComponent section = fhirDoc.getPrognosis(fhirBundleUtil.getFhirDocument());
+        composition.addSection(section);
+
+        section = fhirDoc.getAdvanceTreatmentPreferencesSection(fhirBundleUtil.getFhirDocument());
         composition.addSection(section);
 
         section = fhirDoc.getDisabilitySection(fhirBundleUtil.getFhirDocument());

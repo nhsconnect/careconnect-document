@@ -232,6 +232,16 @@ public class FhirBundleUtil {
                     procedure.setContext(getUUIDReference(procedure.getContext()));
                 }
             }
+            if (entry.getResource() instanceof RiskAssessment) {
+                RiskAssessment riskAssessment = (RiskAssessment) entry.getResource();
+                riskAssessment.setSubject(new Reference(uuidtag+patient.getId()));
+                if (riskAssessment.hasContext()) {
+                    riskAssessment.setContext(getUUIDReference(riskAssessment.getContext()));
+                }
+                if (riskAssessment.hasCondition()) {
+                    riskAssessment.setCondition(getUUIDReference(riskAssessment.getCondition()));
+                }
+            }
             if (entry.getResource() instanceof QuestionnaireResponse) {
                 QuestionnaireResponse form = (QuestionnaireResponse) entry.getResource();
                 form.setSubject(new Reference(uuidtag+patient.getId()));

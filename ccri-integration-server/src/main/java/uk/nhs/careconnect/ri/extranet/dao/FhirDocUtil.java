@@ -162,6 +162,32 @@ public class FhirDocUtil {
         return section;
     }
 
+    public Composition.SectionComponent getPrognosis(Bundle bundle) {
+        Composition.SectionComponent section = new Composition.SectionComponent();
+
+        ArrayList<RiskAssessment> risks = new ArrayList<>();
+
+        section.getCode().addCoding()
+                .setSystem("http://snomed.info/sct")
+                .setCode("854851000000107")
+                .setDisplay("Prognosis");
+        section.setTitle("Prognosis");
+
+        for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
+            if (entry.getResource() instanceof RiskAssessment) {
+                RiskAssessment riskAssessment = (RiskAssessment) entry.getResource();
+                section.getEntry().add(new Reference("urn:uuid:"+riskAssessment.getId()));
+                risks.add(riskAssessment);
+            }
+        }
+        ctxThymeleaf.clearVariables();
+        ctxThymeleaf.setVariable("risks", risks);
+
+        section.getText().setDiv(getDiv("prognosis")).setStatus(Narrative.NarrativeStatus.GENERATED);
+
+        return section;
+    }
+
     public Composition.SectionComponent getMedicationStatementSection(Bundle bundle) {
         Composition.SectionComponent section = new Composition.SectionComponent();
 
