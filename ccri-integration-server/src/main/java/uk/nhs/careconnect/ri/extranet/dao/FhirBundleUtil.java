@@ -61,9 +61,33 @@ public class FhirBundleUtil {
                 if (carePlan.hasContext()) {
                     carePlan.setContext(getUUIDReference(carePlan.getContext()));
                 }
+                for (Reference reference : carePlan.getCareTeam()) {
+                    reference.setReference(getUUIDReference(reference).getReference());
+                }
                for (Reference reference : carePlan.getSupportingInfo()) {
                    reference.setReference(getUUIDReference(reference).getReference());
                }
+            }
+
+            if (entry.getResource() instanceof CareTeam) {
+                CareTeam careTeam = (CareTeam) entry.getResource();
+                careTeam.setSubject(new Reference(uuidtag+patient.getId()));
+                if (careTeam.hasContext()) {
+                    careTeam.setContext(getUUIDReference(careTeam.getContext()));
+                }
+                for (CareTeam.CareTeamParticipantComponent participant : careTeam.getParticipant()) {
+                    if (participant.hasMember()) {
+                        participant.setMember(getUUIDReference(participant.getMember()));
+
+                    }
+                    if (participant.hasOnBehalfOf()) {
+                        participant.setOnBehalfOf(getUUIDReference(participant.getOnBehalfOf()));
+
+                    }
+                }
+                for (Reference reference : careTeam.getManagingOrganization()) {
+                    reference.setReference(getUUIDReference(reference).getReference());
+                }
             }
 
             if (entry.getResource() instanceof Condition) {

@@ -152,6 +152,9 @@ public class CompositionDao implements IComposition {
         Composition.SectionComponent section = fhirDoc.getPrognosis(fhirBundleUtil.getFhirDocument());
         composition.addSection(section);
 
+        section = fhirDoc.getCareTeamSection(fhirBundleUtil.getFhirDocument());
+        if (section.getEntry().size()>0) composition.addSection(section);
+
         section = fhirDoc.getAdvanceTreatmentPreferencesSection(fhirBundleUtil.getFhirDocument());
         composition.addSection(section);
 

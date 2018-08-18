@@ -188,6 +188,32 @@ public class FhirDocUtil {
         return section;
     }
 
+    public Composition.SectionComponent getCareTeamSection(Bundle bundle) {
+        Composition.SectionComponent section = new Composition.SectionComponent();
+
+        ArrayList<CareTeam> teams = new ArrayList<>();
+
+        section.getCode().addCoding()
+                .setSystem("http://snomed.info/sct")
+                .setCode("854851000000107")
+                .setDisplay("Contacts");
+        section.setTitle("Contacts");
+
+        for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
+            if (entry.getResource() instanceof CareTeam) {
+                CareTeam careTeam = (CareTeam) entry.getResource();
+                section.getEntry().add(new Reference("urn:uuid:"+careTeam.getId()));
+                teams.add(careTeam);
+            }
+        }
+        ctxThymeleaf.clearVariables();
+        ctxThymeleaf.setVariable("teams", teams);
+
+        section.getText().setDiv(getDiv("contacts")).setStatus(Narrative.NarrativeStatus.GENERATED);
+
+        return section;
+    }
+
     public Composition.SectionComponent getMedicationStatementSection(Bundle bundle) {
         Composition.SectionComponent section = new Composition.SectionComponent();
 
