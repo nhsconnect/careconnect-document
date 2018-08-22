@@ -36,6 +36,8 @@ public class PatientProvider implements IResourceProvider {
         return Patient.class;
     }
 
+
+
     @Search
     public List<Resource> searchPatient(HttpServletRequest request,
 

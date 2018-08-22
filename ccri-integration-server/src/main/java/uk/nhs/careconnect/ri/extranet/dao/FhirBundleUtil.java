@@ -24,7 +24,7 @@ public class FhirBundleUtil {
 
     private static final Logger log = LoggerFactory.getLogger(FhirBundleUtil.class);
 
-    FhirBundleUtil(Bundle.BundleType value) {
+    public FhirBundleUtil(Bundle.BundleType value) {
         fhirDocument = new Bundle()
                 .setType(value);
         fhirDocument.getIdentifier().setValue(UUID.randomUUID().toString()).setSystem("https://tools.ietf.org/html/rfc4122");
@@ -90,6 +90,15 @@ public class FhirBundleUtil {
                 }
             }
 
+            if (entry.getResource() instanceof ClinicalImpression) {
+                ClinicalImpression clinicalImpression = (ClinicalImpression) entry.getResource();
+                clinicalImpression.setSubject(getUUIDReference(clinicalImpression.getSubject()));
+                if (clinicalImpression.hasAssessor()) {
+                    clinicalImpression.setAssessor(getUUIDReference(clinicalImpression.getAssessor()));
+                }
+
+            }
+
             if (entry.getResource() instanceof Condition) {
                 Condition condition = (Condition) entry.getResource();
                 condition.setSubject(getUUIDReference(condition.getSubject()));
@@ -98,6 +107,21 @@ public class FhirBundleUtil {
                 }
                 if (condition.hasContext()) {
                     condition.setContext(getUUIDReference(condition.getContext()));
+                }
+            }
+            if (entry.getResource() instanceof Consent) {
+                Consent consent = (Consent) entry.getResource();
+                consent.setPatient(getUUIDReference(consent.getPatient()));
+                for (Reference reference : consent.getOrganization()) {
+                    reference.setReference(getUUIDReference(reference).getReference());
+                }
+                for (Reference reference : consent.getConsentingParty()) {
+                    reference.setReference(getUUIDReference(reference).getReference());
+                }
+                for (Consent.ConsentActorComponent consentActorComponent : consent.getActor()) {
+                    if (consentActorComponent.hasReference()) {
+                        consentActorComponent.setReference(getUUIDReference(consentActorComponent.getReference()));
+                    }
                 }
             }
 

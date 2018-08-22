@@ -13,22 +13,21 @@ import ca.uhn.fhir.rest.client.api.IGenericClient;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
-import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.IdType;
-import org.hl7.fhir.dstu3.model.OperationOutcome;
-import org.hl7.fhir.dstu3.model.Patient;
+import org.hl7.fhir.dstu3.model.*;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import uk.nhs.careconnect.ri.extranet.dao.FhirBundleUtil;
 import uk.nhs.careconnect.ri.extranet.dao.ICarePlan;
 import uk.nhs.careconnect.ri.extranet.dao.IComposition;
 import uk.nhs.careconnect.ri.extranet.dao.IPatient;
 
 import javax.activation.UnsupportedDataTypeException;
 import javax.servlet.http.HttpServletRequest;
+import java.nio.BufferUnderflowException;
 import java.util.Date;
 
 
@@ -105,12 +104,98 @@ public class PatientExtranetProvider implements IResourceProvider {
 
                 fhirDocument = carePlanDao.getCarePlan(client,new IdType(carePlanId));
 
+
+
             } catch (Exception ex) {
                 throw new InternalErrorException(ex.getMessage());
             }
         }
+        if (fhirDocument != null && recordSection != null && !recordSection.isEmpty() && !recordSection.getValue().contains("all")) {
+            FhirBundleUtil fhirBundleUtil = new FhirBundleUtil(Bundle.BundleType.SEARCHSET);
+            Bundle bundle = new Bundle();
+            switch (recordSection.getValue()) {
+                case "consent":
+                    bundle = getResource("Consent",fhirDocument,bundle);
+                    break;
+                case "prognosis":
+                    bundle = getResource("ClinicalImpression",fhirDocument,bundle);
+                    break;
+                case "preferences":
+                    bundle = getResource("QuestionnaireResponse",fhirDocument,bundle);
+                    break;
+                case "advancedtreatmentpreferences":
+                    bundle = getResource("List",fhirDocument,bundle);
+                    break;
+            }
+            fhirBundleUtil.processBundleResources(bundle);
+            fhirBundleUtil.processReferences();
+
+            return fhirBundleUtil.getFhirDocument();
+        }
+
         return fhirDocument;
 
+    }
+
+    private Bundle getResource(String resourceName, Bundle sourceBundle, Bundle bundle) {
+        Resource resource = null;
+        for (Bundle.BundleEntryComponent entry : sourceBundle.getEntry()) {
+            if (entry.getResource().getClass().getSimpleName().equals(resourceName)) {
+                switch (entry.getResource().getClass().getSimpleName()) {
+                    case "Consent":
+                        bundle.addEntry().setResource(entry.getResource());
+                        Consent consent = (Consent) entry.getResource();
+                        resource = getReference(consent.getPatient().getReference(),sourceBundle);
+                        if (resource != null) bundle.addEntry().setResource(resource);
+                        for (Consent.ConsentActorComponent consentActorComponent : consent.getActor()) {
+                            if (consentActorComponent.hasReference()) {
+                                resource = getReference(consentActorComponent.getReference().getReference(),sourceBundle);
+                                if (resource != null) bundle.addEntry().setResource(resource);
+                            }
+                        }
+                        break;
+                    case "ClinicalImpression":
+                        bundle.addEntry().setResource(entry.getResource());
+                        ClinicalImpression clinicalImpression = (ClinicalImpression) entry.getResource();
+                        resource = getReference(clinicalImpression.getSubject().getReference(),sourceBundle);
+                        if (resource != null) bundle.addEntry().setResource(resource);
+                        if (clinicalImpression.hasAssessor()) {
+                            resource = getReference(clinicalImpression.getAssessor().getReference(),sourceBundle);
+                            if (resource != null) bundle.addEntry().setResource(resource);
+                        }
+
+                        break;
+                    case "QuestionnaireResponse":
+                        bundle.addEntry().setResource(entry.getResource());
+                        QuestionnaireResponse questionnaireResponse = (QuestionnaireResponse) entry.getResource();
+                        resource = getReference(questionnaireResponse.getSubject().getReference(),sourceBundle);
+                        if (resource != null) bundle.addEntry().setResource(resource);
+                        break;
+                    case "List":
+                        bundle.addEntry().setResource(entry.getResource());
+                        ListResource listResource = (ListResource) entry.getResource();
+                        resource = getReference(listResource.getSubject().getReference(),sourceBundle);
+                        if (resource != null) bundle.addEntry().setResource(resource);
+                        for (ListResource.ListEntryComponent entryComponent : listResource.getEntry()) {
+                            if (entryComponent.hasItem()) {
+                                resource = getReference(entryComponent.getItem().getReference(),sourceBundle);
+                                if (resource != null) bundle.addEntry().setResource(resource);
+                            }
+                        }
+                        break;
+                }
+            }
+        }
+
+        return bundle;
+    }
+
+    private Resource getReference(String reference, Bundle sourceBundle ) {
+        for (Bundle.BundleEntryComponent entry : sourceBundle.getEntry()) {
+            log.info(reference + " -  "+ entry.getResource().getId());
+            if (entry.getResource().getId().contains(reference)) return entry.getResource();
+        }
+        return null;
     }
 
     @Operation(name = "$getrecord4", idempotent = true, bundleType= BundleTypeEnum.DOCUMENT)
