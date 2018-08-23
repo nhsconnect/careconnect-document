@@ -166,6 +166,7 @@ public class FhirDocUtil {
         Composition.SectionComponent section = new Composition.SectionComponent();
 
         ArrayList<RiskAssessment> risks = new ArrayList<>();
+        ArrayList<ClinicalImpression> impressions = new ArrayList<>();
 
         section.getCode().addCoding()
                 .setSystem("http://snomed.info/sct")
@@ -179,9 +180,15 @@ public class FhirDocUtil {
                 section.getEntry().add(new Reference("urn:uuid:"+riskAssessment.getId()));
                 risks.add(riskAssessment);
             }
+            if (entry.getResource() instanceof ClinicalImpression) {
+                ClinicalImpression impression = (ClinicalImpression) entry.getResource();
+                section.getEntry().add(new Reference("urn:uuid:"+impression.getId()));
+                impressions.add(impression);
+            }
         }
         ctxThymeleaf.clearVariables();
         ctxThymeleaf.setVariable("risks", risks);
+        ctxThymeleaf.setVariable("impressions", impressions);
 
         section.getText().setDiv(getDiv("prognosis")).setStatus(Narrative.NarrativeStatus.GENERATED);
 
