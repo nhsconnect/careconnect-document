@@ -57,21 +57,23 @@ public class FhirBundleUtil {
 
             if (entry.getResource() instanceof CarePlan) {
                 CarePlan carePlan = (CarePlan) entry.getResource();
-                carePlan.setSubject(new Reference(uuidtag+patient.getId()));
+                carePlan.setSubject(getUUIDReference(carePlan.getSubject()));
                 if (carePlan.hasContext()) {
                     carePlan.setContext(getUUIDReference(carePlan.getContext()));
                 }
                 for (Reference reference : carePlan.getCareTeam()) {
-                    reference.setReference(getUUIDReference(reference).getReference());
+                    Reference referenceGUID = getUUIDReference(reference);
+                    if (referenceGUID!=null) reference.setReference(referenceGUID.getReference());
                 }
                for (Reference reference : carePlan.getSupportingInfo()) {
-                   reference.setReference(getUUIDReference(reference).getReference());
+                   Reference referenceGUID = getUUIDReference(reference);
+                   if (referenceGUID!=null) reference.setReference(referenceGUID.getReference());
                }
             }
 
             if (entry.getResource() instanceof CareTeam) {
                 CareTeam careTeam = (CareTeam) entry.getResource();
-                careTeam.setSubject(new Reference(uuidtag+patient.getId()));
+                careTeam.setSubject(getUUIDReference(careTeam.getSubject()));
                 if (careTeam.hasContext()) {
                     careTeam.setContext(getUUIDReference(careTeam.getContext()));
                 }
@@ -167,7 +169,7 @@ public class FhirBundleUtil {
 
             if (entry.getResource() instanceof Encounter) {
                 Encounter encounter = (Encounter) entry.getResource();
-                encounter.setSubject(new Reference(uuidtag+patient.getId()));
+                encounter.setSubject(getUUIDReference(encounter.getSubject()));
                 if (encounter.hasServiceProvider() && encounter.getServiceProvider().getReference()!=null) {
                     encounter.setServiceProvider(getUUIDReference(encounter.getServiceProvider()));
                 } else {
@@ -190,7 +192,7 @@ public class FhirBundleUtil {
 
             if (entry.getResource() instanceof ListResource) {
                 ListResource list = (ListResource) entry.getResource();
-                list.setSubject(new Reference(uuidtag+patient.getId()));
+                list.setSubject(getUUIDReference(list.getSubject()));
 
                 for (ListResource.ListEntryComponent listEntry : list.getEntry()) {
                     listEntry.setItem(getUUIDReference(listEntry.getItem()));
@@ -218,7 +220,7 @@ public class FhirBundleUtil {
 
             if (entry.getResource() instanceof Observation) {
                 Observation observation = (Observation) entry.getResource();
-                observation.setSubject(new Reference(uuidtag+patient.getId()));
+                observation.setSubject(getUUIDReference(observation.getSubject()));
                 if (observation.hasContext()) {
                     observation.setContext(getUUIDReference(observation.getContext()));
                 }
@@ -230,7 +232,7 @@ public class FhirBundleUtil {
                 if (medicationRequest.hasContext()) {
                     medicationRequest.setContext(getUUIDReference(medicationRequest.getContext()));
                 }
-                medicationRequest.setSubject(new Reference(uuidtag+patient.getId()));
+                medicationRequest.setSubject(getUUIDReference(medicationRequest.getSubject()));
                 if (medicationRequest.hasRecorder()) medicationRequest.setRecorder(getUUIDReference(medicationRequest.getRecorder()));
                 try {
                     if (medicationRequest.hasMedicationReference())
@@ -241,7 +243,7 @@ public class FhirBundleUtil {
 
             if (entry.getResource() instanceof MedicationStatement) {
                 MedicationStatement medicationStatement = (MedicationStatement) entry.getResource();
-                medicationStatement.setSubject(new Reference(uuidtag+patient.getId()));
+                medicationStatement.setSubject(getUUIDReference(medicationStatement.getSubject()));
                 if (medicationStatement.hasContext()) {
                     medicationStatement.setContext(getUUIDReference(medicationStatement.getContext()));
                 }
@@ -262,11 +264,13 @@ public class FhirBundleUtil {
                 Patient patient = (Patient) entry.getResource();
 
                 if (patient.hasManagingOrganization()) {
-                    patient.setManagingOrganization(new Reference(uuidtag + getNewReferenceUri(patient.getManagingOrganization().getReference())));
+                    patient.setManagingOrganization(getUUIDReference(patient.getManagingOrganization()));
                 }
+                List<Reference> gps = new ArrayList<>();
                 for (Reference reference : patient.getGeneralPractitioner()) {
-                    patient.getGeneralPractitioner().get(0).setReference(uuidtag + getNewReferenceUri(reference.getReference()));
+                    gps.add(getUUIDReference(reference));
                 }
+                patient.setGeneralPractitioner(gps);
             }
 
             if (entry.getResource() instanceof Practitioner) {
@@ -275,14 +279,14 @@ public class FhirBundleUtil {
 
             if (entry.getResource() instanceof Procedure) {
                 Procedure procedure = (Procedure) entry.getResource();
-                procedure.setSubject(new Reference(uuidtag+patient.getId()));
+                procedure.setSubject(getUUIDReference(procedure.getSubject()));
                 if (procedure.hasContext()) {
                     procedure.setContext(getUUIDReference(procedure.getContext()));
                 }
             }
             if (entry.getResource() instanceof RiskAssessment) {
                 RiskAssessment riskAssessment = (RiskAssessment) entry.getResource();
-                riskAssessment.setSubject(new Reference(uuidtag+patient.getId()));
+                riskAssessment.setSubject(getUUIDReference(riskAssessment.getSubject()));
                 if (riskAssessment.hasContext()) {
                     riskAssessment.setContext(getUUIDReference(riskAssessment.getContext()));
                 }
@@ -292,7 +296,7 @@ public class FhirBundleUtil {
             }
             if (entry.getResource() instanceof QuestionnaireResponse) {
                 QuestionnaireResponse form = (QuestionnaireResponse) entry.getResource();
-                form.setSubject(new Reference(uuidtag+patient.getId()));
+                form.setSubject(getUUIDReference(form.getSubject()));
                 if (form.hasContext()) {
                     form.setContext(getUUIDReference(form.getContext()));
                 }
@@ -302,6 +306,12 @@ public class FhirBundleUtil {
                 if (form.hasAuthor()) {
                     form.setAuthor(getUUIDReference(form.getAuthor()));
                 }
+/*
+                for(QuestionnaireResponse.QuestionnaireResponseItemComponent item : form.getItem()) {
+                if (item.getAnswerFirstRep().hasValueCoding()) {
+                     item.getAnswerFirstRep().getValueCoding().getDisplay()
+                }
+                }*/
             }
         }
     }
@@ -328,7 +338,9 @@ public class FhirBundleUtil {
         } else {
             String UUIDReference = getNewReferenceUri(reference.getReference());
             if (UUIDReference!=null) {
-                return new Reference(uuidtag + UUIDReference);
+                Reference newReference = new Reference(uuidtag + UUIDReference);
+                if (reference.hasDisplay()) newReference.setDisplay(reference.getDisplay());
+                return newReference;
             } else { return null; }
         }
     }

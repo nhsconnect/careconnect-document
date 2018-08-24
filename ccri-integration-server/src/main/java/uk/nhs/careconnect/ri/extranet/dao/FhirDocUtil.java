@@ -67,18 +67,18 @@ public class FhirDocUtil {
 
 
 
-        ArrayList<QuestionnaireResponse> questionnaireResponses = new ArrayList<>();
+        ArrayList<CarePlan> plans = new ArrayList<>();
         for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
-            if (entry.getResource() instanceof QuestionnaireResponse) {
-                QuestionnaireResponse questionnaireResponse = (QuestionnaireResponse) entry.getResource();
-                section.getEntry().add(new Reference("urn:uuid:"+questionnaireResponse.getId()));
-                questionnaireResponses.add(questionnaireResponse);
+            if (entry.getResource() instanceof CarePlan) {
+                CarePlan carePlan = (CarePlan) entry.getResource();
+                section.getEntry().add(new Reference("urn:uuid:"+carePlan.getId()));
+                plans.add(carePlan);
+
             }
         }
         ctxThymeleaf.clearVariables();
-        ctxThymeleaf.setVariable("questionnaireResponse", questionnaireResponses);
-        section.getText().setDiv(getDiv("advancedtreatmentpreferences")).setStatus(Narrative.NarrativeStatus.GENERATED);
-
+        ctxThymeleaf.setVariable("careplans", plans);
+        section.getText().setDiv(getDiv("careplans")).setStatus(Narrative.NarrativeStatus.GENERATED);
 
         return section;
     }
@@ -184,6 +184,7 @@ public class FhirDocUtil {
                 ClinicalImpression impression = (ClinicalImpression) entry.getResource();
                 section.getEntry().add(new Reference("urn:uuid:"+impression.getId()));
                 impressions.add(impression);
+
             }
         }
         ctxThymeleaf.clearVariables();
@@ -191,6 +192,33 @@ public class FhirDocUtil {
         ctxThymeleaf.setVariable("impressions", impressions);
 
         section.getText().setDiv(getDiv("prognosis")).setStatus(Narrative.NarrativeStatus.GENERATED);
+
+        return section;
+    }
+
+    public Composition.SectionComponent getConsentSection(Bundle bundle) {
+        Composition.SectionComponent section = new Composition.SectionComponent();
+
+        ArrayList<Consent> consents = new ArrayList<>();
+
+        section.getCode().addCoding()
+                .setSystem("http://snomed.info/sct")
+                .setCode("854851000000107")
+                .setDisplay("Consent");
+        section.setTitle("Consent");
+
+        for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
+            if (entry.getResource() instanceof Consent) {
+                Consent consent = (Consent) entry.getResource();
+                section.getEntry().add(new Reference("urn:uuid:"+consent.getId()));
+                consents.add(consent);
+
+            }
+        }
+        ctxThymeleaf.clearVariables();
+        ctxThymeleaf.setVariable("consents", consents);
+
+        section.getText().setDiv(getDiv("consents")).setStatus(Narrative.NarrativeStatus.GENERATED);
 
         return section;
     }

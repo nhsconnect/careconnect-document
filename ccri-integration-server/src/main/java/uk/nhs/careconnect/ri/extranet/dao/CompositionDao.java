@@ -155,6 +155,9 @@ public class CompositionDao implements IComposition {
         section = fhirDoc.getCareTeamSection(fhirBundleUtil.getFhirDocument());
         if (section.getEntry().size()>0) composition.addSection(section);
 
+        section = fhirDoc.getConsentSection(fhirBundleUtil.getFhirDocument());
+        composition.addSection(section);
+
         section = fhirDoc.getAdvanceTreatmentPreferencesSection(fhirBundleUtil.getFhirDocument());
         composition.addSection(section);
 
@@ -164,9 +167,10 @@ public class CompositionDao implements IComposition {
         section = fhirDoc.getFunctionalStatusSection(fhirBundleUtil.getFhirDocument());
         composition.addSection(section);
 
+        /*
         section = fhirDoc.getPreferencesSection(fhirBundleUtil.getFhirDocument());
         composition.addSection(section);
-
+*/
         return fhirBundleUtil.getFhirDocument();
     }
 

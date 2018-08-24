@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import uk.nhs.careconnect.ri.extranet.ProviderResponseLibrary;
 import uk.nhs.careconnect.ri.extranet.dao.IComposition;
 
 import javax.servlet.http.HttpServletRequest;
@@ -68,7 +69,8 @@ public class CarePlanExtranetProvider implements IResourceProvider {
         try {
             fhirDocument = compositionDao.buildCarePlanDocument(client,carePlanId);
         } catch (Exception ex) {
-            throw new InternalErrorException(ex.getMessage());
+            MethodOutcome methodOutcome = new MethodOutcome();
+            ProviderResponseLibrary.handleException(methodOutcome ,ex);
         }
         return fhirDocument;
 

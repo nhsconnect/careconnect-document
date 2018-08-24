@@ -60,4 +60,14 @@ public class PatientProvider implements IResourceProvider {
 
     }
 
+    /*
+@Read
+public Patient readPatient(HttpServletRequest request, @IdParam IdType internalId) {
+
+    Patient patient = patientDao.read(ctx,internalId);
+
+    return patient;
+}
+*/
+
 }
