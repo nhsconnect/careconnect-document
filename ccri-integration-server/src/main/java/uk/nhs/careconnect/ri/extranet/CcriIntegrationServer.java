@@ -1,6 +1,7 @@
 package uk.nhs.careconnect.ri.extranet;
 
 import ca.uhn.fhir.context.FhirContext;
+
 import org.apache.camel.CamelContext;
 import org.apache.camel.impl.DefaultCamelContextNameStrategy;
 import org.apache.camel.spring.boot.CamelContextConfiguration;
@@ -16,14 +17,14 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @SpringBootApplication
-@ComponentScan("uk.nhs.careconnect.ri.extranet")
 public class CcriIntegrationServer {
 
     @Autowired
     ApplicationContext context;
 
     public static void main(String[] args) {
-        //System.setProperty(AuthenticationFilter.HAWTIO_AUTHENTICATION_ENABLED, "false");
+        System.setProperty("hawtio.authenticationEnabled", "false");
+        System.setProperty("management.security.enabled","false");
         System.setProperty("server.port", "8182");
         SpringApplication.run(CcriIntegrationServer.class, args);
 

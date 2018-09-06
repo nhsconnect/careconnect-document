@@ -10,6 +10,7 @@ import ca.uhn.fhir.rest.api.EncodingEnum;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.ValidationModeEnum;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
+import ca.uhn.fhir.rest.param.TokenOrListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
@@ -55,16 +56,16 @@ public class PatientExtranetProvider implements IResourceProvider {
         return Patient.class;
     }
 
-
     @Operation(name = "$getrecord3", idempotent = true, bundleType= BundleTypeEnum.COLLECTION)
-    public Bundle getGetRecord3(
+    public Parameters getGetRecord3(
             @OperationParam(name="patientNHSnumber") TokenParam
                     nhsNumber,
             @OperationParam(name="recordType") TokenParam
-                   recordType,
-            @OperationParam(name="recordSection") TokenParam
+                    recordType,
+            @OperationParam(name="recordSection") TokenOrListParam
                     recordSection
     ) throws UnsupportedDataTypeException {
+        Parameters parameters = new Parameters();
 
         log.info("In Patient getrecord3 " +nhsNumber.getValue());
 
@@ -74,67 +75,178 @@ public class PatientExtranetProvider implements IResourceProvider {
 
         log.info("Build client");
         client.setEncoding(EncodingEnum.XML);
+        for (TokenParam section : recordSection.getValuesAsQueryTokens()) {
 
-        log.info("calling get Patient");
-        Bundle fhirDocument = null;
-        try {
-            fhirDocument = patientDao.getPatient(client,nhsNumber);
-        } catch (Exception ex) {
-            throw new InternalErrorException(ex.getMessage());
-        }
-
-        if (fhirDocument.getEntry().size() > 0) {
+            log.info("calling get Patient");
+            Bundle fhirDocument = null;
             try {
-                fhirDocument = carePlanDao.searchCarePlan(client,new IdType(fhirDocument.getEntry().get(0).getResource().getId()),recordType);
+                fhirDocument = patientDao.getPatient(client,nhsNumber);
             } catch (Exception ex) {
                 throw new InternalErrorException(ex.getMessage());
             }
-        }
-        if (fhirDocument.getEntry().size() > 0) {
-            try {
-                Date lastUpdated = null;
-                String carePlanId = null;
-                for (Bundle.BundleEntryComponent
-                        entry: fhirDocument.getEntry()) {
-                    if (carePlanId == null || lastUpdated == null || entry.getResource().getMeta().getLastUpdated().after(lastUpdated)) {
-                        lastUpdated = entry.getResource().getMeta().getLastUpdated();
-                        carePlanId = entry.getResource().getId();
-                    }
+
+            if (fhirDocument.getEntry().size() > 0) {
+                try {
+                    fhirDocument = carePlanDao.searchCarePlan(client,new IdType(fhirDocument.getEntry().get(0).getResource().getId()),recordType);
+                } catch (Exception ex) {
+                    throw new InternalErrorException(ex.getMessage());
                 }
-
-                fhirDocument = carePlanDao.getCarePlan(client,new IdType(carePlanId));
-
-
-
-            } catch (Exception ex) {
-                throw new InternalErrorException(ex.getMessage());
             }
-        }
-        if (fhirDocument != null && recordSection != null && !recordSection.isEmpty() && !recordSection.getValue().contains("all")) {
+            if (fhirDocument.getEntry().size() > 0) {
+                try {
+                    Date lastUpdated = null;
+                    String carePlanId = null;
+                    for (Bundle.BundleEntryComponent
+                            entry: fhirDocument.getEntry()) {
+                        if (carePlanId == null || lastUpdated == null || entry.getResource().getMeta().getLastUpdated().after(lastUpdated)) {
+                            lastUpdated = entry.getResource().getMeta().getLastUpdated();
+                            carePlanId = entry.getResource().getId();
+                        }
+                    }
+
+                    fhirDocument = carePlanDao.getCarePlan(client,new IdType(carePlanId));
+
+
+
+                } catch (Exception ex) {
+                    throw new InternalErrorException(ex.getMessage());
+                }
+            }
+
             FhirBundleUtil fhirBundleUtil = new FhirBundleUtil(Bundle.BundleType.SEARCHSET);
             Bundle bundle = new Bundle();
-            switch (recordSection.getValue()) {
+            switch (section.getValue()) {
                 case "consent":
-                    bundle = getResource("Consent",fhirDocument,bundle);
+                    bundle = getResource("Consent", fhirDocument, bundle);
                     break;
                 case "prognosis":
-                    bundle = getResource("ClinicalImpression",fhirDocument,bundle);
+                    bundle = getResource("ClinicalImpression", fhirDocument, bundle);
                     break;
                 case "preferences":
-                    bundle = getResource("QuestionnaireResponse",fhirDocument,bundle);
+                    bundle = getResource("QuestionnaireResponse", fhirDocument, bundle);
                     break;
                 case "advancedtreatmentpreferences":
-                    bundle = getResource("List",fhirDocument,bundle);
+                    bundle = getResource("List", fhirDocument, bundle);
                     break;
             }
+
             fhirBundleUtil.processBundleResources(bundle);
             fhirBundleUtil.processReferences();
 
-            return fhirBundleUtil.getFhirDocument();
+            parameters.addParameter().setResource(fhirBundleUtil.getFhirDocument()).setName(section.getValue());
+
         }
 
-        return fhirDocument;
+        return parameters;
 
+    }
+
+
+
+    @Operation(name = "$getrecord4", idempotent = true, bundleType= BundleTypeEnum.DOCUMENT)
+    public Parameters getCareRecord4(
+            @OperationParam(name="patientNHSnumber") TokenParam
+                    nhsNumber,
+            @OperationParam(name="recordType") TokenParam
+                    recordType,
+            @OperationParam(name="recordSection") TokenOrListParam
+                    recordSection
+    ) throws UnsupportedDataTypeException {
+        Parameters parameters = new Parameters();
+
+        log.info("In Patient getrecord4 " +nhsNumber.getValue());
+
+        HttpServletRequest request =  null;
+
+        IGenericClient client = FhirContext.forDstu3().newRestfulGenericClient(eprBase);
+
+        log.info("Build client");
+        client.setEncoding(EncodingEnum.XML);
+        for (TokenParam section : recordSection.getValuesAsQueryTokens()) {
+
+            log.info("calling get Patient");
+
+            /*
+
+            Find the Patient
+
+            */
+
+            Bundle fhirDocument = null;
+            try {
+                fhirDocument = patientDao.getPatient(client,nhsNumber);
+            } catch (Exception ex) {
+                throw new InternalErrorException(ex.getMessage());
+            }
+
+            /*
+
+            Find the CarePlan
+
+            */
+            if (fhirDocument.getEntry().size() > 0) {
+                try {
+                    fhirDocument = carePlanDao.searchCarePlan(client,new IdType(fhirDocument.getEntry().get(0).getResource().getId()),recordType);
+                } catch (Exception ex) {
+                    throw new InternalErrorException(ex.getMessage());
+                }
+            }
+            /*
+
+            Build the Composition Document
+
+             */
+            if (fhirDocument.getEntry().size() > 0) {
+                try {
+                    Date lastUpdated = null;
+                    String carePlanId = null;
+                    for (Bundle.BundleEntryComponent
+                            entry: fhirDocument.getEntry()) {
+                        if (carePlanId == null || lastUpdated == null || entry.getResource().getMeta().getLastUpdated().after(lastUpdated)) {
+                            lastUpdated = entry.getResource().getMeta().getLastUpdated();
+                            carePlanId = entry.getResource().getId();
+                        }
+                    }
+
+                    fhirDocument = compositionDao.buildCarePlanDocument(client, new IdType(carePlanId),section);
+
+                } catch (Exception ex) {
+                    throw new InternalErrorException(ex.getMessage());
+                }
+            }
+
+            FhirBundleUtil fhirBundleUtil = new FhirBundleUtil(Bundle.BundleType.SEARCHSET);
+            Bundle bundle = new Bundle();
+
+
+            fhirBundleUtil.processBundleResources(bundle);
+            fhirBundleUtil.processReferences();
+
+            parameters.addParameter().setResource(fhirDocument).setName(section.getValue());
+        }
+        return parameters;
+    }
+
+
+
+    @Validate
+    public MethodOutcome validate(@ResourceParam Patient patient,
+                                         @Validate.Mode ValidationModeEnum theMode,
+                                         @Validate.Profile String theProfile) {
+
+        // Actually do our validation: The UnprocessableEntityException
+        // results in an HTTP 422, which is appropriate for business rule failure
+
+
+
+        MethodOutcome retVal = new MethodOutcome();
+
+        OperationOutcome outcome = ValidationFactory.validateResource(patient);
+
+
+        retVal.setOperationOutcome(outcome);
+
+        return retVal;
     }
 
     private Bundle getResource(String resourceName, Bundle sourceBundle, Bundle bundle) {
@@ -190,6 +302,7 @@ public class PatientExtranetProvider implements IResourceProvider {
         return bundle;
     }
 
+
     private Resource getReference(String reference, Bundle sourceBundle ) {
         for (Bundle.BundleEntryComponent entry : sourceBundle.getEntry()) {
             log.info(reference + " -  "+ entry.getResource().getId());
@@ -197,85 +310,6 @@ public class PatientExtranetProvider implements IResourceProvider {
         }
         return null;
     }
-
-    @Operation(name = "$getrecord4", idempotent = true, bundleType= BundleTypeEnum.DOCUMENT)
-    public Bundle getCareRecord4(
-            @OperationParam(name="patientNHSnumber") TokenParam
-                    nhsNumber,
-            @OperationParam(name="recordType") TokenParam
-                    recordType,
-            @OperationParam(name="recordSection") TokenParam
-                    recordSection
-    ) throws UnsupportedDataTypeException {
-
-
-        log.info("In Patient getrecord4 " +nhsNumber.getValue());
-
-        HttpServletRequest request =  null;
-
-        IGenericClient client = FhirContext.forDstu3().newRestfulGenericClient(eprBase);
-
-        log.info("Build client");
-        client.setEncoding(EncodingEnum.XML);
-
-        log.info("calling get Patient");
-        Bundle fhirDocument = null;
-        try {
-            fhirDocument = patientDao.getPatient(client,nhsNumber);
-        } catch (Exception ex) {
-            throw new InternalErrorException(ex.getMessage());
-        }
-
-        if (fhirDocument.getEntry().size() > 0) {
-            try {
-                fhirDocument = carePlanDao.searchCarePlan(client,new IdType(fhirDocument.getEntry().get(0).getResource().getId()),recordType);
-            } catch (Exception ex) {
-                throw new InternalErrorException(ex.getMessage());
-            }
-        }
-        if (fhirDocument.getEntry().size() > 0) {
-            try {
-                Date lastUpdated = null;
-                String carePlanId = null;
-                for (Bundle.BundleEntryComponent
-                        entry: fhirDocument.getEntry()) {
-                    if (carePlanId == null || lastUpdated == null || entry.getResource().getMeta().getLastUpdated().after(lastUpdated)) {
-                        lastUpdated = entry.getResource().getMeta().getLastUpdated();
-                        carePlanId = entry.getResource().getId();
-                    }
-                }
-
-                fhirDocument = compositionDao.buildCarePlanDocument(client, new IdType(carePlanId));
-
-            } catch (Exception ex) {
-                throw new InternalErrorException(ex.getMessage());
-            }
-        }
-        return fhirDocument;
-    }
-
-
-
-    @Validate
-    public MethodOutcome validate(@ResourceParam Patient patient,
-                                         @Validate.Mode ValidationModeEnum theMode,
-                                         @Validate.Profile String theProfile) {
-
-        // Actually do our validation: The UnprocessableEntityException
-        // results in an HTTP 422, which is appropriate for business rule failure
-
-
-
-        MethodOutcome retVal = new MethodOutcome();
-
-        OperationOutcome outcome = ValidationFactory.validateResource(patient);
-
-
-        retVal.setOperationOutcome(outcome);
-
-        return retVal;
-    }
-
 
 
 }

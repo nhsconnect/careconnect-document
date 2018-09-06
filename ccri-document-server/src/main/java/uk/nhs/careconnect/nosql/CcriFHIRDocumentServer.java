@@ -12,7 +12,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @SpringBootApplication
-@ComponentScan("uk.nhs.careconnect.nosql")
 public class CcriFHIRDocumentServer {
 
     @Autowired
@@ -20,6 +19,8 @@ public class CcriFHIRDocumentServer {
 
     public static void main(String[] args) {
         //System.setProperty(AuthenticationFilter.HAWTIO_AUTHENTICATION_ENABLED, "false");
+        System.setProperty("hawtio.authenticationEnabled", "false");
+        System.setProperty("management.security.enabled","false");
         System.setProperty("server.port", "8181");
         SpringApplication.run(CcriFHIRDocumentServer.class, args);
 

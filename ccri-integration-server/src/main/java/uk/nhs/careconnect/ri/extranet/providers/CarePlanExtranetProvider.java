@@ -67,7 +67,7 @@ public class CarePlanExtranetProvider implements IResourceProvider {
         log.info("calling composition");
         Bundle fhirDocument = null;
         try {
-            fhirDocument = compositionDao.buildCarePlanDocument(client,carePlanId);
+            fhirDocument = compositionDao.buildCarePlanDocument(client,carePlanId,null);
         } catch (Exception ex) {
             MethodOutcome methodOutcome = new MethodOutcome();
             ProviderResponseLibrary.handleException(methodOutcome ,ex);

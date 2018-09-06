@@ -71,8 +71,14 @@ public class CompositionDao implements IComposition {
            return null;
     }
 
+    /*
+
+    CARE PLAN
+
+     */
+
     @Override
-    public Bundle buildCarePlanDocument(IGenericClient client, IdType carePlanId) throws Exception {
+    public Bundle buildCarePlanDocument(IGenericClient client, IdType carePlanId, TokenParam recordSection) throws Exception {
         fhirBundleUtil = new FhirBundleUtil(Bundle.BundleType.DOCUMENT);
         Bundle compositionBundle = new Bundle();
 
@@ -149,28 +155,55 @@ public class CompositionDao implements IComposition {
 
         //  Do we only include a section if it has data?
 
-        Composition.SectionComponent section = fhirDoc.getPrognosis(fhirBundleUtil.getFhirDocument());
-        composition.addSection(section);
-
-        section = fhirDoc.getCareTeamSection(fhirBundleUtil.getFhirDocument());
-        if (section.getEntry().size()>0) composition.addSection(section);
-
-        section = fhirDoc.getConsentSection(fhirBundleUtil.getFhirDocument());
-        composition.addSection(section);
-
-        section = fhirDoc.getAdvanceTreatmentPreferencesSection(fhirBundleUtil.getFhirDocument());
-        composition.addSection(section);
-
-        section = fhirDoc.getDisabilitySection(fhirBundleUtil.getFhirDocument());
-        composition.addSection(section);
-
-        section = fhirDoc.getFunctionalStatusSection(fhirBundleUtil.getFhirDocument());
-        composition.addSection(section);
+        Composition.SectionComponent section = null;
 
         /*
-        section = fhirDoc.getPreferencesSection(fhirBundleUtil.getFhirDocument());
-        composition.addSection(section);
+        section = fhirDoc.getCareTeamSection(fhirBundleUtil.getFhirDocument());
+        if (section.getEntry().size()>0) composition.addSection(section);
 */
+        if (recordSection != null) {
+            switch (recordSection.getValue()) {
+                case "consent":
+                    section = fhirDoc.getConsentSection(fhirBundleUtil.getFhirDocument());
+                    composition.addSection(section);
+                    break;
+                case "advancedtreatmentpreferences":
+                    section = fhirDoc.getAdvanceTreatmentPreferencesSection(fhirBundleUtil.getFhirDocument());
+                    composition.addSection(section);
+                    break;
+                case "disability":
+                    section = fhirDoc.getDisabilitySection(fhirBundleUtil.getFhirDocument());
+                    composition.addSection(section);
+                    break;
+                case "preferences":
+                    section = fhirDoc.getPreferencesSection(fhirBundleUtil.getFhirDocument());
+                    composition.addSection(section);
+                    break;
+                case "prognosis":
+                    section = fhirDoc.getPrognosis(fhirBundleUtil.getFhirDocument());
+                    composition.addSection(section);
+                    break;
+            }
+        } else {
+            section = fhirDoc.getCareTeamSection(fhirBundleUtil.getFhirDocument());
+            if (section.getEntry().size()>0) composition.addSection(section);
+
+            section = fhirDoc.getConsentSection(fhirBundleUtil.getFhirDocument());
+            composition.addSection(section);
+
+            section = fhirDoc.getAdvanceTreatmentPreferencesSection(fhirBundleUtil.getFhirDocument());
+            composition.addSection(section);
+
+            section = fhirDoc.getDisabilitySection(fhirBundleUtil.getFhirDocument());
+            composition.addSection(section);
+
+            section = fhirDoc.getPreferencesSection(fhirBundleUtil.getFhirDocument());
+            composition.addSection(section);
+
+            section = fhirDoc.getPrognosis(fhirBundleUtil.getFhirDocument());
+            composition.addSection(section);
+        }
+
         return fhirBundleUtil.getFhirDocument();
     }
 
@@ -436,6 +469,7 @@ public class CompositionDao implements IComposition {
                 .forResource(CarePlan.class)
                 .where(CarePlan.RES_ID.exactly().code(carePlanId))
                 .include(new Include("*"))
+                //.revInclude(new Include("*"))
                 .count(100) // be careful of this TODO
                 .returnBundle(Bundle.class)
                 .execute();
