@@ -34,6 +34,7 @@ public class CcriIntegrationServer {
     public ServletRegistrationBean ServletRegistrationBean() {
         ServletRegistrationBean registration = new ServletRegistrationBean(new CcriIntegrationServerHAPIConfig(context), "/STU3/*");
         registration.setName("FhirServlet");
+        registration.setLoadOnStartup(1);
         return registration;
     }
 

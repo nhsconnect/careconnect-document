@@ -30,6 +30,7 @@ public class CcriFHIRDocumentServer {
     public ServletRegistrationBean ServletRegistrationBean() {
         ServletRegistrationBean registration = new ServletRegistrationBean(new CcriFHIRDocumentServerHAPIConfig(context), "/STU3/*");
         registration.setName("FhirServlet");
+        registration.setLoadOnStartup(1);
         return registration;
     }
 
