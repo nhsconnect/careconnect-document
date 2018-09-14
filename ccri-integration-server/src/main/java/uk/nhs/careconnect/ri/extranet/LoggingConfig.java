@@ -1,11 +1,6 @@
 package uk.nhs.careconnect.ri.extranet;
 
-
-import io.hawt.log.log4j.Log4jLogQuery;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.context.annotation.Scope;
 
 @Configuration
 public class LoggingConfig {

@@ -100,16 +100,11 @@
         </dependency>
 
         <dependency>
-            <groupId>io.hawt</groupId>
-            <artifactId>hawtio-insight-log</artifactId>
-            <version>1.5.11</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-log4j12</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
+
+
 
         <!-- Camel -->
         <dependency>
@@ -231,7 +226,7 @@
             <artifactId>commons-collections4</artifactId>
             <version>4.1</version>
         </dependency>
-
+<!-- hawtio
         <dependency>
             <groupId>io.hawt</groupId>
             <artifactId>hawtio-springboot</artifactId>
@@ -243,6 +238,18 @@
             <version>${hawtio.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>io.hawt</groupId>
+            <artifactId>hawtio-insight-log</artifactId>
+            <version>1.5.11</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+-->
 
         <dependency>
             <groupId>org.jolokia</groupId>
