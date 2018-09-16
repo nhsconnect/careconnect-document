@@ -23,7 +23,7 @@ public class CcriIntegrationServer {
     ApplicationContext context;
 
     public static void main(String[] args) {
-        System.setProperty("hawtio.authenticationEnabled", "false");
+        System.setProperty("hawtio.authenticationEnabled", "true");
         System.setProperty("management.security.enabled","false");
         System.setProperty("server.port", "8182");
         SpringApplication.run(CcriIntegrationServer.class, args);

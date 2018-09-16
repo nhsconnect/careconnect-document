@@ -167,7 +167,7 @@
             <version>2.7.2</version>
         </dependency>
 
-        <!-- hawtio
+        <!-- hawtio -->
         <dependency>
             <groupId>io.hawt</groupId>
             <artifactId>hawtio-springboot</artifactId>
@@ -178,7 +178,7 @@
             <artifactId>hawtio-core</artifactId>
             <version>${hawtio.version}</version>
         </dependency>
-
+<!--
            <dependency>
             <groupId>io.hawt</groupId>
             <artifactId>hawtio-insight-log</artifactId>
@@ -190,11 +190,13 @@
                 </exclusion>
             </exclusions>
         </dependency>
--->
+
         <dependency>
             <groupId>org.jolokia</groupId>
             <artifactId>jolokia-core</artifactId>
         </dependency>
+
+        -->
 
         <!-- flying saucer pdf -->
         <dependency>
