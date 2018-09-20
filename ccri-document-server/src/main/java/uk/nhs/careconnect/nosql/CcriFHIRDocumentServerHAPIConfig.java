@@ -6,9 +6,11 @@ import ca.uhn.fhir.rest.api.EncodingEnum;
 import ca.uhn.fhir.rest.server.FifoMemoryPagingProvider;
 import ca.uhn.fhir.rest.server.HardcodedServerAddressStrategy;
 import ca.uhn.fhir.rest.server.RestfulServer;
+import ca.uhn.fhir.rest.server.interceptor.CorsInterceptor;
 import ca.uhn.fhir.rest.server.interceptor.IServerInterceptor;
 import ca.uhn.fhir.rest.server.interceptor.ResponseHighlighterInterceptor;
 import ca.uhn.fhir.util.VersionUtil;
+import org.springframework.web.cors.CorsConfiguration;
 import uk.nhs.careconnect.nosql.providers.BinaryProvider;
 import uk.nhs.careconnect.nosql.providers.CompositionProvider;
 import uk.nhs.careconnect.nosql.providers.PatientProvider;
@@ -20,11 +22,12 @@ import uk.nhs.careconnect.nosql.providers.BundleProvider;
 
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.TimeZone;
 
-
+@WebServlet(urlPatterns = { "/*" }, displayName = "FHIR Server")
 public class CcriFHIRDocumentServerHAPIConfig extends RestfulServer {
 
 	private static final long serialVersionUID = 1L;
@@ -79,6 +82,23 @@ public class CcriFHIRDocumentServerHAPIConfig extends RestfulServer {
 
         setServerName(serverName);
         setServerVersion(serverVersion);
+
+		CorsConfiguration config = new CorsConfiguration();
+		config.addAllowedHeader("x-fhir-starter");
+		config.addAllowedHeader("Origin");
+		config.addAllowedHeader("Accept");
+		config.addAllowedHeader("X-Requested-With");
+		config.addAllowedHeader("Content-Type");
+
+		config.addAllowedOrigin("*");
+
+		config.addExposedHeader("Location");
+		config.addExposedHeader("Content-Location");
+		config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+
+		// Create the interceptor and register it
+		CorsInterceptor interceptor = new CorsInterceptor(config);
+		registerInterceptor(interceptor);
 
 		FifoMemoryPagingProvider pp = new FifoMemoryPagingProvider(10);
 		pp.setDefaultPageSize(10);

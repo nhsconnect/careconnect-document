@@ -30,7 +30,10 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/").permitAll()
+                .antMatchers("/").permitAll().and().csrf().disable();
+
+        http
+                .authorizeRequests()
                 .antMatchers("/error").permitAll()
                 .antMatchers("/jolokia/**").hasRole("ACTUATOR")
                 .and().httpBasic();
