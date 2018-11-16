@@ -7,9 +7,12 @@ You need a mongoDb server to run this application. Either:
 
 - Install mongodb server (and maven) 
     - create directory c:\mongodb\data\db
-    - start Mongo server
+    - start Mongo server Win
         - cd "c:\Program Files\MongoDB\Server\3.6\bin"
         - .\mongod.exe --dbpath "C:\mongodb\db\data"
+    - start Mongo Server Mac
+        - cd /Development/mongodb/bin
+        - ./mongod --dbpath '/Development/mdb/data'
 
 - Mongo can be embedded within this app. See https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-nosql.html#boot-features-mongo-embedded 
 
