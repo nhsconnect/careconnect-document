@@ -144,7 +144,7 @@ public class CompositionDao implements IComposition {
         for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
             IBaseResource resource = null;
             if (entry.hasFullUrl() && entry.getFullUrl().equals(reference)) resource = entry.getResource();
-            if (entry.hasResource() && entry.getResource().getId().equals(reference)) resource = entry.getResource();
+            if (entry.hasResource() &&  entry.getResource().hasId() && entry.getResource().getId().equals(reference)) resource = entry.getResource();
             if (resource !=null) {
                 display = resource.getClass().getCanonicalName();
                 if (resource instanceof Practitioner) {
