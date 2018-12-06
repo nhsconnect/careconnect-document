@@ -330,6 +330,10 @@ public class FhirBundleUtil {
     }
 
     private Reference getUUIDReference(Reference reference) {
+        if (reference == null || reference.getReference() == null) {
+            log.error("Missing reference null");
+            return null;
+        }
         if (referenceMap.get(reference.getReference()) == null) {
             log.error("Missing reference "+reference.getReference());
         }
