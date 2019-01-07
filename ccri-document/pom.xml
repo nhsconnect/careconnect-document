@@ -209,7 +209,7 @@
 
     <build>
 
-        <finalName>careconnect-document</finalName>
+        <finalName>ccri-document</finalName>
         <plugins>
 
 

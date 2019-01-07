@@ -261,7 +261,7 @@
     </dependencies>
 
     <build>
-        <finalName>careconnect-tie</finalName>
+        <finalName>ccri-messaging</finalName>
         <plugins>
 
 
