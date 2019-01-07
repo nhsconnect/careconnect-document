@@ -34,9 +34,9 @@
     </dependencies>
 
     <modules>
-        <module>ccri-document-server</module>
+        <module>ccri-document</module>
      <!-- dormant project    <module>ccri-edms-server</module> -->
-        <module>ccri-integration-server</module>
+        <module>ccri-messaging</module>
     </modules>
 
 </project>
