@@ -84,8 +84,6 @@ public class CcriMessagingHAPIConfig extends RestfulServer {
 		// Replace built in conformance provider (CapabilityStatement)
 		setServerConformanceProvider(new ConformanceProvider());
 
-		setServerConformanceProvider(new ConformanceProvider());
-
 		setServerName(softwareName);
 		setServerVersion(softwareVersion);
 		setImplementationDescription(server);

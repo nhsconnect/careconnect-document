@@ -11,14 +11,11 @@ import ca.uhn.fhir.rest.server.interceptor.IServerInterceptor;
 import ca.uhn.fhir.rest.server.interceptor.ResponseHighlighterInterceptor;
 import ca.uhn.fhir.util.VersionUtil;
 import org.springframework.web.cors.CorsConfiguration;
-import uk.nhs.careconnect.nosql.providers.BinaryProvider;
-import uk.nhs.careconnect.nosql.providers.CompositionProvider;
-import uk.nhs.careconnect.nosql.providers.PatientProvider;
+import uk.nhs.careconnect.nosql.providers.*;
 import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import uk.nhs.careconnect.nosql.providers.BundleProvider;
 
 
 import javax.servlet.ServletException;
@@ -39,14 +36,18 @@ public class CcriFHIRDocumentServerHAPIConfig extends RestfulServer {
 		this.applicationContext = context;
 	}
 
-	@Value("http://127.0.0.1/STU3")
+	@Value("${ccri.software.name}")
+	private String softwareName;
+
+	@Value("${ccri.software.version}")
+	private String softwareVersion;
+
+	@Value("${ccri.server}")
+	private String server;
+
+	@Value("${ccri.server.base}")
 	private String serverBase;
 
-    @Value("${fhir.resource.serverName}")
-    private String serverName;
-
-    @Value("${fhir.resource.serverVersion}")
-    private String serverVersion;
 
 
     @Override
@@ -80,8 +81,12 @@ public class CcriFHIRDocumentServerHAPIConfig extends RestfulServer {
 
 		registerInterceptor(new mimeInterceptor());
 
-        setServerName(serverName);
-        setServerVersion(serverVersion);
+		// Replace built in conformance provider (CapabilityStatement)
+		setServerConformanceProvider(new ConformanceProvider());
+
+		setServerName(softwareName);
+		setServerVersion(softwareVersion);
+		setImplementationDescription(server);
 
 		CorsConfiguration config = new CorsConfiguration();
 		config.addAllowedHeader("x-fhir-starter");
