@@ -7,8 +7,6 @@ import org.hl7.fhir.dstu3.model.OperationOutcome;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.nhs.careconnect.fhir.OperationOutcomeException;
-
 import java.io.*;
 
 public class ProviderResponseLibrary {

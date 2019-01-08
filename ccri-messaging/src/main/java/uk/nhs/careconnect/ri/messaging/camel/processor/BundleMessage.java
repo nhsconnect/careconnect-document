@@ -11,7 +11,7 @@ import org.hl7.fhir.dstu3.model.OperationOutcome;
 import org.hl7.fhir.dstu3.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.nhs.careconnect.ri.lib.server.OperationOutcomeFactory;
+import uk.nhs.careconnect.ri.messaging.support.OperationOutcomeFactory;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -23,7 +23,6 @@ import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.slf4j.Logger;
 import org.springframework.http.InvalidMediaTypeException;
 import org.springframework.http.MediaType;
-import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -323,6 +322,14 @@ public class ServerInterceptor extends InterceptorAdapter {
                     } else if (acceptType.equals("application/pdf")) {
                         try {
                             // requested document as pdf
+
+
+                            /*
+
+
+                             KGM Removed as not required in messaging util
+
+
                             response.setStatus(200);
                             response.setContentType("application/pdf");
 
@@ -341,7 +348,7 @@ public class ServerInterceptor extends InterceptorAdapter {
                             renderer.createPDF(response.getOutputStream(), false);
                             renderer.finishPDF();
                             fos.flush();
-
+*/
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }

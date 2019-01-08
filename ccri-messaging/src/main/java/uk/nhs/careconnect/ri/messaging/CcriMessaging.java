@@ -6,14 +6,17 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.impl.DefaultCamelContextNameStrategy;
 import org.apache.camel.spring.boot.CamelContextConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import uk.nhs.careconnect.ri.messaging.support.CorsFilter;
 
 @SpringBootApplication
 public class CcriMessaging {
@@ -21,10 +24,27 @@ public class CcriMessaging {
     @Autowired
     ApplicationContext context;
 
+    @Value("${ccri.software.version}")
+    String softwareVersion;
+
+    @Value("${ccri.software.name}")
+    String softwareName;
+
+    @Value("${ccri.server}")
+    String server;
+
+    @Value("${ccri.guide}")
+    String guide;
+
+    @Value("${ccri.server.base}")
+    String serverBase;
+
     public static void main(String[] args) {
-        System.setProperty("hawtio.authenticationEnabled", "true");
+        System.setProperty("hawtio.authenticationEnabled", "false");
         System.setProperty("management.security.enabled","false");
         System.setProperty("server.port", "8182");
+        System.setProperty("server.context-path", "/ccri-messaging");
+        System.setProperty("management.contextPath","");
         SpringApplication.run(CcriMessaging.class, args);
 
     }
@@ -39,6 +59,12 @@ public class CcriMessaging {
 
     @Bean
     public FhirContext getFhirContext() {
+
+        System.setProperty("ccri.server.base",this.serverBase);
+        System.setProperty("ccri.software.name",this.softwareName);
+        System.setProperty("ccri.software.version",this.softwareVersion);
+        System.setProperty("ccri.guide",this.guide);
+        System.setProperty("ccri.server",this.server);
         return FhirContext.forDstu3();
     }
 
@@ -48,6 +74,21 @@ public class CcriMessaging {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
         return source;
+    }
+
+    @Bean
+    public FilterRegistrationBean corsFilter() {
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.addAllowedOrigin("*");
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+        source.registerCorsConfiguration("/**", config);
+        FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter());
+        bean.setOrder(0);
+        return bean;
     }
 
 

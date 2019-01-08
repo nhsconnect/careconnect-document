@@ -16,9 +16,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.cors.CorsConfiguration;
+import uk.nhs.careconnect.ri.messaging.providers.ConformanceProvider;
+import uk.nhs.careconnect.ri.messaging.providers.PatientResourceProvider;
 import uk.nhs.careconnect.ri.messaging.support.ServerInterceptor;
 import uk.nhs.careconnect.ri.messaging.providers.BundleResourceProvider;
-import uk.nhs.careconnect.ri.messaging.providers.ConformanceProvider;
+
 
 
 import javax.servlet.ServletException;
@@ -39,16 +41,16 @@ public class CcriMessagingHAPIConfig extends RestfulServer {
 		this.applicationContext = context;
 	}
 
-	@Value("${conf.software.name}")
+	@Value("${ccri.software.name}")
 	private String softwareName;
 
-	@Value("${conf.software.version}")
+	@Value("${ccri.software.version}")
 	private String softwareVersion;
 
-	@Value("${conf.server}")
+	@Value("${ccri.server}")
 	private String server;
 
-	@Value("${conf.server.base}")
+	@Value("${ccri.server.base}")
 	private String serverBase;
 
 
@@ -75,18 +77,18 @@ public class CcriMessagingHAPIConfig extends RestfulServer {
 
 		setResourceProviders(Arrays.asList(
 
-				applicationContext.getBean(BundleResourceProvider.class)
+				applicationContext.getBean(BundleResourceProvider.class),
+				applicationContext.getBean(PatientResourceProvider.class)
 		));
 
 		// Replace built in conformance provider (CapabilityStatement)
-		setServerConformanceProvider(new ConformanceProvider(applicationContext ));
+		setServerConformanceProvider(new ConformanceProvider());
 
-		setServerConformanceProvider(new ConformanceProvider(applicationContext));
+		setServerConformanceProvider(new ConformanceProvider());
 
 		setServerName(softwareName);
 		setServerVersion(softwareVersion);
 		setImplementationDescription(server);
-
 
 
 		CorsConfiguration config = new CorsConfiguration();
