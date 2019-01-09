@@ -2,8 +2,11 @@ package uk.nhs.careconnect.ri.messaging.camel;
 
 
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.hl7v2.DefaultHapiContext;
+import ca.uhn.hl7v2.HapiContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.component.hl7.HL7DataFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -12,6 +15,7 @@ import uk.nhs.careconnect.ri.messaging.camel.interceptor.GatewayPostProcessor;
 import uk.nhs.careconnect.ri.messaging.camel.interceptor.GatewayPreProcessor;
 import uk.nhs.careconnect.ri.messaging.camel.processor.BundleMessage;
 import uk.nhs.careconnect.ri.messaging.camel.processor.CompositionDocumentBundle;
+import uk.nhs.careconnect.ri.messaging.camel.processor.HL7v2A05toFHIRBundle;
 
 import java.io.InputStream;
 
@@ -20,6 +24,8 @@ public class CamelRoute extends RouteBuilder {
 
 	@Autowired
 	protected Environment env;
+
+	public HapiContext hapiContext;
 
 	@Value("${fhir.restserver.eprBase}")
 	private String eprBase;
@@ -48,7 +54,14 @@ public class CamelRoute extends RouteBuilder {
         //DocumentReferenceDocumentBundle documentReferenceDocumentBundle = new DocumentReferenceDocumentBundle(ctx,hapiBase);
        // BinaryResource binaryResource = new BinaryResource(ctx, hapiBase);
 
+		hapiContext = new DefaultHapiContext();
 
+		hapiContext.getParserConfiguration().setValidating(false);
+		HL7DataFormat hl7 = new HL7DataFormat();
+
+		HL7v2A05toFHIRBundle hl7v2A05toFHIRBundle = new HL7v2A05toFHIRBundle(hapiContext);
+
+		hl7.setHapiContext(hapiContext);
 
 
 		from("direct:FHIRValidate")

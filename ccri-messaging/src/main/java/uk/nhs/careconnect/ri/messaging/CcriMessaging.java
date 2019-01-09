@@ -3,6 +3,7 @@ package uk.nhs.careconnect.ri.messaging;
 import ca.uhn.fhir.context.FhirContext;
 
 import org.apache.camel.CamelContext;
+import org.apache.camel.component.hl7.HL7MLLPCodec;
 import org.apache.camel.impl.DefaultCamelContextNameStrategy;
 import org.apache.camel.spring.boot.CamelContextConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ public class CcriMessaging {
 
     @Autowired
     ApplicationContext context;
+
+
 
     @Value("${ccri.software.version}")
     String softwareVersion;
@@ -101,6 +104,12 @@ public class CcriMessaging {
 
                 camelContext.setNameStrategy(new DefaultCamelContextNameStrategy("CcriTIE"));
 
+                final org.apache.camel.impl.SimpleRegistry registry = new org.apache.camel.impl.SimpleRegistry();
+                final org.apache.camel.impl.CompositeRegistry compositeRegistry = new org.apache.camel.impl.CompositeRegistry();
+                compositeRegistry.addRegistry(camelContext.getRegistry());
+                compositeRegistry.addRegistry(registry);
+                ((org.apache.camel.impl.DefaultCamelContext) camelContext).setRegistry(compositeRegistry);
+                registry.put("hl7codec", new HL7MLLPCodec());
             }
 
             @Override

@@ -64,7 +64,7 @@ public class ServerInterceptor extends InterceptorAdapter {
         log.info("Exception = "+theException.getClass().getCanonicalName());
         if (theException instanceof InvalidRequestException) {
             if (theException.getOperationOutcome() !=null && theException.getOperationOutcome() instanceof OperationOutcome) {
-                FhirContext ctx = FhirContext.forDstu3();
+                //FhirContext ctx = FhirContext.forDstu3();
 
                 OperationOutcome outcome  = (OperationOutcome) theException.getOperationOutcome();
                 log.info("Exception intercept. Diagnostic Response = "+outcome.getIssueFirstRep().getDiagnostics()+ " "+outcome.getIssueFirstRep().getCode().getDisplay());
@@ -107,7 +107,7 @@ public class ServerInterceptor extends InterceptorAdapter {
         }
         if (theException instanceof InternalErrorException) {
             if (theException.getOperationOutcome() !=null && theException.getOperationOutcome() instanceof OperationOutcome) {
-                FhirContext ctx = FhirContext.forDstu3();
+                //FhirContext ctx = FhirContext.forDstu3();
 
                 OperationOutcome outcome  = (OperationOutcome) theException.getOperationOutcome();
                 log.error("InternalErrorException: Diagnostics = "+outcome.getIssueFirstRep().getDiagnostics()+ " "+outcome.getIssueFirstRep().getCode().getDisplay());
