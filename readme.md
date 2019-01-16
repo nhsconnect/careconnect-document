@@ -27,10 +27,22 @@ Using a tool such as [Postman(https://www.getpostman.com/)] POST FHIR Documents 
 
 - http://127.0.0.1:8181/STU3/Bundle
 
-# FHIR DocumentRef App
 
-in the document-review-app folder
-
-ng serve --open
+# Docker Notes
 
 Which starts the app within your browser.
+
+
+
+
+In this directory
+
+docker build . -t ccri-document
+
+docker tag ccri-document thorlogic/ccri-document
+
+docker push thorlogic/ccri-document
+
+
+docker run -d -p 8181:8181 ccri-document 
+
