@@ -6,13 +6,16 @@ import ca.uhn.fhir.rest.annotation.*;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
-
-import uk.nhs.careconnect.nosql.dao.IComposition;
-import uk.nhs.careconnect.nosql.dao.IFHIRResource;
-import org.hl7.fhir.dstu3.model.*;
+import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
+import org.bson.types.ObjectId;
+import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.Composition;
+import org.hl7.fhir.dstu3.model.IdType;
+import org.hl7.fhir.dstu3.model.Resource;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import uk.nhs.careconnect.nosql.dao.IComposition;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -26,46 +29,44 @@ public class CompositionProvider implements IResourceProvider {
     @Autowired
     IComposition compositionDao;
 
-    @Autowired
-    IFHIRResource resourceDao;
-
     public Class<? extends IBaseResource> getResourceType() {
         return Composition.class;
     }
 
-
-    @Operation(name = "document", idempotent = true, bundleType= BundleTypeEnum.DOCUMENT)
+    @Operation(name = "document", idempotent = true, bundleType = BundleTypeEnum.DOCUMENT)
     public Bundle compositionDocumentOperation(
             @IdParam IdType internalId,
-            @OperationParam(name="persist") TokenParam persist
+            @OperationParam(name = "persist") TokenParam persist
     ) {
-        HttpServletRequest request =  null;
+        HttpServletRequest request = null;
 
-        return compositionDao.readDocument(ctx,internalId);
+        return compositionDao.readDocument(ctx, internalId);
 
     }
 
     @Read
     public Composition getCompositionById(HttpServletRequest request, @IdParam IdType internalId) {
 
-        Composition composition = compositionDao.read(ctx,internalId);
+        Composition composition = compositionDao.read(ctx, internalId);
 
         return composition;
     }
 
     @Search
-    public List<Resource> searchComposition(HttpServletRequest theRequest
-            , @OptionalParam(name = Composition.SP_RES_ID) TokenParam resid
-            , @OptionalParam(name = Composition.SP_PATIENT) ReferenceParam patient
-     //       , @OptionalParam(name = Composition.SP_DATE) DateRangeParam date
-     //       , @OptionalParam(name = Composition.SP_TYPE) TokenParam type
-     //       , @OptionalParam(name = Composition.SP_CLASS) TokenParam _class
-    ) {
+    public List<Resource> searchComposition(
+            @OptionalParam(name = Composition.SP_RES_ID) TokenParam resid,
+            @OptionalParam(name = Composition.SP_PATIENT) ReferenceParam patient) {
 
-        List<Resource> results = compositionDao.search(ctx,resid,patient);
+        validateRequestId(resid);
 
+        List<Resource> results = compositionDao.search(ctx, resid, patient);
 
         return results;
-
     }
+
+    private void validateRequestId(TokenParam resid) {
+        if (!ObjectId.isValid(resid.getValue()))
+            throw new InvalidRequestException("_id must be 24 characters");
+    }
+
 }
