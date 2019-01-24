@@ -52,7 +52,7 @@ public class BinaryProvider implements IResourceProvider {
                 if (bundle != null) {
                     binary = new Binary();
                     String resource = ctx.newXmlParser().encodeResourceToString(bundle);
-                    log.info("Resource returned from composition.readDocument as " + resource);
+                    log.trace("Resource returned from composition.readDocument as " + resource);
                     binary.setId(internalId.getIdPart());
                     binary.setContentType("application/fhir+xml");
                     binary.setContent(resource.getBytes());

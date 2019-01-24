@@ -147,7 +147,30 @@ public class mimeInterceptor extends InterceptorAdapter {
                                 ex.printStackTrace();
                             }
                             return false;
-                        } else if (acceptType.equals("text/html")) {
+                        } else if (acceptType.contains("fhir") && acceptType.contains("json")) {
+                            try {
+
+                                // Response was json, convert to xml
+                                binary.setContentType("application/fhir+json");
+                                binary.setContent(ctx.newJsonParser().encodeResourceToString(resourceBundle).getBytes());
+                                response.setStatus(200);
+                                response.setContentType("application/fhir+json");
+
+                                if (acceptType == null) {
+                                    // if not asked for format return xml as default
+                                    response.getOutputStream().write(ctx.newJsonParser().encodeResourceToString(resourceBundle).getBytes());
+                                } else {
+                                    // else return as a Bundle
+                                    response.getOutputStream().write(ctx.newJsonParser().encodeResourceToString(binary).getBytes());
+                                }
+
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
+                            return false;
+                        }
+
+                        else if (acceptType.equals("text/html")) {
                             try {
                                 // requested document as html
                                 response.setStatus(200);
