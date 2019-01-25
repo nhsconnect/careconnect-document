@@ -1,4 +1,4 @@
-package uk.nhs.caraconnect.nosql.providers;
+package uk.nhs.careconnect.nosql.providers;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.param.ReferenceParam;
@@ -13,13 +13,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.nhs.careconnect.nosql.dao.IComposition;
-import uk.nhs.careconnect.nosql.providers.CompositionProvider;
 
 import java.util.List;
 
 import static org.mockito.Mockito.when;
-import static uk.nhs.caraconnect.nosql.providers.support.assertions.ResourceAssertions.assertResourceListIsEqual;
-import static uk.nhs.caraconnect.nosql.providers.support.testdata.CompositionTestData.*;
+import static uk.nhs.careconnect.nosql.providers.support.assertions.ResourceAssertions.assertResourceListIsEqual;
+import static uk.nhs.careconnect.nosql.providers.support.testdata.CompositionTestData.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CompositionProviderTest {

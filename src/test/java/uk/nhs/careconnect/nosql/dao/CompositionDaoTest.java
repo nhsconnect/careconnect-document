@@ -1,4 +1,4 @@
-package uk.nhs.caraconnect.nosql.dao;
+package uk.nhs.careconnect.nosql.dao;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.FhirVersionEnum;
@@ -18,14 +18,15 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import uk.nhs.careconnect.nosql.dao.CompositionDao;
 import uk.nhs.careconnect.nosql.entities.CompositionEntity;
+import uk.nhs.careconnect.nosql.providers.support.testdata.CompositionTestData;
 
 import static java.util.Arrays.asList;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static uk.nhs.caraconnect.nosql.providers.support.testdata.CompositionTestData.VALID_ID;
-import static uk.nhs.caraconnect.nosql.providers.support.testdata.CompositionTestData.VALID_PATIENT_ID;
+
+import static uk.nhs.careconnect.nosql.providers.support.testdata.CompositionTestData.VALID_ID;
+import static uk.nhs.careconnect.nosql.providers.support.testdata.CompositionTestData.VALID_PATIENT_ID;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CompositionDaoTest {
@@ -47,12 +48,12 @@ public class CompositionDaoTest {
     @Test
     public void givenANumberOfSearchParameters_whenSearchIsCalledWithResId_shouldQueryMongo() {
         TokenParam resid = new TokenParam();
-        resid.setValue(VALID_ID);
+        resid.setValue(CompositionTestData.VALID_ID);
         ReferenceParam patient = null;
 
         Query expectedQuery = new Query(Criteria.where("_id").is(new ObjectId(resid.getValue())));
 
-        testSearchCallsToMongo(resid, patient, expectedQuery);
+        testSearchCallsMongo(resid, patient, expectedQuery);
     }
 
     @Test
@@ -61,9 +62,9 @@ public class CompositionDaoTest {
         ReferenceParam patient = new ReferenceParam();
         patient.setValue(VALID_PATIENT_ID);
 
-        Query expectedQuery = new Query(Criteria.where("idxPatient").is(new DBRef("idxPatient", VALID_PATIENT_ID)));
+        Query expectedQuery = new Query(Criteria.where("idxPatient").is(new DBRef("idxPatient", CompositionTestData.VALID_PATIENT_ID)));
 
-        testSearchCallsToMongo(resid, patient, expectedQuery);
+        testSearchCallsMongo(resid, patient, expectedQuery);
     }
 
     @Test
@@ -72,15 +73,15 @@ public class CompositionDaoTest {
         TokenParam resid = new TokenParam();
         resid.setValue(VALID_ID);
         ReferenceParam patient = new ReferenceParam();
-        patient.setValue(VALID_PATIENT_ID);
+        patient.setValue(CompositionTestData.VALID_PATIENT_ID);
 
         Query expectedQuery = new Query(Criteria.where("_id").is(new ObjectId(resid.getValue()))
                 .and("idxPatient").is(new DBRef("idxPatient", patient.getValue())));
 
-        testSearchCallsToMongo(resid, patient, expectedQuery);
+        testSearchCallsMongo(resid, patient, expectedQuery);
     }
 
-    private void testSearchCallsToMongo(TokenParam resid, ReferenceParam patient, Query expectedFindQuery) {
+    private void testSearchCallsMongo(TokenParam resid, ReferenceParam patient, Query expectedFindQuery) {
         // setup
         Query expectedFindOne =  new Query(Criteria.where("_id").is(aCompositionEntity().getFhirDocument().getId()));
         mockMongoResponses(expectedFindQuery, expectedFindOne);
@@ -104,7 +105,7 @@ public class CompositionDaoTest {
 
     private static CompositionEntity aCompositionEntity() {
         CompositionEntity aCompositionEntity = new CompositionEntity();
-        DBRef fhirDocument = new DBRef("Bundle", new ObjectId(VALID_ID));
+        DBRef fhirDocument = new DBRef("Bundle", new ObjectId(CompositionTestData.VALID_ID));
         aCompositionEntity.setFhirDocument(fhirDocument);
         return aCompositionEntity;
     }
