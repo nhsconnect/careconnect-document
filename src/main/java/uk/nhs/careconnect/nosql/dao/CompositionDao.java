@@ -6,12 +6,8 @@ import ca.uhn.fhir.rest.param.TokenParam;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mongodb.DBObject;
-
-import com.mongodb.DBRef;
-import org.hl7.fhir.dstu3.model.*;
-import uk.nhs.careconnect.nosql.entities.CompositionEntity;
 import org.bson.types.ObjectId;
-
+import org.hl7.fhir.dstu3.model.*;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,10 +16,13 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
+import uk.nhs.careconnect.nosql.entities.CompositionEntity;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+
+import static uk.nhs.careconnect.nosql.dao.CriteriaBuilder.aCriteriaBuilder;
 
 @Transactional
 @Repository
@@ -43,23 +42,11 @@ public class CompositionDao implements IComposition {
 
         List<Resource> resources = new ArrayList<>();
 
-        Criteria criteria = null;
+        Criteria criteria = aCriteriaBuilder()
+                .withId(resid)
+                .withPatient(patient)
+                .build();
 
-        if (resid != null) {
-            if (criteria == null) {
-                criteria = Criteria.where("_id").is(new ObjectId(resid.getValue()));
-            } else {
-                criteria = criteria.and("_id").is(new ObjectId(resid.getValue()));
-            }
-        }
-        if (patient != null) {
-
-            if (criteria == null) {
-                criteria = Criteria.where("idxPatient").is(new DBRef("idxPatient", patient.getValue()));
-            } else {
-                criteria = criteria.and("idxPatient").is(new DBRef("idxPatient", patient.getValue()));
-            }
-        }
         if (criteria != null) {
             Query qry = Query.query(criteria);
             log.info("qry = " + qry.toString());
