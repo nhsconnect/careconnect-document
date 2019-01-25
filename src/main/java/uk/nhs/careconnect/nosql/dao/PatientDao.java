@@ -141,25 +141,25 @@ public class PatientDao implements IPatient {
         }
         if (familyName!=null) {
             if (criteria ==null) {
-                criteria = Criteria.where("names.familyName").regex(familyName.getValue());
+                criteria = Criteria.where("names.familyName").regex(familyName.getValue(), "i");
             } else {
-                criteria.and("names.familyName").regex(familyName.getValue());
+                criteria.and("names.familyName").regex(familyName.getValue(), "i");
             }
         }
         if (givenName!=null) {
             if (criteria ==null) {
-                criteria = Criteria.where("names.givenName").regex(givenName.getValue());
+                criteria = Criteria.where("names.givenName").regex(givenName.getValue(), "i");
             } else {
-                criteria.and("names.givenName").regex(givenName.getValue());
+                criteria.and("names.givenName").regex(givenName.getValue(), "i");
             }
         }
         if (name!=null) {
 
             String regexName = name.getValue() ; //.toLowerCase()+".*"; // use options = i for regex
             if (criteria ==null) {
-                criteria = new Criteria().orOperator(Criteria.where("names.familyName").regex(regexName),Criteria.where("names.givenName").regex(regexName));
+                criteria = new Criteria().orOperator(Criteria.where("names.familyName").regex(regexName, "i"),Criteria.where("names.givenName").regex(regexName, "i"));
             } else {
-                criteria.orOperator(Criteria.where("names.familyName").regex(regexName),Criteria.where("names.givenName").regex(regexName));
+                criteria.orOperator(Criteria.where("names.familyName").regex(regexName, "i"),Criteria.where("names.givenName").regex(regexName, "i"));
             }
         }
 
@@ -173,9 +173,9 @@ public class PatientDao implements IPatient {
 
         if (birthDate!=null) {
             if (criteria ==null) {
-                criteria = Criteria.where("dateOfBirth").in(birthDate.getLowerBound().getValue(), birthDate.getUpperBound().getValue());
+                criteria = Criteria.where("dateOfBirth").gte(birthDate.getLowerBound().getValue()).lte(birthDate.getUpperBound().getValue());
             } else {
-                criteria.and("dateOfBirth").in(birthDate.getLowerBound().getValue(), birthDate.getUpperBound().getValue());
+                criteria.and("dateOfBirth").gte(birthDate.getLowerBound().getValue()).lte(birthDate.getUpperBound().getValue());
             }
         }
 
@@ -197,9 +197,9 @@ public class PatientDao implements IPatient {
 
         if (gender!=null) {
             if (criteria ==null) {
-                criteria = Criteria.where("gender").is(gender.getValue());
+                criteria = Criteria.where("gender").is(gender.getValue().toUpperCase());
             } else {
-                criteria.and("gender").is(gender.getValue());
+                criteria.and("gender").is(gender.getValue().toUpperCase());
             }
         }
 
