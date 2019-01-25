@@ -27,13 +27,12 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-       <!-- <spring-boot-version>1.5.10.RELEASE</spring-boot-version> -->
         <hapi-fhir-version>3.6.0</hapi-fhir-version>
         <care-connect-version>3.5.4</care-connect-version>
         <docker.image.prefix>thorlogic</docker.image.prefix>
         <hawtio.version>2.2.0</hawtio.version>
+        <org.mockito.version>2.23.4</org.mockito.version>
     </properties>
-
 
 
     <dependencies>
@@ -103,13 +102,6 @@
             <artifactId>jboss-transaction-api_1.2_spec</artifactId>
             <version>1.1.1.Final</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <version>2.1.2.RELEASE</version>
-            <scope>test</scope>
-        </dependency>
-
 
         <dependency>
             <groupId>ca.uhn.hapi.fhir</groupId>
@@ -184,25 +176,6 @@
             <artifactId>hawtio-core</artifactId>
             <version>${hawtio.version}</version>
         </dependency>
-<!--
-           <dependency>
-            <groupId>io.hawt</groupId>
-            <artifactId>hawtio-insight-log</artifactId>
-            <version>1.5.11</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-log4j12</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jolokia</groupId>
-            <artifactId>jolokia-core</artifactId>
-        </dependency>
-
-        -->
 
         <!-- flying saucer pdf -->
         <dependency>
@@ -210,13 +183,36 @@
             <artifactId>flying-saucer-pdf</artifactId>
             <version>9.1.4</version>
         </dependency>
+
+        <!-- testing -->
+        <dependency>
+            <groupId>de.flapdoodle.embed</groupId>
+            <artifactId>de.flapdoodle.embed.mongo</artifactId>
+            <version>2.2.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${org.mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
 
         <finalName>ccri-document</finalName>
         <plugins>
-
 
             <!-- Tell Maven which Java source version you want to use -->
             <plugin>
