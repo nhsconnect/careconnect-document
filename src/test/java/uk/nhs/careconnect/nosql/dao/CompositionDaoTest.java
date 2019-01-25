@@ -1,124 +1,155 @@
 package uk.nhs.careconnect.nosql.dao;
 
 import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.context.FhirVersionEnum;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.TokenParam;
-import com.mongodb.BasicDBList;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
-import com.mongodb.DBRef;
-import org.bson.types.ObjectId;
+import de.flapdoodle.embed.mongo.MongodExecutable;
+import de.flapdoodle.embed.mongo.MongodProcess;
+import de.flapdoodle.embed.mongo.MongodStarter;
+import de.flapdoodle.embed.mongo.config.IMongodConfig;
+import de.flapdoodle.embed.mongo.config.MongodConfigBuilder;
+import de.flapdoodle.embed.mongo.config.Net;
+import de.flapdoodle.embed.mongo.distribution.Version;
+import de.flapdoodle.embed.process.runtime.Network;
+import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.OperationOutcome;
+import org.hl7.fhir.dstu3.model.Resource;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 import uk.nhs.careconnect.nosql.entities.CompositionEntity;
-import uk.nhs.careconnect.nosql.providers.support.testdata.CompositionTestData;
 
-import static java.util.Arrays.asList;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Stream;
 
-import static uk.nhs.careconnect.nosql.providers.support.testdata.CompositionTestData.VALID_ID;
-import static uk.nhs.careconnect.nosql.providers.support.testdata.CompositionTestData.VALID_PATIENT_ID;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {TestConfig.class})
 public class CompositionDaoTest {
 
-    @Mock
-    MongoTemplate mongo;
+    @Autowired
+    MongoTemplate mongoTemplate;
 
-    @InjectMocks
-    CompositionDao compositionDao;
-
-    //TODO: look into FhirContext - autowired in provider, passed as parameter to dao - could it be autowired in dao and removed from provider?
+    @Autowired
     FhirContext ctx;
+
+    @Autowired
+    IBundle bundleDao;
+
+    @Autowired
+    IComposition compositionDao;
+
+    private static final String[] COLLECTION_NAMES = {"Bundle", "idxComposition", "idxPatient"};
+
+    private static MongodExecutable mongodExe;
+    private static MongodProcess mongod;
+    private String compositionId;
+    private CompositionEntity compositionEntity;
+
+    @BeforeClass
+    public static void beforeEach() throws Exception {
+        MongodStarter starter = MongodStarter.getDefaultInstance();
+        String bindIp = "localhost";
+        int port = 12345;
+        IMongodConfig mongodConfig = new MongodConfigBuilder()
+                .version(Version.Main.PRODUCTION)
+                .net(new Net(bindIp, port, Network.localhostIsIPv6()))
+                .build();
+        CompositionDaoTest.mongodExe = starter.prepare(mongodConfig);
+        CompositionDaoTest.mongod = mongodExe.start();
+    }
+
+    @AfterClass
+    public static void afterEach() {
+        if (CompositionDaoTest.mongod != null) {
+            CompositionDaoTest.mongod.stop();
+            CompositionDaoTest.mongodExe.stop();
+        }
+    }
 
     @Before
     public void eachTest() {
-        ctx = new FhirContext(FhirVersionEnum.DSTU3);
+        Stream.of(COLLECTION_NAMES).forEach(
+                collectionName -> mongoTemplate.dropCollection(collectionName)
+        );
+        loadAndCreateBundle();
+        loadCompositionEntity();
     }
 
     @Test
-    public void givenANumberOfSearchParameters_whenSearchIsCalledWithResId_shouldQueryMongo() {
-        TokenParam resid = new TokenParam();
-        resid.setValue(CompositionTestData.VALID_ID);
-        ReferenceParam patient = null;
-
-        Query expectedQuery = new Query(Criteria.where("_id").is(new ObjectId(resid.getValue())));
-
-        testSearchCallsMongo(resid, patient, expectedQuery);
-    }
-
-    @Test
-    public void givenANumberOfSearchParameters_whenSearchIsCalledWithPatient_shouldQueryMongo() {
-        TokenParam resid = null;
-        ReferenceParam patient = new ReferenceParam();
-        patient.setValue(VALID_PATIENT_ID);
-
-        Query expectedQuery = new Query(Criteria.where("idxPatient").is(new DBRef("idxPatient", CompositionTestData.VALID_PATIENT_ID)));
-
-        testSearchCallsMongo(resid, patient, expectedQuery);
-    }
-
-    @Test
-    public void givenANumberOfSearchParameters_whenSearchIsCalledWithResIdAndPatient_shouldQueryMongo() {
+    public void givenABundleStoredInMongo_whenSearchIsCalledWithResId_aListOfRelevantResourcesShouldBeReturned() {
         //setup
         TokenParam resid = new TokenParam();
-        resid.setValue(VALID_ID);
+        resid.setValue(compositionId);
+        ReferenceParam patient = null;
+
+        List<Resource> resources = compositionDao.search(ctx, resid, patient);
+
+        assertThat(resources.size(), is(1));
+    }
+
+    @Test
+    public void givenABundleStoredInMongo_whenSearchIsCalledWithPatient_aListOfRelevantResourcesShouldBeReturned() {
+        //setup
+        TokenParam resid = null;
         ReferenceParam patient = new ReferenceParam();
-        patient.setValue(CompositionTestData.VALID_PATIENT_ID);
+        patient.setValue(compositionEntity.getIdxPatient().getId().toString());
 
-        Query expectedQuery = new Query(Criteria.where("_id").is(new ObjectId(resid.getValue()))
-                .and("idxPatient").is(new DBRef("idxPatient", patient.getValue())));
+        List<Resource> resources = compositionDao.search(ctx, resid, patient);
 
-        testSearchCallsMongo(resid, patient, expectedQuery);
+        assertThat(resources.size(), is(1));
     }
 
-    private void testSearchCallsMongo(TokenParam resid, ReferenceParam patient, Query expectedFindQuery) {
-        // setup
-        Query expectedFindOne =  new Query(Criteria.where("_id").is(aCompositionEntity().getFhirDocument().getId()));
-        mockMongoResponses(expectedFindQuery, expectedFindOne);
+    @Test
+    public void givenABundleStoredInMongo_whenSearchIsCalledWithResIdAndPatient_aListOfRelevantResourcesShouldBeReturned() {
+        //setup
+        TokenParam resid = new TokenParam();
+        resid.setValue(compositionId);
+        ReferenceParam patient = new ReferenceParam();
+        patient.setValue(compositionEntity.getIdxPatient().getId().toString());
 
-        //when
-        compositionDao.search(ctx, resid, patient);
+        List<Resource> resources = compositionDao.search(ctx, resid, patient);
 
-        //then
-        verifyCallsToMongo(expectedFindQuery, expectedFindOne);
+        assertThat(resources.size(), is(1));
     }
 
-    private void mockMongoResponses(Query expectedFindQuery, Query expectedFindOne) {
-        when(mongo.find(expectedFindQuery, CompositionEntity.class)).thenReturn(asList(aCompositionEntity()));
-        when(mongo.findOne(expectedFindOne, DBObject.class, "Bundle")).thenReturn(aBasicDBObjectBundle());
+    private Bundle loadBundle() {
+        String filename = getClass().getClassLoader().getResource("raw-bundle.xml").getPath();
+
+        try {
+            String bundleJson = new String(Files.readAllBytes(Paths.get(filename)));
+            return ctx.newXmlParser().parseResource(Bundle.class, bundleJson);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
-    private void verifyCallsToMongo(Query expectedFindQuery, Query expectedFindOne) {
-        verify(mongo).find(expectedFindQuery, CompositionEntity.class);
-        verify(mongo).findOne(expectedFindOne, DBObject.class, "Bundle");
+    private void loadAndCreateBundle() {
+        Bundle bundle = loadBundle();
+        OperationOutcome operationOutcome = bundleDao.create(ctx, bundle, null, null);
+
+        compositionId = operationOutcome.getId().split("/")[1];
     }
 
-    private static CompositionEntity aCompositionEntity() {
-        CompositionEntity aCompositionEntity = new CompositionEntity();
-        DBRef fhirDocument = new DBRef("Bundle", new ObjectId(CompositionTestData.VALID_ID));
-        aCompositionEntity.setFhirDocument(fhirDocument);
-        return aCompositionEntity;
-    }
+    private void loadCompositionEntity() {
+        Query qry = Query.query(Criteria.where("_id").is(compositionId));
 
-    private static BasicDBObject aBasicDBObjectBundle() {
-        return new BasicDBObject()
-                .append("_id", "_id-value")
-                .append("_class", "_class-value")
-                .append("resourceType", "Bundle")
-                .append("meta", "meta-value")
-                .append("identifier", "identifier-value")
-                .append("type", "document")
-                .append("entry", new BasicDBList());
+        compositionEntity = mongoTemplate.findOne(qry, CompositionEntity.class);
     }
 
 }
