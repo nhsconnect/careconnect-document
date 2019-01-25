@@ -27,11 +27,10 @@ import java.util.List;
 public class PatientDao implements IPatient {
 
     @Autowired
-    MongoOperations mongo;
+    private MongoOperations mongo;
 
     @Autowired
-    private PatientEntityToFHIRPatient
-            patientEntityToFHIRPatient;
+    private PatientEntityToFHIRPatient patientEntityToFHIRPatient;
 
     @Override
     public Patient read(FhirContext ctx, IdType theId) {
@@ -127,8 +126,7 @@ public class PatientDao implements IPatient {
     }
 
     @Override
-    public List<Resource> search(FhirContext ctx, DateRangeParam birthDate, StringParam familyName, StringParam gender, StringParam givenName, TokenParam identifier, StringParam name) {
-
+    public List<Resource> search(FhirContext ctx, StringParam postCode, DateRangeParam birthDate, TokenParam email, StringParam familyName, TokenParam gender, StringParam givenName, TokenParam identifier, StringParam name, TokenParam phone) {
         List<Resource> resources = new ArrayList<>();
 
         Criteria criteria = null;
@@ -165,6 +163,45 @@ public class PatientDao implements IPatient {
             }
         }
 
+        if (postCode!=null) {
+            if (criteria ==null) {
+                criteria = Criteria.where("addresses.postcode").is(postCode.getValue());
+            } else {
+                criteria.and("addresses.postcode").is(postCode.getValue());
+            }
+        }
+
+        if (birthDate!=null) {
+            if (criteria ==null) {
+                criteria = Criteria.where("dateOfBirth").in(birthDate.getLowerBound().getValue(), birthDate.getUpperBound().getValue());
+            } else {
+                criteria.and("dateOfBirth").in(birthDate.getLowerBound().getValue(), birthDate.getUpperBound().getValue());
+            }
+        }
+
+        if (phone!=null) {
+            if (criteria ==null) {
+                criteria = Criteria.where("telecoms.value").is(phone.getValue()).and("telecoms.system").is(ContactPoint.ContactPointSystem.PHONE);
+            } else {
+                criteria.and("telecoms.value").is(phone.getValue()).and("telecoms.system").is(ContactPoint.ContactPointSystem.PHONE);
+            }
+        }
+
+        if (email!=null) {
+            if (criteria ==null) {
+                criteria = Criteria.where("telecoms.value").is(email.getValue()).and("telecoms.system").is(ContactPoint.ContactPointSystem.EMAIL);
+            } else {
+                criteria.and("telecoms.value").is(email.getValue()).and("telecoms.system").is(ContactPoint.ContactPointSystem.EMAIL);
+            }
+        }
+
+        if (gender!=null) {
+            if (criteria ==null) {
+                criteria = Criteria.where("gender").is(gender.getValue());
+            } else {
+                criteria.and("gender").is(gender.getValue());
+            }
+        }
 
         if (criteria != null) {
             Query qry = Query.query(criteria);

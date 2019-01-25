@@ -40,20 +40,18 @@ public class PatientProvider implements IResourceProvider {
 
     @Search
     public List<Resource> searchPatient(HttpServletRequest request,
-
+                                        @OptionalParam(name= Patient.SP_ADDRESS_POSTALCODE) StringParam postCode,
                                         @OptionalParam(name= Patient.SP_BIRTHDATE) DateRangeParam birthDate,
-
+                                        @OptionalParam(name= Patient.SP_EMAIL) TokenParam email,
                                         @OptionalParam(name = Patient.SP_FAMILY) StringParam familyName,
-                                        @OptionalParam(name= Patient.SP_GENDER) StringParam gender ,
+                                        @OptionalParam(name= Patient.SP_GENDER) TokenParam gender ,
                                         @OptionalParam(name= Patient.SP_GIVEN) StringParam givenName ,
                                         @OptionalParam(name = Patient.SP_IDENTIFIER) TokenParam identifier,
-                                        @OptionalParam(name= Patient.SP_NAME) StringParam name
-                                    //  MAY  @OptionalParam(name= Patient.SP_PHONE) StringParam phone
-            , @OptionalParam(name = Patient.SP_RES_ID) TokenParam resid
-
+                                        @OptionalParam(name= Patient.SP_NAME) StringParam name,
+                                        @OptionalParam(name= Patient.SP_PHONE) TokenParam phone
     ) {
 
-        List<Resource> results = patientDao.search(ctx,birthDate,familyName,gender,givenName,identifier,name);
+        List<Resource> results = patientDao.search(ctx,postCode, birthDate,email, familyName,gender,givenName,identifier,name, phone);
 
 
         return results;
