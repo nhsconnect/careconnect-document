@@ -16,9 +16,7 @@ import de.flapdoodle.embed.process.runtime.Network;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.OperationOutcome;
 import org.hl7.fhir.dstu3.model.Resource;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -29,6 +27,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -39,6 +38,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class DaoCompositionIT {
 
     @Autowired
+    MongoTemplate mongoTemplate;
+
+    @Autowired
     FhirContext ctx;
 
     @Autowired
@@ -47,14 +49,13 @@ public class DaoCompositionIT {
     @Autowired
     IComposition compositionDao;
 
-    private static final String DATABASE_NAME = "test-mongo-db";
-    private MongodExecutable mongodExe;
-    private MongodProcess mongod;
-    private MongoClient mongo;
-    private MongoTemplate mongoTemplate;
+    private static final String[] COLLECTION_NAMES = {"Bundle", "idxComposition", "idxPatient"};
 
-    @Before
-    public void beforeEach() throws Exception {
+    private static MongodExecutable mongodExe;
+    private static MongodProcess mongod;
+
+    @BeforeClass
+    public static void beforeEach() throws Exception {
         MongodStarter starter = MongodStarter.getDefaultInstance();
         String bindIp = "localhost";
         int port = 12345;
@@ -62,18 +63,23 @@ public class DaoCompositionIT {
                 .version(Version.Main.PRODUCTION)
                 .net(new Net(bindIp, port, Network.localhostIsIPv6()))
                 .build();
-        this.mongodExe = starter.prepare(mongodConfig);
-        this.mongod = mongodExe.start();
-        this.mongo = new MongoClient(bindIp, port);
-        this.mongoTemplate = new MongoTemplate(new MongoClient(bindIp, port), DATABASE_NAME);
+        DaoCompositionIT.mongodExe = starter.prepare(mongodConfig);
+        DaoCompositionIT.mongod = mongodExe.start();
     }
 
-    @After
-    public void afterEach() throws Exception {
-        if (this.mongod != null) {
-            this.mongod.stop();
-            this.mongodExe.stop();
+    @AfterClass
+    public static void afterEach() throws Exception {
+        if (DaoCompositionIT.mongod != null) {
+            DaoCompositionIT.mongod.stop();
+            DaoCompositionIT.mongodExe.stop();
         }
+    }
+
+    @Before
+    public void eachTest(){
+        Stream.of(COLLECTION_NAMES).forEach(
+                collectionName -> mongoTemplate.dropCollection(collectionName)
+        );
     }
 
     @Test
@@ -116,19 +122,20 @@ public class DaoCompositionIT {
         ReferenceParam patient = null;
 
         List<Resource> resources = compositionDao.search(ctx, resid, patient);
+
+        assertThat(resources.size(), is(1));
     }
 
     @Test
     public void canPopulateFromObject() {
-        MongoDatabase db = mongo.getDatabase(DATABASE_NAME);
-        db.createCollection("testCollection");
+        mongoTemplate.createCollection("Bundle");
         populateMongoFromTestDataObjects();
     }
 
     private void populateMongoFromTestDataObjects() {
         Bundle aBundle = loadBundle();
 
-        mongoTemplate.insert(aBundle, "testCollection");
+        mongoTemplate.insert(aBundle, "Bundle");
     }
 
 }
