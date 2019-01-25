@@ -3,8 +3,6 @@ package uk.nhs.careconnect.nosql.dao;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.TokenParam;
-import com.mongodb.MongoClient;
-import com.mongodb.client.MongoDatabase;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodProcess;
 import de.flapdoodle.embed.mongo.MongodStarter;
@@ -16,7 +14,10 @@ import de.flapdoodle.embed.process.runtime.Network;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.OperationOutcome;
 import org.hl7.fhir.dstu3.model.Resource;
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -68,7 +69,7 @@ public class DaoCompositionIT {
     }
 
     @AfterClass
-    public static void afterEach() throws Exception {
+    public static void afterEach() {
         if (DaoCompositionIT.mongod != null) {
             DaoCompositionIT.mongod.stop();
             DaoCompositionIT.mongodExe.stop();
@@ -76,7 +77,7 @@ public class DaoCompositionIT {
     }
 
     @Before
-    public void eachTest(){
+    public void eachTest() {
         Stream.of(COLLECTION_NAMES).forEach(
                 collectionName -> mongoTemplate.dropCollection(collectionName)
         );
@@ -93,7 +94,7 @@ public class DaoCompositionIT {
 
         try {
             String bundleJson = new String(Files.readAllBytes(Paths.get(filename)));
-            return FhirContext.forDstu3().newXmlParser().parseResource(Bundle.class, bundleJson);
+            return ctx.newXmlParser().parseResource(Bundle.class, bundleJson);
         } catch (IOException e) {
             e.printStackTrace();
         }
