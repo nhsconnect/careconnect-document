@@ -1,4 +1,4 @@
-package uk.nhs.caraconnect.nosql.providers.support.assertions;
+package uk.nhs.careconnect.nosql.providers.support.assertions;
 
 import org.hl7.fhir.dstu3.model.Resource;
 

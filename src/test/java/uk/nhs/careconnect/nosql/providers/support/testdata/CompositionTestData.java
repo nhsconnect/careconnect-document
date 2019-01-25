@@ -1,4 +1,4 @@
-package uk.nhs.caraconnect.nosql.providers.support.testdata;
+package uk.nhs.careconnect.nosql.providers.support.testdata;
 
 import org.hl7.fhir.dstu3.model.Composition;
 import org.hl7.fhir.dstu3.model.Resource;
