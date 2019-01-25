@@ -98,7 +98,7 @@ public class CompositionDaoTest {
 
         List<Resource> resources = compositionDao.search(ctx, resid, patient);
 
-        assertThat(resources.size(), is(1));
+        assertThat(resources.get(0).getId(), is(compositionId));
     }
 
     @Test
@@ -110,7 +110,7 @@ public class CompositionDaoTest {
 
         List<Resource> resources = compositionDao.search(ctx, resid, patient);
 
-        assertThat(resources.size(), is(1));
+        assertThat(resources.get(0).getId(), is(compositionId));
     }
 
     @Test
@@ -123,7 +123,7 @@ public class CompositionDaoTest {
 
         List<Resource> resources = compositionDao.search(ctx, resid, patient);
 
-        assertThat(resources.size(), is(1));
+        assertThat(resources.get(0).getId(), is(compositionId));
     }
 
     private Bundle loadBundle() {
