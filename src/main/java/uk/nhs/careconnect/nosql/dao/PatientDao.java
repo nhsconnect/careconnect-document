@@ -5,6 +5,8 @@ import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import org.hl7.fhir.dstu3.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.nhs.careconnect.nosql.dao.transform.PatientEntityToFHIRPatient;
 
 import uk.nhs.careconnect.nosql.entities.Name;
@@ -26,12 +28,13 @@ import java.util.List;
 @Repository
 public class PatientDao implements IPatient {
 
-    @Autowired
-    MongoOperations mongo;
+    Logger log = LoggerFactory.getLogger(PatientDao.class);
 
     @Autowired
-    private PatientEntityToFHIRPatient
-            patientEntityToFHIRPatient;
+    private MongoOperations mongo;
+
+    @Autowired
+    private PatientEntityToFHIRPatient patientEntityToFHIRPatient;
 
     @Override
     public Patient read(FhirContext ctx, IdType theId) {
@@ -127,8 +130,7 @@ public class PatientDao implements IPatient {
     }
 
     @Override
-    public List<Resource> search(FhirContext ctx, DateRangeParam birthDate, StringParam familyName, StringParam gender, StringParam givenName, TokenParam identifier, StringParam name) {
-
+    public List<Resource> search(FhirContext ctx, StringParam postCode, DateRangeParam birthDate, TokenParam email, StringParam familyName, TokenParam gender, StringParam givenName, TokenParam identifier, StringParam name, TokenParam phone) {
         List<Resource> resources = new ArrayList<>();
 
         Criteria criteria = null;
@@ -143,35 +145,76 @@ public class PatientDao implements IPatient {
         }
         if (familyName!=null) {
             if (criteria ==null) {
-                criteria = Criteria.where("names.familyName").regex(familyName.getValue());
+                criteria = Criteria.where("names.familyName").regex(familyName.getValue(), "i");
             } else {
-                criteria.and("names.familyName").regex(familyName.getValue());
+                criteria.and("names.familyName").regex(familyName.getValue(), "i");
             }
         }
         if (givenName!=null) {
             if (criteria ==null) {
-                criteria = Criteria.where("names.givenName").regex(givenName.getValue());
+                criteria = Criteria.where("names.givenName").regex(givenName.getValue(), "i");
             } else {
-                criteria.and("names.givenName").regex(givenName.getValue());
+                criteria.and("names.givenName").regex(givenName.getValue(), "i");
             }
         }
         if (name!=null) {
 
             String regexName = name.getValue() ; //.toLowerCase()+".*"; // use options = i for regex
             if (criteria ==null) {
-                criteria = new Criteria().orOperator(Criteria.where("names.familyName").regex(regexName),Criteria.where("names.givenName").regex(regexName));
+                criteria = new Criteria().orOperator(Criteria.where("names.familyName").regex(regexName, "i"),Criteria.where("names.givenName").regex(regexName, "i"));
             } else {
-                criteria.orOperator(Criteria.where("names.familyName").regex(regexName),Criteria.where("names.givenName").regex(regexName));
+                criteria.orOperator(Criteria.where("names.familyName").regex(regexName, "i"),Criteria.where("names.givenName").regex(regexName, "i"));
             }
         }
 
+        if (postCode!=null) {
+            if (criteria ==null) {
+                criteria = Criteria.where("addresses.postcode").is(postCode.getValue());
+            } else {
+                criteria.and("addresses.postcode").is(postCode.getValue());
+            }
+        }
+
+        if (birthDate!=null) {
+            if (criteria ==null) {
+                criteria = Criteria.where("dateOfBirth").gte(birthDate.getLowerBound().getValue()).lte(birthDate.getUpperBound().getValue());
+            } else {
+                criteria.and("dateOfBirth").gte(birthDate.getLowerBound().getValue()).lte(birthDate.getUpperBound().getValue());
+            }
+        }
+
+        if (phone!=null) {
+            if (criteria ==null) {
+                criteria = Criteria.where("telecoms.value").is(phone.getValue()).and("telecoms.system").is(ContactPoint.ContactPointSystem.PHONE);
+            } else {
+                criteria.and("telecoms.value").is(phone.getValue()).and("telecoms.system").is(ContactPoint.ContactPointSystem.PHONE);
+            }
+        }
+
+        if (email!=null) {
+            if (criteria ==null) {
+                criteria = Criteria.where("telecoms.value").is(email.getValue()).and("telecoms.system").is(ContactPoint.ContactPointSystem.EMAIL);
+            } else {
+                criteria.and("telecoms.value").is(email.getValue()).and("telecoms.system").is(ContactPoint.ContactPointSystem.EMAIL);
+            }
+        }
+
+        if (gender!=null) {
+            if (criteria ==null) {
+                criteria = Criteria.where("gender").is(gender.getValue().toUpperCase());
+            } else {
+                criteria.and("gender").is(gender.getValue().toUpperCase());
+            }
+        }
 
         if (criteria != null) {
             Query qry = Query.query(criteria);
 
-            System.out.println(qry.toString());
+            log.debug("About to call Mongo DB for a patient=[{}]", qry.toString());
 
             List<PatientEntity> patientResults = mongo.find(qry, PatientEntity.class);
+
+            log.debug("Found [{}] result(s)", patientResults.size());
 
             for (PatientEntity patientEntity : patientResults) {
                 resources.add(patientEntityToFHIRPatient.transform(patientEntity));

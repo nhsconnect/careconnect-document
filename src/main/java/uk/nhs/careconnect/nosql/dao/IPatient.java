@@ -26,13 +26,14 @@ public interface IPatient {
     Patient read(FhirContext ctx, IdType theId);
 
     List<Resource> search (FhirContext ctx,
-
+                           @OptionalParam(name= Patient.SP_ADDRESS_POSTALCODE) StringParam postCode,
                            @OptionalParam(name= Patient.SP_BIRTHDATE) DateRangeParam birthDate,
-
+                           @OptionalParam(name= Patient.SP_EMAIL) TokenParam email,
                            @OptionalParam(name = Patient.SP_FAMILY) StringParam familyName,
-                           @OptionalParam(name= Patient.SP_GENDER) StringParam gender ,
+                           @OptionalParam(name= Patient.SP_GENDER) TokenParam gender ,
                            @OptionalParam(name= Patient.SP_GIVEN) StringParam givenName ,
                            @OptionalParam(name = Patient.SP_IDENTIFIER) TokenParam identifier,
-                           @OptionalParam(name= Patient.SP_NAME) StringParam name
+                           @OptionalParam(name= Patient.SP_NAME) StringParam name,
+                           @OptionalParam(name= Patient.SP_PHONE) TokenParam phone
     );
 }
