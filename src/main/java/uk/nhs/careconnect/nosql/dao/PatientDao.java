@@ -5,6 +5,8 @@ import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import org.hl7.fhir.dstu3.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.nhs.careconnect.nosql.dao.transform.PatientEntityToFHIRPatient;
 
 import uk.nhs.careconnect.nosql.entities.Name;
@@ -25,6 +27,8 @@ import java.util.List;
 @Transactional
 @Repository
 public class PatientDao implements IPatient {
+
+    Logger log = LoggerFactory.getLogger(PatientDao.class);
 
     @Autowired
     private MongoOperations mongo;
@@ -206,9 +210,11 @@ public class PatientDao implements IPatient {
         if (criteria != null) {
             Query qry = Query.query(criteria);
 
-            System.out.println(qry.toString());
+            log.debug("About to call Mongo DB for a patient=[{}]", qry.toString());
 
             List<PatientEntity> patientResults = mongo.find(qry, PatientEntity.class);
+
+            log.debug("Found [{}] result(s)", patientResults.size());
 
             for (PatientEntity patientEntity : patientResults) {
                 resources.add(patientEntityToFHIRPatient.transform(patientEntity));

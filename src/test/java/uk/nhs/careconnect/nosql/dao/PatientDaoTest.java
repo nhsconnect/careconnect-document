@@ -2,37 +2,36 @@ package uk.nhs.careconnect.nosql.dao;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.param.DateRangeParam;
-import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenParam;
-import com.mongodb.MongoClient;
+import de.flapdoodle.embed.mongo.Command;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodProcess;
 import de.flapdoodle.embed.mongo.MongodStarter;
 import de.flapdoodle.embed.mongo.config.IMongodConfig;
 import de.flapdoodle.embed.mongo.config.MongodConfigBuilder;
 import de.flapdoodle.embed.mongo.config.Net;
+import de.flapdoodle.embed.mongo.config.RuntimeConfigBuilder;
 import de.flapdoodle.embed.mongo.distribution.Version;
+import de.flapdoodle.embed.process.config.IRuntimeConfig;
 import de.flapdoodle.embed.process.runtime.Network;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.OperationOutcome;
 import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.Resource;
 import org.hl7.fhir.dstu3.model.codesystems.AdministrativeGender;
-import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import uk.nhs.careconnect.nosql.dao.PatientDao;
-import uk.nhs.careconnect.nosql.dao.transform.PatientEntityToFHIRPatient;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -41,15 +40,21 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.fail;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {TestConfig.class})
+@SpringBootTest
 public class PatientDaoTest {
+
+    private static Logger log = LoggerFactory.getLogger(PatientDaoTest.class);
+
+    @Autowired
+    MongoTemplate mongoTemplate;
 
     @Autowired
     FhirContext ctx;
@@ -58,40 +63,44 @@ public class PatientDaoTest {
     IBundle bundleDao;
 
     @Autowired
-    IComposition compositionDao;
-
-    @Autowired
     private PatientDao patientDao;
 
+    private static final String TEST_MONGO_HOST = "localhost";
+    private static final int TEST_MONGO_PORT = 12345;
 
-    private static final String DATABASE_NAME = "test-mongo-db";
-    private MongodExecutable mongodExe;
-    private MongodProcess mongod;
-    private MongoClient mongo;
-    private MongoTemplate mongoTemplate;
+    private static final String[] COLLECTION_NAMES = {"Bundle", "idxComposition", "idxPatient"};
 
-    @Before
-    public void beforeEach() throws Exception {
-        MongodStarter starter = MongodStarter.getDefaultInstance();
-        String bindIp = "localhost";
-        int port = 12345;
+    private static MongodExecutable mongodExe;
+    private static MongodProcess mongod;
+
+    @BeforeClass
+    public static void beforeEach() throws Exception {
+        IRuntimeConfig runtimeConfig = new RuntimeConfigBuilder()
+                .defaultsWithLogger(Command.MongoD, log)
+                .build();
+        MongodStarter starter = MongodStarter.getInstance(runtimeConfig);
+
         IMongodConfig mongodConfig = new MongodConfigBuilder()
                 .version(Version.Main.PRODUCTION)
-                .net(new Net(bindIp, port, Network.localhostIsIPv6()))
+                .net(new Net(TEST_MONGO_HOST, TEST_MONGO_PORT, Network.localhostIsIPv6()))
                 .build();
-        this.mongodExe = starter.prepare(mongodConfig);
-        this.mongod = mongodExe.start();
-        this.mongo = new MongoClient(bindIp, port);
-        this.mongoTemplate = new MongoTemplate(new MongoClient(bindIp, port), DATABASE_NAME);
+        PatientDaoTest.mongodExe = starter.prepare(mongodConfig);
+        PatientDaoTest.mongod = mongodExe.start();
     }
 
-    @After
-    public void afterEach() throws Exception {
-        if (this.mongod != null) {
-            this.mongod.stop();
-            this.mongodExe.stop();
+    @AfterClass
+    public static void afterEach() {
+        if (PatientDaoTest.mongod != null) {
+            PatientDaoTest.mongod.stop();
+            PatientDaoTest.mongodExe.stop();
         }
     }
+
+    @Before
+    public void eachTest() {
+        Stream.of(COLLECTION_NAMES).forEach(collectionName -> mongoTemplate.dropCollection(collectionName));
+    }
+
     @Test
     public void givenASearchRequestIsMade_withAValidPostCode_shouldReturnAResponse() {
         createBundle("raw-bundle-2-postcodes.xml");
@@ -110,8 +119,8 @@ public class PatientDaoTest {
     @Test
     public void givenASearchRequestIsMade_withAValidDateRange_shouldReturnAResponse() {
         createBundle("raw-bundle-2-postcodes.xml");
-        Date startDate = Date.from(LocalDate.of(1963, 01,01).atStartOfDay(ZoneId.systemDefault()).toInstant());
-        Date endDate = Date.from(LocalDate.of(1965, 01,01).atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date startDate = Date.from(LocalDate.of(1963, 01, 01).atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date endDate = Date.from(LocalDate.of(1965, 01, 01).atStartOfDay(ZoneId.systemDefault()).toInstant());
         List<Resource> resources = patientDao.search(ctx, null, new DateRangeParam(startDate, endDate), null, null, null, null, null, null, null);
         assertThat(resources.size(), is(1));
         assertThat(((Patient) resources.get(0)).getAddress().get(0).getPostalCode(), is("LS1 1GF"));
@@ -120,8 +129,8 @@ public class PatientDaoTest {
     @Test
     public void givenASearchRequestIsMade_withAInValidDateRange_shouldNotReturnAResponse() {
         createBundle("raw-bundle-2-postcodes.xml");
-        Date startDate = Date.from(LocalDate.of(2018, 03,01).atStartOfDay(ZoneId.systemDefault()).toInstant());
-        Date endDate = Date.from(LocalDate.of(2018, 03,01).atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date startDate = Date.from(LocalDate.of(2018, 03, 01).atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date endDate = Date.from(LocalDate.of(2018, 03, 01).atStartOfDay(ZoneId.systemDefault()).toInstant());
         List<Resource> resources = patientDao.search(ctx, null, new DateRangeParam(startDate, endDate), null, null, null, null, null, null, null);
         assertThat(resources.size(), is(0));
     }
@@ -244,7 +253,7 @@ public class PatientDaoTest {
     @Test
     public void givenASearchRequestIsMade_withAInValidId_shouldNotReturnAResponse() {
         createBundle("raw-bundle-2-postcodes.xml");
-        List<Resource> resources = patientDao.search(ctx, null, null, null, null, null, null, new TokenParam("https://fhir.nhs.uk/Id/nhs-number","24323"), null, null);
+        List<Resource> resources = patientDao.search(ctx, null, null, null, null, null, null, new TokenParam("https://fhir.nhs.uk/Id/nhs-number", "24323"), null, null);
         assertThat(resources.size(), is(0));
     }
 
@@ -266,7 +275,5 @@ public class PatientDaoTest {
 
         return null;
     }
-
-
 
 }
