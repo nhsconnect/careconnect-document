@@ -4,6 +4,8 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.annotation.*;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.server.IResourceProvider;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.OperationOutcome;
@@ -15,6 +17,9 @@ import uk.nhs.careconnect.nosql.dao.IBundle;
 
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 
 
 @Component
