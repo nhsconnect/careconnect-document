@@ -1,7 +1,6 @@
 package uk.nhs.careconnect.nosql.providers;
 
 import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
@@ -42,15 +41,13 @@ public class CompositionProviderTest {
         List<Resource> expectedCompositionResourceList = aCompositionList();
 
         TokenParam resid = new TokenParam(VALID_ID);
+        TokenParam identifier = null;
         ReferenceParam patient = null;
 
-        //TODO: add this parameter to method
-        DateRangeParam dateRangeParam = null;
-
-        when(compositionDao.search(fhirContext, resid, patient, dateRangeParam)).thenReturn(expectedCompositionResourceList);
+        when(compositionDao.search(fhirContext, resid, identifier, patient, null, null)).thenReturn(expectedCompositionResourceList);
 
         //when
-        List<Resource> response = compositionProvider.searchComposition(resid, patient);
+        List<Resource> response = compositionProvider.searchComposition(resid, identifier, patient, null, null);
 
         //then
         assertResourceListIsEqual(response, expectedCompositionResourceList);
@@ -62,10 +59,12 @@ public class CompositionProviderTest {
         expectedException.expectMessage("_id must be 24 characters");
 
         TokenParam resid = new TokenParam(INVALID_ID);
+        TokenParam identifier = null;
+
         ReferenceParam patient = null;
 
         //when
-        compositionProvider.searchComposition(resid, patient);
+        compositionProvider.searchComposition(resid, identifier, patient, null, null);
     }
 
 }

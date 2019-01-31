@@ -5,14 +5,12 @@ import ca.uhn.fhir.model.valueset.BundleTypeEnum;
 import ca.uhn.fhir.rest.annotation.*;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
+import ca.uhn.fhir.rest.param.TokenOrListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import org.bson.types.ObjectId;
-import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.Composition;
-import org.hl7.fhir.dstu3.model.IdType;
-import org.hl7.fhir.dstu3.model.Resource;
+import org.hl7.fhir.dstu3.model.*;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -56,13 +54,15 @@ public class CompositionProvider implements IResourceProvider {
     @Search
     public List<Resource> searchComposition(
             @OptionalParam(name = Composition.SP_RES_ID) TokenParam resid,
-            @OptionalParam(name = Composition.SP_PATIENT) ReferenceParam patient) {
+            @OptionalParam(name = Composition.SP_IDENTIFIER) TokenParam identifier,
+            @OptionalParam(name = Composition.SP_PATIENT) ReferenceParam patient,
+            @OptionalParam(name= Composition.SP_DATE) DateRangeParam date,
+            @OptionalParam(name= Composition.SP_TYPE) TokenOrListParam type
+    ) {
 
         validateRequestId(resid);
 
-        //TODO: add this parameter to method
-        DateRangeParam dateRangeParam = null;
-        List<Resource> results = compositionDao.search(ctx, resid, patient, dateRangeParam);
+        List<Resource> results = compositionDao.search(ctx, resid, identifier, patient, date, type);
 
         return results;
     }

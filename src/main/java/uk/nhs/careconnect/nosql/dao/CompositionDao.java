@@ -3,6 +3,7 @@ package uk.nhs.careconnect.nosql.dao;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
+import ca.uhn.fhir.rest.param.TokenOrListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -15,12 +16,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.CriteriaDefinition;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 import uk.nhs.careconnect.nosql.entities.CompositionEntity;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static uk.nhs.careconnect.nosql.dao.CriteriaBuilder.aCriteriaBuilder;
@@ -29,6 +32,7 @@ import static uk.nhs.careconnect.nosql.dao.CriteriaBuilder.aCriteriaBuilder;
 @Repository
 public class CompositionDao implements IComposition {
 
+    private static final Logger log = LoggerFactory.getLogger(CompositionDao.class);
 
     @Autowired
     protected MongoTemplate mongo;
@@ -39,33 +43,43 @@ public class CompositionDao implements IComposition {
     @Autowired
     IPatient patientDao;
 
-    private static final Logger log = LoggerFactory.getLogger(CompositionDao.class);
-
     @Override
-    public List<Resource> search(FhirContext ctx, TokenParam resid, ReferenceParam patient, DateRangeParam dateRange) {
+    public List<Resource> search(FhirContext ctx, TokenParam resid, TokenParam identifier, ReferenceParam patient, DateRangeParam date, TokenOrListParam type) {
+
+        List<Resource> compositionResources = new ArrayList<>();
+
+        if (date != null) {
+            CriteriaDefinition criteria = Criteria.where("entry[1].encounter.period").is(date.getUpperBound());
+            Query qry = Query.query(criteria);
+
+            Object results = mongo.find(qry, DBObject.class, "Bundle");
+            return Collections.emptyList();
+
+        } else {
+            return searchForComposition(ctx, resid, identifier, patient, type);
+        }
+
+    }
+
+    private List<Resource> searchForComposition(FhirContext ctx, TokenParam resid, TokenParam identifier, ReferenceParam patient, TokenOrListParam type) {
 
         List<Resource> resources = new ArrayList<>();
 
-        List<Resource> foundPatient = new ArrayList<>();
-
-        if (dateRange != null) {
-            foundPatient = patientDao.search(ctx, dateRange, null, null, null, null, null);
-            //for each foundPatient, find a composition
-
-        }
-
         Criteria criteria = aCriteriaBuilder()
                 .withId(resid)
+                .withIdentifier(identifier)
                 .withPatient(patient)
+                .withType(type)
                 .build();
-                
 
         if (criteria != null) {
             Query qry = Query.query(criteria);
-            log.info("qry = " + qry.toString());
-            List<CompositionEntity> results = mongo.find(qry, CompositionEntity.class);
-            log.info("Found = " + results.size());
 
+            log.debug("About to call Mongo DB for a composition=[{}]", qry.toString());
+
+            List<CompositionEntity> results = mongo.find(qry, CompositionEntity.class);
+
+            log.debug("Found [{}] result(s)", results.size());
 
             for (CompositionEntity compositionEntity : results) {
                 // Retrieve the Bundle - this is a work around will move to CompositionEntity.
@@ -171,8 +185,10 @@ public class CompositionDao implements IComposition {
     private Bundle getFhirDocument(FhirContext ctx, ObjectId objectId) {
         Bundle bundle = null;
         Query qry = Query.query(Criteria.where("_id").is(objectId));
-        log.info("qry = " + qry.toString());
+        log.debug("About to call Mongo DB for a bundle=[{}]", qry.toString());
         DBObject resourceObj = mongo.findOne(qry, DBObject.class, "Bundle");
+        log.debug("Found [{}] result(s)", resourceObj != null ? 1 : 0);
+
         if (resourceObj != null) {
 
             JsonParser jsonParser = new JsonParser();
@@ -194,20 +210,23 @@ public class CompositionDao implements IComposition {
 
         Query qry = Query.query(Criteria.where("_id").is(new ObjectId(theId.getIdPart())));
 
-        log.info(qry.toString());
+        log.debug("About to call Mongo DB for a composition=[{}]", qry.toString());
+
         CompositionEntity document = mongo.findOne(qry, CompositionEntity.class);
+
+        log.debug("Found [{}] result(s)", document != null ? 1 : 0);
 
         if (document != null) {
             if (document.getFhirDocument() != null) {
                 bundle = getFhirDocument(ctx, (ObjectId) document.getFhirDocument().getId());
                 for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
                     if (entry.getResource().getId() == null || entry.getResource().getId().isEmpty()) {
-                        log.info("In resource Id");
+                        log.trace("In resource Id");
                         if (entry.getFullUrl() != null && !entry.getFullUrl().isEmpty()) {
                             entry.getResource().setId(entry.getFullUrl().replace("urn:uuid:", ""));
                         }
                     } else {
-                        log.info("Entry id = " + entry.getResource().getId());
+                        log.trace("Entry id ={} ", entry.getResource().getId());
                         if (entry.getResource().getId().contains("urn:uuid:"))
                             entry.getResource().setId(entry.getResource().getId().replace("urn:uuid:", ""));
                     }
