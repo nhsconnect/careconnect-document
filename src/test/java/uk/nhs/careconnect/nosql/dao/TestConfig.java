@@ -8,6 +8,9 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
+import javax.annotation.PreDestroy;
+import java.io.IOException;
+
 @Configuration
 @ComponentScan(basePackages = "uk.nhs.careconnect.nosql.dao")
 public class TestConfig {
@@ -40,10 +43,22 @@ public class TestConfig {
     }
 
     @Bean
-    public MongoTemplate getMongoClient(){
+    public MongoTemplate getMongoClient() throws IOException {
         String bindIp = "localhost";
         int port = 12345;
         return new MongoTemplate(new MongoClient(bindIp, port), DATABASE_NAME);
+    }
+
+    @Bean
+    public MongoManager getMongoManager() throws IOException {
+        MongoManager mongoManager = MongoManager.getInstance();
+        mongoManager.startMongo();
+        return mongoManager;
+    }
+
+    @PreDestroy
+    public void stopMongo() throws IOException {
+        getMongoManager().stopMongo();
     }
 
 }
