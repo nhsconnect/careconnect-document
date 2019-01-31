@@ -1,6 +1,7 @@
 package uk.nhs.careconnect.nosql.providers;
 
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
@@ -43,7 +44,10 @@ public class CompositionProviderTest {
         TokenParam resid = new TokenParam(VALID_ID);
         ReferenceParam patient = null;
 
-        when(compositionDao.search(fhirContext, resid, patient)).thenReturn(expectedCompositionResourceList);
+        //TODO: add this parameter to method
+        DateRangeParam dateRangeParam = null;
+
+        when(compositionDao.search(fhirContext, resid, patient, dateRangeParam)).thenReturn(expectedCompositionResourceList);
 
         //when
         List<Resource> response = compositionProvider.searchComposition(resid, patient);

@@ -3,6 +3,7 @@ package uk.nhs.careconnect.nosql.providers;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.model.valueset.BundleTypeEnum;
 import ca.uhn.fhir.rest.annotation.*;
+import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
@@ -59,7 +60,9 @@ public class CompositionProvider implements IResourceProvider {
 
         validateRequestId(resid);
 
-        List<Resource> results = compositionDao.search(ctx, resid, patient);
+        //TODO: add this parameter to method
+        DateRangeParam dateRangeParam = null;
+        List<Resource> results = compositionDao.search(ctx, resid, patient, dateRangeParam);
 
         return results;
     }

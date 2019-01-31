@@ -1,6 +1,7 @@
 package uk.nhs.careconnect.nosql.dao;
 
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import de.flapdoodle.embed.mongo.MongodExecutable;
@@ -30,11 +31,15 @@ import uk.nhs.careconnect.nosql.entities.CompositionEntity;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.fail;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {TestConfig.class})
@@ -82,9 +87,7 @@ public class CompositionDaoTest {
 
     @Before
     public void eachTest() {
-        Stream.of(COLLECTION_NAMES).forEach(
-                collectionName -> mongoTemplate.dropCollection(collectionName)
-        );
+        Stream.of(COLLECTION_NAMES).forEach(collectionName -> mongoTemplate.dropCollection(collectionName));
         loadAndCreateBundle();
         loadCompositionEntity();
     }
@@ -94,22 +97,24 @@ public class CompositionDaoTest {
         //setup
         TokenParam resid = new TokenParam();
         resid.setValue(compositionId);
-        ReferenceParam patient = null;
 
-        List<Resource> resources = compositionDao.search(ctx, resid, patient);
+        //when
+        List<Resource> resources = compositionDao.search(ctx, resid, null, null);
 
+        //then
         assertThat(resources.get(0).getId(), is(compositionId));
     }
 
     @Test
     public void givenABundleStoredInMongo_whenSearchIsCalledWithPatient_aListOfRelevantResourcesShouldBeReturned() {
         //setup
-        TokenParam resid = null;
         ReferenceParam patient = new ReferenceParam();
         patient.setValue(compositionEntity.getIdxPatient().getId().toString());
 
-        List<Resource> resources = compositionDao.search(ctx, resid, patient);
+        //when
+        List<Resource> resources = compositionDao.search(ctx, null, patient, null);
 
+        //then
         assertThat(resources.get(0).getId(), is(compositionId));
     }
 
@@ -121,9 +126,46 @@ public class CompositionDaoTest {
         ReferenceParam patient = new ReferenceParam();
         patient.setValue(compositionEntity.getIdxPatient().getId().toString());
 
-        List<Resource> resources = compositionDao.search(ctx, resid, patient);
+        //when
+        List<Resource> resources = compositionDao.search(ctx, resid, patient, null);
 
+        //then
         assertThat(resources.get(0).getId(), is(compositionId));
+    }
+
+    @Test
+    public void givenABundleStoredInMongo_whenSearchIsCalledWithDate_aListOfRelevantResourcesShouldBeReturned() {
+        //1957-01-01
+        Date startDate = Date.from(LocalDate.of(1957, 01,01).atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date endDate = Date.from(LocalDate.of(1957, 01,02).atStartOfDay(ZoneId.systemDefault()).toInstant());
+        DateRangeParam dateRangeParam = new DateRangeParam(startDate, endDate);
+
+        //when
+        List<Resource> resources = compositionDao.search(ctx, null, null, dateRangeParam);
+
+        //then
+        assertThat(resources.get(0).getId(), is(compositionId));
+        //fail("Not implemented");
+    }
+
+    @Test
+    public void givenABundleStoredInMongo_whenSearchIsCalledWithPeriod_aListOfRelevantResourcesShouldBeReturned() {
+        fail("Not implemented");
+    }
+
+    @Test
+    public void givenABundleStoredInMongo_whenSearchIsCalledWithType_aListOfRelevantResourcesShouldBeReturned() {
+        fail("Not implemented");
+    }
+
+    @Test
+    public void givenABundleStoredInMongo_whenSearchIsCalledWith_Id_aListOfRelevantResourcesShouldBeReturned() {
+        fail("Not implemented");
+    }
+
+    @Test
+    public void givenABundleStoredInMongo_whenSearchIsCalledWithIdentifier_aListOfRelevantResourcesShouldBeReturned() {
+        fail("Not implemented");
     }
 
     private Bundle loadBundle() {

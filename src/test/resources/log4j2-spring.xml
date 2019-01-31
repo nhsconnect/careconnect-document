@@ -11,8 +11,8 @@
         <Root level="info">
             <AppenderRef ref="Console"/>
         </Root>
-        <logger name="uk.nhs.careconnect.nosql.dao" level="debug">
-            <AppenderRef ref="CONSOLE"/>
+        <logger name="uk.nhs.careconnect.nosql.dao" level="debug" additivity="false">
+            <AppenderRef ref="Console"/>
         </logger>
     </Loggers>
 
