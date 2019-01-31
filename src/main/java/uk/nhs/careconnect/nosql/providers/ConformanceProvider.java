@@ -97,6 +97,16 @@ public class ConformanceProvider extends ServerCapabilityStatementProvider {
             log.trace("restful Server not null");
             for (CapabilityStatement.CapabilityStatementRestComponent nextRest : capabilityStatement.getRest()) {
                 for (CapabilityStatement.CapabilityStatementRestResourceComponent restResourceComponent : nextRest.getResource()) {
+
+                    if (restResourceComponent.getType().equals("OperationDefinition")) {
+                        nextRest.getResource().remove(restResourceComponent);
+                        break;
+                    }
+                    if (restResourceComponent.getType().equals("StructureDefinition")) {
+                        nextRest.getResource().remove(restResourceComponent);
+                        break;
+                    }
+
                     log.trace("restResourceComponent.getType - " + restResourceComponent.getType());
                  
                  // Start of CRUD operations
