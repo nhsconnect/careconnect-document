@@ -1,11 +1,9 @@
 package uk.nhs.careconnect.nosql.dao;
 
-import ca.uhn.fhir.rest.param.DateRangeParam;
-import ca.uhn.fhir.rest.param.ReferenceParam;
-import ca.uhn.fhir.rest.param.TokenOrListParam;
-import ca.uhn.fhir.rest.param.TokenParam;
+import ca.uhn.fhir.rest.param.*;
 import com.mongodb.DBRef;
 import org.bson.types.ObjectId;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.data.mongodb.core.query.Criteria;
 
@@ -13,6 +11,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
 
+import static ca.uhn.fhir.rest.param.ParamPrefixEnum.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
@@ -20,6 +19,15 @@ import static org.junit.Assert.assertThat;
 import static uk.nhs.careconnect.nosql.dao.CriteriaBuilder.aCriteriaBuilder;
 
 public class CriteriaBuilderTest {
+
+    CriteriaBuilder criteriaBuilder;
+    Date aDate;
+
+    @Before
+    public void eachTest() {
+        criteriaBuilder = aCriteriaBuilder();
+        aDate = Date.from(OffsetDateTime.now(ZoneOffset.UTC).toInstant());
+    }
 
     @Test
     public void whenACriteriaBuilderIsCall_thenACriteriaBuilderIsReturned() {
@@ -185,28 +193,68 @@ public class CriteriaBuilderTest {
     }
 
     @Test
-    public void withDateRange() {
+    public void givenACriteriaBuilder_whenWithDateRangeIsCalledWithTwoBetweenDate_thenCriteriaNotBuilt() {
         //setup
-        CriteriaBuilder criteriaBuilder = aCriteriaBuilder();
-
         OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
         Date yesterday = Date.from(now.minusDays(1).toInstant());
         Date tomorrow = Date.from(now.plusDays(1).toInstant());
 
-        DateRangeParam date = new DateRangeParam(yesterday, tomorrow);
+        testWithDate(new DateRangeParam(yesterday, tomorrow), Criteria.where("date").gte(yesterday).lte(tomorrow));
+    }
 
-        Criteria expectedCriteria = Criteria.where("date").gte(yesterday).lte(tomorrow);
+    @Test
+    public void givenACriteriaBuilder_whenWithDateRangeIsCalledWithEqualsOneDate_thenCriteriaNotBuilt() {
+        testWithDate(new DateRangeParam(new DateParam(EQUAL, aDate)), Criteria.where("date").is(aDate));
+    }
 
+    //TODO: It's not possible to have NOT_EQUAL in a DateRangeParam, only in a DateParam
+//    @Test
+//    public void givenACriteriaBuilder_whenWithDateRangeIsCalledWithNotEqualsOneDate_thenCriteriaNotBuilt() {
+//        testWithDate(new DateRangeParam(new DateParam(NOT_EQUAL, aDate)), Criteria.where("date").ne(aDate));
+//    }
+
+    @Test
+    public void givenACriteriaBuilder_whenWithDateRangeIsCalledWithGreaterThanOrEqualsOneDate_thenCriteriaNotBuilt() {
+        testWithDate(new DateRangeParam(new DateParam(GREATERTHAN_OR_EQUALS, aDate)), Criteria.where("date").gte(aDate));
+    }
+
+    @Test
+    public void givenACriteriaBuilder_whenWithDateRangeIsCalledWithGreaterThanOneDate_thenCriteriaNotBuilt() {
+        testWithDate(new DateRangeParam(new DateParam(GREATERTHAN, aDate)), Criteria.where("date").gt(aDate));
+    }
+
+    @Test
+    public void givenACriteriaBuilder_whenWithDateRangeIsCalledWithStartsAfterOneDate_thenCriteriaNotBuilt() {
+        testWithDate(new DateRangeParam(new DateParam(STARTS_AFTER, aDate)), Criteria.where("date").gt(aDate));
+    }
+
+    @Test
+    public void givenACriteriaBuilder_whenWithDateRangeIsCalledWithLessThanOrEqualsOneDate_thenCriteriaNotBuilt() {
+        testWithDate(new DateRangeParam(new DateParam(LESSTHAN_OR_EQUALS, aDate)), Criteria.where("date").lte(aDate));
+    }
+
+    @Test
+    public void givenACriteriaBuilder_whenWithDateRangeIsCalledWithLessThanOneDate_thenCriteriaNotBuilt() {
+        testWithDate(new DateRangeParam(new DateParam(LESSTHAN, aDate)), Criteria.where("date").lt(aDate));
+    }
+
+    @Test
+    public void givenACriteriaBuilder_whenWithDateRangeIsCalledWithEndsBeforeOneDate_thenCriteriaNotBuilt() {
+        testWithDate(new DateRangeParam(new DateParam(ENDS_BEFORE, aDate)), Criteria.where("date").lt(aDate));
+    }
+
+    private void testWithDate(DateRangeParam dateRangeParam, Criteria expectedCriteria) {
         //when
-        criteriaBuilder.withDateRange(date);
+        criteriaBuilder.withDateRange(dateRangeParam);
         Criteria criteria = criteriaBuilder.build();
 
         //then
         assertThat(criteria, is(notNullValue()));
-        assertThat(criteria, is(expectedCriteria));
+        assertThat(criteria.getCriteriaObject(), is(expectedCriteria.getCriteriaObject()));
     }
 
     @Test
     public void build() {
     }
+
 }
