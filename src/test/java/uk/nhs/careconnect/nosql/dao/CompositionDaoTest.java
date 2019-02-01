@@ -1,5 +1,6 @@
 package uk.nhs.careconnect.nosql.dao;
 
+import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.TokenOrListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
@@ -13,6 +14,8 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import uk.nhs.careconnect.nosql.entities.CompositionEntity;
 
+import java.time.*;
+import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -88,21 +91,21 @@ public class CompositionDaoTest extends AbstractDaoTest {
         assertThat(resources.get(0).getId(), is(compositionId));
     }
 
-    //TODO: this is wrong, should not be patient date of birth
+    @Test
+    public void givenABundleStoredInMongo_whenSearchIsCalledWithDate_aListOfRelevantResourcesShouldBeReturned() {
 
-//    @Test
-//    public void givenABundleStoredInMongo_whenSearchIsCalledWithDate_aListOfRelevantResourcesShouldBeReturned() {
-//        //1957-01-01
-//        Date startDate = Date.from(LocalDate.of(1957, 01, 01).atStartOfDay(ZoneId.systemDefault()).toInstant());
-//        Date endDate = Date.from(LocalDate.of(1957, 01, 02).atStartOfDay(ZoneId.systemDefault()).toInstant());
-//        DateRangeParam birthDate = new DateRangeParam(startDate, endDate);
-//
-//        //when
-//        List<Resource> resources = compositionDao.search(ctx, null, null, null, birthDate, null);
-//
-//        //then
-//        assertThat(resources.get(0).getId(), is(compositionId));
-//    }
+        OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
+        Date yesterday = Date.from(now.minusDays(1).toInstant());
+        Date tomorrow = Date.from(now.plusDays(1).toInstant());
+
+        DateRangeParam date = new DateRangeParam(yesterday, tomorrow);
+
+        //when
+        List<Resource> resources = compositionDao.search(ctx, null, null, null, date, null);
+
+        //then
+        assertThat(resources.get(0).getId(), is(compositionId));
+    }
 
 
     //TODO: Check about display field of type

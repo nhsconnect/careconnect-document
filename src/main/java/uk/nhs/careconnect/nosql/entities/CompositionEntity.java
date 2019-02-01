@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.LinkedHashSet;
 
 @Document(collection = "idxComposition")
@@ -24,6 +25,8 @@ public class CompositionEntity {
     private com.mongodb.DBRef fhirDocument;
 
     private String fhirDocumentlId;
+
+    private Date date;
 
     public ObjectId getId() {
         return id;
@@ -71,6 +74,14 @@ public class CompositionEntity {
 
     public void setType(Collection<Coding> type) {
         this.type = type;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
 }

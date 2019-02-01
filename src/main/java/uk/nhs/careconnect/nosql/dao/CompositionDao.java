@@ -16,14 +16,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.CriteriaDefinition;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 import uk.nhs.careconnect.nosql.entities.CompositionEntity;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static uk.nhs.careconnect.nosql.dao.CriteriaBuilder.aCriteriaBuilder;
@@ -46,29 +44,13 @@ public class CompositionDao implements IComposition {
     @Override
     public List<Resource> search(FhirContext ctx, TokenParam resid, TokenParam identifier, ReferenceParam patient, DateRangeParam date, TokenOrListParam type) {
 
-        List<Resource> compositionResources = new ArrayList<>();
-
-        if (date != null) {
-            CriteriaDefinition criteria = Criteria.where("entry[1].encounter.period").is(date.getUpperBound());
-            Query qry = Query.query(criteria);
-
-            Object results = mongo.find(qry, DBObject.class, "Bundle");
-            return Collections.emptyList();
-
-        } else {
-            return searchForComposition(ctx, resid, identifier, patient, type);
-        }
-
-    }
-
-    private List<Resource> searchForComposition(FhirContext ctx, TokenParam resid, TokenParam identifier, ReferenceParam patient, TokenOrListParam type) {
-
         List<Resource> resources = new ArrayList<>();
 
         Criteria criteria = aCriteriaBuilder()
                 .withId(resid)
                 .withIdentifier(identifier)
                 .withPatient(patient)
+                .withDateRange(date)
                 .withType(type)
                 .build();
 

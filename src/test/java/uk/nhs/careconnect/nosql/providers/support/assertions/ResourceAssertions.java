@@ -1,7 +1,9 @@
 package uk.nhs.careconnect.nosql.providers.support.assertions;
 
 import org.hl7.fhir.dstu3.model.Resource;
+import uk.nhs.careconnect.nosql.entities.Identifier;
 
+import java.util.Collection;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -20,6 +22,20 @@ public class ResourceAssertions {
 
     public static void assertResourceIsEqual(Resource actual, Resource expected) {
         assertThat(actual.getId(), is(expected.getId()));
+    }
+
+    public static void assertPatientIdentifiersAreEqual(Collection<Identifier> actual, Collection<org.hl7.fhir.dstu3.model.Identifier> expected) {
+        assertThat(actual.size(), is(expected.size()));
+        actual.forEach(a -> assertIdentifiersAreEqual(a, find(a, expected)));
+
+    }
+
+    public static void assertIdentifiersAreEqual(Identifier actual, org.hl7.fhir.dstu3.model.Identifier expected) {
+        assertThat(actual.getValue(), is(expected.getValue()));
+    }
+
+    private static org.hl7.fhir.dstu3.model.Identifier find(Identifier actual, Collection<org.hl7.fhir.dstu3.model.Identifier> expectedList) {
+        return expectedList.stream().filter(expected -> actual.getValue().equals(expected.getValue())).findFirst().get();
     }
 
 }

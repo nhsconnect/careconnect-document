@@ -5,10 +5,13 @@ import uk.nhs.careconnect.nosql.entities.CompositionEntity;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
 import static uk.nhs.careconnect.nosql.support.testdata.BundleTestData.*;
 
 public class CompositionTestData {
+
+    public static final Date DATE = new Date();
 
     public static CompositionEntity aCompositionEntity() {
         CompositionEntity compositionEntity = new CompositionEntity();
@@ -20,6 +23,8 @@ public class CompositionTestData {
         coding.setCode(CODING_CODE);
         coding.setSystem(CODING_SYSTEM);
         coding.setDisplay(CODING_DISPLAY);
+
+        compositionEntity.setDate(DATE);
 
         return compositionEntity;
     }

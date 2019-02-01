@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
@@ -18,6 +19,7 @@ public class CompositionEntityTest {
     private static final DBRef FHIR_DOCUMENT = new DBRef("Bundle", ID);
     private static final PatientEntity PATIENT_ENTITY = aPatientEntity();
     private static final Collection<Coding> TYPE = aType();
+    private static final Date DATE = new Date();
 
     CompositionEntity compositionEntity;
 
@@ -60,6 +62,12 @@ public class CompositionEntityTest {
     public void typeTest() {
         compositionEntity.setType(TYPE);
         assertThat(compositionEntity.getType(), is(TYPE));
+    }
+
+    @Test
+    public void dateTest() {
+        compositionEntity.setDate(DATE);
+        assertThat(compositionEntity.getDate(), is(DATE));
     }
 
     private static Identifier anIdentifier() {

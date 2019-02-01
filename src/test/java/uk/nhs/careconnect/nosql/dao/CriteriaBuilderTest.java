@@ -164,7 +164,6 @@ public class CriteriaBuilderTest {
         assertThat(criteria, is(notNullValue()));
         assertThat(criteria.getCriteriaObject().get("type.code"), is("code-1"));
         assertThat(criteria.getCriteriaObject().get("type.system"), is("system-1"));
-
     }
 
     @Test
