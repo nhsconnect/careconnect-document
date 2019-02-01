@@ -20,8 +20,8 @@ import static uk.nhs.careconnect.nosql.dao.CriteriaBuilder.aCriteriaBuilder;
 
 public class CriteriaBuilderTest {
 
-    CriteriaBuilder criteriaBuilder;
-    Date aDate;
+    private CriteriaBuilder criteriaBuilder;
+    private Date aDate;
 
     @Before
     public void eachTest() {
@@ -251,10 +251,6 @@ public class CriteriaBuilderTest {
         //then
         assertThat(criteria, is(notNullValue()));
         assertThat(criteria.getCriteriaObject(), is(expectedCriteria.getCriteriaObject()));
-    }
-
-    @Test
-    public void build() {
     }
 
 }
