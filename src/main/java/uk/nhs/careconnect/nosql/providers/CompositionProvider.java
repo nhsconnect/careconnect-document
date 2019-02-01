@@ -68,7 +68,7 @@ public class CompositionProvider implements IResourceProvider {
     }
 
     private void validateRequestId(TokenParam resid) {
-        if (!ObjectId.isValid(resid.getValue()))
+        if (resid != null && !ObjectId.isValid(resid.getValue()))
             throw new InvalidRequestException("_id must be 24 characters");
     }
 
