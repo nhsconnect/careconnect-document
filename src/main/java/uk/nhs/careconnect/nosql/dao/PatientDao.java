@@ -28,7 +28,7 @@ import java.util.List;
 @Repository
 public class PatientDao implements IPatient {
 
-    Logger log = LoggerFactory.getLogger(PatientDao.class);
+    private static final Logger log = LoggerFactory.getLogger(PatientDao.class);
 
     @Autowired
     private MongoOperations mongo;

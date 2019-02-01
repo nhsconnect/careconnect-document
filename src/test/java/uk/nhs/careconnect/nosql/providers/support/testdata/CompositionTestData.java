@@ -12,6 +12,8 @@ public class CompositionTestData {
     public static String VALID_ID = "123456789012345678901234";
     public static String INVALID_ID = "1234";
 
+    public static String VALID_PATIENT_ID = "123456789012345678901234";
+
 
     public static List<Resource> aCompositionList() {
         Resource resource = new Composition();

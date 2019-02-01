@@ -1,105 +1,29 @@
 package uk.nhs.careconnect.nosql.dao;
 
-import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenParam;
-import de.flapdoodle.embed.mongo.Command;
-import de.flapdoodle.embed.mongo.MongodExecutable;
-import de.flapdoodle.embed.mongo.MongodProcess;
-import de.flapdoodle.embed.mongo.MongodStarter;
-import de.flapdoodle.embed.mongo.config.IMongodConfig;
-import de.flapdoodle.embed.mongo.config.MongodConfigBuilder;
-import de.flapdoodle.embed.mongo.config.Net;
-import de.flapdoodle.embed.mongo.config.RuntimeConfigBuilder;
-import de.flapdoodle.embed.mongo.distribution.Version;
-import de.flapdoodle.embed.process.config.IRuntimeConfig;
-import de.flapdoodle.embed.process.runtime.Network;
-import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.OperationOutcome;
 import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.Resource;
 import org.hl7.fhir.dstu3.model.codesystems.AdministrativeGender;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {TestConfig.class})
-@SpringBootTest
-public class PatientDaoTest {
-
-    private static Logger log = LoggerFactory.getLogger(PatientDaoTest.class);
-
-    @Autowired
-    MongoTemplate mongoTemplate;
-
-    @Autowired
-    FhirContext ctx;
+public class PatientDaoTest extends AbstractDaoTest {
 
     @Autowired
     IBundle bundleDao;
 
     @Autowired
     private PatientDao patientDao;
-
-    private static final String TEST_MONGO_HOST = "localhost";
-    private static final int TEST_MONGO_PORT = 12345;
-
-    private static final String[] COLLECTION_NAMES = {"Bundle", "idxComposition", "idxPatient"};
-
-    private static MongodExecutable mongodExe;
-    private static MongodProcess mongod;
-
-    @BeforeClass
-    public static void beforeEach() throws Exception {
-        IRuntimeConfig runtimeConfig = new RuntimeConfigBuilder()
-                .defaultsWithLogger(Command.MongoD, log)
-                .build();
-        MongodStarter starter = MongodStarter.getInstance(runtimeConfig);
-
-        IMongodConfig mongodConfig = new MongodConfigBuilder()
-                .version(Version.Main.PRODUCTION)
-                .net(new Net(TEST_MONGO_HOST, TEST_MONGO_PORT, Network.localhostIsIPv6()))
-                .build();
-        PatientDaoTest.mongodExe = starter.prepare(mongodConfig);
-        PatientDaoTest.mongod = mongodExe.start();
-    }
-
-    @AfterClass
-    public static void afterEach() {
-        if (PatientDaoTest.mongod != null) {
-            PatientDaoTest.mongod.stop();
-            PatientDaoTest.mongodExe.stop();
-        }
-    }
-
-    @Before
-    public void eachTest() {
-        Stream.of(COLLECTION_NAMES).forEach(collectionName -> mongoTemplate.dropCollection(collectionName));
-    }
 
     @Test
     public void givenASearchRequestIsMade_withAValidPostCode_shouldReturnAResponse() {
@@ -255,25 +179,6 @@ public class PatientDaoTest {
         createBundle("raw-bundle-2-postcodes.xml");
         List<Resource> resources = patientDao.search(ctx, null, null, null, null, null, null, new TokenParam("https://fhir.nhs.uk/Id/nhs-number", "24323"), null, null);
         assertThat(resources.size(), is(0));
-    }
-
-    private void createBundle(String fileName) {
-        Bundle bundle = loadBundle(fileName);
-        OperationOutcome operationOutcome = bundleDao.create(ctx, bundle, null, null);
-        assertThat(operationOutcome.getId(), is(notNullValue()));
-    }
-
-    private Bundle loadBundle(String fileName) {
-        String filename = getClass().getClassLoader().getResource(fileName).getPath();
-
-        try {
-            String bundleJson = new String(Files.readAllBytes(Paths.get(filename)));
-            return FhirContext.forDstu3().newXmlParser().parseResource(Bundle.class, bundleJson);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
     }
 
 }

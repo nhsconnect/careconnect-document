@@ -16,6 +16,7 @@ import uk.nhs.careconnect.nosql.dao.IComposition;
 
 import java.util.List;
 
+import static java.util.Collections.emptyList;
 import static org.mockito.Mockito.when;
 import static uk.nhs.careconnect.nosql.providers.support.assertions.ResourceAssertions.assertResourceListIsEqual;
 import static uk.nhs.careconnect.nosql.providers.support.testdata.CompositionTestData.*;
@@ -41,12 +42,31 @@ public class CompositionProviderTest {
         List<Resource> expectedCompositionResourceList = aCompositionList();
 
         TokenParam resid = new TokenParam(VALID_ID);
+        TokenParam identifier = null;
         ReferenceParam patient = null;
 
-        when(compositionDao.search(fhirContext, resid, patient)).thenReturn(expectedCompositionResourceList);
+        when(compositionDao.search(fhirContext, resid, identifier, patient, null, null)).thenReturn(expectedCompositionResourceList);
 
         //when
-        List<Resource> response = compositionProvider.searchComposition(resid, patient);
+        List<Resource> response = compositionProvider.searchComposition(resid, identifier, patient, null, null);
+
+        //then
+        assertResourceListIsEqual(response, expectedCompositionResourceList);
+    }
+
+    @Test
+    public void givenASearchRequestIsMade_withANullId_shouldReturnAResponse() {
+        //setup
+        List<Resource> expectedCompositionResourceList = emptyList();
+
+        TokenParam resid = null;
+        TokenParam identifier = null;
+        ReferenceParam patient = null;
+
+        when(compositionDao.search(fhirContext, resid, identifier, patient, null, null)).thenReturn(expectedCompositionResourceList);
+
+        //when
+        List<Resource> response = compositionProvider.searchComposition(resid, identifier, patient, null, null);
 
         //then
         assertResourceListIsEqual(response, expectedCompositionResourceList);
@@ -58,10 +78,12 @@ public class CompositionProviderTest {
         expectedException.expectMessage("_id must be 24 characters");
 
         TokenParam resid = new TokenParam(INVALID_ID);
+        TokenParam identifier = null;
+
         ReferenceParam patient = null;
 
         //when
-        compositionProvider.searchComposition(resid, patient);
+        compositionProvider.searchComposition(resid, identifier, patient, null, null);
     }
 
 }
