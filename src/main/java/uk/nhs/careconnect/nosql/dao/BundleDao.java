@@ -18,6 +18,7 @@ import uk.nhs.careconnect.nosql.entities.PatientEntity;
 
 import javax.transaction.Transactional;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -89,44 +90,65 @@ public class BundleDao implements IBundle {
         log.debug("BundleDao.save");
         OperationOutcome operationOutcome = new OperationOutcome();
 
-        CompositionEntity compositionEntity = new CompositionEntity();
+        checkNotAlreadySaved(bundle);
 
+        Object savedBundleId = saveBundle(ctx, bundle);
+
+        PatientEntity savedPatient = savePatient(ctx, bundle);
+
+        CompositionEntity compositionEntity = saveComposition(bundle, savedBundleId, savedPatient);
+
+        operationOutcome.setId("Composition/" + compositionEntity.getId());
+
+        return operationOutcome;
+    }
+
+    private void checkNotAlreadySaved(Bundle bundle) {
+        Query qry = Query.query(Criteria.where("identifier.system").is(bundle.getIdentifier().getSystem()).and("identifier.value").is(bundle.getIdentifier().getValue()));
+
+        CompositionEntity bundleE = mongo.findOne(qry, CompositionEntity.class);
+        if (bundleE != null)
+            throw new ResourceVersionConflictException("FHIR Document already exists. Binary/" + bundleE.getId());
+    }
+
+    private Object saveBundle(FhirContext ctx, Bundle bundle) {
+        return fhirDocumentDao.save(ctx, bundle).get("_id");
+    }
+
+    //TODO: check with Kev about the saving of more than one patient
+    private PatientEntity savePatient(FhirContext ctx, Bundle bundle) {
+        PatientEntity savedPatientEntity = null;
+
+        for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
+            if (entry.hasResource() && entry.getResource() instanceof Patient) {
+                // TODO ensure this is the correcct Patient (one referred to in the Composition)
+                savedPatientEntity = patientDao.createEntity(ctx, (Patient) entry.getResource());
+            }
+        }
+        return savedPatientEntity;
+    }
+
+    private CompositionEntity saveComposition(Bundle bundle, Object savedBundleId, PatientEntity savedPatient) {
+        CompositionEntity compositionEntity = new CompositionEntity();
+        if(savedPatient != null) {
+            compositionEntity.setIdxPatient(savedPatient);
+        }
 
         if (bundle.hasIdentifier()) {
             uk.nhs.careconnect.nosql.entities.Identifier identifierE = new uk.nhs.careconnect.nosql.entities.Identifier();
             identifierE.setValue(bundle.getIdentifier().getValue());
             identifierE.setSystem(bundle.getIdentifier().getSystem());
             compositionEntity.setIdentifier(identifierE);
+            compositionEntity.setDate(new Date());
 
             setCompositionEntityType(bundle, compositionEntity);
-
-            Query qry = Query.query(Criteria.where("identifier.system").is(bundle.getIdentifier().getSystem()).and("identifier.value").is(bundle.getIdentifier().getValue()));
-
-            CompositionEntity bundleE = mongo.findOne(qry, CompositionEntity.class);
-            if (bundleE != null)
-                throw new ResourceVersionConflictException("FHIR Document already exists. Binary/" + bundleE.getId());
         }
 
-        DBObject mObj = fhirDocumentDao.save(ctx, bundle);
-        compositionEntity.setFhirDocument(new DBRef("Bundle", mObj.get("_id")));
-        compositionEntity.setFhirDocumentlId(mObj.get("_id").toString());
-
-        for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
-            if (entry.hasResource() && entry.getResource() instanceof Patient) {
-                // TODO ensure this is the correcct Patient (one referred to in the Composition)
-                PatientEntity mpiPatient = patientDao.createEntity(ctx, (Patient) entry.getResource());
-                compositionEntity.setIdxPatient(mpiPatient);
-
-
-            }
-        }
+        compositionEntity.setFhirDocument(new DBRef("Bundle",savedBundleId));
+        compositionEntity.setFhirDocumentlId(savedBundleId.toString());
 
         mongo.save(compositionEntity);
-
-        operationOutcome.setId("Composition/" + compositionEntity.getId());
-
-
-        return operationOutcome;
+        return compositionEntity;
     }
 
     private void setCompositionEntityType(Bundle bundle, CompositionEntity compositionEntity) {
@@ -149,4 +171,5 @@ public class BundleDao implements IBundle {
                 })
                 .collect(toList());
     }
+
 }

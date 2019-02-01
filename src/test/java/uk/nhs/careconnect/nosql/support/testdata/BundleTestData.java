@@ -5,6 +5,8 @@ import org.hl7.fhir.dstu3.model.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Arrays.asList;
+
 public class BundleTestData {
 
     public static final String BUNDLE_ID = "123456789012345678901234";
@@ -14,6 +16,8 @@ public class BundleTestData {
     public static final String CODING_CODE = "code-1";
     public static final String CODING_DISPLAY = "display-1";
     public static final String CODING_SYSTEM = "system-1";
+
+    public static final List<Identifier> PATIENT_IDENTIFIER = asList(new Identifier().setValue("patient-identifier-1"));
 
     public static Bundle aBundle() {
         Bundle bundle = new Bundle();
@@ -28,18 +32,33 @@ public class BundleTestData {
         List<Bundle.BundleEntryComponent> entryList = new ArrayList<>();
         bundle.setEntry(entryList);
 
-        Bundle.BundleEntryComponent bundleEntry = new Bundle.BundleEntryComponent();
-        entryList.add(bundleEntry);
+        Bundle.BundleEntryComponent compositionEntry = new Bundle.BundleEntryComponent();
+        compositionEntry.setResource(aComposition());
 
+        Bundle.BundleEntryComponent patientEntry = new Bundle.BundleEntryComponent();
+        patientEntry.setResource(aPatient());
+
+        entryList.add(compositionEntry);
+        entryList.add(patientEntry);
+
+        return bundle;
+    }
+
+    public static Composition aComposition(){
         Composition composition = new Composition();
-        bundleEntry.setResource(composition);
 
         CodeableConcept codeableConcept = new CodeableConcept();
         composition.setType(codeableConcept);
 
         codeableConcept.setCoding(aCodingCollection());
 
-        return bundle;
+        return composition;
+    }
+
+    private static Patient aPatient() {
+        Patient patient = new Patient();
+        patient.setIdentifier(PATIENT_IDENTIFIER);
+        return patient;
     }
 
     public static List<Coding> aCodingCollection() {
