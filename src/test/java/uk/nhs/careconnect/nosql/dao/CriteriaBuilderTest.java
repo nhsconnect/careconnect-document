@@ -1,5 +1,6 @@
 package uk.nhs.careconnect.nosql.dao;
 
+import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.TokenOrListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
@@ -7,6 +8,10 @@ import com.mongodb.DBRef;
 import org.bson.types.ObjectId;
 import org.junit.Test;
 import org.springframework.data.mongodb.core.query.Criteria;
+
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.util.Date;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -179,9 +184,26 @@ public class CriteriaBuilderTest {
         assertThat(criteria, is(nullValue()));
     }
 
-    //TODO: this needs to be done again
     @Test
     public void withDateRange() {
+        //setup
+        CriteriaBuilder criteriaBuilder = aCriteriaBuilder();
+
+        OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
+        Date yesterday = Date.from(now.minusDays(1).toInstant());
+        Date tomorrow = Date.from(now.plusDays(1).toInstant());
+
+        DateRangeParam date = new DateRangeParam(yesterday, tomorrow);
+
+        Criteria expectedCriteria = Criteria.where("date").gte(yesterday).lte(tomorrow);
+
+        //when
+        criteriaBuilder.withDateRange(date);
+        Criteria criteria = criteriaBuilder.build();
+
+        //then
+        assertThat(criteria, is(notNullValue()));
+        assertThat(criteria, is(expectedCriteria));
     }
 
     @Test
