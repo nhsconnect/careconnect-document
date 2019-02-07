@@ -1,11 +1,12 @@
 package uk.nhs.careconnect.nosql.entities;
 
-import com.mongodb.DBRef;
-
 public class Reference {
     String reference;
     String display;
-    Identifier identifier;
+    IdentifierEntity identifier;
+
+    public Reference(org.hl7.fhir.dstu3.model.Reference subject) {
+    }
 
 
     public String getReference() {
@@ -24,11 +25,11 @@ public class Reference {
         this.display = display;
     }
 
-    public Identifier getIdentifier() {
+    public IdentifierEntity getIdentifier() {
         return identifier;
     }
 
-    public void setIdentifier(Identifier identifier) {
+    public void setIdentifier(IdentifierEntity identifier) {
         this.identifier = identifier;
     }
 }

@@ -1,6 +1,6 @@
 package uk.nhs.careconnect.nosql.support.assertions;
 
-import uk.nhs.careconnect.nosql.entities.Coding;
+import uk.nhs.careconnect.nosql.entities.CodingEntity;
 import uk.nhs.careconnect.nosql.entities.CompositionEntity;
 
 import java.util.Collection;
@@ -16,14 +16,14 @@ public class CompositionAssertions {
 
     }
 
-    private static Coding find(Coding actual, Collection<Coding> expected) {
+    private static CodingEntity find(CodingEntity actual, Collection<CodingEntity> expected) {
         return expected.stream()
                 .filter(e -> actual.getCode().equals(e.getCode()))
                 .findFirst()
                 .get();
     }
 
-    private static void assertThatCodeIsEqual(Coding actual, Coding expected) {
+    private static void assertThatCodeIsEqual(CodingEntity actual, CodingEntity expected) {
         assertThat(actual.getCode(), is(expected.getCode()));
         assertThat(actual.getDisplay(), is(expected.getDisplay()));
         assertThat(actual.getSystem(), is(expected.getSystem()));

@@ -21,7 +21,7 @@ public class PatientEntity  {
 
     private Enumerations.AdministrativeGender gender;
 
-    private Collection<Identifier> identifiers  = new LinkedHashSet<>();
+    private Collection<IdentifierEntity> identifiers  = new LinkedHashSet<>();
 
     private Collection<Telecom> telecoms = new LinkedHashSet<>();
 
@@ -53,11 +53,11 @@ public class PatientEntity  {
         this.gender = gender;
     }
 
-    public Collection<Identifier> getIdentifiers() {
+    public Collection<IdentifierEntity> getIdentifiers() {
         return identifiers;
     }
 
-    public void setIdentifiers(Collection<Identifier> identifiers) {
+    public void setIdentifiers(Collection<IdentifierEntity> identifiers) {
         this.identifiers = identifiers;
     }
 
