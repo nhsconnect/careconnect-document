@@ -2,9 +2,10 @@ package uk.nhs.careconnect.nosql.dao;
 
 import ca.uhn.fhir.rest.server.exceptions.ResourceVersionConflictException;
 import com.mongodb.DBObject;
+import com.mongodb.DBRef;
 import org.bson.types.ObjectId;
 import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.Enumerations;
+import org.hl7.fhir.dstu3.model.DocumentReference;
 import org.hl7.fhir.dstu3.model.OperationOutcome;
 import org.junit.Rule;
 import org.junit.Test;
@@ -13,18 +14,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import uk.nhs.careconnect.nosql.entities.CompositionEntity;
-import uk.nhs.careconnect.nosql.entities.Identifier;
+import uk.nhs.careconnect.nosql.entities.DocumentReferenceEntity;
 import uk.nhs.careconnect.nosql.entities.PatientEntity;
 
-import java.util.Collection;
-import java.util.List;
-
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static uk.nhs.careconnect.nosql.providers.support.assertions.ResourceAssertions.assertPatientIdentifiersAreEqual;
 import static uk.nhs.careconnect.nosql.support.assertions.CompositionAssertions.assertThatCompositionsAreEqual;
-import static uk.nhs.careconnect.nosql.support.testdata.BundleTestData.*;
+import static uk.nhs.careconnect.nosql.support.assertions.DocumentReferenceAssertions.assertThatDocumentReferenceIsEqual;
+import static uk.nhs.careconnect.nosql.support.testdata.BundleTestData.aBundle;
+import static uk.nhs.careconnect.nosql.support.testdata.BundleTestData.aPatientIdentifier;
 import static uk.nhs.careconnect.nosql.support.testdata.CompositionTestData.aCompositionEntity;
+import static uk.nhs.careconnect.nosql.support.testdata.DocumentReferenceTestData.aDocumentReference;
 
 public class BundleDaoTest extends AbstractDaoTest {
 
@@ -39,6 +42,7 @@ public class BundleDaoTest extends AbstractDaoTest {
         //setup
         Bundle bundle = aBundle();
         CompositionEntity expectedCompositionEntity = aCompositionEntity();
+        DocumentReference expectedDocumentReferenceEntity = aDocumentReference();
 
         //when
         OperationOutcome operationOutcome = bundleDao.create(ctx, bundle, null, null);
@@ -55,7 +59,6 @@ public class BundleDaoTest extends AbstractDaoTest {
         assertThat(savedBundle.getIdentifier().getSystem(), is(bundle.getIdentifier().getSystem()));
 
         //Composition
-
         CompositionEntity savedCompositionEntity = loadComposition(bundleId);
 
         assertThatCompositionsAreEqual(savedCompositionEntity, expectedCompositionEntity);
@@ -65,10 +68,17 @@ public class BundleDaoTest extends AbstractDaoTest {
         assertThat(operationOutcome.getId(), startsWith("Composition/"));
 
         //Patient
-        PatientEntity savedPatient = loadPatient(savedCompositionEntity.getIdxPatient().getId());
+        ObjectId patientId = savedCompositionEntity.getIdxPatient().getId();
+        PatientEntity savedPatient = loadPatient(patientId);
 
-        assertPatientIdentifiersAreEqual(savedPatient.getIdentifiers(), PATIENT_IDENTIFIER);
+        assertPatientIdentifiersAreEqual(savedPatient.getIdentifiers(), aPatientIdentifier());
 
+        // Document Reference
+        DocumentReferenceEntity savedDocumentReferenceEntity = loadDocumentReference(savedPatient.getId());
+
+        assertThat(savedDocumentReferenceEntity.getIdxPatient().getId().toString(), is(savedPatient.getId().toString()));
+
+        assertThatDocumentReferenceIsEqual(savedDocumentReferenceEntity, expectedDocumentReferenceEntity);
     }
 
     @Test
@@ -101,6 +111,13 @@ public class BundleDaoTest extends AbstractDaoTest {
     private PatientEntity loadPatient(ObjectId patientId) {
         Query qry = Query.query(Criteria.where("_id").is(patientId.toHexString()));
         return mongoTemplate.findOne(qry, PatientEntity.class);
+    }
+
+    private DocumentReferenceEntity loadDocumentReference(ObjectId patientId) {
+        //Query qry = Query.query(Criteria.where("patientId").is(patientId.toHexString()));
+        Query qry = Query.query(Criteria.where("idxPatient").is(new DBRef("idxPatient", patientId)));
+
+        return mongoTemplate.findOne(qry, DocumentReferenceEntity.class);
     }
 
 }
