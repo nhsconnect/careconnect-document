@@ -10,7 +10,8 @@ import org.springframework.data.mongodb.core.query.Criteria;
 
 import java.util.function.Supplier;
 
-import static ca.uhn.fhir.rest.param.ParamPrefixEnum.*;
+import static ca.uhn.fhir.rest.param.ParamPrefixEnum.GREATERTHAN_OR_EQUALS;
+import static ca.uhn.fhir.rest.param.ParamPrefixEnum.LESSTHAN_OR_EQUALS;
 
 public class CriteriaBuilder {
 
@@ -39,42 +40,66 @@ public class CriteriaBuilder {
         return this;
     }
 
-    CriteriaBuilder withType(TokenOrListParam typeOrList) {
+    CriteriaBuilder withType(String typeCodingFieldName, String typeSystemFieldName, TokenOrListParam typeOrList) {
         if (isNotNull(typeOrList)) {
-            for (TokenParam type : typeOrList.getValuesAsQueryTokens()) {
-                addClause(type, () -> getCriteria("type.code").is(type.getValue()));
-                addClause(type, () -> getCriteria("type.system").is(type.getSystem()));
-            }
+            typeOrList.getValuesAsQueryTokens().forEach(type -> {
+                addClause(type, () -> getCriteria(typeCodingFieldName).is(type.getValue()));
+                addClause(type, () -> getCriteria(typeSystemFieldName).is(type.getSystem()));
+            });
+        }
+        return this;
+    }
+
+    public CriteriaBuilder withSetting(TokenOrListParam setting) {
+        if (isNotNull(setting)) {
+            setting.getValuesAsQueryTokens().forEach(type -> {
+                addClause(type, () -> getCriteria("practice.coding.code").is(type.getValue()));
+                addClause(type, () -> getCriteria("practice.coding.system").is(type.getSystem()));
+            });
         }
         return this;
     }
 
     public CriteriaBuilder withDateRange(DateRangeParam dateRange) {
+        return withDateRange("date", dateRange);
+    }
+
+    public CriteriaBuilder withCreatedDate(DateRangeParam createdDate) {
+        return withDateRange("createdDate", createdDate);
+    }
+
+    public CriteriaBuilder withPeriod(DateRangeParam periodStart, DateRangeParam periodEnd) {
+        withDateRange("period.start", periodStart);
+        withDateRange("period.end", periodEnd);
+        return this;
+    }
+
+    private CriteriaBuilder withDateRange(String dateFieldName, DateRangeParam dateRange) {
         if (isNotNull(dateRange)) {
             if (hasLowerAndUpperBound(dateRange)) {
-                addClause(dateRange, () -> getCriteria("date").gte(dateRange.getLowerBound().getValue()).lte(dateRange.getUpperBound().getValue()));
+                addClause(dateRange, () -> getCriteria(dateFieldName).gte(dateRange.getLowerBound().getValue()).lte(dateRange.getUpperBound().getValue()));
             } else {
                 if (hasLowerBound(dateRange)) {
                     switch (dateRange.getLowerBound().getPrefix()) {
                         case EQUAL:
-                            addClause(dateRange, () -> getCriteria("date").is(dateRange.getLowerBound().getValue()));
+                            addClause(dateRange, () -> getCriteria(dateFieldName).is(dateRange.getLowerBound().getValue()));
                             break;
                         case GREATERTHAN_OR_EQUALS:
-                            addClause(dateRange, () -> getCriteria("date").gte(dateRange.getLowerBound().getValue()));
+                            addClause(dateRange, () -> getCriteria(dateFieldName).gte(dateRange.getLowerBound().getValue()));
                             break;
                         case GREATERTHAN:
                         case STARTS_AFTER:
-                            addClause(dateRange, () -> getCriteria("date").gt(dateRange.getLowerBound().getValue()));
+                            addClause(dateRange, () -> getCriteria(dateFieldName).gt(dateRange.getLowerBound().getValue()));
                             break;
                     }
                 } else {
                     switch (dateRange.getUpperBound().getPrefix()) {
                         case LESSTHAN_OR_EQUALS:
-                            addClause(dateRange, () -> getCriteria("date").lte(dateRange.getUpperBound().getValue()));
+                            addClause(dateRange, () -> getCriteria(dateFieldName).lte(dateRange.getUpperBound().getValue()));
                             break;
                         case LESSTHAN:
                         case ENDS_BEFORE:
-                            addClause(dateRange, () -> getCriteria("date").lt(dateRange.getUpperBound().getValue()));
+                            addClause(dateRange, () -> getCriteria(dateFieldName).lt(dateRange.getUpperBound().getValue()));
                             break;
                     }
                 }
@@ -118,5 +143,6 @@ public class CriteriaBuilder {
     private boolean isNotNull(Object parameterObject) {
         return parameterObject != null;
     }
+
 
 }

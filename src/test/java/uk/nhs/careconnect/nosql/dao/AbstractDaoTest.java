@@ -27,7 +27,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @SpringBootTest
 public abstract class AbstractDaoTest {
 
-    protected static final String[] COLLECTION_NAMES = {"Bundle", "idxComposition", "idxPatient"};
+    protected static final String[] COLLECTION_NAMES = {"Bundle", "idxComposition", "idxPatient", "idxDocumentReference"};
 
     @Autowired
     MongoManager mongoManager;

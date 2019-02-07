@@ -4,7 +4,7 @@ import org.apache.commons.collections4.Transformer;
 import org.hl7.fhir.dstu3.model.*;
 import org.springframework.stereotype.Component;
 
-import uk.nhs.careconnect.nosql.entities.Identifier;
+import uk.nhs.careconnect.nosql.entities.IdentifierEntity;
 import uk.nhs.careconnect.nosql.entities.Name;
 import uk.nhs.careconnect.nosql.entities.PatientEntity;
 import uk.nhs.careconnect.nosql.entities.Telecom;
@@ -22,7 +22,7 @@ public class PatientEntityToFHIRPatient implements Transformer<PatientEntity, Pa
 
         patient.setId(patientEntity.getId().toString());
 
-        for (Identifier identifier : patientEntity.getIdentifiers()) {
+        for (IdentifierEntity identifier : patientEntity.getIdentifiers()) {
             patient.addIdentifier()
                     .setSystem(identifier.getSystem())
                     .setValue(identifier.getValue());

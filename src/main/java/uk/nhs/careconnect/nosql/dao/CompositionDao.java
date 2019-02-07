@@ -51,7 +51,7 @@ public class CompositionDao implements IComposition {
                 .withIdentifier(identifier)
                 .withPatient(patient)
                 .withDateRange(date)
-                .withType(type)
+                .withType("type.code", "type.system", type)
                 .build();
 
         if (criteria != null) {

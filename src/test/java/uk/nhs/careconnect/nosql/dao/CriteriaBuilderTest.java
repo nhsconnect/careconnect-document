@@ -1,6 +1,10 @@
 package uk.nhs.careconnect.nosql.dao;
 
-import ca.uhn.fhir.rest.param.*;
+import ca.uhn.fhir.rest.param.DateParam;
+import ca.uhn.fhir.rest.param.DateRangeParam;
+import ca.uhn.fhir.rest.param.ReferenceParam;
+import ca.uhn.fhir.rest.param.TokenOrListParam;
+import ca.uhn.fhir.rest.param.TokenParam;
 import com.mongodb.DBRef;
 import org.bson.types.ObjectId;
 import org.junit.Before;
@@ -11,7 +15,13 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
 
-import static ca.uhn.fhir.rest.param.ParamPrefixEnum.*;
+import static ca.uhn.fhir.rest.param.ParamPrefixEnum.ENDS_BEFORE;
+import static ca.uhn.fhir.rest.param.ParamPrefixEnum.EQUAL;
+import static ca.uhn.fhir.rest.param.ParamPrefixEnum.GREATERTHAN;
+import static ca.uhn.fhir.rest.param.ParamPrefixEnum.GREATERTHAN_OR_EQUALS;
+import static ca.uhn.fhir.rest.param.ParamPrefixEnum.LESSTHAN;
+import static ca.uhn.fhir.rest.param.ParamPrefixEnum.LESSTHAN_OR_EQUALS;
+import static ca.uhn.fhir.rest.param.ParamPrefixEnum.STARTS_AFTER;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
@@ -153,7 +163,7 @@ public class CriteriaBuilderTest {
         tokenOrListParam.add(code);
 
         //when
-        criteriaBuilder.withType(tokenOrListParam);
+        criteriaBuilder.withType("type.code", "type.system", tokenOrListParam);
         Criteria criteria = criteriaBuilder.build();
 
         //then
@@ -170,7 +180,7 @@ public class CriteriaBuilderTest {
         tokenOrListParam.add("system-1", "code-1");
 
         //when
-        criteriaBuilder.withType(tokenOrListParam);
+        criteriaBuilder.withType("type.code", "type.system", tokenOrListParam);
         Criteria criteria = criteriaBuilder.build();
 
         //then
@@ -185,7 +195,7 @@ public class CriteriaBuilderTest {
         CriteriaBuilder criteriaBuilder = aCriteriaBuilder();
 
         //when
-        criteriaBuilder.withType(null);
+        criteriaBuilder.withType(null, null, null);
         Criteria criteria = criteriaBuilder.build();
 
         //then
@@ -243,6 +253,29 @@ public class CriteriaBuilderTest {
         testWithDate(new DateRangeParam(new DateParam(ENDS_BEFORE, aDate)), Criteria.where("date").lt(aDate));
     }
 
+    //TODO: Only one test for now, could consider refactoring to date criteria builder
+    @Test
+    public void givenACriteriaBuilder_whenWithCreatedDateRangeIsCalledWithEndsBeforeOneDate_thenCriteriaNotBuilt() {
+        testWithCreatedDate(new DateRangeParam(new DateParam(ENDS_BEFORE, aDate)), Criteria.where("createdDate").lt(aDate));
+    }
+
+    @Test
+    public void givenACriteriaBuilder_whenWithSettingIsCalled_thenCriteriaNotBuilt() {
+        //setup
+        CriteriaBuilder criteriaBuilder = aCriteriaBuilder();
+        TokenOrListParam setting = new TokenOrListParam();
+        setting.add("system-1", "code-1");
+
+        //when
+        criteriaBuilder.withSetting(setting);
+        Criteria criteria = criteriaBuilder.build();
+
+        //then
+        assertThat(criteria, is(notNullValue()));
+        assertThat(criteria.getCriteriaObject().get("practice.coding.code"), is("code-1"));
+        assertThat(criteria.getCriteriaObject().get("practice.coding.system"), is("system-1"));
+    }
+
     private void testWithDate(DateRangeParam dateRangeParam, Criteria expectedCriteria) {
         //when
         criteriaBuilder.withDateRange(dateRangeParam);
@@ -253,4 +286,13 @@ public class CriteriaBuilderTest {
         assertThat(criteria.getCriteriaObject(), is(expectedCriteria.getCriteriaObject()));
     }
 
+    private void testWithCreatedDate(DateRangeParam dateRangeParam, Criteria expectedCriteria) {
+        //when
+        criteriaBuilder.withCreatedDate(dateRangeParam);
+        Criteria criteria = criteriaBuilder.build();
+
+        //then
+        assertThat(criteria, is(notNullValue()));
+        assertThat(criteria.getCriteriaObject(), is(expectedCriteria.getCriteriaObject()));
+    }
 }
