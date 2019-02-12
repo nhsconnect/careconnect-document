@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.nhs.careconnect.nosql.dao.transform.PatientEntityToFHIRPatient;
 
+import uk.nhs.careconnect.nosql.entities.IdentifierEntity;
 import uk.nhs.careconnect.nosql.entities.Name;
 import uk.nhs.careconnect.nosql.entities.PatientEntity;
 import org.bson.types.ObjectId;
@@ -63,9 +64,8 @@ public class PatientDao implements IPatient {
         PatientEntity patientEntity = new PatientEntity();
 
         for (Identifier identifier : patient.getIdentifier()) {
-            uk.nhs.careconnect.nosql.entities.Identifier identifierE = new uk.nhs.careconnect.nosql.entities.Identifier();
-            identifierE.setSystem(identifier.getSystem());
-            identifierE.setValue(identifier.getValue().replaceAll(" ",""));
+            identifier.getValue().replaceAll(" ","");
+            IdentifierEntity identifierE = new IdentifierEntity(identifier);
 
             patientEntity.getIdentifiers().add(identifierE);
         }

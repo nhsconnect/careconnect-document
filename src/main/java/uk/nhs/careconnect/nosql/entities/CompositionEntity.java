@@ -15,9 +15,9 @@ public class CompositionEntity {
     @Id
     private ObjectId id;
 
-    private Identifier identifier;
+    private IdentifierEntity identifier;
 
-    private Collection<Coding> type = new LinkedHashSet<>();
+    private Collection<CodingEntity> type = new LinkedHashSet<>();
 
     @DBRef
     private PatientEntity idxPatient;
@@ -36,11 +36,11 @@ public class CompositionEntity {
         this.id = id;
     }
 
-    public Identifier getIdentifier() {
+    public IdentifierEntity getIdentifier() {
         return identifier;
     }
 
-    public void setIdentifier(Identifier identifier) {
+    public void setIdentifier(IdentifierEntity identifier) {
         this.identifier = identifier;
     }
 
@@ -68,11 +68,11 @@ public class CompositionEntity {
         this.idxPatient = idxPatient;
     }
 
-    public Collection<Coding> getType() {
+    public Collection<CodingEntity> getType() {
         return type;
     }
 
-    public void setType(Collection<Coding> type) {
+    public void setType(Collection<CodingEntity> type) {
         this.type = type;
     }
 

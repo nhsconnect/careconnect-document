@@ -1,12 +1,14 @@
 package uk.nhs.careconnect.nosql.support.testdata;
 
-import uk.nhs.careconnect.nosql.entities.Coding;
+import org.hl7.fhir.dstu3.model.Coding;
+import uk.nhs.careconnect.nosql.entities.CodingEntity;
 import uk.nhs.careconnect.nosql.entities.CompositionEntity;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
+import static java.util.Arrays.asList;
 import static uk.nhs.careconnect.nosql.support.testdata.BundleTestData.*;
 
 public class CompositionTestData {
@@ -16,13 +18,13 @@ public class CompositionTestData {
     public static CompositionEntity aCompositionEntity() {
         CompositionEntity compositionEntity = new CompositionEntity();
 
-        Collection<uk.nhs.careconnect.nosql.entities.Coding> codingList = new ArrayList<>();
-        compositionEntity.setType(codingList);
-        Coding coding = new Coding();
-        codingList.add(coding);
-        coding.setCode(CODING_CODE);
-        coding.setSystem(CODING_SYSTEM);
-        coding.setDisplay(CODING_DISPLAY);
+        compositionEntity.setType(asList(
+                new CodingEntity(
+                        new Coding()
+                                .setCode(CODING_CODE)
+                                .setSystem(CODING_SYSTEM)
+                                .setDisplay(CODING_DISPLAY)
+                )));
 
         compositionEntity.setDate(DATE);
 
