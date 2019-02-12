@@ -10,13 +10,17 @@ import ca.uhn.fhir.rest.server.interceptor.CorsInterceptor;
 import ca.uhn.fhir.rest.server.interceptor.IServerInterceptor;
 import ca.uhn.fhir.rest.server.interceptor.ResponseHighlighterInterceptor;
 import ca.uhn.fhir.util.VersionUtil;
-import org.springframework.web.cors.CorsConfiguration;
-import uk.nhs.careconnect.nosql.providers.*;
 import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-
+import org.springframework.web.cors.CorsConfiguration;
+import uk.nhs.careconnect.nosql.providers.BinaryProvider;
+import uk.nhs.careconnect.nosql.providers.BundleProvider;
+import uk.nhs.careconnect.nosql.providers.CompositionProvider;
+import uk.nhs.careconnect.nosql.providers.ConformanceProvider;
+import uk.nhs.careconnect.nosql.providers.DocumentReferenceProvider;
+import uk.nhs.careconnect.nosql.providers.PatientProvider;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -76,6 +80,8 @@ public class CcriFHIRDocumentServerHAPIConfig extends RestfulServer {
 				,applicationContext.getBean(CompositionProvider.class)
 				,applicationContext.getBean(PatientProvider.class)
 				,applicationContext.getBean(BinaryProvider.class)
+				,applicationContext.getBean(BinaryProvider.class)
+				,applicationContext.getBean(DocumentReferenceProvider.class)
 		));
 
 

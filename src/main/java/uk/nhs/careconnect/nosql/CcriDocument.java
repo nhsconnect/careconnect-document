@@ -73,7 +73,7 @@ public class CcriDocument {
     }
 
     @Bean
-    public FilterRegistrationBean corsFilter() {
+    public FilterRegistrationBean corsFilterCustom() {
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
@@ -82,7 +82,7 @@ public class CcriDocument {
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         source.registerCorsConfiguration("/**", config);
-        FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter());
+        FilterRegistrationBean bean = new FilterRegistrationBean(new CustomCorsFilter());
         bean.setOrder(0);
         return bean;
     }

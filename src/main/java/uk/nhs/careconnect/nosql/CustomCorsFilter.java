@@ -8,9 +8,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Configuration
-public class CorsFilter implements Filter {
+public class CustomCorsFilter implements Filter {
 
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(CorsFilter.class);
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(CustomCorsFilter.class);
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {

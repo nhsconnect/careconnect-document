@@ -1,4 +1,4 @@
-package uk.nhs.careconnect.nosql.dao;
+package uk.nhs.careconnect.configuration;
 
 import ca.uhn.fhir.context.FhirContext;
 import com.mongodb.MongoClient;
@@ -7,8 +7,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import uk.nhs.careconnect.nosql.dao.MongoManager;
 
-import javax.annotation.PreDestroy;
 import java.io.IOException;
 
 @Configuration
@@ -51,14 +51,7 @@ public class TestConfig {
 
     @Bean
     public MongoManager getMongoManager() throws IOException {
-        MongoManager mongoManager = MongoManager.getInstance();
-        mongoManager.startMongo();
-        return mongoManager;
-    }
-
-    @PreDestroy
-    public void stopMongo() throws IOException {
-        getMongoManager().stopMongo();
+        return MongoManager.getInstance();
     }
 
 }
