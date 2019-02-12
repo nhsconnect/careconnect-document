@@ -1,5 +1,6 @@
 package uk.nhs.careconnect.nosql.dao;
 
+import ca.uhn.fhir.rest.param.DateParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.TokenOrListParam;
@@ -15,6 +16,17 @@ import static ca.uhn.fhir.rest.param.ParamPrefixEnum.LESSTHAN_OR_EQUALS;
 
 public class CriteriaBuilder {
 
+    public static final String ID = "_id";
+    public static final String IDENTIFIER_SYSTEM = "identifier.system";
+    public static final String IDENTIFIER_VALUE = "identifier.value";
+    public static final String IDX_PATIENT = "idxPatient";
+    public static final String IDX_PATIENT_COLLECTION = "idxPatient";
+    public static final String PRACTICE_CODING_CODE = "practice.coding.code";
+    public static final String PRACTICE_CODING_SYSTEM = "practice.coding.system";
+    public static final String CREATED_DATE = "createdDate";
+    public static final String PERIOD_START = "period.start";
+    public static final String PERIOD_END = "period.end";
+
     Criteria criteria;
 
     private CriteriaBuilder() {
@@ -25,36 +37,37 @@ public class CriteriaBuilder {
     }
 
     CriteriaBuilder withId(TokenParam resid) {
-        addClause(resid, () -> getCriteria("_id").is(new ObjectId(resid.getValue())));
+        addClause(resid, () -> getCriteria(ID).is(new ObjectId(resid.getValue())));
         return this;
     }
 
     CriteriaBuilder withIdentifier(TokenParam identifier) {
-        addClause(identifier, () -> getCriteria("identifier.system").is(identifier.getSystem()));
-        addClause(identifier, () -> getCriteria("identifier.value").is(identifier.getValue()));
+        addClause(identifier, () -> getCriteria(IDENTIFIER_SYSTEM).is(identifier.getSystem()));
+        addClause(identifier, () -> getCriteria(IDENTIFIER_VALUE).is(identifier.getValue()));
         return this;
     }
 
     CriteriaBuilder withPatient(ReferenceParam patient) {
-        addClause(patient, () -> getCriteria("idxPatient").is(new DBRef("idxPatient", patient.getValue())));
+        addClause(patient, () -> getCriteria(IDX_PATIENT).is(new DBRef(IDX_PATIENT_COLLECTION, patient.getValue())));
         return this;
     }
 
     CriteriaBuilder withType(String typeCodingFieldName, String typeSystemFieldName, TokenOrListParam typeOrList) {
-        if (isNotNull(typeOrList)) {
-            typeOrList.getValuesAsQueryTokens().forEach(type -> {
-                addClause(type, () -> getCriteria(typeCodingFieldName).is(type.getValue()));
-                addClause(type, () -> getCriteria(typeSystemFieldName).is(type.getSystem()));
-            });
-        }
-        return this;
+        return withCoding(typeCodingFieldName, typeSystemFieldName, typeOrList);
     }
 
     public CriteriaBuilder withSetting(TokenOrListParam setting) {
         if (isNotNull(setting)) {
-            setting.getValuesAsQueryTokens().forEach(type -> {
-                addClause(type, () -> getCriteria("practice.coding.code").is(type.getValue()));
-                addClause(type, () -> getCriteria("practice.coding.system").is(type.getSystem()));
+            return withCoding(PRACTICE_CODING_CODE, PRACTICE_CODING_SYSTEM, setting);
+        }
+        return this;
+    }
+
+    private CriteriaBuilder withCoding(String typeCodingFieldName, String typeSystemFieldName, TokenOrListParam typeOrList) {
+        if (isNotNull(typeOrList)) {
+            typeOrList.getValuesAsQueryTokens().forEach(type -> {
+                addClause(type, () -> getCriteria(typeCodingFieldName).is(type.getValue()));
+                addClause(type, () -> getCriteria(typeSystemFieldName).is(type.getSystem()));
             });
         }
         return this;
@@ -65,13 +78,7 @@ public class CriteriaBuilder {
     }
 
     public CriteriaBuilder withCreatedDate(DateRangeParam createdDate) {
-        return withDateRange("createdDate", createdDate);
-    }
-
-    public CriteriaBuilder withPeriod(DateRangeParam periodStart, DateRangeParam periodEnd) {
-        withDateRange("period.start", periodStart);
-        withDateRange("period.end", periodEnd);
-        return this;
+        return withDateRange(CREATED_DATE, createdDate);
     }
 
     private CriteriaBuilder withDateRange(String dateFieldName, DateRangeParam dateRange) {
@@ -80,32 +87,53 @@ public class CriteriaBuilder {
                 addClause(dateRange, () -> getCriteria(dateFieldName).gte(dateRange.getLowerBound().getValue()).lte(dateRange.getUpperBound().getValue()));
             } else {
                 if (hasLowerBound(dateRange)) {
-                    switch (dateRange.getLowerBound().getPrefix()) {
-                        case EQUAL:
-                            addClause(dateRange, () -> getCriteria(dateFieldName).is(dateRange.getLowerBound().getValue()));
-                            break;
-                        case GREATERTHAN_OR_EQUALS:
-                            addClause(dateRange, () -> getCriteria(dateFieldName).gte(dateRange.getLowerBound().getValue()));
-                            break;
-                        case GREATERTHAN:
-                        case STARTS_AFTER:
-                            addClause(dateRange, () -> getCriteria(dateFieldName).gt(dateRange.getLowerBound().getValue()));
-                            break;
-                    }
+                    withDateParam(dateFieldName, dateRange.getLowerBound());
                 } else {
-                    switch (dateRange.getUpperBound().getPrefix()) {
-                        case LESSTHAN_OR_EQUALS:
-                            addClause(dateRange, () -> getCriteria(dateFieldName).lte(dateRange.getUpperBound().getValue()));
-                            break;
-                        case LESSTHAN:
-                        case ENDS_BEFORE:
-                            addClause(dateRange, () -> getCriteria(dateFieldName).lt(dateRange.getUpperBound().getValue()));
-                            break;
-                    }
+                    withDateParam(dateFieldName, dateRange.getUpperBound());
                 }
             }
         }
         return this;
+    }
+
+    public CriteriaBuilder withPeriod(DateRangeParam period) {
+        if (isNotNull(period)) {
+            if (hasLowerAndUpperBound(period)) {
+                addClause(period, () -> getCriteria(PERIOD_START).is(period.getLowerBound().getValue()));
+                addClause(period, () -> getCriteria(PERIOD_END).is(period.getUpperBound().getValue()));
+            } else {
+                if (hasLowerBound(period)) {
+                    withDateParam(PERIOD_START, period.getLowerBound());
+                } else {
+                    withDateParam(PERIOD_END, period.getUpperBound());
+                }
+            }
+        }
+        return this;
+    }
+
+    private void withDateParam(String dateFieldName, DateParam dateParam) {
+        switch (dateParam.getPrefix()) {
+            case EQUAL:
+                addClause(dateParam, () -> getCriteria(dateFieldName).is(dateParam.getValue()));
+                break;
+            case GREATERTHAN_OR_EQUALS:
+                addClause(dateParam, () -> getCriteria(dateFieldName).gte(dateParam.getValue()));
+                break;
+            case GREATERTHAN:
+            case STARTS_AFTER:
+                addClause(dateParam, () -> getCriteria(dateFieldName).gt(dateParam.getValue()));
+                break;
+            case LESSTHAN_OR_EQUALS:
+                addClause(dateParam, () -> getCriteria(dateFieldName).lte(dateParam.getValue()));
+                break;
+            case LESSTHAN:
+            case ENDS_BEFORE:
+                addClause(dateParam, () -> getCriteria(dateFieldName).lt(dateParam.getValue()));
+                break;
+            default:
+                break;
+        }
     }
 
     private boolean hasLowerAndUpperBound(DateRangeParam dateRange) {
@@ -121,28 +149,23 @@ public class CriteriaBuilder {
         return criteria;
     }
 
-    private <T> void addClause(Object parameterObject, Supplier<T> clause) {
-        //if (isNotNull(parameterObject, clause)) {
+    private void addClause(Object parameterObject, Supplier<Criteria> clause) {
         if (isNotNull(parameterObject)) {
-            clause.get();
+            criteria = clause.get();
         }
     }
 
     private Criteria getCriteria(String parameter) {
         if (criteria == null) {
-            return criteria = Criteria.where(parameter);
+            return Criteria.where(parameter);
+
         } else {
-            return criteria = criteria.and(parameter);
+            return criteria.and(parameter);
         }
     }
-
-//    private <T> boolean isNotNull(Object parameterObject, Supplier<T> condition) {
-//        return parameterObject != null;
-//    }
 
     private boolean isNotNull(Object parameterObject) {
         return parameterObject != null;
     }
-
 
 }

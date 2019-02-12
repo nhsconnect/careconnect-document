@@ -121,7 +121,6 @@ public class BundleDao implements IBundle {
         return fhirDocumentDao.save(ctx, bundle).get("_id");
     }
 
-    //TODO: check with Kev about the saving of more than one patient
     private PatientEntity savePatient(FhirContext ctx, Bundle bundle) {
         PatientEntity savedPatientEntity = null;
 
@@ -174,14 +173,8 @@ public class BundleDao implements IBundle {
         bundle.getEntry().stream()
                 .filter(entry -> entry.hasResource() && entry.getResource() instanceof DocumentReference)
                 .map(entry -> (DocumentReference) entry.getResource())
-                .map(documentReference -> new DocumentReferenceEntity(savedPatient, documentReference)
-//                .map(documentReference -> aDocumentReferenceEntityMapper()
-//                        .withPatientId(savedPatient.getId().toString())
-//                        .withPeriod(documentReference.getContext().getPeriod())
-//                        .build()
-                )
-                .findFirst().ifPresent(documentReferenceEntity -> mongo.save(documentReferenceEntity));
+                .map(documentReference -> new DocumentReferenceEntity(savedPatient, documentReference))
+                .findFirst().ifPresent(mongo::save);
     }
-
 
 }

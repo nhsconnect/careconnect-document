@@ -2,6 +2,7 @@ package uk.nhs.careconnect.nosql.entities;
 
 import org.hl7.fhir.dstu3.model.DocumentReference;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Reference;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -30,6 +31,9 @@ public class DocumentReferenceEntity {
 
     private PeriodEntity period;
 
+    @Reference
+    private DocumentReference documentReference;
+
     public DocumentReferenceEntity() {
 
     }
@@ -43,6 +47,7 @@ public class DocumentReferenceEntity {
         this.identifier = documentReference.getIdentifier().stream().map(IdentifierEntity::new).collect(Collectors.toList());
         this.practice = new CodeableConceptEntity(documentReference.getContext().getPracticeSetting());
         this.period = new PeriodEntity(documentReference.getContext().getPeriod());
+        this.documentReference = documentReference;
     }
 
     public String getId() {
@@ -77,29 +82,28 @@ public class DocumentReferenceEntity {
         return period;
     }
 
+    public DocumentReference getFhirDocumentReference() {
+        return documentReference;
+    }
 
 
+    private String name;
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    //TODO: Check if these are still needed
-//    private String name;
-//
-//    public String getName() {
-//        return name;
-//    }
-//
-//    public void setName(String name) {
-//        this.name = name;
-//    }
-//
-//    private String json;
-//
-//    public String getJson() {
-//        return json;
-//    }
-//
-//    public void setJson(String json) {
-//        this.json = json;
-//    }
+    private String json;
+    public String getJson() {
+        return json;
+    }
+
+    public void setJson(String json) {
+        this.json = json;
+    }
+    /*
+    @ManyToOne
+    public BundleEntity getBreed() { return breed; }
+    public void setBreed(BundleEntity breed) { this.breed = breed; }
+    private BundleEntity breed;*/
 
 }
 

@@ -203,7 +203,7 @@ public class CriteriaBuilderTest {
     }
 
     @Test
-    public void givenACriteriaBuilder_whenWithDateRangeIsCalledWithTwoBetweenDate_thenCriteriaNotBuilt() {
+    public void givenACriteriaBuilder_whenWithDateRangeIsCalledWithTwoBetweenDate_thenCriteriaBuilt() {
         //setup
         OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
         Date yesterday = Date.from(now.minusDays(1).toInstant());
@@ -213,7 +213,7 @@ public class CriteriaBuilderTest {
     }
 
     @Test
-    public void givenACriteriaBuilder_whenWithDateRangeIsCalledWithEqualsOneDate_thenCriteriaNotBuilt() {
+    public void givenACriteriaBuilder_whenWithDateRangeIsCalledWithEqualsOneDate_thenCriteriaBuilt() {
         testWithDate(new DateRangeParam(new DateParam(EQUAL, aDate)), Criteria.where("date").is(aDate));
     }
 
@@ -224,43 +224,67 @@ public class CriteriaBuilderTest {
 //    }
 
     @Test
-    public void givenACriteriaBuilder_whenWithDateRangeIsCalledWithGreaterThanOrEqualsOneDate_thenCriteriaNotBuilt() {
+    public void givenACriteriaBuilder_whenWithDateRangeIsCalledWithGreaterThanOrEqualsOneDate_thenCriteriaBuilt() {
         testWithDate(new DateRangeParam(new DateParam(GREATERTHAN_OR_EQUALS, aDate)), Criteria.where("date").gte(aDate));
     }
 
     @Test
-    public void givenACriteriaBuilder_whenWithDateRangeIsCalledWithGreaterThanOneDate_thenCriteriaNotBuilt() {
+    public void givenACriteriaBuilder_whenWithDateRangeIsCalledWithGreaterThanOneDate_thenCriteriaBuilt() {
         testWithDate(new DateRangeParam(new DateParam(GREATERTHAN, aDate)), Criteria.where("date").gt(aDate));
     }
 
     @Test
-    public void givenACriteriaBuilder_whenWithDateRangeIsCalledWithStartsAfterOneDate_thenCriteriaNotBuilt() {
+    public void givenACriteriaBuilder_whenWithDateRangeIsCalledWithStartsAfterOneDate_thenCriteriaBuilt() {
         testWithDate(new DateRangeParam(new DateParam(STARTS_AFTER, aDate)), Criteria.where("date").gt(aDate));
     }
 
     @Test
-    public void givenACriteriaBuilder_whenWithDateRangeIsCalledWithLessThanOrEqualsOneDate_thenCriteriaNotBuilt() {
+    public void givenACriteriaBuilder_whenWithDateRangeIsCalledWithLessThanOrEqualsOneDate_thenCriteriaBuilt() {
         testWithDate(new DateRangeParam(new DateParam(LESSTHAN_OR_EQUALS, aDate)), Criteria.where("date").lte(aDate));
     }
 
     @Test
-    public void givenACriteriaBuilder_whenWithDateRangeIsCalledWithLessThanOneDate_thenCriteriaNotBuilt() {
+    public void givenACriteriaBuilder_whenWithDateRangeIsCalledWithLessThanOneDate_thenCriteriaBuilt() {
         testWithDate(new DateRangeParam(new DateParam(LESSTHAN, aDate)), Criteria.where("date").lt(aDate));
     }
 
     @Test
-    public void givenACriteriaBuilder_whenWithDateRangeIsCalledWithEndsBeforeOneDate_thenCriteriaNotBuilt() {
+    public void givenACriteriaBuilder_whenWithDateRangeIsCalledWithEndsBeforeOneDate_thenCriteriaBuilt() {
         testWithDate(new DateRangeParam(new DateParam(ENDS_BEFORE, aDate)), Criteria.where("date").lt(aDate));
     }
 
-    //TODO: Only one test for now, could consider refactoring to date criteria builder
     @Test
-    public void givenACriteriaBuilder_whenWithCreatedDateRangeIsCalledWithEndsBeforeOneDate_thenCriteriaNotBuilt() {
+    public void givenACriteriaBuilder_whenWithCreatedDateRangeIsCalledWithEndsBeforeOneDate_thenCriteriaBuilt() {
         testWithCreatedDate(new DateRangeParam(new DateParam(ENDS_BEFORE, aDate)), Criteria.where("createdDate").lt(aDate));
     }
 
     @Test
-    public void givenACriteriaBuilder_whenWithSettingIsCalled_thenCriteriaNotBuilt() {
+    public void givenACriteriaBuilder_whenWithPeriodIsCalledWithEquals_thenCriteriaBuilt() {
+        testWithPeriod(new DateRangeParam(new DateParam(EQUAL, aDate)), Criteria.where("period.start").is(aDate));
+    }
+
+    @Test
+    public void givenACriteriaBuilder_whenWithPeriodIsCalledWithAfter_thenCriteriaBuilt() {
+        testWithPeriod(new DateRangeParam(new DateParam(GREATERTHAN, aDate)), Criteria.where("period.start").gt(aDate));
+    }
+
+    @Test
+    public void givenACriteriaBuilder_whenWithPeriodIsCalledWithAfterOrEquals_thenCriteriaBuilt() {
+        testWithPeriod(new DateRangeParam(new DateParam(GREATERTHAN_OR_EQUALS, aDate)), Criteria.where("period.start").gte(aDate));
+    }
+
+    @Test
+    public void givenACriteriaBuilder_whenWithPeriodIsCalledWithBefore_thenCriteriaBuilt() {
+        testWithPeriod(new DateRangeParam(new DateParam(LESSTHAN, aDate)), Criteria.where("period.end").lt(aDate));
+    }
+
+    @Test
+    public void givenACriteriaBuilder_whenWithPeriodIsCalledWithBeforeOrEquals_thenCriteriaBuilt() {
+        testWithPeriod(new DateRangeParam(new DateParam(LESSTHAN_OR_EQUALS, aDate)), Criteria.where("period.end").lte(aDate));
+    }
+
+    @Test
+    public void givenACriteriaBuilder_whenWithSettingIsCalled_thenCriteriaBuilt() {
         //setup
         CriteriaBuilder criteriaBuilder = aCriteriaBuilder();
         TokenOrListParam setting = new TokenOrListParam();
@@ -295,4 +319,15 @@ public class CriteriaBuilderTest {
         assertThat(criteria, is(notNullValue()));
         assertThat(criteria.getCriteriaObject(), is(expectedCriteria.getCriteriaObject()));
     }
+
+    private void testWithPeriod(DateRangeParam dateRangeParam, Criteria expectedCriteria) {
+        //when
+        criteriaBuilder.withPeriod(dateRangeParam);
+        Criteria criteria = criteriaBuilder.build();
+
+        //then
+        assertThat(criteria, is(notNullValue()));
+        assertThat(criteria.getCriteriaObject(), is(expectedCriteria.getCriteriaObject()));
+    }
+
 }

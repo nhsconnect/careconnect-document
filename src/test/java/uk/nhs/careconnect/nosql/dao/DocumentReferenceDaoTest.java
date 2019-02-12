@@ -9,7 +9,6 @@ import ca.uhn.fhir.rest.param.TokenParam;
 import com.mongodb.DBRef;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.OperationOutcome;
-import org.hl7.fhir.dstu3.model.Resource;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,6 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -45,19 +43,13 @@ public class DocumentReferenceDaoTest extends AbstractDaoTest {
         loadDocumentReference();
     }
 
-// period, patient, setting, _id and identifier
-
     @Test
     public void givenABundleStoredInMongo_whenSearchIsCalledWith_Id_aListOfRelevantResourcesShouldBeReturned() {
         //setup
         TokenParam _id = new TokenParam();
         _id.setValue(documentReferenceId);
 
-        //when
-        List<Resource> resources = documentReferenceDao.search(ctx, _id, null, null, null, null, null, null, null);
-
-        //then
-        assertThat(resources.get(0).getId(), is(documentReferenceId));
+        testSearch(_id, null, null, null, null, null, null);
     }
 
     @Test
@@ -69,11 +61,7 @@ public class DocumentReferenceDaoTest extends AbstractDaoTest {
 
         DateRangeParam createdDateRange = new DateRangeParam(yesterday, tomorrow);
 
-        //when
-        List<Resource> resources = documentReferenceDao.search(ctx, null, null, null, createdDateRange, null, null, null, null);
-
-        //then
-        assertThat(resources.get(0).getId(), is(documentReferenceId));
+        testSearch(null, null, null, createdDateRange, null, null, null);
     }
 
     @Test
@@ -81,11 +69,7 @@ public class DocumentReferenceDaoTest extends AbstractDaoTest {
         //setup
         TokenOrListParam type = new TokenOrListParam("http://snomed.info/sct", "736373009");
 
-        //when
-        List<Resource> resources = documentReferenceDao.search(ctx, null, null, null, null, type, null, null, null);
-
-        //then
-        assertThat(resources.get(0).getId(), is(documentReferenceId));
+        testSearch(null, null, null, null, type, null, null);
     }
 
     @Test
@@ -94,11 +78,7 @@ public class DocumentReferenceDaoTest extends AbstractDaoTest {
         ReferenceParam patient = new ReferenceParam();
         patient.setValue(compositionEntity.getIdxPatient().getId().toString());
 
-        //when
-        List<Resource> resources = documentReferenceDao.search(ctx, null, null, patient, null, null, null, null, null);
-
-        //then
-        assertThat(resources.get(0).getId(), is(documentReferenceId));
+        testSearch(null, null, patient, null, null, null, null);
     }
 
     @Test
@@ -106,11 +86,7 @@ public class DocumentReferenceDaoTest extends AbstractDaoTest {
         //setup
         TokenParam identifier = new TokenParam("https://fhir.yas.nhs.uk/DocumentReference/Identifier", "1");
 
-        //when
-        List<Resource> resources = documentReferenceDao.search(ctx, null, identifier, null, null, null, null, null, null);
-
-        //then
-        assertThat(resources.get(0).getId(), is(documentReferenceId));
+        testSearch(null, identifier, null, null, null, null, null);
     }
 
     @Test
@@ -118,24 +94,25 @@ public class DocumentReferenceDaoTest extends AbstractDaoTest {
         //setup
         TokenOrListParam setting = new TokenOrListParam("http://snomed.info/sct", "103735009");
 
-        //when
-        List<Resource> resources = documentReferenceDao.search(ctx, null, null, null, null, null, setting, null, null);
-
-        //then
-        assertThat(resources.get(0).getId(), is(documentReferenceId));
+        testSearch(null, null, null, null, null, setting, null);
     }
 
     @Test
     public void givenABundleStoredInMongo_whenSearchIsCalledWithPeriod_aListOfRelevantResourcesShouldBeReturned() {
         //setup
-        DateRangeParam periodStart = aPeriodStart();
-        DateRangeParam periodEnd = aPeriodEnd();
+        DateRangeParam period = aPeriodStart();
+
+        testSearch(null, null, null, null, null, null, period);
+    }
+
+    private void testSearch(TokenParam resid, TokenParam identifier, ReferenceParam patient,
+                            DateRangeParam date, TokenOrListParam type, TokenOrListParam setting, DateRangeParam period) {
 
         //when
-        List<Resource> resources = documentReferenceDao.search(ctx, null, null, null, null, null, null, periodStart, periodEnd);
+        Bundle bundle = documentReferenceDao.search(resid, identifier, patient, date, type, setting, period);
 
         //then
-        assertThat(resources.get(0).getId(), is(documentReferenceId));
+        assertThat(bundle.getEntry().get(0).getResource().getId(), is(documentReferenceEntity.getFhirDocumentReference().getId()));
     }
 
     private DateRangeParam aPeriodStart() {
@@ -144,14 +121,6 @@ public class DocumentReferenceDaoTest extends AbstractDaoTest {
         DateParam startDateParam = new DateParam(ParamPrefixEnum.GREATERTHAN_OR_EQUALS, localDateTimeToDate(start));
 
         return new DateRangeParam(startDateParam);
-    }
-
-    private DateRangeParam aPeriodEnd() {
-        LocalDateTime end = LocalDateTime.parse("2018-11-29T08:06:42");
-
-        DateParam endDateParam = new DateParam(ParamPrefixEnum.LESSTHAN_OR_EQUALS, localDateTimeToDate(end));
-
-        return new DateRangeParam(endDateParam);
     }
 
     private Date localDateTimeToDate(LocalDateTime localDateTime) {

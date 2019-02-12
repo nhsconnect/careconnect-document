@@ -19,6 +19,7 @@ public class DocumentReferenceAssertions {
         assertThatCodeableConceptIsEqual(actual.getPractice(), expected.getContext().getPracticeSetting());
         assertThat(actual.getPeriod().getStart(), is(expected.getContext().getPeriod().getStart()));
         assertThat(actual.getPeriod().getEnd(), is(expected.getContext().getPeriod().getEnd()));
+        assertThat(actual.getFhirDocumentReference().getId(), is(expected.getId()));
     }
 
 }
