@@ -2,7 +2,6 @@ package uk.nhs.careconnect.nosql.dao;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.server.exceptions.ResourceVersionConflictException;
-import com.mongodb.DBObject;
 import com.mongodb.DBRef;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Composition;
@@ -48,51 +47,24 @@ public class BundleDao implements IBundle {
     private static final Logger log = LoggerFactory.getLogger(BundleDao.class);
 
     @Override
-    public OperationOutcome update(FhirContext ctx, Bundle bundle, IdType theId, String theConditional) {
-        log.debug("BundleDao.save");
+    public Bundle update(FhirContext ctx, Bundle bundle, IdType theId, String theConditional) {
+        log.debug("About to update Bundle");
+
+        Object savedBundleId = saveBundle(ctx, bundle);
+
+        PatientEntity savedPatient = savePatient(ctx, bundle);
+
+        CompositionEntity compositionEntity = updateCompositionEntity(bundle, savedBundleId, savedPatient);
+
         OperationOutcome operationOutcome = new OperationOutcome();
-
-
-        CompositionEntity compositionEntity = null;
-
-        if (bundle.hasIdentifier()) {
-            IdentifierEntity identifierE = new IdentifierEntity(bundle.getIdentifier());
-            Query qry = Query.query(Criteria.where("identifier.system").is(bundle.getIdentifier().getSystem()).and("identifier.value").is(bundle.getIdentifier().getValue()));
-
-            compositionEntity = mongo.findOne(qry, CompositionEntity.class);
-            if (compositionEntity == null) {
-                compositionEntity = new CompositionEntity();
-                compositionEntity.setIdentifier(identifierE);
-            } else {
-                // Handle updated document, this should be history
-            }
-        }
-
-        DBObject mObj = fhirDocumentDao.save(ctx, bundle);
-        compositionEntity.setFhirDocument(new DBRef("Bundle", mObj.get("_id")));
-        compositionEntity.setFhirDocumentlId(mObj.get("_id").toString());
-
-        for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
-            if (entry.hasResource() && entry.getResource() instanceof Patient) {
-                // TODO ensure this is the correcct Patient (one referred to in the Composition)
-                PatientEntity mpiPatient = patientDao.createEntity(ctx, (Patient) entry.getResource());
-                compositionEntity.setIdxPatient(mpiPatient);
-            }
-        }
-
-        mongo.save(compositionEntity);
-
         operationOutcome.setId("Composition/" + compositionEntity.getId());
 
-
-        return operationOutcome;
+        return aBundleResponse(bundle, operationOutcome);
     }
 
     @Override
-    public OperationOutcome create(FhirContext ctx, Bundle bundle, IdType theId, String theConditional) {
-
-        log.debug("BundleDao.save");
-        OperationOutcome operationOutcome = new OperationOutcome();
+    public Bundle create(FhirContext ctx, Bundle bundle, IdType theId, String theConditional) {
+        log.debug("About to create Bundle");
 
         checkNotAlreadySaved(bundle);
 
@@ -104,9 +76,11 @@ public class BundleDao implements IBundle {
 
         saveDocumentReference(bundle, savedPatient);
 
+        OperationOutcome operationOutcome = new OperationOutcome();
         operationOutcome.setId("Composition/" + compositionEntity.getId());
 
-        return operationOutcome;
+        //TODO: need to change to the saved bundle - currently has savedBundleId above
+        return aBundleResponse(bundle, operationOutcome);
     }
 
     private void checkNotAlreadySaved(Bundle bundle) {
@@ -154,6 +128,33 @@ public class BundleDao implements IBundle {
         return compositionEntity;
     }
 
+    private CompositionEntity updateCompositionEntity(Bundle bundle, Object savedBundleId, PatientEntity savedPatient) {
+        CompositionEntity compositionEntity = null;
+
+        if (bundle.hasIdentifier()) {
+            IdentifierEntity identifierE = new IdentifierEntity(bundle.getIdentifier());
+            Query qry = Query.query(Criteria.where("identifier.system").is(bundle.getIdentifier().getSystem()).and("identifier.value").is(bundle.getIdentifier().getValue()));
+
+            compositionEntity = mongo.findOne(qry, CompositionEntity.class);
+            if (compositionEntity == null) {
+                compositionEntity = new CompositionEntity();
+                compositionEntity.setIdentifier(identifierE);
+            } else {
+                // Handle updated document, this should be history
+            }
+        }
+
+        if (savedPatient != null) {
+            compositionEntity.setIdxPatient(savedPatient);
+        }
+
+        compositionEntity.setFhirDocument(new DBRef("Bundle", savedBundleId));
+        compositionEntity.setFhirDocumentlId(savedBundleId.toString());
+
+        mongo.save(compositionEntity);
+        return compositionEntity;
+    }
+
     private void setCompositionEntityType(Bundle bundle, CompositionEntity compositionEntity) {
         Optional<Composition> compositionEntry = bundle.getEntry().stream()
                 .filter(entry -> entry.hasResource() && entry.getResource() instanceof Composition)
@@ -175,6 +176,12 @@ public class BundleDao implements IBundle {
                 .map(entry -> (DocumentReference) entry.getResource())
                 .map(documentReference -> new DocumentReferenceEntity(savedPatient, documentReference))
                 .findFirst().ifPresent(mongo::save);
+    }
+
+    private Bundle aBundleResponse(Bundle bundle, OperationOutcome operationOutcome) {
+        return new Bundle()
+                .addEntry(new Bundle.BundleEntryComponent().setResource(operationOutcome))
+                .addEntry(new Bundle.BundleEntryComponent().setResource(bundle));
     }
 
 }

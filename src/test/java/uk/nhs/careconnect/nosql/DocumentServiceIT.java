@@ -30,6 +30,7 @@ import static java.lang.String.format;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static uk.nhs.careconnect.nosql.util.BundleUtils.extractFirstResourceOfType;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {TestITConfig.class})
@@ -63,7 +64,10 @@ public class DocumentServiceIT {
 
     protected void createBundle(String fileName) {
         Bundle bundle = loadBundle(fileName);
-        OperationOutcome operationOutcome = bundleDao.create(ctx, bundle, null, null);
+
+        Bundle createdBundle = bundleDao.create(ctx, bundle, null, null);
+        OperationOutcome operationOutcome = extractFirstResourceOfType(OperationOutcome.class, createdBundle).get();
+
         assertThat(operationOutcome.getId(), is(notNullValue()));
     }
 

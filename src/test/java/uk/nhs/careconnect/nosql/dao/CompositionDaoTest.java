@@ -20,6 +20,7 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static uk.nhs.careconnect.nosql.util.BundleUtils.extractFirstResourceOfType;
 
 public class CompositionDaoTest extends AbstractDaoTest {
 
@@ -123,7 +124,9 @@ public class CompositionDaoTest extends AbstractDaoTest {
 
     private void loadAndCreateBundle() {
         Bundle bundle = loadBundle();
-        OperationOutcome operationOutcome = bundleDao.create(ctx, bundle, null, null);
+
+        Bundle createdBundle = bundleDao.create(ctx, bundle, null, null);
+        OperationOutcome operationOutcome = extractFirstResourceOfType(OperationOutcome.class, createdBundle).get();
 
         compositionId = operationOutcome.getId().split("/")[1];
     }

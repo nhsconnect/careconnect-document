@@ -57,7 +57,6 @@ public class BundleTestData {
         Bundle.BundleEntryComponent documentReferenceEntry = new Bundle.BundleEntryComponent();
         documentReferenceEntry.setResource(aDocumentReference());
 
-        entryList.add(compositionEntry);
         entryList.add(patientEntry);
         entryList.add(documentReferenceEntry);
 

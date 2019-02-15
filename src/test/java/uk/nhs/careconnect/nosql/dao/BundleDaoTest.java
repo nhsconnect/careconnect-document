@@ -28,6 +28,7 @@ import static uk.nhs.careconnect.nosql.support.testdata.BundleTestData.aBundle;
 import static uk.nhs.careconnect.nosql.support.testdata.BundleTestData.aPatientIdentifier;
 import static uk.nhs.careconnect.nosql.support.testdata.CompositionTestData.aCompositionEntity;
 import static uk.nhs.careconnect.nosql.support.testdata.DocumentReferenceTestData.aDocumentReference;
+import static uk.nhs.careconnect.nosql.util.BundleUtils.extractFirstResourceOfType;
 
 public class BundleDaoTest extends AbstractDaoTest {
 
@@ -38,47 +39,43 @@ public class BundleDaoTest extends AbstractDaoTest {
     IBundle bundleDao;
 
     @Test
-    public void givenABundle_whenCreateIsCalled_aBundleCompositionAndPatientArePersistedInMongo() {
+    public void givenABundle_whenCreateIsCalled_aBundleCompositionPatientAndDocumentReferenceArePersistedInMongo() {
         //setup
         Bundle bundle = aBundle();
         CompositionEntity expectedCompositionEntity = aCompositionEntity();
         DocumentReference expectedDocumentReferenceEntity = aDocumentReference();
 
         //when
-        OperationOutcome operationOutcome = bundleDao.create(ctx, bundle, null, null);
+        Bundle createdBundle = bundleDao.create(ctx, bundle, null, null);
+        OperationOutcome operationOutcome = extractFirstResourceOfType(OperationOutcome.class, createdBundle).get();
 
         //then
 
-        //Bundle
         DBObject savedBsonBundle = loadBsonBundle(bundle);
-        ObjectId bundleId = (ObjectId) savedBsonBundle.get("_id");
         Bundle savedBundle = bsonBundleToBundle(savedBsonBundle);
 
-        assertThat(savedBundle.getId(), is(bundle.getId()));
-        assertThat(savedBundle.getIdentifier().getValue(), is(bundle.getIdentifier().getValue()));
-        assertThat(savedBundle.getIdentifier().getSystem(), is(bundle.getIdentifier().getSystem()));
+        CompositionEntity savedCompositionEntity = loadComposition(savedBsonBundle);
 
-        //Composition
-        CompositionEntity savedCompositionEntity = loadComposition(bundleId);
+        PatientEntity savedPatient = loadPatient(savedCompositionEntity);
 
-        assertThatCompositionsAreEqual(savedCompositionEntity, expectedCompositionEntity);
-        assertThat(savedCompositionEntity.getFhirDocument(), is(notNullValue()));
-        assertThat(savedCompositionEntity.getFhirDocumentlId(), is(notNullValue()));
-        assertThat(savedCompositionEntity.getDate(), is(notNullValue())); //TODO: difficult to test date is correct, so just checking it was set
-        assertThat(operationOutcome.getId(), startsWith("Composition/"));
-
-        //Patient
-        ObjectId patientId = savedCompositionEntity.getIdxPatient().getId();
-        PatientEntity savedPatient = loadPatient(patientId);
-
-        assertPatientIdentifiersAreEqual(savedPatient.getIdentifiers(), aPatientIdentifier());
-
-        // Document Reference
         DocumentReferenceEntity savedDocumentReferenceEntity = loadDocumentReference(savedPatient.getId());
 
+        assertThatBundleIsEqual(bundle, savedBundle);
+        assertThatCompositionIsEqual(expectedCompositionEntity, operationOutcome, savedCompositionEntity);
+        assertPatientIdentifiersAreEqual(savedPatient.getIdentifiers(), aPatientIdentifier());
+        assertThatDocumentReferenceEntityIsEqual(expectedDocumentReferenceEntity, savedPatient, savedDocumentReferenceEntity);
+    }
+
+    private void assertThatDocumentReferenceEntityIsEqual(DocumentReference expectedDocumentReferenceEntity, PatientEntity savedPatient, DocumentReferenceEntity savedDocumentReferenceEntity) {
         assertThat(savedDocumentReferenceEntity.getIdxPatient().getId().toString(), is(savedPatient.getId().toString()));
 
         assertThatDocumentReferenceIsEqual(savedDocumentReferenceEntity, expectedDocumentReferenceEntity);
+    }
+
+    private void assertThatBundleIsEqual(Bundle bundle, Bundle savedBundle) {
+        assertThat(savedBundle.getId(), is(bundle.getId()));
+        assertThat(savedBundle.getIdentifier().getValue(), is(bundle.getIdentifier().getValue()));
+        assertThat(savedBundle.getIdentifier().getSystem(), is(bundle.getIdentifier().getSystem()));
     }
 
     @Test
@@ -94,6 +91,41 @@ public class BundleDaoTest extends AbstractDaoTest {
         bundleDao.create(ctx, bundle, null, null);
     }
 
+    @Test
+    public void givenABundle_whenUpdateIsCalled_aBundleCompositionPatientAndDocumentReferenceAreUpdatedInMongo() {
+        //setup
+        Bundle bundle = aBundle();
+        CompositionEntity expectedCompositionEntity = aCompositionEntity();
+        DocumentReference expectedDocumentReferenceEntity = aDocumentReference();
+
+        //when
+        Bundle createdBundle = bundleDao.update(ctx, bundle, null, null);
+        OperationOutcome operationOutcome = extractFirstResourceOfType(OperationOutcome.class, createdBundle).get();
+
+        //then
+
+        DBObject savedBsonBundle = loadBsonBundle(bundle);
+        Bundle savedBundle = bsonBundleToBundle(savedBsonBundle);
+
+        CompositionEntity savedCompositionEntity = loadComposition(savedBsonBundle);
+
+        PatientEntity savedPatient = loadPatient(savedCompositionEntity);
+
+        DocumentReferenceEntity savedDocumentReferenceEntity = loadDocumentReference(savedPatient.getId());
+
+        assertThatBundleIsEqual(bundle, savedBundle);
+        assertThatCompositionIsEqual(expectedCompositionEntity, operationOutcome, savedCompositionEntity);
+        assertPatientIdentifiersAreEqual(savedPatient.getIdentifiers(), aPatientIdentifier());
+    }
+
+    private void assertThatCompositionIsEqual(CompositionEntity expectedCompositionEntity, OperationOutcome operationOutcome, CompositionEntity savedCompositionEntity) {
+        assertThatCompositionsAreEqual(savedCompositionEntity, expectedCompositionEntity);
+        assertThat(savedCompositionEntity.getFhirDocument(), is(notNullValue()));
+        assertThat(savedCompositionEntity.getFhirDocumentlId(), is(notNullValue()));
+//        assertThat(savedCompositionEntity.getDate(), is(notNullValue())); //TODO: difficult to test date is correct, so just checking it was set
+        assertThat(operationOutcome.getId(), startsWith("Composition/"));
+    }
+
     private Bundle bsonBundleToBundle(DBObject bsonBundle) {
         return (Bundle) ctx.newJsonParser().parseResource(bsonBundle.toString());
     }
@@ -103,18 +135,21 @@ public class BundleDaoTest extends AbstractDaoTest {
         return mongoTemplate.findOne(qry, DBObject.class, "Bundle");
     }
 
-    private CompositionEntity loadComposition(ObjectId bundleId) {
+    private CompositionEntity loadComposition(DBObject savedBsonBundle) {
+        ObjectId bundleId = (ObjectId) savedBsonBundle.get("_id");
+
         Query qry = Query.query(Criteria.where("fhirDocumentlId").is(bundleId.toHexString()));
         return mongoTemplate.findOne(qry, CompositionEntity.class);
     }
 
-    private PatientEntity loadPatient(ObjectId patientId) {
+    private PatientEntity loadPatient(CompositionEntity savedCompositionEntity) {
+        ObjectId patientId = savedCompositionEntity.getIdxPatient().getId();
+
         Query qry = Query.query(Criteria.where("_id").is(patientId.toHexString()));
         return mongoTemplate.findOne(qry, PatientEntity.class);
     }
 
     private DocumentReferenceEntity loadDocumentReference(ObjectId patientId) {
-        //Query qry = Query.query(Criteria.where("patientId").is(patientId.toHexString()));
         Query qry = Query.query(Criteria.where("idxPatient").is(new DBRef("idxPatient", patientId)));
 
         return mongoTemplate.findOne(qry, DocumentReferenceEntity.class);

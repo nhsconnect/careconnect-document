@@ -12,7 +12,6 @@ import org.hl7.fhir.dstu3.model.DocumentReference;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import uk.nhs.careconnect.nosql.dao.DocumentReferenceDao;
 import uk.nhs.careconnect.nosql.dao.IDocumentReference;
 
 @Component
@@ -35,8 +34,8 @@ public class DocumentReferenceProvider implements IResourceProvider {
                          @OptionalParam(name = DocumentReference.SP_SETTING) TokenOrListParam setting,
                          @OptionalParam(name = DocumentReference.SP_PERIOD) DateRangeParam period) {
 
-            return documentReferenceDao.search(resid, identifier, patient, createdDate, type, setting, period);
+        return documentReferenceDao.search(resid, identifier, patient, createdDate, type, setting, period);
 
-        }
+    }
 
 }
