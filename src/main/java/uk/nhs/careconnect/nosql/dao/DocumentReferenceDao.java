@@ -1,13 +1,10 @@
 package uk.nhs.careconnect.nosql.dao;
 
-import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.TokenOrListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.DocumentReference;
-import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,22 +61,6 @@ public class DocumentReferenceDao implements IDocumentReference {
         }
 
         return new Bundle().setEntry(resources.stream().map(new Bundle.BundleEntryComponent()::setResource).collect(toList()));
-    }
-
-    public DocumentReference create(FhirContext ctx, DocumentReference documentReference, IdType theId, String theConditional) {
-        log.debug("DocumentReferenceEntity.save");
-
-
-
-
-        DocumentReferenceEntity documentReferenceEntity = new DocumentReferenceEntity();
-        documentReferenceEntity.setName("Dina");
-        String json = ctx.newJsonParser().encodeResourceToString(documentReference);
-        documentReferenceEntity.setJson(json);
-
-        mongo.save(documentReferenceEntity);
-
-        return null;
     }
 
 }
