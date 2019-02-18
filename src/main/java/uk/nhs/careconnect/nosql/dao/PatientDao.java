@@ -125,11 +125,6 @@ public class PatientDao implements IPatient {
     }
 
     @Override
-    public Patient create(FhirContext ctx, Patient patient) {
-        return patientEntityToFHIRPatient.transform(createEntity(ctx,patient));
-    }
-
-    @Override
     public List<Resource> search(FhirContext ctx, StringParam postCode, DateRangeParam birthDate, TokenParam email, StringParam familyName, TokenParam gender, StringParam givenName, TokenParam identifier, StringParam name, TokenParam phone) {
         List<Resource> resources = new ArrayList<>();
 
