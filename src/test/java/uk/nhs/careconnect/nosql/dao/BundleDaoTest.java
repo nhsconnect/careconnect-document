@@ -16,12 +16,14 @@ import org.springframework.data.mongodb.core.query.Query;
 import uk.nhs.careconnect.nosql.entities.CompositionEntity;
 import uk.nhs.careconnect.nosql.entities.DocumentReferenceEntity;
 import uk.nhs.careconnect.nosql.entities.PatientEntity;
+import uk.nhs.careconnect.nosql.support.assertions.BundleAssertions;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static uk.nhs.careconnect.nosql.providers.support.assertions.ResourceAssertions.assertPatientIdentifiersAreEqual;
+import static uk.nhs.careconnect.nosql.support.assertions.BundleAssertions.assertThatBundleIsEqual;
 import static uk.nhs.careconnect.nosql.support.assertions.CompositionAssertions.assertThatCompositionsAreEqual;
 import static uk.nhs.careconnect.nosql.support.assertions.DocumentReferenceAssertions.assertThatDocumentReferenceIsEqual;
 import static uk.nhs.careconnect.nosql.support.testdata.BundleTestData.aBundle;
@@ -70,12 +72,6 @@ public class BundleDaoTest extends AbstractDaoTest {
         assertThat(savedDocumentReferenceEntity.getIdxPatient().getId().toString(), is(savedPatient.getId().toString()));
 
         assertThatDocumentReferenceIsEqual(savedDocumentReferenceEntity, expectedDocumentReferenceEntity);
-    }
-
-    private void assertThatBundleIsEqual(Bundle bundle, Bundle savedBundle) {
-        assertThat(savedBundle.getId(), is(bundle.getId()));
-        assertThat(savedBundle.getIdentifier().getValue(), is(bundle.getIdentifier().getValue()));
-        assertThat(savedBundle.getIdentifier().getSystem(), is(bundle.getIdentifier().getSystem()));
     }
 
     @Test
