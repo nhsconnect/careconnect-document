@@ -1,16 +1,12 @@
 package uk.nhs.careconnect.nosql.support.testdata;
 
+import org.hl7.fhir.dstu3.model.Binary;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.Composition;
-import org.hl7.fhir.dstu3.model.DocumentReference;
-import org.hl7.fhir.dstu3.model.DocumentReference.DocumentReferenceRelatesToComponent;
-import org.hl7.fhir.dstu3.model.DocumentReference.DocumentReferenceContextComponent;
 import org.hl7.fhir.dstu3.model.Identifier;
 import org.hl7.fhir.dstu3.model.Patient;
-import org.hl7.fhir.dstu3.model.Period;
-import org.hl7.fhir.dstu3.model.Reference;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -34,6 +30,8 @@ public class BundleTestData {
     private static final OffsetDateTime NOW = OffsetDateTime.now(ZoneOffset.UTC);
     public static final Date YESTERDAY = Date.from(NOW.minusDays(1).toInstant());
     public static final Date TOMORROW = Date.from(NOW.plusDays(1).toInstant());
+    public static final String CONTENT_TYPE_APPLICATION_PDF = "application/pdf";
+    public static final byte[] BINARY_CONTENT_BYTES = "Some test content".getBytes();
 
     public static Bundle aBundle() {
         Bundle bundle = new Bundle();
@@ -63,6 +61,18 @@ public class BundleTestData {
         return bundle;
     }
 
+    public static Bundle aBundleWithBinary() {
+        Bundle bundle = aBundle();
+        List<Bundle.BundleEntryComponent> entryList = bundle.getEntry();
+
+        Bundle.BundleEntryComponent binaryEntry = new Bundle.BundleEntryComponent();
+        binaryEntry.setResource(aBinary());
+
+        entryList.add(binaryEntry);
+
+        return bundle;
+    }
+
     public static Composition aComposition() {
         return new Composition()
                 .setType(new CodeableConcept()
@@ -87,6 +97,12 @@ public class BundleTestData {
 
     public static List<Identifier> aPatientIdentifier() {
         return asList(new Identifier().setValue("patient-identifier-1"));
+    }
+
+    public static Binary aBinary() {
+        return new Binary()
+                .setContent(BINARY_CONTENT_BYTES)
+                .setContentType(CONTENT_TYPE_APPLICATION_PDF);
     }
 
 }

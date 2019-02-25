@@ -32,7 +32,7 @@ public class DocumentServiceSteps extends DocumentServiceApplicationRunner {
 
     protected static final Logger log = LoggerFactory.getLogger(DocumentServiceSteps.class);
 
-    protected static final String[] COLLECTION_NAMES = {"Bundle", "idxComposition", "idxPatient", "idxDocumentReference"};
+    protected static final String[] COLLECTION_NAMES = {"Bundle", "idxComposition", "idxPatient", "idxDocumentReference", "fs.files"};
 
     private String serverBase;
 

@@ -4,9 +4,13 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.server.exceptions.ResourceVersionConflictException;
 import com.mongodb.DBObject;
 import com.mongodb.DBRef;
+import org.bson.types.ObjectId;
+import org.hl7.fhir.dstu3.model.Attachment;
+import org.hl7.fhir.dstu3.model.Binary;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Composition;
 import org.hl7.fhir.dstu3.model.DocumentReference;
+import org.hl7.fhir.dstu3.model.DocumentReference.DocumentReferenceContentComponent;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.OperationOutcome;
 import org.hl7.fhir.dstu3.model.Patient;
@@ -29,6 +33,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import static java.lang.String.format;
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static uk.nhs.careconnect.nosql.dao.SaveAction.CREATE;
@@ -80,6 +86,8 @@ public class BundleDao implements IBundle {
         PatientEntity savedPatient = savePatient(ctx, bundle);
 
         CompositionEntity compositionEntity = saveComposition(bundle, saveBundleResponse.getSavedBundleId(), savedPatient);
+
+        saveBinary(ctx, bundle);
 
         saveDocumentReference(bundle, savedPatient);
 
@@ -190,6 +198,33 @@ public class BundleDao implements IBundle {
                 .map(entry -> (DocumentReference) entry.getResource())
                 .map(documentReference -> new DocumentReferenceEntity(savedPatient, documentReference))
                 .findFirst().ifPresent(mongo::save);
+    }
+
+    public void saveBinary(FhirContext ctx, Bundle bundle) {
+        Optional<Binary> optionalBinary = bundle.getEntry().stream()
+                .filter(entry -> entry.hasResource() && entry.getResource() instanceof Binary)
+                .map(entry -> (Binary) entry.getResource())
+                .findFirst();
+
+        Optional<ObjectId> optionalBinaryId = optionalBinary.map(binary -> binaryResourceDao.save(ctx, binary));
+
+        Optional<DocumentReference> optionalDocumentReference = bundle.getEntry().stream()
+                .filter(entry -> entry.hasResource() && entry.getResource() instanceof DocumentReference)
+                .map(entry -> (DocumentReference) entry.getResource())
+                .findFirst();
+
+        optionalDocumentReference.ifPresent(documentReference -> {
+            optionalBinaryId.ifPresent(binaryId -> {
+
+                DocumentReferenceContentComponent documentReferenceContentComponent = new DocumentReferenceContentComponent();
+
+                Attachment attachment = new Attachment().setUrl(format("Binary/%s", binaryId));
+                documentReferenceContentComponent.setAttachment(attachment);
+
+                documentReference.setContent(asList(documentReferenceContentComponent));
+            });
+        });
+
     }
 
     private Bundle aBundleResponse(Bundle bundle, OperationOutcome operationOutcome) {

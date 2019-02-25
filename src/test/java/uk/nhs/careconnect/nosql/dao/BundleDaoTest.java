@@ -3,7 +3,11 @@ package uk.nhs.careconnect.nosql.dao;
 import ca.uhn.fhir.rest.server.exceptions.ResourceVersionConflictException;
 import com.mongodb.DBObject;
 import com.mongodb.DBRef;
+import com.mongodb.gridfs.GridFS;
+import com.mongodb.gridfs.GridFSDBFile;
+import org.apache.commons.io.IOUtils;
 import org.bson.types.ObjectId;
+import org.hl7.fhir.dstu3.model.Binary;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.DocumentReference;
 import org.hl7.fhir.dstu3.model.IdType;
@@ -17,15 +21,20 @@ import org.springframework.data.mongodb.core.query.Query;
 import uk.nhs.careconnect.nosql.entities.CompositionEntity;
 import uk.nhs.careconnect.nosql.entities.DocumentReferenceEntity;
 import uk.nhs.careconnect.nosql.entities.PatientEntity;
+import uk.nhs.careconnect.nosql.support.testdata.BundleTestData;
+
+import java.io.IOException;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static uk.nhs.careconnect.nosql.providers.support.assertions.ResourceAssertions.assertPatientIdentifiersAreEqual;
+import static uk.nhs.careconnect.nosql.support.assertions.BinaryAssertions.assertThatBinaryIsEqual;
 import static uk.nhs.careconnect.nosql.support.assertions.BundleAssertions.assertThatBundleIsEqual;
 import static uk.nhs.careconnect.nosql.support.assertions.CompositionAssertions.assertThatCompositionsAreEqual;
 import static uk.nhs.careconnect.nosql.support.assertions.DocumentReferenceAssertions.assertThatDocumentReferenceIsEqual;
+import static uk.nhs.careconnect.nosql.support.testdata.BundleTestData.aBinary;
 import static uk.nhs.careconnect.nosql.support.testdata.BundleTestData.aBundle;
 import static uk.nhs.careconnect.nosql.support.testdata.BundleTestData.aPatientIdentifier;
 import static uk.nhs.careconnect.nosql.support.testdata.CompositionTestData.aCompositionEntity;
@@ -70,12 +79,6 @@ public class BundleDaoTest extends AbstractDaoTest {
         assertThatDocumentReferenceEntityIsEqual(expectedDocumentReferenceEntity, savedPatient, savedDocumentReferenceEntity);
     }
 
-    private void assertThatDocumentReferenceEntityIsEqual(DocumentReference expectedDocumentReferenceEntity, PatientEntity savedPatient, DocumentReferenceEntity savedDocumentReferenceEntity) {
-        assertThat(savedDocumentReferenceEntity.getIdxPatient().getId().toString(), is(savedPatient.getId().toString()));
-
-        assertThatDocumentReferenceIsEqual(savedDocumentReferenceEntity, expectedDocumentReferenceEntity);
-    }
-
     @Test
     public void givenABundleIsAlreadySaved_whenCreateIsCalled_anExceptionIsThrown() {
         expectedException.expect(ResourceVersionConflictException.class);
@@ -87,6 +90,39 @@ public class BundleDaoTest extends AbstractDaoTest {
         //when
         bundleDao.create(ctx, bundle, null, null);
         bundleDao.create(ctx, bundle, null, null);
+    }
+
+    @Test
+    public void givenABundleWithBinaryContent_whenCreateIsCalled_aBundleCompositionPatientAndDocumentReferenceArePersistedInMongo() throws IOException {
+        //setup
+        Bundle bundle = BundleTestData.aBundleWithBinary();
+        CompositionEntity expectedCompositionEntity = aCompositionEntity();
+        DocumentReference expectedDocumentReferenceEntity = aDocumentReference();
+        Binary expectedBinary = aBinary();
+
+        //when
+        Bundle responseBundle = bundleDao.create(ctx, bundle, null, null);
+        Bundle createdBundle = extractFirstResourceOfType(Bundle.class, responseBundle).get();
+
+        OperationOutcome operationOutcome = extractFirstResourceOfType(OperationOutcome.class, responseBundle).get();
+
+        //then
+        DBObject retrievedBsonBundle = loadBsonBundle(createdBundle);
+        Bundle retrievedBundle = bsonBundleToBundle(ctx, retrievedBsonBundle);
+
+        CompositionEntity savedCompositionEntity = loadComposition(retrievedBsonBundle);
+
+        PatientEntity savedPatient = loadPatient(savedCompositionEntity);
+
+        DocumentReferenceEntity savedDocumentReferenceEntity = loadDocumentReference(savedPatient.getId());
+
+        Binary savedBinary = loadBinary(savedDocumentReferenceEntity);
+
+        assertThatBundleIsEqual(bundle, retrievedBundle);
+        assertThatCompositionIsEqual(expectedCompositionEntity, operationOutcome, savedCompositionEntity);
+        assertPatientIdentifiersAreEqual(savedPatient.getIdentifiers(), aPatientIdentifier());
+        assertThatDocumentReferenceEntityIsEqual(expectedDocumentReferenceEntity, savedPatient, savedDocumentReferenceEntity);
+        assertThatBinaryIsEqual(expectedBinary, savedBinary);
     }
 
     @Test
@@ -132,6 +168,12 @@ public class BundleDaoTest extends AbstractDaoTest {
         assertThat(operationOutcome.getId(), startsWith("Composition/"));
     }
 
+    private void assertThatDocumentReferenceEntityIsEqual(DocumentReference expectedDocumentReferenceEntity, PatientEntity savedPatient, DocumentReferenceEntity savedDocumentReferenceEntity) {
+        assertThat(savedDocumentReferenceEntity.getIdxPatient().getId().toString(), is(savedPatient.getId().toString()));
+
+        assertThatDocumentReferenceIsEqual(savedDocumentReferenceEntity, expectedDocumentReferenceEntity);
+    }
+
     private DBObject loadBsonBundle(Bundle bundle) {
         Query qry = Query.query(Criteria.where("_id").is(bundle.getId()));
         return mongoTemplate.findOne(qry, DBObject.class, "Bundle");
@@ -155,6 +197,20 @@ public class BundleDaoTest extends AbstractDaoTest {
         Query qry = Query.query(Criteria.where("idxPatient").is(new DBRef("idxPatient", patientId)));
 
         return mongoTemplate.findOne(qry, DocumentReferenceEntity.class);
+    }
+
+    private Binary loadBinary(DocumentReferenceEntity savedDocumentReferenceEntity) throws IOException {
+
+        String binaryId = savedDocumentReferenceEntity.getFhirDocumentReference().getContent().stream()
+                .map(content -> content.getAttachment().getUrl().replaceAll("Binary/", ""))
+                .findFirst().get();
+
+        GridFS gridFS = new GridFS(mongoTemplate.getDb());
+        GridFSDBFile gridFSDBFile = gridFS.find(new ObjectId(binaryId));
+
+        return new Binary()
+                .setContentType(gridFSDBFile.getContentType())
+                .setContent(IOUtils.toByteArray(gridFSDBFile.getInputStream()));
     }
 
     private Bundle saveBundle(Bundle bundle) {

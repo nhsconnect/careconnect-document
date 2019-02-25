@@ -27,7 +27,7 @@ import static uk.nhs.careconnect.nosql.util.BundleUtils.extractFirstResourceOfTy
 @SpringBootTest
 public abstract class AbstractDaoTest {
 
-    protected static final String[] COLLECTION_NAMES = {"Bundle", "idxComposition", "idxPatient", "idxDocumentReference"};
+    protected static final String[] COLLECTION_NAMES = {"Bundle", "idxComposition", "idxPatient", "idxDocumentReference", "fs.files"};
 
     @Autowired
     MongoManager mongoManager;
