@@ -12,8 +12,6 @@ import ca.uhn.fhir.rest.server.exceptions.UnclassifiedServerFailureException;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.OperationOutcome;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.nhs.careconnect.nosql.dao.IBundle;
@@ -41,20 +39,16 @@ public class BundleProvider implements IResourceProvider {
 
     @Create
     public MethodOutcome create(@ResourceParam Bundle bundle) {
-
         Bundle resultBundle = bundleDao.create(ctx, bundle, null, null);
 
         return aMethodOutcomeResponse(resultBundle, CREATED);
-
     }
 
     @Update
     public MethodOutcome update(@ResourceParam Bundle bundle, @IdParam IdType bundleId, @ConditionalUrlParam String conditional) {
-
         Bundle resultBundle = bundleDao.update(ctx, bundle, bundleId, conditional);
 
         return aMethodOutcomeResponse(resultBundle, UPDATED);
-
     }
 
     private MethodOutcome aMethodOutcomeResponse(Bundle resultBundle, Boolean created) {

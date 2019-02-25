@@ -2,6 +2,7 @@ package uk.nhs.careconnect.nosql.dao;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.server.exceptions.ResourceVersionConflictException;
+import com.mongodb.DBObject;
 import com.mongodb.DBRef;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Composition;
@@ -30,6 +31,9 @@ import java.util.Optional;
 
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
+import static uk.nhs.careconnect.nosql.dao.SaveAction.CREATE;
+import static uk.nhs.careconnect.nosql.dao.SaveAction.UPDATE;
+import static uk.nhs.careconnect.nosql.util.BundleUtils.bsonBundleToBundle;
 
 @Transactional
 @Repository
@@ -37,6 +41,9 @@ public class BundleDao implements IBundle {
 
     @Autowired
     MongoOperations mongo;
+
+    @Autowired
+    BinaryResourceDao binaryResourceDao;
 
     @Autowired
     IFHIRResource fhirDocumentDao;
@@ -47,40 +54,39 @@ public class BundleDao implements IBundle {
     private static final Logger log = LoggerFactory.getLogger(BundleDao.class);
 
     @Override
-    public Bundle update(FhirContext ctx, Bundle bundle, IdType theId, String theConditional) {
+    public Bundle update(FhirContext ctx, Bundle bundle, IdType idType, String theConditional) {
         log.debug("About to update Bundle");
 
-        Object savedBundleId = saveBundle(ctx, bundle);
+        SaveBundleResponse saveBundleResponse = saveBundle(ctx, bundle, idType, UPDATE);
 
         PatientEntity savedPatient = savePatient(ctx, bundle);
 
-        CompositionEntity compositionEntity = updateCompositionEntity(bundle, savedBundleId, savedPatient);
+        CompositionEntity compositionEntity = updateCompositionEntity(bundle, saveBundleResponse.getSavedBundleId(), savedPatient);
 
         OperationOutcome operationOutcome = new OperationOutcome();
         operationOutcome.setId("Composition/" + compositionEntity.getId());
 
-        return aBundleResponse(bundle, operationOutcome);
+        return aBundleResponse(saveBundleResponse.getBundle(), operationOutcome);
     }
 
     @Override
-    public Bundle create(FhirContext ctx, Bundle bundle, IdType theId, String theConditional) {
+    public Bundle create(FhirContext ctx, Bundle bundle, IdType idType, String theConditional) {
         log.debug("About to create Bundle");
 
         checkNotAlreadySaved(bundle);
 
-        Object savedBundleId = saveBundle(ctx, bundle);
+        SaveBundleResponse saveBundleResponse = saveBundle(ctx, bundle, idType, CREATE);
 
         PatientEntity savedPatient = savePatient(ctx, bundle);
 
-        CompositionEntity compositionEntity = saveComposition(bundle, savedBundleId, savedPatient);
+        CompositionEntity compositionEntity = saveComposition(bundle, saveBundleResponse.getSavedBundleId(), savedPatient);
 
         saveDocumentReference(bundle, savedPatient);
 
         OperationOutcome operationOutcome = new OperationOutcome();
         operationOutcome.setId("Composition/" + compositionEntity.getId());
 
-        //TODO: need to change to the saved bundle - currently has savedBundleId above
-        return aBundleResponse(bundle, operationOutcome);
+        return aBundleResponse(saveBundleResponse.getBundle(), operationOutcome);
     }
 
     private void checkNotAlreadySaved(Bundle bundle) {
@@ -91,8 +97,16 @@ public class BundleDao implements IBundle {
             throw new ResourceVersionConflictException("FHIR Document already exists. Binary/" + bundleE.getId());
     }
 
-    private Object saveBundle(FhirContext ctx, Bundle bundle) {
-        return fhirDocumentDao.save(ctx, bundle).get("_id");
+    private SaveBundleResponse saveBundle(FhirContext ctx, Bundle bundle, IdType idType, SaveAction saveAction) {
+        DBObject savedBsonBundle = fhirDocumentDao.save(ctx, bundle, idType, saveAction);
+
+        Object savedBundleId = savedBsonBundle.get("_id");
+        Bundle savedBundle = bsonBundleToBundle(ctx, savedBsonBundle);
+        savedBundle.setId(savedBundleId.toString());
+
+        return new SaveBundleResponse()
+                .setObjectId(savedBundleId)
+                .setBundle(savedBundle);
     }
 
     private PatientEntity savePatient(FhirContext ctx, Bundle bundle) {
@@ -182,6 +196,31 @@ public class BundleDao implements IBundle {
         return new Bundle()
                 .addEntry(new Bundle.BundleEntryComponent().setResource(operationOutcome))
                 .addEntry(new Bundle.BundleEntryComponent().setResource(bundle));
+    }
+
+    private class SaveBundleResponse {
+
+        private Object savedBundleId;
+        private Bundle bundle;
+
+        public Object getSavedBundleId() {
+            return savedBundleId;
+        }
+
+        public SaveBundleResponse setObjectId(Object savedBundleId) {
+            this.savedBundleId = savedBundleId;
+            return this;
+        }
+
+        public Bundle getBundle() {
+            return bundle;
+        }
+
+        public SaveBundleResponse setBundle(Bundle bundle) {
+            this.bundle = bundle;
+            return this;
+        }
+
     }
 
 }

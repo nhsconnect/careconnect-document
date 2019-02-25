@@ -6,6 +6,7 @@ import com.mongodb.DBRef;
 import org.bson.types.ObjectId;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.DocumentReference;
+import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.OperationOutcome;
 import org.junit.Rule;
 import org.junit.Test;
@@ -16,7 +17,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import uk.nhs.careconnect.nosql.entities.CompositionEntity;
 import uk.nhs.careconnect.nosql.entities.DocumentReferenceEntity;
 import uk.nhs.careconnect.nosql.entities.PatientEntity;
-import uk.nhs.careconnect.nosql.support.assertions.BundleAssertions;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -30,6 +30,7 @@ import static uk.nhs.careconnect.nosql.support.testdata.BundleTestData.aBundle;
 import static uk.nhs.careconnect.nosql.support.testdata.BundleTestData.aPatientIdentifier;
 import static uk.nhs.careconnect.nosql.support.testdata.CompositionTestData.aCompositionEntity;
 import static uk.nhs.careconnect.nosql.support.testdata.DocumentReferenceTestData.aDocumentReference;
+import static uk.nhs.careconnect.nosql.util.BundleUtils.bsonBundleToBundle;
 import static uk.nhs.careconnect.nosql.util.BundleUtils.extractFirstResourceOfType;
 
 public class BundleDaoTest extends AbstractDaoTest {
@@ -48,21 +49,22 @@ public class BundleDaoTest extends AbstractDaoTest {
         DocumentReference expectedDocumentReferenceEntity = aDocumentReference();
 
         //when
-        Bundle createdBundle = bundleDao.create(ctx, bundle, null, null);
-        OperationOutcome operationOutcome = extractFirstResourceOfType(OperationOutcome.class, createdBundle).get();
+        Bundle responseBundle = bundleDao.create(ctx, bundle, null, null);
+        Bundle createdBundle = extractFirstResourceOfType(Bundle.class, responseBundle).get();
+
+        OperationOutcome operationOutcome = extractFirstResourceOfType(OperationOutcome.class, responseBundle).get();
 
         //then
+        DBObject retrievedBsonBundle = loadBsonBundle(createdBundle);
+        Bundle retrievedBundle = bsonBundleToBundle(ctx, retrievedBsonBundle);
 
-        DBObject savedBsonBundle = loadBsonBundle(bundle);
-        Bundle savedBundle = bsonBundleToBundle(savedBsonBundle);
-
-        CompositionEntity savedCompositionEntity = loadComposition(savedBsonBundle);
+        CompositionEntity savedCompositionEntity = loadComposition(retrievedBsonBundle);
 
         PatientEntity savedPatient = loadPatient(savedCompositionEntity);
 
         DocumentReferenceEntity savedDocumentReferenceEntity = loadDocumentReference(savedPatient.getId());
 
-        assertThatBundleIsEqual(bundle, savedBundle);
+        assertThatBundleIsEqual(bundle, retrievedBundle);
         assertThatCompositionIsEqual(expectedCompositionEntity, operationOutcome, savedCompositionEntity);
         assertPatientIdentifiersAreEqual(savedPatient.getIdentifiers(), aPatientIdentifier());
         assertThatDocumentReferenceEntityIsEqual(expectedDocumentReferenceEntity, savedPatient, savedDocumentReferenceEntity);
@@ -94,40 +96,44 @@ public class BundleDaoTest extends AbstractDaoTest {
         CompositionEntity expectedCompositionEntity = aCompositionEntity();
         DocumentReference expectedDocumentReferenceEntity = aDocumentReference();
 
+        Bundle savedResponseBundle = saveBundle(bundle);
+        Bundle savedBundle = extractFirstResourceOfType(Bundle.class, savedResponseBundle).get();
+
         //when
-        Bundle createdBundle = bundleDao.update(ctx, bundle, null, null);
-        OperationOutcome operationOutcome = extractFirstResourceOfType(OperationOutcome.class, createdBundle).get();
+        IdType theId = new IdType().setValue(savedBundle.getId());
+
+        Bundle responseBundle = bundleDao.update(ctx, bundle, theId, null);
+        Bundle updatedBundle = extractFirstResourceOfType(Bundle.class, responseBundle).get();
+
+        OperationOutcome operationOutcome = extractFirstResourceOfType(OperationOutcome.class, responseBundle).get();
 
         //then
+        DBObject retrievedBsonBundle = loadBsonBundle(updatedBundle);
+        Bundle retrievedBundle = bsonBundleToBundle(ctx, retrievedBsonBundle);
 
-        DBObject savedBsonBundle = loadBsonBundle(bundle);
-        Bundle savedBundle = bsonBundleToBundle(savedBsonBundle);
 
-        CompositionEntity savedCompositionEntity = loadComposition(savedBsonBundle);
+        CompositionEntity savedCompositionEntity = loadComposition(retrievedBsonBundle);
 
         PatientEntity savedPatient = loadPatient(savedCompositionEntity);
 
         DocumentReferenceEntity savedDocumentReferenceEntity = loadDocumentReference(savedPatient.getId());
 
-        assertThatBundleIsEqual(bundle, savedBundle);
+        assertThatBundleIsEqual(bundle, retrievedBundle);
         assertThatCompositionIsEqual(expectedCompositionEntity, operationOutcome, savedCompositionEntity);
         assertPatientIdentifiersAreEqual(savedPatient.getIdentifiers(), aPatientIdentifier());
+        assertThatDocumentReferenceEntityIsEqual(expectedDocumentReferenceEntity, savedPatient, savedDocumentReferenceEntity);
     }
 
     private void assertThatCompositionIsEqual(CompositionEntity expectedCompositionEntity, OperationOutcome operationOutcome, CompositionEntity savedCompositionEntity) {
         assertThatCompositionsAreEqual(savedCompositionEntity, expectedCompositionEntity);
         assertThat(savedCompositionEntity.getFhirDocument(), is(notNullValue()));
         assertThat(savedCompositionEntity.getFhirDocumentlId(), is(notNullValue()));
-//        assertThat(savedCompositionEntity.getDate(), is(notNullValue())); //TODO: difficult to test date is correct, so just checking it was set
+        assertThat(savedCompositionEntity.getDate(), is(notNullValue()));
         assertThat(operationOutcome.getId(), startsWith("Composition/"));
     }
 
-    private Bundle bsonBundleToBundle(DBObject bsonBundle) {
-        return (Bundle) ctx.newJsonParser().parseResource(bsonBundle.toString());
-    }
-
     private DBObject loadBsonBundle(Bundle bundle) {
-        Query qry = Query.query(Criteria.where("id").is(bundle.getId()));
+        Query qry = Query.query(Criteria.where("_id").is(bundle.getId()));
         return mongoTemplate.findOne(qry, DBObject.class, "Bundle");
     }
 
@@ -149,6 +155,10 @@ public class BundleDaoTest extends AbstractDaoTest {
         Query qry = Query.query(Criteria.where("idxPatient").is(new DBRef("idxPatient", patientId)));
 
         return mongoTemplate.findOne(qry, DocumentReferenceEntity.class);
+    }
+
+    private Bundle saveBundle(Bundle bundle) {
+        return bundleDao.create(ctx, bundle, null, null);
     }
 
 }

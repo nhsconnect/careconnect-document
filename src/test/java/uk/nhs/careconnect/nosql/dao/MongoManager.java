@@ -20,8 +20,8 @@ public class MongoManager {
 
     private static final Logger log = LoggerFactory.getLogger(MongoManager.class);
 
-    private static final String TEST_MONGO_HOST = "localhost";
-    private static final int TEST_MONGO_PORT = 12345;
+    public static final String TEST_MONGO_HOST = "localhost";
+    public static final int TEST_MONGO_PORT = 12345;
 
     private static MongoManager instance;
 

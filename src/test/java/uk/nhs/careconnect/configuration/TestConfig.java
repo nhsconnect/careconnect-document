@@ -3,16 +3,16 @@ package uk.nhs.careconnect.configuration;
 import ca.uhn.fhir.context.FhirContext;
 import com.mongodb.MongoClient;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import uk.nhs.careconnect.nosql.dao.MongoManager;
 
-import java.io.IOException;
+import static uk.nhs.careconnect.nosql.dao.MongoManager.TEST_MONGO_HOST;
+import static uk.nhs.careconnect.nosql.dao.MongoManager.TEST_MONGO_PORT;
 
-@Configuration
-@ComponentScan(basePackages = "uk.nhs.careconnect.nosql.dao")
+@TestConfiguration()
 public class TestConfig {
 
     @Value("${ccri.software.version}")
@@ -42,16 +42,15 @@ public class TestConfig {
         return FhirContext.forDstu3();
     }
 
-    @Bean
-    public MongoTemplate getMongoClient() throws IOException {
-        String bindIp = "localhost";
-        int port = 12345;
-        return new MongoTemplate(new MongoClient(bindIp, port), DATABASE_NAME);
+    @Bean(name = "mongoManager")
+    public MongoManager getMongoManager() {
+        return MongoManager.getInstance();
     }
 
     @Bean
-    public MongoManager getMongoManager() throws IOException {
-        return MongoManager.getInstance();
+    @DependsOn({"mongoManager"})
+    public MongoTemplate getMongoClient() {
+        return new MongoTemplate(new MongoClient(TEST_MONGO_HOST, TEST_MONGO_PORT), DATABASE_NAME);
     }
 
 }
