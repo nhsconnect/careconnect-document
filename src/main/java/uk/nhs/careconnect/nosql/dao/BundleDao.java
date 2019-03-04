@@ -4,6 +4,7 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.server.exceptions.ResourceVersionConflictException;
 import com.mongodb.DBObject;
 import com.mongodb.DBRef;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.bson.types.ObjectId;
 import org.hl7.fhir.dstu3.model.Attachment;
 import org.hl7.fhir.dstu3.model.Binary;
@@ -54,6 +55,9 @@ public class BundleDao implements IBundle {
     BinaryResourceDao binaryResourceDao;
 
     @Autowired
+    CompositionDao compositionDao;
+
+    @Autowired
     IFHIRResource fhirDocumentDao;
 
     @Autowired
@@ -65,11 +69,27 @@ public class BundleDao implements IBundle {
     public Bundle update(FhirContext ctx, Bundle bundle, IdType idType, String theConditional) {
         log.debug("About to update Bundle");
 
+        // KGM added 4/3/2019
+        if (theConditional != null) {
+            // This is not kosher
+
+            Query qry = Query.query(Criteria.where("identifier.system").is(bundle.getIdentifier().getSystem()).and("identifier.value").is(bundle.getIdentifier().getValue()));
+
+            CompositionEntity bundleE = mongo.findOne(qry, CompositionEntity.class);
+            if (bundleE != null) {
+                log.info("Conditional Found id = "+bundleE.getFhirDocumentlId());
+                idType = new IdType().setValue(bundleE.getFhirDocumentlId());
+            }
+
+        }
         SaveBundleResponse saveBundleResponse = saveBundle(ctx, bundle, idType, UPDATE);
 
         PatientEntity savedPatient = savePatient(ctx, bundle);
 
         CompositionEntity compositionEntity = updateCompositionEntity(bundle, saveBundleResponse.getSavedBundleId(), savedPatient);
+
+        // KGM added 4/3/2019
+        saveDocumentReference(saveBundleResponse.getBundle(), savedPatient);
 
         OperationOutcome operationOutcome = new OperationOutcome();
         operationOutcome.setId("Composition/" + compositionEntity.getId());
