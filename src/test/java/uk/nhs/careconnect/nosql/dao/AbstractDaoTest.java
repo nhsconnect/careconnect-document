@@ -20,13 +20,14 @@ import java.util.stream.Stream;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static uk.nhs.careconnect.nosql.util.BundleUtils.extractFirstResourceOfType;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {TestConfig.class})
 @SpringBootTest
 public abstract class AbstractDaoTest {
 
-    protected static final String[] COLLECTION_NAMES = {"Bundle", "idxComposition", "idxPatient", "idxDocumentReference"};
+    protected static final String[] COLLECTION_NAMES = {"Bundle", "idxComposition", "idxPatient", "idxDocumentReference", "fs.files"};
 
     @Autowired
     MongoManager mongoManager;
@@ -47,7 +48,8 @@ public abstract class AbstractDaoTest {
 
     protected void createBundle(String fileName) {
         Bundle bundle = loadBundle(fileName);
-        OperationOutcome operationOutcome = bundleDao.create(ctx, bundle, null, null);
+        Bundle createdBundle = bundleDao.create(ctx, bundle, null, null);
+        OperationOutcome operationOutcome = extractFirstResourceOfType(OperationOutcome.class, createdBundle).get();
         assertThat(operationOutcome.getId(), is(notNullValue()));
     }
 
