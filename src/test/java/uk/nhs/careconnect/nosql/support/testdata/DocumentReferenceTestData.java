@@ -16,7 +16,7 @@ import static uk.nhs.careconnect.nosql.support.testdata.BundleTestData.YESTERDAY
 
 public class DocumentReferenceTestData {
 
-    private static final String DOCUMENT_REFERENCE_ID = "123456789012345678901234";
+    private static final String DOCUMENT_REFERENCE_ID = "DocumentReference/123456789012345678901234";
     private static final Date DOCUMENT_REFERENCE_CREATED_DATE = new Date();
     private static final String DOCUMENT_REFERENCE_TYPE_SYSTEM = "document-reference-type-system-1";
     private static final String DOCUMENT_REFERENCE_TYPE_CODE = "document-reference-type-code-1";

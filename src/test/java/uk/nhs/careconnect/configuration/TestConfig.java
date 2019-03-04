@@ -4,15 +4,19 @@ import ca.uhn.fhir.context.FhirContext;
 import com.mongodb.MongoClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.web.client.RestTemplate;
 import uk.nhs.careconnect.nosql.dao.MongoManager;
 
 import static uk.nhs.careconnect.nosql.dao.MongoManager.TEST_MONGO_HOST;
 import static uk.nhs.careconnect.nosql.dao.MongoManager.TEST_MONGO_PORT;
 
 @TestConfiguration()
+@ComponentScan("uk.nhs.careconnect.configuration")
 public class TestConfig {
 
     @Value("${ccri.software.version}")

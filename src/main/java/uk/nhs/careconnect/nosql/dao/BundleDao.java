@@ -8,6 +8,7 @@ import org.bson.types.ObjectId;
 import org.hl7.fhir.dstu3.model.Attachment;
 import org.hl7.fhir.dstu3.model.Binary;
 import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.dstu3.model.Composition;
 import org.hl7.fhir.dstu3.model.DocumentReference;
 import org.hl7.fhir.dstu3.model.DocumentReference.DocumentReferenceContentComponent;
@@ -40,6 +41,7 @@ import static java.util.stream.Collectors.toList;
 import static uk.nhs.careconnect.nosql.dao.SaveAction.CREATE;
 import static uk.nhs.careconnect.nosql.dao.SaveAction.UPDATE;
 import static uk.nhs.careconnect.nosql.util.BundleUtils.bsonBundleToBundle;
+import static uk.nhs.careconnect.nosql.util.BundleUtils.resourceOfType;
 
 @Transactional
 @Repository
@@ -87,9 +89,9 @@ public class BundleDao implements IBundle {
 
         CompositionEntity compositionEntity = saveComposition(bundle, saveBundleResponse.getSavedBundleId(), savedPatient);
 
-        saveBinary(ctx, bundle);
+        saveBinary(ctx, saveBundleResponse.getBundle());
 
-        saveDocumentReference(bundle, savedPatient);
+        saveDocumentReference(saveBundleResponse.getBundle(), savedPatient);
 
         OperationOutcome operationOutcome = new OperationOutcome();
         operationOutcome.setId("Composition/" + compositionEntity.getId());
@@ -120,7 +122,7 @@ public class BundleDao implements IBundle {
     private PatientEntity savePatient(FhirContext ctx, Bundle bundle) {
         PatientEntity savedPatientEntity = null;
 
-        for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
+        for (BundleEntryComponent entry : bundle.getEntry()) {
             if (entry.hasResource() && entry.getResource() instanceof Patient) {
                 // TODO ensure this is the correcct Patient (one referred to in the Composition)
                 savedPatientEntity = patientDao.createEntity(ctx, (Patient) entry.getResource());
@@ -179,8 +181,9 @@ public class BundleDao implements IBundle {
 
     private void setCompositionEntityType(Bundle bundle, CompositionEntity compositionEntity) {
         Optional<Composition> compositionEntry = bundle.getEntry().stream()
-                .filter(entry -> entry.hasResource() && entry.getResource() instanceof Composition)
-                .map(composition -> (Composition) composition.getResource())
+                .map(BundleEntryComponent::getResource)
+                .filter(resourceOfType(Composition.class))
+                .map(Composition.class::cast)
                 .findFirst();
 
         compositionEntity.setType(compositionEntry.map(composition -> fhirToCodingEntity(composition.getType().getCoding())).orElse(emptyList()));
@@ -193,24 +196,27 @@ public class BundleDao implements IBundle {
     }
 
     private void saveDocumentReference(Bundle bundle, PatientEntity savedPatient) {
-        bundle.getEntry().stream()
-                .filter(entry -> entry.hasResource() && entry.getResource() instanceof DocumentReference)
-                .map(entry -> (DocumentReference) entry.getResource())
+         bundle.getEntry().stream()
+                .map(BundleEntryComponent::getResource)
+                .filter(resourceOfType(DocumentReference.class))
+                .map(DocumentReference.class::cast)
                 .map(documentReference -> new DocumentReferenceEntity(savedPatient, documentReference))
                 .findFirst().ifPresent(mongo::save);
     }
 
     public void saveBinary(FhirContext ctx, Bundle bundle) {
         Optional<Binary> optionalBinary = bundle.getEntry().stream()
-                .filter(entry -> entry.hasResource() && entry.getResource() instanceof Binary)
-                .map(entry -> (Binary) entry.getResource())
+                .map(BundleEntryComponent::getResource)
+                .filter(resourceOfType(Binary.class))
+                .map(Binary.class::cast)
                 .findFirst();
 
         Optional<ObjectId> optionalBinaryId = optionalBinary.map(binary -> binaryResourceDao.save(ctx, binary));
 
         Optional<DocumentReference> optionalDocumentReference = bundle.getEntry().stream()
-                .filter(entry -> entry.hasResource() && entry.getResource() instanceof DocumentReference)
-                .map(entry -> (DocumentReference) entry.getResource())
+                .map(BundleEntryComponent::getResource)
+                .filter(resourceOfType(DocumentReference.class))
+                .map(DocumentReference.class::cast)
                 .findFirst();
 
         optionalDocumentReference.ifPresent(documentReference -> {
@@ -229,8 +235,8 @@ public class BundleDao implements IBundle {
 
     private Bundle aBundleResponse(Bundle bundle, OperationOutcome operationOutcome) {
         return new Bundle()
-                .addEntry(new Bundle.BundleEntryComponent().setResource(operationOutcome))
-                .addEntry(new Bundle.BundleEntryComponent().setResource(bundle));
+                .addEntry(new BundleEntryComponent().setResource(operationOutcome))
+                .addEntry(new BundleEntryComponent().setResource(bundle));
     }
 
     private class SaveBundleResponse {

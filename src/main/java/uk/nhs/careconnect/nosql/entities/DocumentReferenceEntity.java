@@ -5,6 +5,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Reference;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.List;
@@ -19,6 +20,7 @@ public class DocumentReferenceEntity {
     @DBRef
     private PatientEntity idxPatient;
 
+    @DateTimeFormat(style="yyyyMMdd'T'HHmmss.SSSZ")
     private Date createdDate;
 
     private CodeableConceptEntity type;

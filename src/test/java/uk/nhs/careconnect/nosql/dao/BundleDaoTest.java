@@ -76,7 +76,7 @@ public class BundleDaoTest extends AbstractDaoTest {
         assertThatBundleIsEqual(bundle, retrievedBundle);
         assertThatCompositionIsEqual(expectedCompositionEntity, operationOutcome, savedCompositionEntity);
         assertPatientIdentifiersAreEqual(savedPatient.getIdentifiers(), aPatientIdentifier());
-        assertThatDocumentReferenceEntityIsEqual(expectedDocumentReferenceEntity, savedPatient, savedDocumentReferenceEntity);
+        assertThatDocumentReferenceEntityIsEqual(savedPatient, savedDocumentReferenceEntity, expectedDocumentReferenceEntity);
     }
 
     @Test
@@ -121,7 +121,7 @@ public class BundleDaoTest extends AbstractDaoTest {
         assertThatBundleIsEqual(bundle, retrievedBundle);
         assertThatCompositionIsEqual(expectedCompositionEntity, operationOutcome, savedCompositionEntity);
         assertPatientIdentifiersAreEqual(savedPatient.getIdentifiers(), aPatientIdentifier());
-        assertThatDocumentReferenceEntityIsEqual(expectedDocumentReferenceEntity, savedPatient, savedDocumentReferenceEntity);
+        assertThatDocumentReferenceEntityIsEqual(savedPatient, savedDocumentReferenceEntity, expectedDocumentReferenceEntity);
         assertThatBinaryIsEqual(expectedBinary, savedBinary);
     }
 
@@ -157,7 +157,7 @@ public class BundleDaoTest extends AbstractDaoTest {
         assertThatBundleIsEqual(bundle, retrievedBundle);
         assertThatCompositionIsEqual(expectedCompositionEntity, operationOutcome, savedCompositionEntity);
         assertPatientIdentifiersAreEqual(savedPatient.getIdentifiers(), aPatientIdentifier());
-        assertThatDocumentReferenceEntityIsEqual(expectedDocumentReferenceEntity, savedPatient, savedDocumentReferenceEntity);
+        assertThatDocumentReferenceEntityIsEqual(savedPatient, savedDocumentReferenceEntity, expectedDocumentReferenceEntity);
     }
 
     private void assertThatCompositionIsEqual(CompositionEntity expectedCompositionEntity, OperationOutcome operationOutcome, CompositionEntity savedCompositionEntity) {
@@ -168,7 +168,7 @@ public class BundleDaoTest extends AbstractDaoTest {
         assertThat(operationOutcome.getId(), startsWith("Composition/"));
     }
 
-    private void assertThatDocumentReferenceEntityIsEqual(DocumentReference expectedDocumentReferenceEntity, PatientEntity savedPatient, DocumentReferenceEntity savedDocumentReferenceEntity) {
+    private void assertThatDocumentReferenceEntityIsEqual(PatientEntity savedPatient, DocumentReferenceEntity savedDocumentReferenceEntity, DocumentReference expectedDocumentReferenceEntity) {
         assertThat(savedDocumentReferenceEntity.getIdxPatient().getId().toString(), is(savedPatient.getId().toString()));
 
         assertThatDocumentReferenceIsEqual(savedDocumentReferenceEntity, expectedDocumentReferenceEntity);
