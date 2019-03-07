@@ -1,7 +1,9 @@
 package uk.nhs.careconnect.nosql.util;
 
 import ca.uhn.fhir.context.FhirContext;
+import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
+import org.bson.Document;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.dstu3.model.Resource;
@@ -35,4 +37,16 @@ public class BundleUtils {
         return resourceClass::isInstance;
     }
 
+    public static DBObject fhirResourceToDBObject(FhirContext ctx, Resource resource) {
+        String resourceJson = filterOutComments(ctx.newJsonParser().encodeResourceToString(resource));
+
+        Document doc = Document.parse(resourceJson);
+        DBObject mObj = new BasicDBObject(doc);
+        mObj.removeField("id");
+        return mObj;
+    }
+
+    private static String filterOutComments(String resourceJson) {
+        return resourceJson.replaceAll("(?s)<!--.*?-->", "");
+    }
 }

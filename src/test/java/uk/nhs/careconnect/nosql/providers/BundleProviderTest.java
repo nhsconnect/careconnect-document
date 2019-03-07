@@ -16,13 +16,13 @@ import uk.nhs.careconnect.nosql.dao.IBundle;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
-import static uk.nhs.careconnect.nosql.support.testdata.BundleTestData.aBundle;
+import static uk.nhs.careconnect.nosql.support.testdata.BundleTestData.aBundleWithDocumentReference;
 
 
 @RunWith(MockitoJUnitRunner.class)
 public class BundleProviderTest {
 
-    private static final Bundle BUNDLE = aBundle();
+    private static final Bundle BUNDLE = aBundleWithDocumentReference();
     private static final Boolean CREATED = true;
     private static final Boolean UPDATED = false;
 

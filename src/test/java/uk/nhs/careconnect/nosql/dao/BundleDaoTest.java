@@ -18,13 +18,16 @@ import org.junit.rules.ExpectedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import uk.nhs.careconnect.nosql.dao.transform.CompositionTransformer;
 import uk.nhs.careconnect.nosql.entities.CompositionEntity;
 import uk.nhs.careconnect.nosql.entities.DocumentReferenceEntity;
 import uk.nhs.careconnect.nosql.entities.PatientEntity;
-import uk.nhs.careconnect.nosql.support.testdata.BundleTestData;
+import uk.nhs.careconnect.nosql.support.assertions.DocumentReferenceAssertions;
 
 import java.io.IOException;
+import java.util.List;
 
+import static java.util.stream.Collectors.toList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.startsWith;
@@ -33,14 +36,18 @@ import static uk.nhs.careconnect.nosql.providers.support.assertions.ResourceAsse
 import static uk.nhs.careconnect.nosql.support.assertions.BinaryAssertions.assertThatBinaryIsEqual;
 import static uk.nhs.careconnect.nosql.support.assertions.BundleAssertions.assertThatBundleIsEqual;
 import static uk.nhs.careconnect.nosql.support.assertions.CompositionAssertions.assertThatCompositionsAreEqual;
-import static uk.nhs.careconnect.nosql.support.assertions.DocumentReferenceAssertions.assertThatDocumentReferenceIsEqual;
 import static uk.nhs.careconnect.nosql.support.testdata.BundleTestData.aBinary;
 import static uk.nhs.careconnect.nosql.support.testdata.BundleTestData.aBundle;
+import static uk.nhs.careconnect.nosql.support.testdata.BundleTestData.aBundleWithDocumentReference;
+import static uk.nhs.careconnect.nosql.support.testdata.BundleTestData.aBundleWithBinary;
 import static uk.nhs.careconnect.nosql.support.testdata.BundleTestData.aPatientIdentifier;
+import static uk.nhs.careconnect.nosql.support.testdata.CompositionTestData.aComposition;
 import static uk.nhs.careconnect.nosql.support.testdata.CompositionTestData.aCompositionEntity;
 import static uk.nhs.careconnect.nosql.support.testdata.DocumentReferenceTestData.aDocumentReference;
+import static uk.nhs.careconnect.nosql.support.testdata.DocumentReferenceTestData.anUpdatedDocumentReference;
 import static uk.nhs.careconnect.nosql.util.BundleUtils.bsonBundleToBundle;
 import static uk.nhs.careconnect.nosql.util.BundleUtils.extractFirstResourceOfType;
+import static uk.nhs.careconnect.nosql.util.BundleUtils.resourceOfType;
 
 public class BundleDaoTest extends AbstractDaoTest {
 
@@ -53,7 +60,7 @@ public class BundleDaoTest extends AbstractDaoTest {
     @Test
     public void givenABundle_whenCreateIsCalled_aBundleCompositionPatientAndDocumentReferenceArePersistedInMongo() {
         //setup
-        Bundle bundle = aBundle();
+        Bundle bundle = aBundleWithDocumentReference();
         CompositionEntity expectedCompositionEntity = aCompositionEntity();
         DocumentReference expectedDocumentReferenceEntity = aDocumentReference();
 
@@ -85,7 +92,7 @@ public class BundleDaoTest extends AbstractDaoTest {
         expectedException.expectMessage("FHIR Document already exists.");
 
         //setup
-        Bundle bundle = aBundle();
+        Bundle bundle = aBundleWithDocumentReference();
 
         //when
         bundleDao.create(ctx, bundle, null, null);
@@ -95,7 +102,7 @@ public class BundleDaoTest extends AbstractDaoTest {
     @Test
     public void givenABundleWithBinaryContent_whenCreateIsCalled_aBundleCompositionPatientAndDocumentReferenceArePersistedInMongo() throws IOException {
         //setup
-        Bundle bundle = BundleTestData.aBundleWithBinary();
+        Bundle bundle = aBundleWithBinary();
         CompositionEntity expectedCompositionEntity = aCompositionEntity();
         DocumentReference expectedDocumentReferenceEntity = aDocumentReference();
         Binary expectedBinary = aBinary();
@@ -126,27 +133,21 @@ public class BundleDaoTest extends AbstractDaoTest {
     }
 
     @Test
-    public void givenABundle_whenUpdateIsCalled_aBundleCompositionPatientAndDocumentReferenceAreUpdatedInMongo() {
+    public void givenABundleWithoutBinaryContentAndDocumentReference_whenCreateIsCalled_aBundleCompositionPatientAndDocumentReferenceArePersistedInMongo() throws IOException {
         //setup
         Bundle bundle = aBundle();
         CompositionEntity expectedCompositionEntity = aCompositionEntity();
-        DocumentReference expectedDocumentReferenceEntity = aDocumentReference();
-
-        Bundle savedResponseBundle = saveBundle(bundle);
-        Bundle savedBundle = extractFirstResourceOfType(Bundle.class, savedResponseBundle).get();
+        DocumentReference expectedDocumentReferenceEntity = CompositionTransformer.transformToDocumentReference(aComposition());
 
         //when
-        IdType theId = new IdType().setValue(savedBundle.getId());
-
-        Bundle responseBundle = bundleDao.update(ctx, bundle, theId, null);
-        Bundle updatedBundle = extractFirstResourceOfType(Bundle.class, responseBundle).get();
+        Bundle responseBundle = bundleDao.create(ctx, bundle, null, null);
+        Bundle createdBundle = extractFirstResourceOfType(Bundle.class, responseBundle).get();
 
         OperationOutcome operationOutcome = extractFirstResourceOfType(OperationOutcome.class, responseBundle).get();
 
         //then
-        DBObject retrievedBsonBundle = loadBsonBundle(updatedBundle);
+        DBObject retrievedBsonBundle = loadBsonBundle(createdBundle);
         Bundle retrievedBundle = bsonBundleToBundle(ctx, retrievedBsonBundle);
-
 
         CompositionEntity savedCompositionEntity = loadComposition(retrievedBsonBundle);
 
@@ -160,6 +161,56 @@ public class BundleDaoTest extends AbstractDaoTest {
         assertThatDocumentReferenceEntityIsEqual(savedPatient, savedDocumentReferenceEntity, expectedDocumentReferenceEntity);
     }
 
+    @Test
+    public void givenABundle_whenUpdateIsCalled_aBundleCompositionPatientAndDocumentReferenceAreUpdatedInMongo() {
+        //setup
+        Bundle savedBundleResponse = givenASavedBundle();
+        Bundle savedBundle = extractFirstResourceOfType(Bundle.class, savedBundleResponse).get();
+        IdType savedBundleId = new IdType().setValue(savedBundle.getId());
+
+        Bundle updateBundle = savedBundle;
+        List<Bundle.BundleEntryComponent> entryList = updateBundle.getEntry().stream()
+                .map(Bundle.BundleEntryComponent::getResource)
+                .map(resource -> resourceOfType(DocumentReference.class).test(resource) ?
+                        ((DocumentReference) resource).setSubject(anUpdatedDocumentReference().getSubject()) : resource)
+                .map(resource -> new Bundle.BundleEntryComponent().setResource(resource))
+                .collect(toList());
+
+        updateBundle.setEntry(entryList);
+
+        CompositionEntity expectedCompositionEntity = aCompositionEntity();
+        DocumentReference expectedDocumentReferenceEntity = anUpdatedDocumentReference();
+
+        //when
+
+        Bundle responseBundle = bundleDao.update(ctx, updateBundle, savedBundleId, null);
+
+
+        Bundle updatedBundle = extractFirstResourceOfType(Bundle.class, responseBundle).get();
+
+        OperationOutcome operationOutcome = extractFirstResourceOfType(OperationOutcome.class, responseBundle).get();
+
+        //then
+        DBObject retrievedBsonBundle = loadBsonBundle(updatedBundle);
+        Bundle retrievedBundle = bsonBundleToBundle(ctx, retrievedBsonBundle);
+
+        CompositionEntity savedCompositionEntity = loadComposition(retrievedBsonBundle);
+
+        PatientEntity savedPatient = loadPatient(savedCompositionEntity);
+
+        DocumentReferenceEntity savedDocumentReferenceEntity = loadDocumentReference(savedPatient.getId());
+
+        assertThatBundleIsEqual(updateBundle, retrievedBundle);
+        assertThatCompositionIsEqual(expectedCompositionEntity, operationOutcome, savedCompositionEntity);
+        assertPatientIdentifiersAreEqual(savedPatient.getIdentifiers(), aPatientIdentifier());
+        assertThatDocumentReferenceEntityIsEqual(savedPatient, savedDocumentReferenceEntity, expectedDocumentReferenceEntity);
+    }
+
+    private Bundle givenASavedBundle() {
+        Bundle bundle = aBundleWithDocumentReference();
+        return saveBundle(bundle);
+    }
+
     private void assertThatCompositionIsEqual(CompositionEntity expectedCompositionEntity, OperationOutcome operationOutcome, CompositionEntity savedCompositionEntity) {
         assertThatCompositionsAreEqual(savedCompositionEntity, expectedCompositionEntity);
         assertThat(savedCompositionEntity.getFhirDocument(), is(notNullValue()));
@@ -171,7 +222,7 @@ public class BundleDaoTest extends AbstractDaoTest {
     private void assertThatDocumentReferenceEntityIsEqual(PatientEntity savedPatient, DocumentReferenceEntity savedDocumentReferenceEntity, DocumentReference expectedDocumentReferenceEntity) {
         assertThat(savedDocumentReferenceEntity.getIdxPatient().getId().toString(), is(savedPatient.getId().toString()));
 
-        assertThatDocumentReferenceIsEqual(savedDocumentReferenceEntity, expectedDocumentReferenceEntity);
+        DocumentReferenceAssertions.assertThatDocumentReferenceEntityIsEqual(savedDocumentReferenceEntity, expectedDocumentReferenceEntity);
     }
 
     private DBObject loadBsonBundle(Bundle bundle) {

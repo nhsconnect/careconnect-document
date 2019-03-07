@@ -4,7 +4,6 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.server.exceptions.ResourceVersionConflictException;
 import com.mongodb.DBObject;
 import com.mongodb.DBRef;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.bson.types.ObjectId;
 import org.hl7.fhir.dstu3.model.Attachment;
 import org.hl7.fhir.dstu3.model.Binary;
@@ -23,6 +22,7 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
+import uk.nhs.careconnect.nosql.dao.transform.CompositionTransformer;
 import uk.nhs.careconnect.nosql.entities.CodingEntity;
 import uk.nhs.careconnect.nosql.entities.CompositionEntity;
 import uk.nhs.careconnect.nosql.entities.DocumentReferenceEntity;
@@ -49,6 +49,9 @@ import static uk.nhs.careconnect.nosql.util.BundleUtils.resourceOfType;
 public class BundleDao implements IBundle {
 
     @Autowired
+    FhirContext fhirContext;
+
+    @Autowired
     MongoOperations mongo;
 
     @Autowired
@@ -69,26 +72,25 @@ public class BundleDao implements IBundle {
     public Bundle update(FhirContext ctx, Bundle bundle, IdType idType, String theConditional) {
         log.debug("About to update Bundle");
 
-        // KGM added 4/3/2019
-        if (theConditional != null) {
-            // This is not kosher
-
-            Query qry = Query.query(Criteria.where("identifier.system").is(bundle.getIdentifier().getSystem()).and("identifier.value").is(bundle.getIdentifier().getValue()));
-
-            CompositionEntity bundleE = mongo.findOne(qry, CompositionEntity.class);
-            if (bundleE != null) {
-                log.info("Conditional Found id = "+bundleE.getFhirDocumentlId());
-                idType = new IdType().setValue(bundleE.getFhirDocumentlId());
-            }
-
-        }
+//        // KGM added 4/3/2019
+//        if (theConditional != null) {
+//            // This is not kosher
+//
+//            Query qry = Query.query(Criteria.where("identifier.system").is(bundle.getIdentifier().getSystem()).and("identifier.value").is(bundle.getIdentifier().getValue()));
+//
+//            CompositionEntity bundleE = mongo.findOne(qry, CompositionEntity.class);
+//            if (bundleE != null) {
+//                log.info("Conditional Found id = " + bundleE.getFhirDocumentlId());
+//                idType = new IdType().setValue(bundleE.getFhirDocumentlId());
+//            }
+//
+//        }
         SaveBundleResponse saveBundleResponse = saveBundle(ctx, bundle, idType, UPDATE);
 
         PatientEntity savedPatient = savePatient(ctx, bundle);
 
         CompositionEntity compositionEntity = updateCompositionEntity(bundle, saveBundleResponse.getSavedBundleId(), savedPatient);
 
-        // KGM added 4/3/2019
         saveDocumentReference(saveBundleResponse.getBundle(), savedPatient);
 
         OperationOutcome operationOutcome = new OperationOutcome();
@@ -216,12 +218,48 @@ public class BundleDao implements IBundle {
     }
 
     private void saveDocumentReference(Bundle bundle, PatientEntity savedPatient) {
-         bundle.getEntry().stream()
+        Optional<DocumentReference> optionalDocumentReference = bundle.getEntry().stream()
                 .map(BundleEntryComponent::getResource)
                 .filter(resourceOfType(DocumentReference.class))
                 .map(DocumentReference.class::cast)
-                .map(documentReference -> new DocumentReferenceEntity(savedPatient, documentReference))
-                .findFirst().ifPresent(mongo::save);
+                .findFirst();
+
+        if (!optionalDocumentReference.isPresent()) {
+            createDocumentReference(bundle, savedPatient);
+        } else {
+            DocumentReference documentReference = optionalDocumentReference.get();
+            DocumentReferenceEntity foundDocumentReference = findSavedDocumentReference(savedPatient);
+            if (foundDocumentReference != null) {
+                updateDocumentReference(documentReference, foundDocumentReference);
+            } else {
+                saveDocumentReference(savedPatient, documentReference);
+            }
+        }
+
+    }
+
+    private DocumentReferenceEntity findSavedDocumentReference(PatientEntity patientEntity) {
+        Query qry = Query.query(Criteria.where("idxPatient").is(new DBRef("idxPatient", patientEntity.getId().toString())));
+
+        return mongo.findOne(qry, DocumentReferenceEntity.class);
+    }
+
+    private void updateDocumentReference(DocumentReference documentReference, DocumentReferenceEntity foundDocumentReference) {
+        mongo.save(new DocumentReferenceEntity(documentReference, foundDocumentReference));
+    }
+
+    private void saveDocumentReference(PatientEntity savedPatient, DocumentReference documentReference) {
+        mongo.save(new DocumentReferenceEntity(savedPatient, documentReference));
+    }
+
+    private void createDocumentReference(Bundle bundle, PatientEntity savedPatient) {
+        Optional<Composition> compositionEntry = bundle.getEntry().stream()
+                .map(BundleEntryComponent::getResource)
+                .filter(resourceOfType(Composition.class))
+                .map(Composition.class::cast)
+                .findFirst();
+
+        compositionEntry.ifPresent(composition -> mongo.save(new DocumentReferenceEntity(savedPatient, CompositionTransformer.transformToDocumentReference(composition))));
     }
 
     public void saveBinary(FhirContext ctx, Bundle bundle) {
@@ -239,7 +277,7 @@ public class BundleDao implements IBundle {
                 .map(DocumentReference.class::cast)
                 .findFirst();
 
-        optionalDocumentReference.ifPresent(documentReference -> {
+        optionalDocumentReference.ifPresent(documentReference ->
             optionalBinaryId.ifPresent(binaryId -> {
 
                 DocumentReferenceContentComponent documentReferenceContentComponent = new DocumentReferenceContentComponent();
@@ -248,8 +286,8 @@ public class BundleDao implements IBundle {
                 documentReferenceContentComponent.setAttachment(attachment);
 
                 documentReference.setContent(asList(documentReferenceContentComponent));
-            });
-        });
+            })
+        );
 
     }
 

@@ -11,7 +11,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static uk.nhs.careconnect.nosql.support.assertions.CodeableConceptAssertions.assertThatCodeableConceptIsEqual;
-import static uk.nhs.careconnect.nosql.support.assertions.IdentityAssertions.assertThatIdentifiersAreEqual;
+import static uk.nhs.careconnect.nosql.support.assertions.IdentityAssertions.assertThatIdentifierEntitiesAreEqual;
 import static uk.nhs.careconnect.nosql.support.assertions.PeriodAssertions.assertThatPeriodIsEqual;
 import static uk.nhs.careconnect.nosql.support.assertions.ReferenceAssertions.assertThatReferenceIsEqual;
 import static uk.nhs.careconnect.nosql.support.testdata.DocumentReferenceTestData.aDocumentReference;
@@ -67,7 +67,7 @@ public class DocumentReferenceEntityTest {
 
     @Test
     public void identifierTest() {
-        assertThatIdentifiersAreEqual(documentReferenceEntity.getIdentifier(), documentReference.getIdentifier());
+        assertThatIdentifierEntitiesAreEqual(documentReferenceEntity.getIdentifier(), documentReference.getIdentifier());
     }
 
     @Test
@@ -79,18 +79,5 @@ public class DocumentReferenceEntityTest {
     public void periodTest() {
         assertThatPeriodIsEqual(documentReferenceEntity.getPeriod(), documentReference.getContext().getPeriod());
     }
-
-
-//    @Test
-//    public void nameTest() {
-//        documentReferenceEntity.setName(NAME);
-//        assertThat(documentReferenceEntity.getName(), is(NAME));
-//    }
-//
-//    @Test
-//    public void jsonTest() {
-//        documentReferenceEntity.setJson(JSON);
-//        assertThat(documentReferenceEntity.getJson(), is(JSON));
-//    }
 
 }
