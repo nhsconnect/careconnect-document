@@ -48,7 +48,7 @@ public abstract class AbstractDaoTest {
 
     protected void createBundle(String fileName) {
         Bundle bundle = loadBundle(fileName);
-        Bundle createdBundle = bundleDao.create(ctx, bundle, null, null);
+        Bundle createdBundle = bundleDao.create(bundle, null, null);
         OperationOutcome operationOutcome = extractFirstResourceOfType(OperationOutcome.class, createdBundle).get();
         assertThat(operationOutcome.getId(), is(notNullValue()));
     }

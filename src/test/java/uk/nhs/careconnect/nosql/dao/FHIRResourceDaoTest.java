@@ -59,7 +59,7 @@ public class FHIRResourceDaoTest extends AbstractDaoTest {
     }
 
     protected Bundle saveBundle(Bundle bundle) {
-        return bundleDao.create(ctx, bundle, null, null);
+        return bundleDao.create(bundle, null, null);
     }
 
 }

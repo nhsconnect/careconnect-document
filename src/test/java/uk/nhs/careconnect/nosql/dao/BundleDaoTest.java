@@ -25,6 +25,8 @@ import uk.nhs.careconnect.nosql.entities.PatientEntity;
 import uk.nhs.careconnect.nosql.support.assertions.DocumentReferenceAssertions;
 
 import java.io.IOException;
+import java.time.Clock;
+import java.util.Date;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -38,8 +40,8 @@ import static uk.nhs.careconnect.nosql.support.assertions.BundleAssertions.asser
 import static uk.nhs.careconnect.nosql.support.assertions.CompositionAssertions.assertThatCompositionsAreEqual;
 import static uk.nhs.careconnect.nosql.support.testdata.BundleTestData.aBinary;
 import static uk.nhs.careconnect.nosql.support.testdata.BundleTestData.aBundle;
-import static uk.nhs.careconnect.nosql.support.testdata.BundleTestData.aBundleWithDocumentReference;
 import static uk.nhs.careconnect.nosql.support.testdata.BundleTestData.aBundleWithBinary;
+import static uk.nhs.careconnect.nosql.support.testdata.BundleTestData.aBundleWithDocumentReference;
 import static uk.nhs.careconnect.nosql.support.testdata.BundleTestData.aPatientIdentifier;
 import static uk.nhs.careconnect.nosql.support.testdata.CompositionTestData.aComposition;
 import static uk.nhs.careconnect.nosql.support.testdata.CompositionTestData.aCompositionEntity;
@@ -57,6 +59,9 @@ public class BundleDaoTest extends AbstractDaoTest {
     @Autowired
     IBundle bundleDao;
 
+    @Autowired
+    Clock clock;
+
     @Test
     public void givenABundle_whenCreateIsCalled_aBundleCompositionPatientAndDocumentReferenceArePersistedInMongo() {
         //setup
@@ -65,7 +70,7 @@ public class BundleDaoTest extends AbstractDaoTest {
         DocumentReference expectedDocumentReferenceEntity = aDocumentReference();
 
         //when
-        Bundle responseBundle = bundleDao.create(ctx, bundle, null, null);
+        Bundle responseBundle = bundleDao.create(bundle, null, null);
         Bundle createdBundle = extractFirstResourceOfType(Bundle.class, responseBundle).get();
 
         OperationOutcome operationOutcome = extractFirstResourceOfType(OperationOutcome.class, responseBundle).get();
@@ -95,8 +100,8 @@ public class BundleDaoTest extends AbstractDaoTest {
         Bundle bundle = aBundleWithDocumentReference();
 
         //when
-        bundleDao.create(ctx, bundle, null, null);
-        bundleDao.create(ctx, bundle, null, null);
+        bundleDao.create(bundle, null, null);
+        bundleDao.create(bundle, null, null);
     }
 
     @Test
@@ -108,7 +113,7 @@ public class BundleDaoTest extends AbstractDaoTest {
         Binary expectedBinary = aBinary();
 
         //when
-        Bundle responseBundle = bundleDao.create(ctx, bundle, null, null);
+        Bundle responseBundle = bundleDao.create(bundle, null, null);
         Bundle createdBundle = extractFirstResourceOfType(Bundle.class, responseBundle).get();
 
         OperationOutcome operationOutcome = extractFirstResourceOfType(OperationOutcome.class, responseBundle).get();
@@ -138,9 +143,10 @@ public class BundleDaoTest extends AbstractDaoTest {
         Bundle bundle = aBundle();
         CompositionEntity expectedCompositionEntity = aCompositionEntity();
         DocumentReference expectedDocumentReferenceEntity = CompositionTransformer.transformToDocumentReference(aComposition());
+        expectedDocumentReferenceEntity.setCreated(Date.from(clock.instant()));
 
         //when
-        Bundle responseBundle = bundleDao.create(ctx, bundle, null, null);
+        Bundle responseBundle = bundleDao.create(bundle, null, null);
         Bundle createdBundle = extractFirstResourceOfType(Bundle.class, responseBundle).get();
 
         OperationOutcome operationOutcome = extractFirstResourceOfType(OperationOutcome.class, responseBundle).get();
@@ -183,7 +189,7 @@ public class BundleDaoTest extends AbstractDaoTest {
 
         //when
 
-        Bundle responseBundle = bundleDao.update(ctx, updateBundle, savedBundleId, null);
+        Bundle responseBundle = bundleDao.update(updateBundle, savedBundleId, null);
 
 
         Bundle updatedBundle = extractFirstResourceOfType(Bundle.class, responseBundle).get();
@@ -265,7 +271,7 @@ public class BundleDaoTest extends AbstractDaoTest {
     }
 
     private Bundle saveBundle(Bundle bundle) {
-        return bundleDao.create(ctx, bundle, null, null);
+        return bundleDao.create(bundle, null, null);
     }
 
 }

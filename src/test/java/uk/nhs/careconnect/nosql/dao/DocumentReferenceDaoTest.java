@@ -131,7 +131,7 @@ public class DocumentReferenceDaoTest extends AbstractDaoTest {
     private void loadAndCreateBundle() {
         Bundle bundle = loadBundle("9658218873.xml");
 
-        Bundle createdBundle = bundleDao.create(ctx, bundle, null, null);
+        Bundle createdBundle = bundleDao.create(bundle, null, null);
         OperationOutcome operationOutcome = extractFirstResourceOfType(OperationOutcome.class, createdBundle).get();
 
         compositionId = operationOutcome.getId().split("/")[1];

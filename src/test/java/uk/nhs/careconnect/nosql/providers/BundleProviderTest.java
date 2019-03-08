@@ -1,6 +1,5 @@
 package uk.nhs.careconnect.nosql.providers;
 
-import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.IdType;
@@ -32,9 +31,6 @@ public class BundleProviderTest {
     private static final OperationOutcome OPERATION_OUTCOME = anOperationOutcome();
 
     @Mock
-    FhirContext fhirContext;
-
-    @Mock
     IBundle bundleDao;
 
     @InjectMocks
@@ -45,7 +41,7 @@ public class BundleProviderTest {
         //setup
         MethodOutcome expectedMethodOutcome = aMethodOutcome(CREATED);
 
-        when(bundleDao.create(fhirContext, BUNDLE, null, null)).thenReturn(aBundleWithOperationOutcome());
+        when(bundleDao.create(BUNDLE, null, null)).thenReturn(aBundleWithOperationOutcome());
 
         //when
         MethodOutcome actualMethodOutcome = bundleProvider.create(BUNDLE);
@@ -61,7 +57,7 @@ public class BundleProviderTest {
         String conditional = "true";
 
         MethodOutcome expectedMethodOutcome = aMethodOutcome(UPDATED);
-        when(bundleDao.update(fhirContext, BUNDLE, bundleId, conditional)).thenReturn(aBundleWithOperationOutcome());
+        when(bundleDao.update(BUNDLE, bundleId, conditional)).thenReturn(aBundleWithOperationOutcome());
 
         //when
         MethodOutcome actualMethodOutcome = bundleProvider.update(BUNDLE, bundleId, conditional);

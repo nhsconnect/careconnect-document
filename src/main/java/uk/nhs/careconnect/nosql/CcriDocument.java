@@ -15,6 +15,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.time.Clock;
+
 @SpringBootApplication
 public class CcriDocument {
 
@@ -39,12 +41,17 @@ public class CcriDocument {
     public static void main(String[] args) {
         //System.setProperty(AuthenticationFilter.HAWTIO_AUTHENTICATION_ENABLED, "false");
         System.setProperty("hawtio.authenticationEnabled", "false");
-        System.setProperty("management.security.enabled","false");
+        System.setProperty("management.security.enabled", "false");
         System.setProperty("server.port", "8181");
         System.setProperty("server.context-path", "/ccri-document");
-        System.setProperty("management.contextPath","");
+        System.setProperty("management.contextPath", "");
         SpringApplication.run(CcriDocument.class, args);
 
+    }
+
+    @Bean
+    public Clock getClock() {
+        return Clock.systemUTC();
     }
 
     @Bean
@@ -58,11 +65,11 @@ public class CcriDocument {
     @Bean
     public FhirContext getFhirContext() {
 
-        System.setProperty("ccri.server.base",this.serverBase);
-        System.setProperty("ccri.software.name",this.softwareName);
-        System.setProperty("ccri.software.version",this.softwareVersion);
-        System.setProperty("ccri.guide",this.guide);
-        System.setProperty("ccri.server",this.server);
+        System.setProperty("ccri.server.base", this.serverBase);
+        System.setProperty("ccri.software.name", this.softwareName);
+        System.setProperty("ccri.software.version", this.softwareVersion);
+        System.setProperty("ccri.guide", this.guide);
+        System.setProperty("ccri.server", this.server);
         return FhirContext.forDstu3();
     }
 

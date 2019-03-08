@@ -14,8 +14,7 @@ import static uk.nhs.careconnect.nosql.support.matchers.DateMatchers.equalIgnori
 public class DocumentReferenceAssertions {
 
     public static void assertThatDocumentReferenceEntityIsEqual(DocumentReferenceEntity actual, DocumentReference expected) {
-        //TODO: createdDate when created from composition
-        //assertThat(actual.getCreatedDate(), is(equalIgnoringMilliSeconds(expected.getCreated())));
+        assertThat(actual.getCreatedDate(), is(equalIgnoringMilliSeconds(expected.getCreated())));
         assertThatCodeableConceptIsEqual(actual.getType(), expected.getType());
         assertThatReferenceIsEqual(actual.getPatient(), expected.getSubject());
         assertThatIdentifierEntitiesAreEqual(actual.getIdentifier(), expected.getIdentifier());
@@ -26,8 +25,6 @@ public class DocumentReferenceAssertions {
     }
 
     public static void assertThatDocumentReferenceIsEqual(DocumentReference actual, DocumentReference expected) {
-        //TODO: createdDate when created from composition
-        //assertThat(actual.getCreated(), is(equalIgnoringMilliSeconds(expected.getCreated())));
         assertThatCodeableConceptIsEqual(actual.getType(), expected.getType());
         assertThatReferenceIsEqual(actual.getSubject(), expected.getSubject());
         assertThatIdentifiersAreEqual(actual.getIdentifier(), expected.getIdentifier());
