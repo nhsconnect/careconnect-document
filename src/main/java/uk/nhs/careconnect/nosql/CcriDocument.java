@@ -10,12 +10,14 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @SpringBootApplication
+@PropertySource("classpath:application.properties")
 public class CcriDocument {
 
     @Autowired
@@ -40,9 +42,9 @@ public class CcriDocument {
         //System.setProperty(AuthenticationFilter.HAWTIO_AUTHENTICATION_ENABLED, "false");
         System.setProperty("hawtio.authenticationEnabled", "false");
         System.setProperty("management.security.enabled","false");
-        System.setProperty("server.port", "8181");
-        System.setProperty("server.context-path", "/ccri-document");
-        System.setProperty("management.contextPath","");
+       // System.setProperty("server.port", "8181");
+        //System.setProperty("server.context-path", "/ccri-document");
+       // System.setProperty("management.contextPath","");
         SpringApplication.run(CcriDocument.class, args);
 
     }
