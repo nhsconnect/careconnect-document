@@ -43,6 +43,7 @@ import static java.util.stream.Collectors.toList;
 import static uk.nhs.careconnect.nosql.dao.SaveAction.CREATE;
 import static uk.nhs.careconnect.nosql.dao.SaveAction.UPDATE;
 import static uk.nhs.careconnect.nosql.util.BundleUtils.bsonBundleToBundle;
+import static uk.nhs.careconnect.nosql.util.BundleUtils.extractFirstResourceOfType;
 import static uk.nhs.careconnect.nosql.util.BundleUtils.resourceOfType;
 
 @Transactional
@@ -94,7 +95,9 @@ public class BundleDao implements IBundle {
 
         CompositionEntity compositionEntity = updateCompositionEntity(bundle, saveBundleResponse.getSavedBundleId(), savedPatient);
 
-        saveDocumentReference(saveBundleResponse.getBundle(), savedPatient);
+        Optional<ObjectId> optionalBinaryId = saveBinary(saveBundleResponse.getBundle());
+
+        saveDocumentReference(saveBundleResponse.getBundle(), savedPatient, compositionEntity, optionalBinaryId);
 
         OperationOutcome operationOutcome = new OperationOutcome();
         operationOutcome.setId("Composition/" + compositionEntity.getId());
@@ -106,17 +109,21 @@ public class BundleDao implements IBundle {
     public Bundle create(Bundle bundle, IdType idType, String theConditional) {
         log.debug("About to create Bundle");
 
-        checkNotAlreadySaved(bundle);
+        Optional<Bundle> optionalInnerBundle = extractFirstResourceOfType(Bundle.class, bundle);
 
-        SaveBundleResponse saveBundleResponse = saveBundle(bundle, idType, CREATE);
+        Bundle bundleToSave = optionalInnerBundle.orElse(bundle);
 
-        PatientEntity savedPatient = savePatient(bundle);
+        checkNotAlreadySaved(bundleToSave);
 
-        CompositionEntity compositionEntity = saveComposition(bundle, saveBundleResponse.getSavedBundleId(), savedPatient);
+        SaveBundleResponse saveBundleResponse = saveBundle(bundleToSave, idType, CREATE);
 
-        saveBinary(saveBundleResponse.getBundle());
+        PatientEntity savedPatient = savePatient(bundleToSave);
 
-        saveDocumentReference(saveBundleResponse.getBundle(), savedPatient);
+        CompositionEntity compositionEntity = saveComposition(bundleToSave, saveBundleResponse.getSavedBundleId(), savedPatient);
+
+        Optional<ObjectId> optionalBinaryId = saveBinary(saveBundleResponse.getBundle());
+
+        saveDocumentReference(saveBundleResponse.getBundle(), savedPatient, compositionEntity, optionalBinaryId);
 
         return aBundleResponse(saveBundleResponse.getBundle(), compositionEntity);
     }
@@ -217,24 +224,42 @@ public class BundleDao implements IBundle {
                 .collect(toList());
     }
 
-    private void saveDocumentReference(Bundle bundle, PatientEntity savedPatient) {
+    private void saveDocumentReference(Bundle bundle, PatientEntity savedPatient, CompositionEntity compositionEntity, Optional<ObjectId> optionalBinaryId) {
         Optional<DocumentReference> optionalDocumentReference = bundle.getEntry().stream()
                 .map(BundleEntryComponent::getResource)
                 .filter(resourceOfType(DocumentReference.class))
                 .map(DocumentReference.class::cast)
                 .findFirst();
 
+        DocumentReferenceEntity savedDocumentReferenceEntity;
+
         if (!optionalDocumentReference.isPresent()) {
-            createDocumentReference(bundle, savedPatient);
+            savedDocumentReferenceEntity = createDocumentReference(bundle, savedPatient, compositionEntity);
         } else {
             DocumentReference documentReference = optionalDocumentReference.get();
             DocumentReferenceEntity foundDocumentReference = findSavedDocumentReference(savedPatient);
             if (foundDocumentReference != null) {
-                updateDocumentReference(documentReference, foundDocumentReference);
+                savedDocumentReferenceEntity = updateDocumentReference(documentReference, foundDocumentReference);
             } else {
-                saveDocumentReference(savedPatient, documentReference);
+                savedDocumentReferenceEntity = saveDocumentReference(savedPatient, documentReference);
             }
         }
+
+        saveDocumentReferenceAttachment(savedDocumentReferenceEntity.getFhirDocumentReference(), optionalBinaryId);
+
+        mongo.save(savedDocumentReferenceEntity);
+
+        //prepare response
+        savedDocumentReferenceEntity.getFhirDocumentReference().setId(savedDocumentReferenceEntity.getId());
+
+        List<BundleEntryComponent> entries = bundle.getEntry().stream()
+                .map(BundleEntryComponent::getResource)
+                .map(resource -> resourceOfType(DocumentReference.class).test(resource) ?
+                        savedDocumentReferenceEntity.getFhirDocumentReference() : resource)
+                .map(resource -> new BundleEntryComponent().setResource(resource))
+                .collect(toList());
+
+        bundle.setEntry(entries);
 
     }
 
@@ -244,55 +269,63 @@ public class BundleDao implements IBundle {
         return mongo.findOne(qry, DocumentReferenceEntity.class);
     }
 
-    private void updateDocumentReference(DocumentReference documentReference, DocumentReferenceEntity foundDocumentReference) {
-        mongo.save(new DocumentReferenceEntity(documentReference, foundDocumentReference));
+    private DocumentReferenceEntity updateDocumentReference(DocumentReference documentReference, DocumentReferenceEntity foundDocumentReference) {
+        return new DocumentReferenceEntity(documentReference, foundDocumentReference);
     }
 
-    private void saveDocumentReference(PatientEntity savedPatient, DocumentReference documentReference) {
-        mongo.save(new DocumentReferenceEntity(savedPatient, documentReference));
+    private DocumentReferenceEntity saveDocumentReference(PatientEntity savedPatient, DocumentReference documentReference) {
+        return new DocumentReferenceEntity(savedPatient, documentReference);
     }
 
-    private void createDocumentReference(Bundle bundle, PatientEntity savedPatient) {
+    private DocumentReferenceEntity createDocumentReference(Bundle bundle, PatientEntity savedPatient, CompositionEntity compositionEntity) {
         Optional<Composition> compositionEntry = bundle.getEntry().stream()
                 .map(BundleEntryComponent::getResource)
                 .filter(resourceOfType(Composition.class))
                 .map(Composition.class::cast)
                 .findFirst();
 
-        compositionEntry.ifPresent(composition -> {
+        return compositionEntry.map(composition -> {
             DocumentReference documentReference = CompositionTransformer.transformToDocumentReference(composition);
             documentReference.setCreated(Date.from(clock.instant()));
-            mongo.save(new DocumentReferenceEntity(savedPatient, documentReference));
+
+
+            documentReference.setContent(asList(new DocumentReferenceContentComponent()
+                    .setAttachment(new Attachment()
+                            .setUrl(compositionEntity.getId().toString())
+                            .setContentType("application/fhir+xml"))
+
+            ));
+
+            return new DocumentReferenceEntity(savedPatient, documentReference);
+        }).orElse(null);
+    }
+
+    private void saveDocumentReferenceAttachment(DocumentReference documentReference, Optional<ObjectId> optionalBinaryId) {
+        optionalBinaryId.ifPresent(binaryId -> {
+
+            DocumentReferenceContentComponent documentReferenceContentComponent = new DocumentReferenceContentComponent();
+
+            Optional<Attachment> optionalAttachment = documentReference.getContent().stream()
+                    .map(DocumentReferenceContentComponent::getAttachment)
+                    .findFirst();
+
+            optionalAttachment.ifPresent(attachment -> {
+                attachment.setUrl(format("Binary/%s", binaryId));
+                documentReferenceContentComponent.setAttachment(attachment);
+            });
+
+            documentReference.setContent(asList(documentReferenceContentComponent));
         });
     }
 
-    public void saveBinary(Bundle bundle) {
+    public Optional<ObjectId> saveBinary(Bundle bundle) {
         Optional<Binary> optionalBinary = bundle.getEntry().stream()
                 .map(BundleEntryComponent::getResource)
                 .filter(resourceOfType(Binary.class))
                 .map(Binary.class::cast)
                 .findFirst();
 
-        Optional<ObjectId> optionalBinaryId = optionalBinary.map(binary -> binaryResourceDao.save(fhirContext, binary));
-
-        Optional<DocumentReference> optionalDocumentReference = bundle.getEntry().stream()
-                .map(BundleEntryComponent::getResource)
-                .filter(resourceOfType(DocumentReference.class))
-                .map(DocumentReference.class::cast)
-                .findFirst();
-
-        optionalDocumentReference.ifPresent(documentReference ->
-                optionalBinaryId.ifPresent(binaryId -> {
-
-                    DocumentReferenceContentComponent documentReferenceContentComponent = new DocumentReferenceContentComponent();
-
-                    Attachment attachment = new Attachment().setUrl(format("Binary/%s", binaryId));
-                    documentReferenceContentComponent.setAttachment(attachment);
-
-                    documentReference.setContent(asList(documentReferenceContentComponent));
-                })
-        );
-
+        return optionalBinary.map(binary -> binaryResourceDao.save(fhirContext, binary));
     }
 
     private Bundle aBundleResponse(Bundle bundle, CompositionEntity compositionEntity) {

@@ -21,7 +21,7 @@ import java.nio.file.Paths;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
-
+import static uk.nhs.careconnect.nosql.util.BundleUtils.extractFirstResourceOfType;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BinaryProviderTest {
@@ -74,18 +74,18 @@ public class BinaryProviderTest {
         IdType binaryId = new IdType().setValue(ID);
 
         when(binaryDao.read(fhirContext, binaryId)).thenReturn(null);
-        when(compositionDao.readDocument(fhirContext, binaryId)).thenReturn(aFhirDocument());
+        Bundle savedInnerBundle = extractFirstResourceOfType(Bundle.class, aFhirDocument()).get();
+        when(compositionDao.readDocument(fhirContext, binaryId)).thenReturn(savedInnerBundle);
 
         //when
         Binary binaryResponse = binaryProvider.getBinaryById(binaryId);
 
         log.info("Binary returned {}", new String(binaryResponse.getContent()));
 
-        assertThat(new String(binaryResponse.getContent()), is(fhirContext.newXmlParser().encodeResourceToString(aFhirDocument())));
-
+        Bundle innerBundle = extractFirstResourceOfType(Bundle.class, aFhirDocument()).get();
 
         //then
-        //assertThatMethodOutcomeIsEqual(actualMethodOutcome, expectedMethodOutcome);
+        assertThat(new String(binaryResponse.getContent()), is(fhirContext.newXmlParser().encodeResourceToString(innerBundle)));
     }
 
     private Binary aBinary() {

@@ -6,7 +6,6 @@ import org.hl7.fhir.dstu3.model.DocumentReference;
 import org.hl7.fhir.dstu3.model.Extension;
 import org.hl7.fhir.dstu3.model.Period;
 
-import java.util.Date;
 import java.util.Optional;
 
 import static java.util.Arrays.asList;

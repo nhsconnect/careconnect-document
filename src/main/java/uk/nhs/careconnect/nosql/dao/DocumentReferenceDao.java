@@ -55,8 +55,9 @@ public class DocumentReferenceDao implements IDocumentReference {
 
             log.debug("Found [{}] result(s)", results.size());
 
+            //TODO:
             resources = results.stream()
-                    .map(DocumentReferenceEntity::getFhirDocumentReference)
+                    .map(d -> d.getFhirDocumentReference().setId(d.getId()))
                     .collect(toList());
         }
 
