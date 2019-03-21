@@ -103,7 +103,7 @@ public class BundleManagementSteps {
 
         specifyExpectedMongoStateAfterUpdate();
 
-        expectedCreateBundleResponse = new MethodOutcome()
+        expectedUpdateBundleResponse = new MethodOutcome()
                 .setResource(bundleToUpdate);
     }
 
@@ -129,11 +129,14 @@ public class BundleManagementSteps {
         assertThatResponseIsAsExpected(actualUpdateBundleResponse, expectedUpdateBundleResponse);
     }
 
-
     private void specifyExpectedMongoStateAfterCreate() {
         String resourceJson = filterOutComments(commonSteps.ctx.newJsonParser().encodeResourceToString(bundleToCreate));
         Document document = Document.parse(resourceJson);
         expectedBundlesInMongoAfterCreate = asList(new BasicDBObject(document));
+    }
+
+    private String filterOutComments(String resourceJson) {
+        return resourceJson.replaceAll("(?s)<!--.*?-->", "");
     }
 
     private void setExpectedBundleIdToEqualCreateBundleId(MethodOutcome response) {
@@ -146,9 +149,6 @@ public class BundleManagementSteps {
     private void captureActualMongoStateAfterCreate() {
         actualBundlesInMongoAfterCreate = loadBundlesFromMongo();
     }
-
-
-
 
     private void captureMongoStateBeforeUpdate() {
         bundlesInMongoBeforeUpdate = loadBundlesFromMongo();
@@ -169,7 +169,6 @@ public class BundleManagementSteps {
                 .collect(toList());
     }
 
-
     private Function<BasicDBObject, BasicDBObject> replaceWithExpectedUpdateBundle() {
         return bundle -> bundle.get("_id").equals(bsonBundleToUpdate.get("_id")) ? bsonBundleToUpdate : bundle;
     }
@@ -178,23 +177,18 @@ public class BundleManagementSteps {
         actualBundlesInMongoAfterUpdate = loadBundlesFromMongo();
     }
 
-
     private List<BasicDBObject> loadBundlesFromMongo() {
         Query qry = new Query();
         return mongoTemplate.find(qry, BasicDBObject.class, "Bundle");
     }
 
-    private void assertThatNoAdditionalRecordsAreAdded() {
-        assertThat(actualBundlesInMongoAfterUpdate.size(), is(expectedBundlesInMongoAfterUpdate.size()));
-    }
-
-
-    private String filterOutComments(String resourceJson) {
-        return resourceJson.replaceAll("(?s)<!--.*?-->", "");
-    }
 
     private void assertThatMongoStateIsAsExpected(List<BasicDBObject> bundlesInMongoAfterUpdate, List<BasicDBObject> expectedBundlesInMongoAfterUpdate) {
         assertThatBsonBundlesAreEqual(bundlesInMongoAfterUpdate, expectedBundlesInMongoAfterUpdate);
+    }
+
+    private void assertThatNoAdditionalRecordsAreAdded() {
+        assertThat(actualBundlesInMongoAfterUpdate.size(), is(expectedBundlesInMongoAfterUpdate.size()));
     }
 
     private void assertThatResponseIsAsExpected(MethodOutcome actualBundleResponse, MethodOutcome expectedBundleResponse) {
