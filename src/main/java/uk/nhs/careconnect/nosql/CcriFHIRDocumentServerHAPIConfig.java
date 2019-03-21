@@ -54,7 +54,7 @@ public class CcriFHIRDocumentServerHAPIConfig extends RestfulServer {
 	private String serverBase;
 
 	@Value("${ccri.validate_flag}")
-	private Boolean validate;
+	private Boolean validate = false;
 
 
     @Override
@@ -161,8 +161,7 @@ public class CcriFHIRDocumentServerHAPIConfig extends RestfulServer {
 
 
 		// KGM 13th March 2019 - Copied from ccri-fhir
-		//if (validate) {
-		if (true) {
+		if (validate) {
 			//log.info("Registering Validation Interceptor");
 			CCRequestValidatingInterceptor requestInterceptor = new CCRequestValidatingInterceptor(log, (FhirValidator) applicationContext.getBean("fhirValidator"), ctx);
 

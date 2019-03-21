@@ -8,6 +8,7 @@ import ca.uhn.fhir.rest.param.TokenOrListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import com.mongodb.DBRef;
 import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.DocumentReference;
 import org.hl7.fhir.dstu3.model.OperationOutcome;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,8 +23,8 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static com.shazam.shazamcrest.MatcherAssert.assertThat;
+import static com.shazam.shazamcrest.matcher.Matchers.sameBeanAs;
 import static uk.nhs.careconnect.nosql.util.BundleUtils.extractFirstResourceOfType;
 
 public class DocumentReferenceDaoTest extends AbstractDaoTest {
@@ -113,7 +114,7 @@ public class DocumentReferenceDaoTest extends AbstractDaoTest {
         Bundle bundle = documentReferenceDao.search(resid, identifier, patient, date, type, setting, period);
 
         //then
-        assertThat(bundle.getEntry().get(0).getResource().getId(), is(documentReferenceEntity.getFhirDocumentReference().getId()));
+        assertThat(extractFirstResourceOfType(DocumentReference.class, bundle).get(), sameBeanAs(documentReferenceEntity.getFhirDocumentReference()).ignoring("id"));
     }
 
     private DateRangeParam aPeriodStart() {
@@ -131,7 +132,7 @@ public class DocumentReferenceDaoTest extends AbstractDaoTest {
     private void loadAndCreateBundle() {
         Bundle bundle = loadBundle("9658218873.xml");
 
-        Bundle createdBundle = bundleDao.create(ctx, bundle, null, null);
+        Bundle createdBundle = bundleDao.create(bundle, null, null);
         OperationOutcome operationOutcome = extractFirstResourceOfType(OperationOutcome.class, createdBundle).get();
 
         compositionId = operationOutcome.getId().split("/")[1];

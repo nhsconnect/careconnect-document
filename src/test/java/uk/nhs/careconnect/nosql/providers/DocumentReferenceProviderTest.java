@@ -16,7 +16,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.nhs.careconnect.nosql.providers.support.testdata.CompositionTestData.VALID_ID;
-import static uk.nhs.careconnect.nosql.support.testdata.BundleTestData.aBundle;
+import static uk.nhs.careconnect.nosql.support.testdata.BundleTestData.aBundleWithDocumentReference;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DocumentReferenceProviderTest {
@@ -30,7 +30,7 @@ public class DocumentReferenceProviderTest {
     @Test
     public void givenASearchRequestIsMade_withAValidRequest_shouldDelegateToDao() {
         //setup
-        Bundle expectedBundle = aBundle();
+        Bundle expectedBundle = aBundleWithDocumentReference();
 
         TokenParam resid = new TokenParam(VALID_ID);
         TokenParam identifier = new TokenParam();

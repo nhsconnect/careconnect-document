@@ -33,9 +33,8 @@
         <hawtio.version>2.2.0</hawtio.version>
         <org.mockito.version>2.23.4</org.mockito.version>
         <cucumber.version>4.2.3</cucumber.version>
-        <skipTests>true</skipTests>
+        <skipTests>false</skipTests>
     </properties>
-
 
     <dependencies>
 
@@ -320,9 +319,9 @@
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>2.22.0</version>
                 <configuration>
-                <additionalClasspathElements>
-                    <additionalClasspathElement>${basedir}/target/classes</additionalClasspathElement>
-                </additionalClasspathElements>
+                    <additionalClasspathElements>
+                        <additionalClasspathElement>${basedir}/target/classes</additionalClasspathElement>
+                    </additionalClasspathElements>
                 </configuration>
                 <executions>
                     <execution>

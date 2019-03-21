@@ -13,7 +13,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static uk.nhs.careconnect.nosql.dao.SaveAction.CREATE;
 import static uk.nhs.careconnect.nosql.dao.SaveAction.UPDATE;
 import static uk.nhs.careconnect.nosql.support.assertions.BundleAssertions.assertThatBundleIsEqual;
-import static uk.nhs.careconnect.nosql.support.testdata.BundleTestData.aBundle;
+import static uk.nhs.careconnect.nosql.support.testdata.BundleTestData.aBundleWithDocumentReference;
 import static uk.nhs.careconnect.nosql.util.BundleUtils.bsonBundleToBundle;
 import static uk.nhs.careconnect.nosql.util.BundleUtils.extractFirstResourceOfType;
 
@@ -26,7 +26,7 @@ public class FHIRResourceDaoTest extends AbstractDaoTest {
     @Test
     public void givenAFhirResource_whenSaveIsCalledWithCreate_aResourceIsPersistedInMongo() {
         //setup
-        Bundle bundle = aBundle();
+        Bundle bundle = aBundleWithDocumentReference();
 
         //when
         IdType idType = null;
@@ -41,7 +41,7 @@ public class FHIRResourceDaoTest extends AbstractDaoTest {
     @Test
     public void givenAFhirResource_whenSaveIsCalledWithUpdate_aResourceIsUpdatedInMongo() {
         //setup
-        Bundle bundle = aBundle();
+        Bundle bundle = aBundleWithDocumentReference();
         Bundle savedBundle = extractFirstResourceOfType(Bundle.class, saveBundle(bundle)).get();
 
         Bundle bundleUpdate = bundle.copy();
@@ -59,7 +59,7 @@ public class FHIRResourceDaoTest extends AbstractDaoTest {
     }
 
     protected Bundle saveBundle(Bundle bundle) {
-        return bundleDao.create(ctx, bundle, null, null);
+        return bundleDao.create(bundle, null, null);
     }
 
 }

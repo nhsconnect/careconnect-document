@@ -16,7 +16,7 @@ public class DateMatchers {
 
             @Override
             public boolean matches(Object actualDate) {
-                return formatter.format(actualDate).equals(formatter.format(expectedDate));
+                return actualDate != null && formatter.format(actualDate).equals(formatter.format(expectedDate));
             }
 
             @Override
@@ -26,7 +26,7 @@ public class DateMatchers {
 
             @Override
             public void describeMismatch(Object item, Description description) {
-                description.appendText("was ").appendValue(formatter.format(item));
+                description.appendText("was ").appendValue(item != null ? formatter.format(item) : null);
             }
 
         };

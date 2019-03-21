@@ -35,10 +35,20 @@ public class DocumentReferenceTestData {
                 .setCreated(DOCUMENT_REFERENCE_CREATED_DATE) //date
                 .setType(aType()) //type
                 .setSubject(aPatientSubject()) //patient
-                .setIdentifier(anIdentifier()) //identifier
+                .setIdentifier(anIdentifierList()) //identifier
                 .setContext(aDocumentReferenceContext())
                 .setId(DOCUMENT_REFERENCE_ID); //includes setting and period
     }
+
+    public static DocumentReference anUpdatedDocumentReference() {
+        return aDocumentReference().setSubject(
+                new Reference()
+                        .setIdentifier(
+                                new Identifier()
+                                        .setValue("change-patient-reference")
+                        ));
+    }
+
 
     public static CodeableConcept aType() {
         return new CodeableConcept()
@@ -58,11 +68,14 @@ public class DocumentReferenceTestData {
                 );
     }
 
-    public static List<Identifier> anIdentifier() {
-        return asList(
-                new Identifier()
+    public static Identifier anIdentifier() {
+        return new Identifier()
                         .setValue(DOCUMENT_REFERENCE_IDENTIFIER_VALUE)
-                        .setSystem(DOCUMENT_REFERENCE_IDENTIFIER_SYSTEM));
+                        .setSystem(DOCUMENT_REFERENCE_IDENTIFIER_SYSTEM);
+    }
+
+    public static List<Identifier> anIdentifierList() {
+        return asList(anIdentifier());
     }
 
     private static DocumentReference.DocumentReferenceContextComponent aDocumentReferenceContext() {
