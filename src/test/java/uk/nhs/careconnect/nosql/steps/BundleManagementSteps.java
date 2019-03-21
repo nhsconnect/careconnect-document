@@ -26,6 +26,11 @@ import static uk.nhs.careconnect.nosql.util.BundleUtils.bsonBundleToBundle;
 
 public class BundleManagementSteps {
 
+    private static final String BUNDLE_COLLECTION = "Bundle";
+    private static final String COMPOSITION_COLLECTION = "idxComposition";
+    private static final String DOCUMENT_REFERENCE_COLLECTION = "idxDocumentReference";
+    private static final String FILES_COLLECTION = "fs.files";
+
     @Autowired
     private MongoTemplate mongoTemplate;
 
@@ -36,7 +41,14 @@ public class BundleManagementSteps {
     private Bundle bundleToCreate;
 
     private List<BasicDBObject> expectedBundlesInMongoAfterCreate;
+    private List<BasicDBObject> expectedCompositionsInMongoAfterCreate;
+    private List<BasicDBObject> expectedDocumentReferencesInMongoAfterCreate;
+    private List<BasicDBObject> expectedFilesInMongoAfterCreate;
+
     private List<BasicDBObject> actualBundlesInMongoAfterCreate;
+    private List<BasicDBObject> actualCompositionsInMongoAfterCreate;
+    private List<BasicDBObject> actualDocumentReferencesInMongoAfterCreate;
+    private List<BasicDBObject> actualFilesInMongoAfterCreate;
 
     private MethodOutcome expectedCreateBundleResponse;
     private MethodOutcome actualCreateBundleResponse;
@@ -70,14 +82,14 @@ public class BundleManagementSteps {
                 .resource(bundleToCreate)
                 .execute();
 
-        setExpectedBundleIdToEqualCreateBundleId(actualCreateBundleResponse);
+        setExpectedIdsToEqualMongoGeneratedIds(actualCreateBundleResponse);
     }
 
     @Then("a new bundle is created")
     public void aNewBundleIsCreated() {
         captureActualMongoStateAfterCreate();
 
-        assertThatMongoStateIsAsExpected(actualBundlesInMongoAfterCreate, expectedBundlesInMongoAfterCreate);
+        assertThatMongoStateAfterCreateIsAsExpected();
     }
 
     @And("a response including the created bundle is returned to the client")
@@ -121,7 +133,7 @@ public class BundleManagementSteps {
 
         assertThatNoAdditionalRecordsAreAdded();
 
-        assertThatMongoStateIsAsExpected(actualBundlesInMongoAfterUpdate, expectedBundlesInMongoAfterUpdate);
+        assertThatMongoStateAfterUpdateIsAsExpected();
     }
 
     @And("a response including the updated bundle is returned to the client")
@@ -133,25 +145,37 @@ public class BundleManagementSteps {
         String resourceJson = filterOutComments(commonSteps.ctx.newJsonParser().encodeResourceToString(bundleToCreate));
         Document document = Document.parse(resourceJson);
         expectedBundlesInMongoAfterCreate = asList(new BasicDBObject(document));
+
+        //TODO: Complete the expected records
+        expectedCompositionsInMongoAfterCreate = asList(
+                new BasicDBObject()
+                        .append("_class", "uk.nhs.careconnect.nosql.entities.CompositionEntity"));
+
     }
 
     private String filterOutComments(String resourceJson) {
         return resourceJson.replaceAll("(?s)<!--.*?-->", "");
     }
 
-    private void setExpectedBundleIdToEqualCreateBundleId(MethodOutcome response) {
+    private void setExpectedIdsToEqualMongoGeneratedIds(MethodOutcome response) {
         Bundle responseBundle = (Bundle) response.getResource();
 
         expectedBundlesInMongoAfterCreate.stream()
                 .forEach(bsonBundle -> bsonBundle.put("_id", new ObjectId(responseBundle.getId())));
+
+        expectedCompositionsInMongoAfterCreate.stream()
+                .forEach(bsonBundle -> bsonBundle.put("_id", new ObjectId(response.getId().getIdPart())));
     }
 
     private void captureActualMongoStateAfterCreate() {
-        actualBundlesInMongoAfterCreate = loadBundlesFromMongo();
+        actualBundlesInMongoAfterCreate = loadColectionFromMongo(BUNDLE_COLLECTION);
+        actualCompositionsInMongoAfterCreate = loadColectionFromMongo(COMPOSITION_COLLECTION);
+        actualDocumentReferencesInMongoAfterCreate = loadColectionFromMongo(DOCUMENT_REFERENCE_COLLECTION);
+        actualFilesInMongoAfterCreate = loadColectionFromMongo(FILES_COLLECTION);
     }
 
     private void captureMongoStateBeforeUpdate() {
-        bundlesInMongoBeforeUpdate = loadBundlesFromMongo();
+        bundlesInMongoBeforeUpdate = loadColectionFromMongo(BUNDLE_COLLECTION);
     }
 
     private void selectBundleToUpdateFromBundlesInMongo() {
@@ -174,17 +198,38 @@ public class BundleManagementSteps {
     }
 
     private void captureActualMongoStateAfterUpdate() {
-        actualBundlesInMongoAfterUpdate = loadBundlesFromMongo();
+        actualBundlesInMongoAfterUpdate = loadColectionFromMongo(BUNDLE_COLLECTION);
     }
 
-    private List<BasicDBObject> loadBundlesFromMongo() {
+    private List<BasicDBObject> loadColectionFromMongo(String collectionName) {
         Query qry = new Query();
-        return mongoTemplate.find(qry, BasicDBObject.class, "Bundle");
+        return mongoTemplate.find(qry, BasicDBObject.class, collectionName);
     }
 
 
-    private void assertThatMongoStateIsAsExpected(List<BasicDBObject> bundlesInMongoAfterUpdate, List<BasicDBObject> expectedBundlesInMongoAfterUpdate) {
-        assertThatBsonBundlesAreEqual(bundlesInMongoAfterUpdate, expectedBundlesInMongoAfterUpdate);
+    private void assertThatMongoStateAfterCreateIsAsExpected() {
+        assertThatBsonBundlesAreEqual(actualBundlesInMongoAfterCreate, expectedBundlesInMongoAfterCreate);
+
+        //TODO: Complete the assertions for other records
+//        assertThatBsonBundlesAreEqual(actualCompositionsInMongoAfterCreate, expectedCompositionsInMongoAfterCreate);
+//        assertThatCompositionIsEqual(expectedCompositionEntity, retrievedCompositionEntity);
+//        assertThatOperationOutcomeIsEqual(operationOutcome);
+//        assertPatientIdentifiersAreEqual(retrievedPatientEntity.getIdentifiers(), aPatientIdentifier());
+//        assertThatDocumentReferenceEntityIsEqual(retrievedPatientEntity, retrievedDocumentReferenceEntity, expectedDocumentReferenceEntity);
+
+
+    }
+
+    private void assertThatMongoStateAfterUpdateIsAsExpected() {
+        assertThatBsonBundlesAreEqual(actualBundlesInMongoAfterUpdate, expectedBundlesInMongoAfterUpdate);
+
+//TODO: Complete the assertions for other records
+//        assertThatCompositionIsEqual(expectedCompositionEntity, retrievedCompositionEntity);
+//        assertThatOperationOutcomeIsEqual(operationOutcome);
+//        assertPatientIdentifiersAreEqual(retrievedPatientEntity.getIdentifiers(), aPatientIdentifier());
+//        assertThatDocumentReferenceEntityIsEqual(retrievedPatientEntity, retrievedDocumentReferenceEntity, expectedDocumentReferenceEntity);
+
+
     }
 
     private void assertThatNoAdditionalRecordsAreAdded() {
