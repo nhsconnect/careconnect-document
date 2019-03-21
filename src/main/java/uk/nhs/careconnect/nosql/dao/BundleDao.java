@@ -99,9 +99,6 @@ public class BundleDao implements IBundle {
 
         saveDocumentReference(saveBundleResponse.getBundle(), savedPatient, compositionEntity, optionalBinaryId);
 
-        OperationOutcome operationOutcome = new OperationOutcome();
-        operationOutcome.setId("Composition/" + compositionEntity.getId());
-
         return aBundleResponse(saveBundleResponse.getBundle(), compositionEntity);
     }
 
