@@ -11,8 +11,8 @@ import org.springframework.test.context.TestPropertySource;
 import uk.nhs.careconnect.configuration.TestConfig;
 
 @ContextConfiguration(classes = {TestConfig.class})
-@TestPropertySource(properties = {"spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration, org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration"})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestPropertySource(value = "classpath:application.properties", properties = {"spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration, org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration"})
 public class CucumberSpringContextConfiguration {
 
     @Autowired

@@ -11,17 +11,14 @@ import ca.uhn.fhir.rest.server.interceptor.CorsInterceptor;
 import ca.uhn.fhir.rest.server.interceptor.IServerInterceptor;
 import ca.uhn.fhir.rest.server.interceptor.ResponseHighlighterInterceptor;
 import ca.uhn.fhir.util.VersionUtil;
+import ca.uhn.fhir.validation.FhirValidator;
 import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.cors.CorsConfiguration;
-import uk.nhs.careconnect.nosql.providers.BinaryProvider;
-import uk.nhs.careconnect.nosql.providers.BundleProvider;
-import uk.nhs.careconnect.nosql.providers.CompositionProvider;
 import uk.nhs.careconnect.nosql.providers.ConformanceProvider;
-import uk.nhs.careconnect.nosql.providers.DocumentReferenceProvider;
-import uk.nhs.careconnect.nosql.providers.PatientProvider;
+
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -56,6 +53,8 @@ public class CcriFHIRDocumentServerHAPIConfig extends RestfulServer {
 	@Value("${ccri.server.base}")
 	private String serverBase;
 
+	@Value("${ccri.validate_flag}")
+	private Boolean validate = false;
 
 
     @Override
@@ -159,6 +158,15 @@ public class CcriFHIRDocumentServerHAPIConfig extends RestfulServer {
 		setDefaultResponseEncoding(EncodingEnum.JSON);
 
 		FhirContext ctx = getFhirContext();
+
+
+		// KGM 13th March 2019 - Copied from ccri-fhir
+		if (validate) {
+			//log.info("Registering Validation Interceptor");
+			CCRequestValidatingInterceptor requestInterceptor = new CCRequestValidatingInterceptor(log, (FhirValidator) applicationContext.getBean("fhirValidator"), ctx);
+
+			registerInterceptor(requestInterceptor);
+		}
 		// Remove as believe due to issues on docker ctx.setNarrativeGenerator(new DefaultThymeleafNarrativeGenerator());
 	}
 
