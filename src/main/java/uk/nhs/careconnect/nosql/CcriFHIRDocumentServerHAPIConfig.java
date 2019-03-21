@@ -37,10 +37,6 @@ public class CcriFHIRDocumentServerHAPIConfig extends RestfulServer {
 
 	private ApplicationContext applicationContext;
 
-	CcriFHIRDocumentServerHAPIConfig(ApplicationContext context) {
-		this.applicationContext = context;
-	}
-
 	@Value("${ccri.software.name}")
 	private String softwareName;
 
@@ -53,11 +49,14 @@ public class CcriFHIRDocumentServerHAPIConfig extends RestfulServer {
 	@Value("${ccri.server.base}")
 	private String serverBase;
 
-	@Value("${ccri.validate_flag}")
-	private Boolean validate = false;
+	final private Boolean validate;
 
+	CcriFHIRDocumentServerHAPIConfig(ApplicationContext context, Boolean validate) {
+		this.applicationContext = context;
+		this.validate = validate;
+	}
 
-    @Override
+	@Override
 	public void addHeadersToResponse(HttpServletResponse theHttpResponse) {
 		theHttpResponse.addHeader("X-Powered-By", "HAPI FHIR " + VersionUtil.getVersion() + " RESTful Server (INTEROPen Care Connect STU3)");
 	}
