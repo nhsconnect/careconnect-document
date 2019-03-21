@@ -13,13 +13,11 @@ public class BinaryAssertions {
     public static void assertThatBinaryIsEqual(Binary actual, Binary expected) {
         assertThat(actual.getContentType(), is(expected.getContentType()));
         assertThat(actual.getContent(), is(expected.getContent()));
-
     }
 
     public static void assertThatFhirResourceIsEqual(Binary actual, Binary expected) {
         assertThat(actual.getContentType(), is(expected.getContentType()));
-        assertThat(binaryContentToBundle(actual), sameBeanAs(binaryContentToBundle(expected)));
-
+        assertThat(binaryContentToBundle(actual), sameBeanAs(binaryContentToBundle(expected)).ignoring("id"));
     }
 
     private static Bundle binaryContentToBundle(Binary binary) {

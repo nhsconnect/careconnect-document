@@ -1,25 +1,18 @@
 package uk.nhs.careconnect.nosql.providers;
 
 import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.rest.api.MethodOutcome;
 import org.hl7.fhir.dstu3.model.Binary;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.IdType;
-import org.hl7.fhir.dstu3.model.OperationOutcome;
-import org.hl7.fhir.instance.model.api.IIdType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import uk.nhs.careconnect.nosql.dao.IBinaryResource;
-import uk.nhs.careconnect.nosql.dao.IBundle;
 import uk.nhs.careconnect.nosql.dao.IComposition;
-import uk.nhs.careconnect.nosql.support.testdata.BundleTestData;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -28,8 +21,7 @@ import java.nio.file.Paths;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
-import static uk.nhs.careconnect.nosql.support.testdata.BundleTestData.aBundle;
-
+import static uk.nhs.careconnect.nosql.util.BundleUtils.extractFirstResourceOfType;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BinaryProviderTest {
@@ -38,14 +30,11 @@ public class BinaryProviderTest {
 
     private Binary BINARY;
 
-
     private static final Boolean CREATED = true;
     private static final Boolean UPDATED = false;
 
     private static final String ID = "id-1";
     private static final String OPERATION_OUTCOME_ID = "operation-outcome-id-1";
-
-    //private static final OperationOutcome OPERATION_OUTCOME = anOperationOutcome();
 
     FhirContext fhirContext;
 
@@ -85,18 +74,18 @@ public class BinaryProviderTest {
         IdType binaryId = new IdType().setValue(ID);
 
         when(binaryDao.read(fhirContext, binaryId)).thenReturn(null);
-        when(compositionDao.readDocument(fhirContext, binaryId)).thenReturn(aFhirDocument());
+        Bundle savedInnerBundle = extractFirstResourceOfType(Bundle.class, aFhirDocument()).get();
+        when(compositionDao.readDocument(fhirContext, binaryId)).thenReturn(savedInnerBundle);
 
         //when
         Binary binaryResponse = binaryProvider.getBinaryById(binaryId);
 
         log.info("Binary returned {}", new String(binaryResponse.getContent()));
 
-        assertThat(new String(binaryResponse.getContent()), is(fhirContext.newXmlParser().encodeResourceToString(aFhirDocument())));
-
+        Bundle innerBundle = extractFirstResourceOfType(Bundle.class, aFhirDocument()).get();
 
         //then
-        //assertThatMethodOutcomeIsEqual(actualMethodOutcome, expectedMethodOutcome);
+        assertThat(new String(binaryResponse.getContent()), is(fhirContext.newXmlParser().encodeResourceToString(innerBundle)));
     }
 
     private Binary aBinary() {

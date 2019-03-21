@@ -1,9 +1,7 @@
 package uk.nhs.careconnect.nosql.dao;
 
 import ca.uhn.fhir.context.FhirContext;
-import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
-import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Resource;
@@ -20,6 +18,7 @@ import org.springframework.stereotype.Repository;
 import javax.transaction.Transactional;
 
 import static uk.nhs.careconnect.nosql.dao.SaveAction.CREATE;
+import static uk.nhs.careconnect.nosql.util.BundleUtils.fhirResourceToDBObject;
 
 @Transactional
 @Repository
@@ -33,11 +32,7 @@ public class FHIRResourceDao implements IFHIRResource {
     @Override
     public DBObject save(FhirContext ctx, Resource resource, IdType idType, SaveAction saveAction) {
 
-        String resourceJson = filterOutComments(ctx.newJsonParser().encodeResourceToString(resource));
-
-        Document doc = Document.parse(resourceJson);
-        DBObject mObj = new BasicDBObject(doc);
-        mObj.removeField("id");
+        DBObject mObj = fhirResourceToDBObject(ctx, resource);
 
         if (saveAction == CREATE) {
             log.debug("About to save new FHIRResource");
@@ -52,10 +47,6 @@ public class FHIRResourceDao implements IFHIRResource {
             return mongoTemplate.findAndModify(qry, Update.fromDBObject(mObj), new FindAndModifyOptions().returnNew(true), DBObject.class, resource.getResourceType().name());
         }
 
-    }
-
-    private String filterOutComments(String resourceJson) {
-        return resourceJson.replaceAll("(?s)<!--.*?-->", "");
     }
 
 }

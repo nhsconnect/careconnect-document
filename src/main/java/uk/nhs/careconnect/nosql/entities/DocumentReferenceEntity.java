@@ -5,7 +5,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Reference;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.List;
@@ -20,7 +19,6 @@ public class DocumentReferenceEntity {
     @DBRef
     private PatientEntity idxPatient;
 
-    @DateTimeFormat(style="yyyyMMdd'T'HHmmss.SSSZ")
     private Date createdDate;
 
     private CodeableConceptEntity type;
@@ -44,6 +42,19 @@ public class DocumentReferenceEntity {
         this.id = null;
         this.idxPatient = idxPatient;
         this.createdDate = documentReference.getCreated();
+        this.type = new CodeableConceptEntity(documentReference.getType());
+        this.patient = new ReferenceEntity(documentReference.getSubject());
+        this.identifier = documentReference.getIdentifier().stream().map(IdentifierEntity::new).collect(Collectors.toList());
+        this.practice = new CodeableConceptEntity(documentReference.getContext().getPracticeSetting());
+        this.period = new PeriodEntity(documentReference.getContext().getPeriod());
+        this.documentReference = documentReference;
+    }
+
+    public DocumentReferenceEntity(DocumentReference documentReference, DocumentReferenceEntity foundDocumentReference) {
+        this.id = foundDocumentReference.getId();
+
+        this.idxPatient = foundDocumentReference.getIdxPatient();
+        this.createdDate = foundDocumentReference.getCreatedDate();
         this.type = new CodeableConceptEntity(documentReference.getType());
         this.patient = new ReferenceEntity(documentReference.getSubject());
         this.identifier = documentReference.getIdentifier().stream().map(IdentifierEntity::new).collect(Collectors.toList());
@@ -87,25 +98,6 @@ public class DocumentReferenceEntity {
     public DocumentReference getFhirDocumentReference() {
         return documentReference;
     }
-
-
-    private String name;
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-
-    private String json;
-    public String getJson() {
-        return json;
-    }
-
-    public void setJson(String json) {
-        this.json = json;
-    }
-    /*
-    @ManyToOne
-    public BundleEntity getBreed() { return breed; }
-    public void setBreed(BundleEntity breed) { this.breed = breed; }
-    private BundleEntity breed;*/
 
 }
 

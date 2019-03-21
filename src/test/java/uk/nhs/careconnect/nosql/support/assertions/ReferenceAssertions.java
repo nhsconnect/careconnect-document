@@ -14,4 +14,11 @@ public class ReferenceAssertions {
         assertThat(actual.getDisplay(), is(expected.getDisplay()));
         assertThatIdentifierIsEqual(actual.getIdentifier(), expected.getIdentifier());
     }
+
+    public static void assertThatReferenceIsEqual(Reference actual, Reference expected) {
+        assertThat(actual.getReference(), is(expected.getReference()));
+        assertThat(actual.getDisplay(), is(expected.getDisplay()));
+        assertThatIdentifierIsEqual(actual.getIdentifier(), expected.getIdentifier());
+    }
+
 }

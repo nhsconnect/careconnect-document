@@ -2,9 +2,6 @@ package uk.nhs.careconnect.nosql.support.testdata;
 
 import org.hl7.fhir.dstu3.model.Binary;
 import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.CodeableConcept;
-import org.hl7.fhir.dstu3.model.Coding;
-import org.hl7.fhir.dstu3.model.Composition;
 import org.hl7.fhir.dstu3.model.Identifier;
 import org.hl7.fhir.dstu3.model.Patient;
 
@@ -15,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static uk.nhs.careconnect.nosql.support.testdata.CompositionTestData.aComposition;
 import static uk.nhs.careconnect.nosql.support.testdata.DocumentReferenceTestData.aDocumentReference;
 
 public class BundleTestData {
@@ -52,17 +50,26 @@ public class BundleTestData {
         Bundle.BundleEntryComponent patientEntry = new Bundle.BundleEntryComponent();
         patientEntry.setResource(aPatient());
 
+        entryList.add(compositionEntry);
+        entryList.add(patientEntry);
+
+        return bundle;
+    }
+
+    public static Bundle aBundleWithDocumentReference() {
+        Bundle bundle = aBundle();
+
         Bundle.BundleEntryComponent documentReferenceEntry = new Bundle.BundleEntryComponent();
         documentReferenceEntry.setResource(aDocumentReference());
 
-        entryList.add(patientEntry);
+        List<Bundle.BundleEntryComponent> entryList = bundle.getEntry();
         entryList.add(documentReferenceEntry);
 
         return bundle;
     }
 
     public static Bundle aBundleWithBinary() {
-        Bundle bundle = aBundle();
+        Bundle bundle = aBundleWithDocumentReference();
         List<Bundle.BundleEntryComponent> entryList = bundle.getEntry();
 
         Bundle.BundleEntryComponent binaryEntry = new Bundle.BundleEntryComponent();
@@ -71,23 +78,6 @@ public class BundleTestData {
         entryList.add(binaryEntry);
 
         return bundle;
-    }
-
-    public static Composition aComposition() {
-        return new Composition()
-                .setType(new CodeableConcept()
-                        .setCoding(aCodingCollection()));
-    }
-
-
-    public static List<Coding> aCodingCollection() {
-        List<Coding> codingList = new ArrayList<>();
-        Coding coding = new Coding();
-        coding.setCode(CODING_CODE);
-        coding.setDisplay(CODING_DISPLAY);
-        coding.setSystem(CODING_SYSTEM);
-        codingList.add(coding);
-        return codingList;
     }
 
     public static Patient aPatient() {

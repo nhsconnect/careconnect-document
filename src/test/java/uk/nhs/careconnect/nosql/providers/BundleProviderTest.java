@@ -1,6 +1,5 @@
 package uk.nhs.careconnect.nosql.providers;
 
-import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.IdType;
@@ -16,13 +15,13 @@ import uk.nhs.careconnect.nosql.dao.IBundle;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
-import static uk.nhs.careconnect.nosql.support.testdata.BundleTestData.aBundle;
+import static uk.nhs.careconnect.nosql.support.testdata.BundleTestData.aBundleWithDocumentReference;
 
 
 @RunWith(MockitoJUnitRunner.class)
 public class BundleProviderTest {
 
-    private static final Bundle BUNDLE = aBundle();
+    private static final Bundle BUNDLE = aBundleWithDocumentReference();
     private static final Boolean CREATED = true;
     private static final Boolean UPDATED = false;
 
@@ -30,9 +29,6 @@ public class BundleProviderTest {
     private static final String OPERATION_OUTCOME_ID = "operation-outcome-id-1";
 
     private static final OperationOutcome OPERATION_OUTCOME = anOperationOutcome();
-
-    @Mock
-    FhirContext fhirContext;
 
     @Mock
     IBundle bundleDao;
@@ -45,7 +41,7 @@ public class BundleProviderTest {
         //setup
         MethodOutcome expectedMethodOutcome = aMethodOutcome(CREATED);
 
-        when(bundleDao.create(fhirContext, BUNDLE, null, null)).thenReturn(aBundleWithOperationOutcome());
+        when(bundleDao.create(BUNDLE, null, null)).thenReturn(aBundleWithOperationOutcome());
 
         //when
         MethodOutcome actualMethodOutcome = bundleProvider.create(BUNDLE);
@@ -61,7 +57,7 @@ public class BundleProviderTest {
         String conditional = "true";
 
         MethodOutcome expectedMethodOutcome = aMethodOutcome(UPDATED);
-        when(bundleDao.update(fhirContext, BUNDLE, bundleId, conditional)).thenReturn(aBundleWithOperationOutcome());
+        when(bundleDao.update(BUNDLE, bundleId, conditional)).thenReturn(aBundleWithOperationOutcome());
 
         //when
         MethodOutcome actualMethodOutcome = bundleProvider.update(BUNDLE, bundleId, conditional);

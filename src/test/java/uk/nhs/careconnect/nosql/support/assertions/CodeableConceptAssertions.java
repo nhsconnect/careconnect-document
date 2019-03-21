@@ -18,6 +18,12 @@ public class CodeableConceptAssertions {
 
     }
 
+    public static void assertThatCodeableConceptIsEqual(CodeableConcept actual, CodeableConcept expected) {
+        actual.getCoding().stream()
+                .forEach(a -> assertThatCodeIsEqual(a, find(a, expected.getCoding())));
+
+    }
+
     private static Coding find(CodingEntity actual, List<Coding> expected) {
         return expected.stream()
                 .filter(e -> actual.getCode().equals(e.getCode()))
@@ -25,7 +31,20 @@ public class CodeableConceptAssertions {
                 .get();
     }
 
+    private static Coding find(Coding actual, List<Coding> expected) {
+        return expected.stream()
+                .filter(e -> actual.getCode().equals(e.getCode()))
+                .findFirst()
+                .get();
+    }
+
     private static void assertThatCodeIsEqual(CodingEntity actual, Coding expected) {
+        assertThat(actual.getCode(), is(expected.getCode()));
+        assertThat(actual.getDisplay(), is(expected.getDisplay()));
+        assertThat(actual.getSystem(), is(expected.getSystem()));
+    }
+
+    private static void assertThatCodeIsEqual(Coding actual, Coding expected) {
         assertThat(actual.getCode(), is(expected.getCode()));
         assertThat(actual.getDisplay(), is(expected.getDisplay()));
         assertThat(actual.getSystem(), is(expected.getSystem()));

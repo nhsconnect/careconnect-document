@@ -39,14 +39,14 @@ public class BundleProvider implements IResourceProvider {
 
     @Create
     public MethodOutcome create(@ResourceParam Bundle bundle) {
-        Bundle resultBundle = bundleDao.create(ctx, bundle, null, null);
+        Bundle resultBundle = bundleDao.create(bundle, null, null);
 
         return aMethodOutcomeResponse(resultBundle, CREATED);
     }
 
     @Update
     public MethodOutcome update(@ResourceParam Bundle bundle, @IdParam IdType bundleId, @ConditionalUrlParam String conditional) {
-        Bundle resultBundle = bundleDao.update(ctx, bundle, bundleId, conditional);
+        Bundle resultBundle = bundleDao.update(bundle, bundleId, conditional);
 
         return aMethodOutcomeResponse(resultBundle, UPDATED);
     }
