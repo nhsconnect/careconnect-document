@@ -38,6 +38,9 @@ public class CcriDocument {
     @Value("${ccri.server.base}")
     String serverBase;
 
+    @Value("${ccri.validate_flag}")
+    private Boolean validate;
+
     public static void main(String[] args) {
         //System.setProperty(AuthenticationFilter.HAWTIO_AUTHENTICATION_ENABLED, "false");
         System.setProperty("hawtio.authenticationEnabled", "false");
@@ -51,7 +54,7 @@ public class CcriDocument {
 
     @Bean
     public ServletRegistrationBean ServletRegistrationBean() {
-        ServletRegistrationBean registration = new ServletRegistrationBean(new CcriFHIRDocumentServerHAPIConfig(context), "/STU3/*");
+        ServletRegistrationBean registration = new ServletRegistrationBean(new CcriFHIRDocumentServerHAPIConfig(context, validate), "/STU3/*");
         registration.setName("FhirServlet");
         registration.setLoadOnStartup(1);
         return registration;
