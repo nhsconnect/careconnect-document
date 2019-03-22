@@ -3,6 +3,7 @@ package uk.nhs.careconnect.nosql.dao;
 import ca.uhn.fhir.context.FhirContext;
 import com.mongodb.DBObject;
 import org.bson.types.ObjectId;
+import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Resource;
 import org.slf4j.Logger;
@@ -14,6 +15,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
+import uk.nhs.careconnect.nosql.entities.CompositionEntity;
 
 import javax.transaction.Transactional;
 
@@ -43,8 +45,22 @@ public class FHIRResourceDao implements IFHIRResource {
 
             log.debug("About to update FHIRResource");
 
-            Query qry = Query.query(Criteria.where("_id").is(new ObjectId(idType.getIdPart())));
-            return mongoTemplate.findAndModify(qry, Update.fromDBObject(mObj), new FindAndModifyOptions().returnNew(true), DBObject.class, resource.getResourceType().name());
+            Bundle bundle = (Bundle)resource;
+
+            Criteria criteria = Criteria.where("identifier.value").is(bundle.getIdentifier().getValue());
+
+            if (bundle.getIdentifier().getSystem() != null){
+                criteria.and("identifier.system").is(bundle.getIdentifier().getSystem());
+            }
+
+            Query qry = Query.query(criteria);
+
+            DBObject foundBundle = mongoTemplate.findOne(qry, DBObject.class,"Bundle");
+
+            mongoTemplate.findAndModify(qry, Update.fromDBObject(mObj), new FindAndModifyOptions().returnNew(true), DBObject.class, resource.getResourceType().name());
+            mObj.put("_id", foundBundle.get("_id"));
+
+            return mObj;
         }
 
     }
