@@ -4,7 +4,6 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.server.exceptions.ResourceVersionConflictException;
 import com.mongodb.DBObject;
 import com.mongodb.DBRef;
-import org.bson.types.ObjectId;
 import org.hl7.fhir.dstu3.model.Attachment;
 import org.hl7.fhir.dstu3.model.Binary;
 import org.hl7.fhir.dstu3.model.Bundle;
@@ -18,11 +17,13 @@ import org.hl7.fhir.dstu3.model.Patient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 import uk.nhs.careconnect.nosql.dao.transform.CompositionTransformer;
+import uk.nhs.careconnect.nosql.dao.transform.PatientEntityToFHIRPatient;
 import uk.nhs.careconnect.nosql.entities.CodingEntity;
 import uk.nhs.careconnect.nosql.entities.CompositionEntity;
 import uk.nhs.careconnect.nosql.entities.DocumentReferenceEntity;
@@ -42,6 +43,7 @@ import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static uk.nhs.careconnect.nosql.dao.SaveAction.CREATE;
 import static uk.nhs.careconnect.nosql.dao.SaveAction.UPDATE;
+import static uk.nhs.careconnect.nosql.decorators.DocumentReferenceDecorator.decorateDocumentReference;
 import static uk.nhs.careconnect.nosql.util.BundleUtils.bsonBundleToBundle;
 import static uk.nhs.careconnect.nosql.util.BundleUtils.extractFirstResourceOfType;
 import static uk.nhs.careconnect.nosql.util.BundleUtils.resourceOfType;
@@ -59,10 +61,15 @@ public class BundleDao implements IBundle {
     private final IPatient patientDao;
     private final CompositionDao compositionDao;
     private final BinaryResourceDao binaryResourceDao;
+    private final PatientEntityToFHIRPatient patientEntityToFHIRPatient;
+
+    @Value("${ccri.server.base}")
+    String serverBase;
 
     @Autowired
     public BundleDao(Clock clock, FhirContext fhirContext, MongoOperations mongo,
-                     IFHIRResource fhirDocumentDao, IPatient patientDao, CompositionDao compositionDao, BinaryResourceDao binaryResourceDao) {
+                     IFHIRResource fhirDocumentDao, IPatient patientDao, CompositionDao compositionDao, BinaryResourceDao binaryResourceDao,
+                     PatientEntityToFHIRPatient patientEntityToFHIRPatient) {
         this.clock = clock;
         this.fhirContext = fhirContext;
         this.mongo = mongo;
@@ -70,10 +77,11 @@ public class BundleDao implements IBundle {
         this.patientDao = patientDao;
         this.compositionDao = compositionDao;
         this.binaryResourceDao = binaryResourceDao;
+        this.patientEntityToFHIRPatient = patientEntityToFHIRPatient;
     }
 
     @Override
-    public Bundle update(Bundle bundle, IdType idType, String theConditional) {
+    public BundleResponse update(Bundle bundle, IdType idType, String theConditional) {
         log.debug("About to update Bundle");
 
         // KGM added 4/3/2019
@@ -95,15 +103,15 @@ public class BundleDao implements IBundle {
 
         CompositionEntity compositionEntity = updateCompositionEntity(bundle, saveBundleResponse.getSavedBundleId(), savedPatient);
 
-        Optional<ObjectId> optionalBinaryId = saveBinary(saveBundleResponse.getBundle());
+        Optional<Binary> savedBinary = saveBinary(saveBundleResponse.getBundle());
 
-        saveDocumentReference(saveBundleResponse.getBundle(), savedPatient, compositionEntity, optionalBinaryId);
+        DocumentReferenceEntity savedDocumentReference = saveDocumentReference(saveBundleResponse.getBundle(), savedPatient, compositionEntity, savedBinary);
 
-        return aBundleResponse(saveBundleResponse.getBundle(), compositionEntity);
+        return aBundleResponse(saveBundleResponse.getBundle(), compositionEntity, savedPatient, savedDocumentReference);
     }
 
     @Override
-    public Bundle create(Bundle bundle, IdType idType, String theConditional) {
+    public BundleResponse create(Bundle bundle, IdType idType, String theConditional) {
         log.debug("About to create Bundle");
 
         Optional<Bundle> optionalInnerBundle = extractFirstResourceOfType(Bundle.class, bundle);
@@ -118,11 +126,11 @@ public class BundleDao implements IBundle {
 
         CompositionEntity compositionEntity = saveComposition(bundleToSave, saveBundleResponse.getSavedBundleId(), savedPatient);
 
-        Optional<ObjectId> optionalBinaryId = saveBinary(saveBundleResponse.getBundle());
+        Optional<Binary> savedBinary = saveBinary(saveBundleResponse.getBundle());
 
-        saveDocumentReference(saveBundleResponse.getBundle(), savedPatient, compositionEntity, optionalBinaryId);
+        DocumentReferenceEntity savedDocumentReference = saveDocumentReference(saveBundleResponse.getBundle(), savedPatient, compositionEntity, savedBinary);
 
-        return aBundleResponse(saveBundleResponse.getBundle(), compositionEntity);
+        return aBundleResponse(saveBundleResponse.getBundle(), compositionEntity, savedPatient, savedDocumentReference);
     }
 
     private void checkNotAlreadySaved(Bundle bundle) {
@@ -221,7 +229,7 @@ public class BundleDao implements IBundle {
                 .collect(toList());
     }
 
-    private void saveDocumentReference(Bundle bundle, PatientEntity savedPatient, CompositionEntity compositionEntity, Optional<ObjectId> optionalBinaryId) {
+    private DocumentReferenceEntity saveDocumentReference(Bundle bundle, PatientEntity savedPatient, CompositionEntity compositionEntity, Optional<Binary> optionalBinary) {
         Optional<DocumentReference> optionalDocumentReference = bundle.getEntry().stream()
                 .map(BundleEntryComponent::getResource)
                 .filter(resourceOfType(DocumentReference.class))
@@ -242,7 +250,7 @@ public class BundleDao implements IBundle {
             }
         }
 
-        saveDocumentReferenceAttachment(savedDocumentReferenceEntity.getFhirDocumentReference(), optionalBinaryId);
+        saveDocumentReferenceAttachment(savedDocumentReferenceEntity.getFhirDocumentReference(), optionalBinary);
 
         mongo.save(savedDocumentReferenceEntity);
 
@@ -257,6 +265,8 @@ public class BundleDao implements IBundle {
                 .collect(toList());
 
         bundle.setEntry(entries);
+
+        return savedDocumentReferenceEntity;
 
     }
 
@@ -297,8 +307,8 @@ public class BundleDao implements IBundle {
         }).orElse(null);
     }
 
-    private void saveDocumentReferenceAttachment(DocumentReference documentReference, Optional<ObjectId> optionalBinaryId) {
-        optionalBinaryId.ifPresent(binaryId -> {
+    private void saveDocumentReferenceAttachment(DocumentReference documentReference, Optional<Binary> optionalBinary) {
+        optionalBinary.ifPresent(binary -> {
 
             DocumentReferenceContentComponent documentReferenceContentComponent = new DocumentReferenceContentComponent();
 
@@ -307,7 +317,7 @@ public class BundleDao implements IBundle {
                     .findFirst();
 
             optionalAttachment.ifPresent(attachment -> {
-                attachment.setUrl(format("Binary/%s", binaryId));
+                attachment.setUrl(format("Binary/%s", binary.getId()));
                 documentReferenceContentComponent.setAttachment(attachment);
             });
 
@@ -315,7 +325,7 @@ public class BundleDao implements IBundle {
         });
     }
 
-    public Optional<ObjectId> saveBinary(Bundle bundle) {
+    public Optional<Binary> saveBinary(Bundle bundle) {
         Optional<Binary> optionalBinary = bundle.getEntry().stream()
                 .map(BundleEntryComponent::getResource)
                 .filter(resourceOfType(Binary.class))
@@ -325,13 +335,19 @@ public class BundleDao implements IBundle {
         return optionalBinary.map(binary -> binaryResourceDao.save(fhirContext, binary));
     }
 
-    private Bundle aBundleResponse(Bundle bundle, CompositionEntity compositionEntity) {
+    private BundleResponse aBundleResponse(Bundle savedBundle, CompositionEntity savedCompositionEntity, PatientEntity savedPatient, DocumentReferenceEntity savedDocumentReferenceEntity) {
         OperationOutcome operationOutcome = new OperationOutcome();
-        operationOutcome.setId("Composition/" + compositionEntity.getId());
+        operationOutcome.setId("Composition/" + savedCompositionEntity.getId());
 
-        return new Bundle()
-                .addEntry(new BundleEntryComponent().setResource(operationOutcome))
-                .addEntry(new BundleEntryComponent().setResource(bundle));
+        decorateDocumentReference(savedDocumentReferenceEntity, serverBase);
+
+        Bundle responseBundle = (Bundle) new Bundle()
+                .setIdentifier(savedBundle.getIdentifier())
+                .addEntry(new BundleEntryComponent().setResource(patientEntityToFHIRPatient.transform(savedPatient)))
+                .addEntry(new BundleEntryComponent().setResource(savedDocumentReferenceEntity.getFhirDocumentReference()))
+                .setId(savedBundle.getId());
+
+        return new BundleResponse(operationOutcome, responseBundle);
     }
 
     private class SaveBundleResponse {

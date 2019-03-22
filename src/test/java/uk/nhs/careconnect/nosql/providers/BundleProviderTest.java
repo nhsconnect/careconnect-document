@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import uk.nhs.careconnect.nosql.dao.BundleResponse;
 import uk.nhs.careconnect.nosql.dao.IBundle;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -41,7 +42,7 @@ public class BundleProviderTest {
         //setup
         MethodOutcome expectedMethodOutcome = aMethodOutcome(CREATED);
 
-        when(bundleDao.create(BUNDLE, null, null)).thenReturn(aBundleWithOperationOutcome());
+        when(bundleDao.create(BUNDLE, null, null)).thenReturn(aBundleResponseWithOperationOutcome());
 
         //when
         MethodOutcome actualMethodOutcome = bundleProvider.create(BUNDLE);
@@ -57,7 +58,7 @@ public class BundleProviderTest {
         String conditional = "true";
 
         MethodOutcome expectedMethodOutcome = aMethodOutcome(UPDATED);
-        when(bundleDao.update(BUNDLE, bundleId, conditional)).thenReturn(aBundleWithOperationOutcome());
+        when(bundleDao.update(BUNDLE, bundleId, conditional)).thenReturn(aBundleResponseWithOperationOutcome());
 
         //when
         MethodOutcome actualMethodOutcome = bundleProvider.update(BUNDLE, bundleId, conditional);
@@ -66,10 +67,8 @@ public class BundleProviderTest {
         assertThatMethodOutcomeIsEqual(actualMethodOutcome, expectedMethodOutcome);
     }
 
-    private Bundle aBundleWithOperationOutcome() {
-        return new Bundle()
-                .addEntry(new Bundle.BundleEntryComponent().setResource(OPERATION_OUTCOME))
-                .addEntry(new Bundle.BundleEntryComponent().setResource(BUNDLE));
+    private BundleResponse aBundleResponseWithOperationOutcome() {
+        return new BundleResponse(OPERATION_OUTCOME, BUNDLE);
     }
 
     private MethodOutcome aMethodOutcome(Boolean created) {
