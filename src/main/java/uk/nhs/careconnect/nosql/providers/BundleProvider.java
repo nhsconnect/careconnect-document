@@ -46,6 +46,7 @@ public class BundleProvider implements IResourceProvider {
 
     @Update
     public MethodOutcome update(@ResourceParam Bundle bundle, @IdParam IdType bundleId, @ConditionalUrlParam String conditional) {
+        System.out.println("XXXX Test");
         BundleResponse bundleResponse = bundleDao.update(bundle, bundleId, conditional);
 
         return aMethodOutcomeResponse(bundleResponse, UPDATED);

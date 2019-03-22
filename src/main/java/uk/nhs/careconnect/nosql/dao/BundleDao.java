@@ -85,17 +85,24 @@ public class BundleDao implements IBundle {
         log.debug("About to update Bundle");
 
         // KGM added 4/3/2019
-        if (theConditional != null) {
+        if (theConditional != null && bundle.hasIdentifier()) {
             // This is not kosher
+            log.info("The conditional = "+theConditional);
+            System.out.println("The conditional = "+theConditional);
+            Query qry;
 
-            Query qry = Query.query(Criteria.where("identifier.system").is(bundle.getIdentifier().getSystem()).and("identifier.value").is(bundle.getIdentifier().getValue()));
-
-            CompositionEntity bundleE = mongo.findOne(qry, CompositionEntity.class);
-            if (bundleE != null) {
-                log.info("Conditional Found id = " + bundleE.getFhirDocumentlId());
-                idType = new IdType().setValue(bundleE.getFhirDocumentlId());
+            if (bundle.getIdentifier().hasSystem() && bundle.getIdentifier().hasValue()) {
+                qry = Query.query(Criteria.where("identifier.system").is(bundle.getIdentifier().getSystem()).and("identifier.value").is(bundle.getIdentifier().getValue()));
+            } else {
+                qry = Query.query(Criteria.where("identifier.value").is(bundle.getIdentifier().getValue()));
             }
-
+            if (qry != null) {
+                CompositionEntity bundleE = mongo.findOne(qry, CompositionEntity.class);
+                if (bundleE != null) {
+                    log.info("Conditional Found id = " + bundleE.getFhirDocumentlId());
+                    idType = new IdType().setValue(bundleE.getFhirDocumentlId());
+                }
+            }
         }
 
         Optional<Bundle> optionalInnerBundle = extractFirstResourceOfType(Bundle.class, bundle);

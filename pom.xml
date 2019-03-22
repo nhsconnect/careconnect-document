@@ -33,7 +33,7 @@
         <hawtio.version>2.2.0</hawtio.version>
         <org.mockito.version>2.23.4</org.mockito.version>
         <cucumber.version>4.2.3</cucumber.version>
-        <skipTests>false</skipTests>
+        <skipTests>true</skipTests>
     </properties>
 
     <dependencies>
