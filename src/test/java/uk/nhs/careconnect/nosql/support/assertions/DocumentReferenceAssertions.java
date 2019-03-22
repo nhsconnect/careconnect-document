@@ -1,7 +1,11 @@
 package uk.nhs.careconnect.nosql.support.assertions;
 
+import org.hl7.fhir.dstu3.model.Attachment;
 import org.hl7.fhir.dstu3.model.DocumentReference;
+import org.hl7.fhir.dstu3.model.DocumentReference.DocumentReferenceContentComponent;
 import uk.nhs.careconnect.nosql.entities.DocumentReferenceEntity;
+
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -32,5 +36,35 @@ public class DocumentReferenceAssertions {
         assertThat(actual.getContext().getPeriod().getStart(), is(equalIgnoringMilliSeconds(expected.getContext().getPeriod().getStart())));
         assertThat(actual.getContext().getPeriod().getEnd(), is(equalIgnoringMilliSeconds(expected.getContext().getPeriod().getEnd())));
     }
+
+    public static void assertThatContentsAreEqual(List<DocumentReferenceContentComponent> actual, List<DocumentReferenceContentComponent> expected) {
+        actual.stream()
+                .forEach(a -> assertAttachmentIsEqual(a.getAttachment(), find(a, expected)));
+
+    }
+
+    private static Attachment find(DocumentReferenceContentComponent actual, List<DocumentReferenceContentComponent> expected) {
+        return expected.stream()
+                .filter(e -> binaryIdPartIsEqual(actual, e))
+                .map(DocumentReferenceContentComponent::getAttachment)
+                .findFirst()
+                .get();
+    }
+
+    private static void assertAttachmentIsEqual(Attachment actual, Attachment expected) {
+        assertThat(actual.getContentType(), is(expected.getContentType()));
+        assertThat(getBinaryIdPart(actual), is(getBinaryIdPart(expected)));
+    }
+
+    private static boolean binaryIdPartIsEqual(DocumentReferenceContentComponent actual, DocumentReferenceContentComponent expected) {
+        return getBinaryIdPart(actual.getAttachment()).equals(getBinaryIdPart(expected.getAttachment()));
+    }
+
+    private static String getBinaryIdPart(Attachment actual) {
+        String url = actual.getUrl();
+        return url.substring(url.lastIndexOf('/'));
+    }
+
+
 
 }
