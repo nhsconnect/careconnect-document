@@ -183,7 +183,7 @@ public class BundleManagementSteps {
     }
 
     private void prepareAnUpdateBundle() {
-        bsonBundleToUpdate.put("identifier", new BasicDBObject("value", "This is a test"));
+        //bsonBundleToUpdate.put("identifier", new BasicDBObject("value", "This is a test"));
         bundleToUpdate = bsonBundleToBundle(commonSteps.ctx, bsonBundleToUpdate);
     }
 

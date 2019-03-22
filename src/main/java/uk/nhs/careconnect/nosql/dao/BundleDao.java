@@ -97,11 +97,16 @@ public class BundleDao implements IBundle {
 //            }
 //
 //        }
-        SaveBundleResponse saveBundleResponse = saveBundle(bundle, idType, UPDATE);
 
-        PatientEntity savedPatient = savePatient(bundle);
+        Optional<Bundle> optionalInnerBundle = extractFirstResourceOfType(Bundle.class, bundle);
 
-        CompositionEntity compositionEntity = updateCompositionEntity(bundle, saveBundleResponse.getSavedBundleId(), savedPatient);
+        Bundle bundleToSave = optionalInnerBundle.orElse(bundle);
+
+        SaveBundleResponse saveBundleResponse = saveBundle(bundleToSave, idType, UPDATE);
+
+        PatientEntity savedPatient = savePatient(bundleToSave);
+
+        CompositionEntity compositionEntity = updateCompositionEntity(bundleToSave, saveBundleResponse.getSavedBundleId(), savedPatient);
 
         Optional<Binary> savedBinary = saveBinary(saveBundleResponse.getBundle());
 
