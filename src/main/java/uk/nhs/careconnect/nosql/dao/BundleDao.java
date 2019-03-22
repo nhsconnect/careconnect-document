@@ -76,19 +76,19 @@ public class BundleDao implements IBundle {
     public Bundle update(Bundle bundle, IdType idType, String theConditional) {
         log.debug("About to update Bundle");
 
-//        // KGM added 4/3/2019
-//        if (theConditional != null) {
-//            // This is not kosher
-//
-//            Query qry = Query.query(Criteria.where("identifier.system").is(bundle.getIdentifier().getSystem()).and("identifier.value").is(bundle.getIdentifier().getValue()));
-//
-//            CompositionEntity bundleE = mongo.findOne(qry, CompositionEntity.class);
-//            if (bundleE != null) {
-//                log.info("Conditional Found id = " + bundleE.getFhirDocumentlId());
-//                idType = new IdType().setValue(bundleE.getFhirDocumentlId());
-//            }
-//
-//        }
+        // KGM added 4/3/2019
+        if (theConditional != null) {
+            // This is not kosher
+
+            Query qry = Query.query(Criteria.where("identifier.system").is(bundle.getIdentifier().getSystem()).and("identifier.value").is(bundle.getIdentifier().getValue()));
+
+            CompositionEntity bundleE = mongo.findOne(qry, CompositionEntity.class);
+            if (bundleE != null) {
+                log.info("Conditional Found id = " + bundleE.getFhirDocumentlId());
+                idType = new IdType().setValue(bundleE.getFhirDocumentlId());
+            }
+
+        }
         SaveBundleResponse saveBundleResponse = saveBundle(bundle, idType, UPDATE);
 
         PatientEntity savedPatient = savePatient(bundle);
