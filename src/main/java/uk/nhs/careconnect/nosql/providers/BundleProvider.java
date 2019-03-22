@@ -14,6 +14,7 @@ import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.OperationOutcome;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import uk.nhs.careconnect.nosql.dao.BundleResponse;
 import uk.nhs.careconnect.nosql.dao.IBundle;
 
 import static uk.nhs.careconnect.nosql.util.BundleUtils.extractFirstResourceOfType;
@@ -21,7 +22,6 @@ import static uk.nhs.careconnect.nosql.util.BundleUtils.extractFirstResourceOfTy
 @Component
 public class BundleProvider implements IResourceProvider {
 
-    private static final int UNEXPECTED_ERROR_CODE = 500;
     private static final Boolean CREATED = true;
     private static final Boolean UPDATED = false;
 
@@ -39,35 +39,30 @@ public class BundleProvider implements IResourceProvider {
 
     @Create
     public MethodOutcome create(@ResourceParam Bundle bundle) {
-        Bundle resultBundle = bundleDao.create(bundle, null, null);
+        BundleResponse bundleResponse = bundleDao.create(bundle, null, null);
 
-        return aMethodOutcomeResponse(resultBundle, CREATED);
+        return aMethodOutcomeResponse(bundleResponse, CREATED);
     }
 
     @Update
     public MethodOutcome update(@ResourceParam Bundle bundle, @IdParam IdType bundleId, @ConditionalUrlParam String conditional) {
-        Bundle resultBundle = bundleDao.update(bundle, bundleId, conditional);
+        BundleResponse bundleResponse = bundleDao.update(bundle, bundleId, conditional);
 
-        return aMethodOutcomeResponse(resultBundle, UPDATED);
+        return aMethodOutcomeResponse(bundleResponse, UPDATED);
     }
 
-    private MethodOutcome aMethodOutcomeResponse(Bundle resultBundle, Boolean created) {
+    private MethodOutcome aMethodOutcomeResponse(BundleResponse bundleResponse, Boolean created) {
         MethodOutcome method = new MethodOutcome();
         method.setCreated(created);
 
-        OperationOutcome operationOutcome = extractFirstResourceOfType(OperationOutcome.class, resultBundle).orElseThrow(this::anUnclassifiedServerFailureException);
-        Bundle createdBundle = extractFirstResourceOfType(Bundle.class, resultBundle).orElseThrow(this::anUnclassifiedServerFailureException);
+        OperationOutcome operationOutcome = bundleResponse.getOperationOutcome();
 
         method.setOperationOutcome(operationOutcome);
         method.setId(operationOutcome.getIdElement());
 
-        method.setResource(createdBundle);
+        method.setResource(bundleResponse.getBundle());
 
         return method;
-    }
-
-    private UnclassifiedServerFailureException anUnclassifiedServerFailureException() {
-        return new UnclassifiedServerFailureException(UNEXPECTED_ERROR_CODE, "Unexpected Error");
     }
 
 }

@@ -5,7 +5,6 @@ import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.TokenOrListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.DocumentReference;
 import org.hl7.fhir.dstu3.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,9 +20,9 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 import static uk.nhs.careconnect.nosql.dao.CriteriaBuilder.aCriteriaBuilder;
+import static uk.nhs.careconnect.nosql.decorators.DocumentReferenceDecorator.decorateDocumentReference;
 
 @Transactional
 @Repository
@@ -62,20 +61,11 @@ public class DocumentReferenceDao implements IDocumentReference {
             log.debug("Found [{}] result(s)", results.size());
 
             resources = results.stream()
-                    .map(this::decorateDocumentReference)
+                    .map(documentReference -> decorateDocumentReference(documentReference, serverBase))
                     .collect(toList());
         }
 
         return new Bundle().setEntry(resources.stream().map(new Bundle.BundleEntryComponent()::setResource).collect(toList()));
-    }
-
-    private Resource decorateDocumentReference(DocumentReferenceEntity documentReferenceEntity) {
-        DocumentReference documentReference = documentReferenceEntity.getFhirDocumentReference();
-        documentReference.setId(documentReferenceEntity.getId());
-        documentReference.getContent().stream()
-                .forEach(c -> c.setAttachment(c.getAttachment().setUrl(format(serverBase + "/%s", c.getAttachment().getUrl()))));
-
-        return documentReference;
     }
 
 }
