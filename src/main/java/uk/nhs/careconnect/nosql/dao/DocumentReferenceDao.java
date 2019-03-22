@@ -5,10 +5,12 @@ import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.TokenOrListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.DocumentReference;
 import org.hl7.fhir.dstu3.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -19,6 +21,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 import static uk.nhs.careconnect.nosql.dao.CriteriaBuilder.aCriteriaBuilder;
 
@@ -30,6 +33,9 @@ public class DocumentReferenceDao implements IDocumentReference {
 
     @Autowired
     MongoOperations mongo;
+
+    @Value("${ccri.server.base}")
+    String serverBase;
 
     @Override
     public Bundle search(TokenParam resid, TokenParam identifier, ReferenceParam patient, DateRangeParam createdDate,
@@ -55,13 +61,21 @@ public class DocumentReferenceDao implements IDocumentReference {
 
             log.debug("Found [{}] result(s)", results.size());
 
-            //TODO:
             resources = results.stream()
-                    .map(d -> d.getFhirDocumentReference().setId(d.getId()))
+                    .map(this::decorateDocumentReference)
                     .collect(toList());
         }
 
         return new Bundle().setEntry(resources.stream().map(new Bundle.BundleEntryComponent()::setResource).collect(toList()));
+    }
+
+    private Resource decorateDocumentReference(DocumentReferenceEntity documentReferenceEntity) {
+        DocumentReference documentReference = documentReferenceEntity.getFhirDocumentReference();
+        documentReference.setId(documentReferenceEntity.getId());
+        documentReference.getContent().stream()
+                .forEach(c -> c.setAttachment(c.getAttachment().setUrl(format(serverBase + "/%s", c.getAttachment().getUrl()))));
+
+        return documentReference;
     }
 
 }

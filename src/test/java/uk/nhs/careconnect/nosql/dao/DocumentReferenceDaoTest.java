@@ -25,6 +25,7 @@ import java.util.Date;
 
 import static com.shazam.shazamcrest.MatcherAssert.assertThat;
 import static com.shazam.shazamcrest.matcher.Matchers.sameBeanAs;
+import static uk.nhs.careconnect.nosql.support.assertions.DocumentReferenceAssertions.assertThatContentsAreEqual;
 import static uk.nhs.careconnect.nosql.util.BundleUtils.extractFirstResourceOfType;
 
 public class DocumentReferenceDaoTest extends AbstractDaoTest {
@@ -114,7 +115,9 @@ public class DocumentReferenceDaoTest extends AbstractDaoTest {
         Bundle bundle = documentReferenceDao.search(resid, identifier, patient, date, type, setting, period);
 
         //then
-        assertThat(extractFirstResourceOfType(DocumentReference.class, bundle).get(), sameBeanAs(documentReferenceEntity.getFhirDocumentReference()).ignoring("id"));
+        DocumentReference actualDocumentReference = extractFirstResourceOfType(DocumentReference.class, bundle).get();
+        assertThat(actualDocumentReference, sameBeanAs(documentReferenceEntity.getFhirDocumentReference()).ignoring("id").ignoring("content"));
+        assertThatContentsAreEqual(actualDocumentReference.getContent(), documentReferenceEntity.getFhirDocumentReference().getContent());
     }
 
     private DateRangeParam aPeriodStart() {

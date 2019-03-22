@@ -288,7 +288,7 @@ public class BundleDao implements IBundle {
 
             documentReference.setContent(asList(new DocumentReferenceContentComponent()
                     .setAttachment(new Attachment()
-                            .setUrl(compositionEntity.getId().toString())
+                            .setUrl(format("Binary/%s", compositionEntity.getId().toString()))
                             .setContentType("application/fhir+xml"))
 
             ));
