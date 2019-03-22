@@ -40,7 +40,6 @@ import static uk.nhs.careconnect.nosql.providers.support.assertions.ResourceAsse
 import static uk.nhs.careconnect.nosql.support.assertions.BinaryAssertions.assertThatBinaryIsEqual;
 import static uk.nhs.careconnect.nosql.support.assertions.BundleAssertions.assertThatBundleIsEqual;
 import static uk.nhs.careconnect.nosql.support.assertions.CompositionAssertions.assertThatCompositionsAreEqual;
-import static uk.nhs.careconnect.nosql.support.testdata.BundleTestData.aBinary;
 import static uk.nhs.careconnect.nosql.support.testdata.BundleTestData.aBundle;
 import static uk.nhs.careconnect.nosql.support.testdata.BundleTestData.aBundleWithBinary;
 import static uk.nhs.careconnect.nosql.support.testdata.BundleTestData.aBundleWithDocumentReference;
@@ -50,7 +49,6 @@ import static uk.nhs.careconnect.nosql.support.testdata.CompositionTestData.aCom
 import static uk.nhs.careconnect.nosql.support.testdata.DocumentReferenceTestData.aDocumentReference;
 import static uk.nhs.careconnect.nosql.support.testdata.DocumentReferenceTestData.anUpdatedDocumentReference;
 import static uk.nhs.careconnect.nosql.util.BundleUtils.bsonBundleToBundle;
-import static uk.nhs.careconnect.nosql.util.BundleUtils.extractFirstResourceOfType;
 import static uk.nhs.careconnect.nosql.util.BundleUtils.resourceOfType;
 
 public class BundleDaoTest extends AbstractDaoTest {
@@ -97,10 +95,10 @@ public class BundleDaoTest extends AbstractDaoTest {
 
     private void testCreateBundle(Bundle bundle, CompositionEntity expectedCompositionEntity, DocumentReference expectedDocumentReferenceEntity, Binary expectedBinary) throws IOException {
         //when
-        Bundle responseBundle = bundleDao.create(bundle, null, null);
+        BundleResponse responseBundle = bundleDao.create(bundle, null, null);
 
-        Bundle createdBundle = extractFirstResourceOfType(Bundle.class, responseBundle).get();
-        OperationOutcome operationOutcome = extractFirstResourceOfType(OperationOutcome.class, responseBundle).get();
+        Bundle createdBundle = responseBundle.getBundle();
+        OperationOutcome operationOutcome = responseBundle.getOperationOutcome();
 
         //then
         BundlePersistenceResult bundlePersistenceResult = new BundlePersistenceResult(createdBundle);
@@ -139,10 +137,10 @@ public class BundleDaoTest extends AbstractDaoTest {
     @Test
     public void givenABundle_whenUpdateIsCalled_aBundleCompositionPatientAndDocumentReferenceAreUpdatedInMongo() throws IOException {
         //setup
-        Bundle savedBundle = givenASavedBundle();
-        IdType savedBundleId = new IdType().setValue(savedBundle.getId());
+        BundleResponse savedBundle = givenASavedBundle();
+        IdType savedBundleId = new IdType().setValue(savedBundle.getBundle().getId());
 
-        Bundle updateBundle = updateTheSavedBundle(savedBundle);
+        Bundle updateBundle = updateTheSavedBundle(savedBundle.getBundle());
 
         CompositionEntity expectedCompositionEntity = aCompositionEntity();
         DocumentReference expectedDocumentReferenceEntity = anUpdatedDocumentReference();
@@ -169,13 +167,12 @@ public class BundleDaoTest extends AbstractDaoTest {
 
     private void testUpdateBundle(Bundle bundle, IdType savedBundleId, CompositionEntity expectedCompositionEntity, DocumentReference expectedDocumentReferenceEntity, Binary expectedBinary) throws IOException {
         //when
-        Bundle responseBundle = bundleDao.update(bundle, savedBundleId, null);
+        BundleResponse updatedBundle = bundleDao.update(bundle, savedBundleId, null);
 
-        Bundle updatedBundle = extractFirstResourceOfType(Bundle.class, responseBundle).get();
-        OperationOutcome operationOutcome = extractFirstResourceOfType(OperationOutcome.class, responseBundle).get();
+        OperationOutcome operationOutcome = updatedBundle.getOperationOutcome();
 
         //then
-        BundlePersistenceResult bundlePersistenceResult = new BundlePersistenceResult(updatedBundle);
+        BundlePersistenceResult bundlePersistenceResult = new BundlePersistenceResult(updatedBundle.getBundle());
 
         Bundle retrievedBundle = bundlePersistenceResult.retrieveBundle();
         CompositionEntity retrievedCompositionEntity = bundlePersistenceResult.retrieveCompositionEntity();
@@ -195,9 +192,9 @@ public class BundleDaoTest extends AbstractDaoTest {
 
     }
 
-    private Bundle givenASavedBundle() {
+    private BundleResponse givenASavedBundle() {
         Bundle bundle = aBundleWithDocumentReference();
-        return extractFirstResourceOfType(Bundle.class, saveBundle(bundle)).get();
+        return saveBundle(bundle);
     }
 
     private void assertThatCompositionIsEqual(CompositionEntity expectedCompositionEntity, CompositionEntity savedCompositionEntity) {
@@ -217,7 +214,7 @@ public class BundleDaoTest extends AbstractDaoTest {
         DocumentReferenceAssertions.assertThatDocumentReferenceEntityIsEqual(savedDocumentReferenceEntity, expectedDocumentReferenceEntity);
     }
 
-    private Bundle saveBundle(Bundle bundle) {
+    private BundleResponse saveBundle(Bundle bundle) {
         return bundleDao.create(bundle, null, null);
     }
 
@@ -279,7 +276,7 @@ public class BundleDaoTest extends AbstractDaoTest {
                 return gridFS.find(new ObjectId(binaryId));
             }).orElse(null);
 
-            return gridFSDBFile !=null ? new Binary()
+            return gridFSDBFile != null ? new Binary()
                     .setContentType(gridFSDBFile.getContentType())
                     .setContent(IOUtils.toByteArray(gridFSDBFile.getInputStream())) : null;
         }

@@ -5,8 +5,8 @@ import org.hl7.fhir.dstu3.model.IdType;
 
 public interface IBundle {
 
-    Bundle create(Bundle bundle, IdType theId, String theConditional);
+    BundleResponse create(Bundle bundle, IdType theId, String theConditional);
 
-    Bundle update(Bundle bundle, IdType theId, String theConditional);
+    BundleResponse update(Bundle bundle, IdType theId, String theConditional);
 
 }

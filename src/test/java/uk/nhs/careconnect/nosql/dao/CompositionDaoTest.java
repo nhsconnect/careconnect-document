@@ -125,8 +125,8 @@ public class CompositionDaoTest extends AbstractDaoTest {
     private void loadAndCreateBundle() {
         Bundle bundle = loadBundle();
 
-        Bundle createdBundle = bundleDao.create(bundle, null, null);
-        OperationOutcome operationOutcome = extractFirstResourceOfType(OperationOutcome.class, createdBundle).get();
+        BundleResponse createdBundle = bundleDao.create(bundle, null, null);
+        OperationOutcome operationOutcome = createdBundle.getOperationOutcome();
 
         compositionId = operationOutcome.getId().split("/")[1];
     }

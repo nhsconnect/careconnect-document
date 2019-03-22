@@ -15,7 +15,6 @@ import static uk.nhs.careconnect.nosql.dao.SaveAction.UPDATE;
 import static uk.nhs.careconnect.nosql.support.assertions.BundleAssertions.assertThatBundleIsEqual;
 import static uk.nhs.careconnect.nosql.support.testdata.BundleTestData.aBundleWithDocumentReference;
 import static uk.nhs.careconnect.nosql.util.BundleUtils.bsonBundleToBundle;
-import static uk.nhs.careconnect.nosql.util.BundleUtils.extractFirstResourceOfType;
 
 
 public class FHIRResourceDaoTest extends AbstractDaoTest {
@@ -42,13 +41,13 @@ public class FHIRResourceDaoTest extends AbstractDaoTest {
     public void givenAFhirResource_whenSaveIsCalledWithUpdate_aResourceIsUpdatedInMongo() {
         //setup
         Bundle bundle = aBundleWithDocumentReference();
-        Bundle savedBundle = extractFirstResourceOfType(Bundle.class, saveBundle(bundle)).get();
+        BundleResponse savedBundle = saveBundle(bundle);
 
         Bundle bundleUpdate = bundle.copy();
         bundleUpdate.setIdentifier(new Identifier().setValue("New Identifier Value"));
 
         //when
-        IdType idType = new IdType().setValue(savedBundle.getId());
+        IdType idType = new IdType().setValue(savedBundle.getBundle().getId());
 
         DBObject savedBundleDBObject = fhirResourceDao.save(ctx, bundleUpdate, idType, UPDATE);
         Bundle updatedBundle = bsonBundleToBundle(ctx, savedBundleDBObject);
@@ -58,7 +57,7 @@ public class FHIRResourceDaoTest extends AbstractDaoTest {
         assertThatBundleIsEqual(updatedBundle, bundleUpdate);
     }
 
-    protected Bundle saveBundle(Bundle bundle) {
+    protected BundleResponse saveBundle(Bundle bundle) {
         return bundleDao.create(bundle, null, null);
     }
 
