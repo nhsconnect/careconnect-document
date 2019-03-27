@@ -1,6 +1,8 @@
 package uk.nhs.careconnect.nosql;
 
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.parser.LenientErrorHandler;
+import ca.uhn.fhir.rest.client.api.ServerValidationModeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -15,6 +17,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.time.Clock;
 
 @SpringBootApplication
@@ -41,7 +45,7 @@ public class CcriDocument {
     @Value("${ccri.validate_flag}")
     private Boolean validate;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws NoSuchAlgorithmException, KeyManagementException {
         //System.setProperty(AuthenticationFilter.HAWTIO_AUTHENTICATION_ENABLED, "false");
         System.setProperty("hawtio.authenticationEnabled", "false");
         System.setProperty("management.security.enabled", "false");
@@ -73,7 +77,13 @@ public class CcriDocument {
         System.setProperty("ccri.software.version", this.softwareVersion);
         System.setProperty("ccri.guide", this.guide);
         System.setProperty("ccri.server", this.server);
-        return FhirContext.forDstu3();
+
+        //TODO: Temporarily disable conformance check
+        FhirContext fhirContext = FhirContext.forDstu3();
+        fhirContext.getRestfulClientFactory().setServerValidationMode(ServerValidationModeEnum.NEVER);
+        fhirContext.setParserErrorHandler(new LenientErrorHandler().setErrorOnInvalidValue(false));
+
+        return fhirContext;
     }
 
     @Bean
