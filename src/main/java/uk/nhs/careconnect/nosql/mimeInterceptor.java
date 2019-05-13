@@ -90,7 +90,9 @@ public class mimeInterceptor extends InterceptorAdapter {
          */
         log.info("oR Content-Type = "+theRequestDetails.getHeader("Accept"));
         String acceptType = theRequestDetails.getHeader("Accept");
-        if (acceptType == null) acceptType = theRequestDetails.getHeader("accept");
+        if (acceptType == null) {
+            acceptType = theRequestDetails.getHeader("accept");
+        }
 
         String[] value = theRequestDetails.getParameters().get("_format");
         if (value != null) {
@@ -181,7 +183,13 @@ public class mimeInterceptor extends InterceptorAdapter {
                                 performTransform(response.getOutputStream(), resourceBundle, "XML/DocumentToHTML.xslt");
 
                             } catch (Exception ex) {
-                                ex.printStackTrace();
+                                try {
+                                    response.getOutputStream().write(ex.getMessage().getBytes());
+                                } catch (Exception ex1) {
+
+                                }
+
+                                log.error(ex.getMessage());
                             }
                             return false;
                         } else if (acceptType.equals("application/pdf")) {
@@ -207,8 +215,12 @@ public class mimeInterceptor extends InterceptorAdapter {
                                 fos.flush();
 
                             } catch (Exception ex) {
+                                try {
+                                    response.getOutputStream().write(ex.getMessage().getBytes());
+                                } catch (Exception ex1) {
+
+                                }
                                 log.error(ex.getMessage());
-                                ex.printStackTrace();
                             }
                         }
                     }
