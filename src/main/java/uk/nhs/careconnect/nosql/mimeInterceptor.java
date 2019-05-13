@@ -36,7 +36,8 @@ public class mimeInterceptor extends InterceptorAdapter {
     public boolean incomingRequestPostProcessed(RequestDetails theRequestDetails, HttpServletRequest theRequest,
                                                 HttpServletResponse theResponse) {
 
-        log.info("iR Content-Type = "+theRequestDetails.getHeader("Content-Type"));
+        log.debug("iR Content-Type = "+theRequestDetails.getHeader("Content-Type"));
+        log.info("iR Accept = "+theRequestDetails.getHeader("Accept"));
         return true;
         }
 
@@ -87,7 +88,7 @@ public class mimeInterceptor extends InterceptorAdapter {
             }
         }
          */
-        log.debug("oR Content-Type = "+theRequestDetails.getHeader("Accept"));
+        log.info("oR Content-Type = "+theRequestDetails.getHeader("Accept"));
         String acceptType = theRequestDetails.getHeader("Accept");
 
         String[] value = theRequestDetails.getParameters().get("_format");
