@@ -206,6 +206,7 @@ public class mimeInterceptor extends InterceptorAdapter {
                                 fos.flush();
 
                             } catch (Exception ex) {
+                                log.error(ex.getMessage());
                                 ex.printStackTrace();
                             }
                         }
