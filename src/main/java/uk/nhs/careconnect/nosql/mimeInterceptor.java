@@ -11,6 +11,7 @@ import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.core.io.ClassPathResource;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
 
@@ -255,7 +256,13 @@ public class mimeInterceptor extends InterceptorAdapter {
             try {
                 xsl = new FileInputStream(xslInput);
             } catch (Exception ex2) {
-                xsl = new FileInputStream(this.getClass().getClassLoader().getResource(styleSheet).getFile());
+                try {
+                    xsl = new FileInputStream(this.getClass().getClassLoader().getResource(styleSheet).getFile());
+
+                } catch (Exception ex3) {
+                    xsl = new FileInputStream((new ClassPathResource(styleSheet)).getFile());
+
+                }
             }
 
             // Instantiate a transformer factory
