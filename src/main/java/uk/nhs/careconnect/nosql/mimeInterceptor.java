@@ -230,6 +230,7 @@ public class mimeInterceptor extends InterceptorAdapter {
         return true;
     }
     private ClassLoader getContextClassLoader() {
+
         return Thread.currentThread().getContextClassLoader();
     }
 
@@ -250,8 +251,12 @@ public class mimeInterceptor extends InterceptorAdapter {
         try {
             InputStream xml = new ByteArrayInputStream(ctx.newXmlParser().encodeResourceToString(resource).getBytes(StandardCharsets.UTF_8));
 
-
-            FileInputStream xsl = new FileInputStream(xslInput);
+            FileInputStream xsl = null;
+            try {
+                xsl = new FileInputStream(xslInput);
+            } catch (Exception ex2) {
+                xsl = new FileInputStream(this.getClass().getClassLoader().getResource(styleSheet).getFile());
+            }
 
             // Instantiate a transformer factory
             TransformerFactory tFactory = TransformerFactory.newInstance();
