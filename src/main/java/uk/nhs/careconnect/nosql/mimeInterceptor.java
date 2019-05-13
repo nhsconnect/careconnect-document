@@ -90,6 +90,7 @@ public class mimeInterceptor extends InterceptorAdapter {
          */
         log.info("oR Content-Type = "+theRequestDetails.getHeader("Accept"));
         String acceptType = theRequestDetails.getHeader("Accept");
+        if (acceptType == null) acceptType = theRequestDetails.getHeader("accept");
 
         String[] value = theRequestDetails.getParameters().get("_format");
         if (value != null) {
