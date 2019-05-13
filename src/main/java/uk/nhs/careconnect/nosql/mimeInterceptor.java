@@ -254,14 +254,16 @@ public class mimeInterceptor extends InterceptorAdapter {
 
             FileInputStream xsl = null;
             try {
-                xsl = new FileInputStream(xslInput);
+                xsl = new FileInputStream((new ClassPathResource(styleSheet)).getFile());
+                log.info("ClassPath"); // Spring loader?
             } catch (Exception ex2) {
                 try {
+                    log.info("getClassCallLoader");
                     xsl = new FileInputStream(this.getClass().getClassLoader().getResource(styleSheet).getFile());
 
                 } catch (Exception ex3) {
-                    xsl = new FileInputStream((new ClassPathResource(styleSheet)).getFile());
-
+                    log.info("Original");
+                    xsl = new FileInputStream(xslInput);
                 }
             }
 
