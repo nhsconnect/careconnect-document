@@ -265,7 +265,12 @@ public class mimeInterceptor extends InterceptorAdapter {
             StreamResult result = new StreamResult(os);
             transformer.transform(xmlSource, result);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            try {
+                os.write(ex.getMessage().getBytes());
+            } catch (Exception ex1) {
+
+            }
+            log.error(ex.getMessage());
         }
 
     }
