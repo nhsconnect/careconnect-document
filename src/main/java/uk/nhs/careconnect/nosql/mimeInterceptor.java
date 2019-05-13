@@ -181,7 +181,7 @@ public class mimeInterceptor extends InterceptorAdapter {
                                 response.setStatus(200);
                                 response.setContentType("text/html");
 
-                                performTransform(response.getOutputStream(), resourceBundle, "XML/DocumentToHTML.xslt");
+                                performTransform(response.getOutputStream(), resourceBundle, "/XML/DocumentToHTML.xslt");
 
                             } catch (Exception ex) {
                                 try {
@@ -203,7 +203,7 @@ public class mimeInterceptor extends InterceptorAdapter {
 
                                 File fileHtml = File.createTempFile("pdf", ".tmp");
                                 FileOutputStream fos = new FileOutputStream(fileHtml);
-                                performTransform(fos, resourceBundle, "XML/DocumentToHTML.xslt");
+                                performTransform(fos, resourceBundle, "/XML/DocumentToHTML.xslt");
 
 
                                 String processedHtml = org.apache.commons.io.IOUtils.toString(new InputStreamReader(new FileInputStream(fileHtml), "UTF-8"));
@@ -216,12 +216,13 @@ public class mimeInterceptor extends InterceptorAdapter {
                                 fos.flush();
 
                             } catch (Exception ex) {
+                                log.error(ex.getMessage());
                                 try {
                                     response.getOutputStream().write(ex.getMessage().getBytes());
                                 } catch (Exception ex1) {
 
                                 }
-                                log.error(ex.getMessage());
+
                             }
                         }
                     }
@@ -241,9 +242,6 @@ public class mimeInterceptor extends InterceptorAdapter {
         // Input xml data file
         ClassLoader classLoader = getContextClassLoader();
 
-        // Input xsl (stylesheet) file
-        String xslInput = classLoader.getResource(styleSheet).getFile();
-
         // Set the property to use xalan processor
         System.setProperty("javax.xml.transform.TransformerFactory",
                 "org.apache.xalan.processor.TransformerFactoryImpl");
@@ -254,8 +252,9 @@ public class mimeInterceptor extends InterceptorAdapter {
 
             FileInputStream xsl = null;
             try {
-                xsl = new FileInputStream((new ClassPathResource(styleSheet)).getFile());
                 log.info("ClassPath"); // Spring loader?
+                xsl = new FileInputStream((new ClassPathResource(styleSheet)).getFile());
+
             } catch (Exception ex2) {
                 try {
                     log.info("getClassCallLoader");
@@ -263,7 +262,7 @@ public class mimeInterceptor extends InterceptorAdapter {
 
                 } catch (Exception ex3) {
                     log.info("Original");
-                    xsl = new FileInputStream(xslInput);
+                    xsl = new FileInputStream(classLoader.getResource(styleSheet).getFile());
                 }
             }
 
