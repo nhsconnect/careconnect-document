@@ -4,7 +4,6 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.api.server.RequestDetails;
 import ca.uhn.fhir.rest.server.interceptor.InterceptorAdapter;
 
-import org.apache.commons.io.IOUtils;
 import org.hl7.fhir.dstu3.model.Binary;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.instance.model.api.IBaseResource;
@@ -24,8 +23,6 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 public class mimeInterceptor extends InterceptorAdapter {
 
@@ -181,7 +178,7 @@ public class mimeInterceptor extends InterceptorAdapter {
                                 response.setStatus(200);
                                 response.setContentType("text/html");
 
-                                performTransform(response.getOutputStream(), resourceBundle, "/XML/DocumentToHTML.xslt");
+                                performTransform(response.getOutputStream(), resourceBundle, "/DocumentToHTML.xslt");
 
                             } catch (Exception ex) {
                                 try {
@@ -203,7 +200,7 @@ public class mimeInterceptor extends InterceptorAdapter {
 
                                 File fileHtml = File.createTempFile("pdf", ".tmp");
                                 FileOutputStream fos = new FileOutputStream(fileHtml);
-                                performTransform(fos, resourceBundle, "/XML/DocumentToHTML.xslt");
+                                performTransform(fos, resourceBundle, "/DocumentToHTML.xslt");
 
 
                                 String processedHtml = org.apache.commons.io.IOUtils.toString(new InputStreamReader(new FileInputStream(fileHtml), "UTF-8"));
