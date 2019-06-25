@@ -13,13 +13,11 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import uk.nhs.careconnect.nosql.support.CustomCorsFilter;
 
 import java.time.Clock;
 
 @SpringBootApplication
-@EnableSwagger2
 public class DocumentRepository {
 
     @Autowired
