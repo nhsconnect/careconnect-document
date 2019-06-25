@@ -11,6 +11,7 @@ import org.hl7.fhir.dstu3.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -31,6 +32,9 @@ public class DocumentReferenceDao implements IDocumentReference {
 
     @Autowired
     MongoOperations mongo;
+
+    @Value("${nhs.address}")
+    String nhsAddress;
 
     IGenericClient clientNRLS = null;
 
@@ -130,7 +134,7 @@ public class DocumentReferenceDao implements IDocumentReference {
     @Override
     public MethodOutcome refresh(FhirContext ctxFHIR) throws Exception {
 
-        clientNRLS = ctxFHIR.newRestfulGenericClient(System.getProperty("nhs.address"));
+        clientNRLS = ctxFHIR.newRestfulGenericClient(nhsAddress);
         updateNRLS();
         MethodOutcome retVal = new MethodOutcome();
         return retVal;
