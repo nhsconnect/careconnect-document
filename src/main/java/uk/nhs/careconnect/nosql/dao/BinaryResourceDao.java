@@ -16,9 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;
 
-import javax.transaction.Transactional;
 
-@Transactional
 @Repository
 public class BinaryResourceDao implements IBinaryResource {
 

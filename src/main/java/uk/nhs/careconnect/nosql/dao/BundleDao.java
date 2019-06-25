@@ -4,33 +4,20 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.server.exceptions.ResourceVersionConflictException;
 import com.mongodb.DBObject;
 import com.mongodb.DBRef;
-import org.hl7.fhir.dstu3.model.Attachment;
-import org.hl7.fhir.dstu3.model.Binary;
-import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.*;
 import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
-import org.hl7.fhir.dstu3.model.Composition;
-import org.hl7.fhir.dstu3.model.DocumentReference;
 import org.hl7.fhir.dstu3.model.DocumentReference.DocumentReferenceContentComponent;
-import org.hl7.fhir.dstu3.model.IdType;
-import org.hl7.fhir.dstu3.model.OperationOutcome;
-import org.hl7.fhir.dstu3.model.Patient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 import uk.nhs.careconnect.nosql.dao.transform.CompositionTransformer;
 import uk.nhs.careconnect.nosql.dao.transform.PatientEntityToFHIRPatient;
-import uk.nhs.careconnect.nosql.entities.CodingEntity;
-import uk.nhs.careconnect.nosql.entities.CompositionEntity;
-import uk.nhs.careconnect.nosql.entities.DocumentReferenceEntity;
-import uk.nhs.careconnect.nosql.entities.IdentifierEntity;
-import uk.nhs.careconnect.nosql.entities.PatientEntity;
+import uk.nhs.careconnect.nosql.entities.*;
 
-import javax.transaction.Transactional;
 import java.time.Clock;
 import java.util.Collection;
 import java.util.Date;
@@ -44,11 +31,9 @@ import static java.util.stream.Collectors.toList;
 import static uk.nhs.careconnect.nosql.dao.SaveAction.CREATE;
 import static uk.nhs.careconnect.nosql.dao.SaveAction.UPDATE;
 import static uk.nhs.careconnect.nosql.decorators.DocumentReferenceDecorator.decorateDocumentReference;
-import static uk.nhs.careconnect.nosql.util.BundleUtils.bsonBundleToBundle;
-import static uk.nhs.careconnect.nosql.util.BundleUtils.extractFirstResourceOfType;
-import static uk.nhs.careconnect.nosql.util.BundleUtils.resourceOfType;
+import static uk.nhs.careconnect.nosql.util.BundleUtils.*;
 
-@Transactional
+
 @Repository
 public class BundleDao implements IBundle {
 
@@ -63,8 +48,7 @@ public class BundleDao implements IBundle {
     private final BinaryResourceDao binaryResourceDao;
     private final PatientEntityToFHIRPatient patientEntityToFHIRPatient;
 
-    @Value("${ccri.server.base}")
-    String serverBase;
+
 
     @Autowired
     public BundleDao(Clock clock, FhirContext fhirContext, MongoOperations mongo,
@@ -146,11 +130,22 @@ public class BundleDao implements IBundle {
     }
 
     private void checkNotAlreadySaved(Bundle bundle) {
-        Query qry = Query.query(Criteria.where("identifier.system").is(bundle.getIdentifier().getSystem()).and("identifier.value").is(bundle.getIdentifier().getValue()));
+        if (bundle.hasEntry() && bundle.getEntryFirstRep().getResource() instanceof DocumentReference) {
+            DocumentReference documentReference = (DocumentReference) bundle.getEntryFirstRep().getResource();
+            for (Identifier identifier : documentReference.getIdentifier()) {
+                Query qry = Query.query(Criteria.where("identifier.system").is(identifier.getSystem()).and("identifier.value").is(identifier.getValue()));
+                DocumentReferenceEntity bundleE = mongo.findOne(qry, DocumentReferenceEntity.class);
+                if (bundleE != null)
+                    throw new ResourceVersionConflictException("DocumentReference already exists. Binary/" + bundleE.getId());
+            }
+        } else {
+            Query qry = Query.query(Criteria.where("identifier.system").is(bundle.getIdentifier().getSystem()).and("identifier.value").is(bundle.getIdentifier().getValue()));
 
-        CompositionEntity bundleE = mongo.findOne(qry, CompositionEntity.class);
-        if (bundleE != null)
-            throw new ResourceVersionConflictException("FHIR Document already exists. Binary/" + bundleE.getId());
+            CompositionEntity bundleE = mongo.findOne(qry, CompositionEntity.class);
+            if (bundleE != null)
+                throw new ResourceVersionConflictException("FHIR Document already exists. Binary/" + bundleE.getId());
+
+        }
     }
 
     private SaveBundleResponse saveBundle(Bundle bundle, IdType idType, SaveAction saveAction) {
@@ -235,7 +230,7 @@ public class BundleDao implements IBundle {
         compositionEntity.setType(compositionEntry.map(composition -> fhirToCodingEntity(composition.getType().getCoding())).orElse(emptyList()));
     }
 
-    private Collection<CodingEntity> fhirToCodingEntity(List<org.hl7.fhir.dstu3.model.Coding> codingList) {
+    private Collection<CodingEntity> fhirToCodingEntity(List<Coding> codingList) {
         return codingList.stream()
                 .map(CodingEntity::new)
                 .collect(toList());
@@ -250,11 +245,16 @@ public class BundleDao implements IBundle {
 
         DocumentReferenceEntity savedDocumentReferenceEntity;
 
+        DocumentReferenceEntity foundDocumentReference = null;
         if (!optionalDocumentReference.isPresent()) {
+
+            // FHIR Document, generate DocumentReference
+
             savedDocumentReferenceEntity = createDocumentReference(bundle, savedPatient, compositionEntity);
+
         } else {
             DocumentReference documentReference = optionalDocumentReference.get();
-            DocumentReferenceEntity foundDocumentReference = findSavedDocumentReference(savedPatient);
+            foundDocumentReference = findSavedDocumentReference(bundle);
             if (foundDocumentReference != null) {
                 savedDocumentReferenceEntity = updateDocumentReference(documentReference, foundDocumentReference);
             } else {
@@ -282,10 +282,31 @@ public class BundleDao implements IBundle {
 
     }
 
-    private DocumentReferenceEntity findSavedDocumentReference(PatientEntity patientEntity) {
-        Query qry = Query.query(Criteria.where("idxPatient").is(new DBRef("idxPatient", patientEntity.getId().toString())));
 
-        return mongo.findOne(qry, DocumentReferenceEntity.class);
+    private DocumentReferenceEntity findSavedDocumentReference(DocumentReference documentReference) {
+        for (Identifier identifier : documentReference.getIdentifier()) {
+            Query qry = Query.query(Criteria.where("identifier.system").is(identifier.getSystem())
+                    .and("identifier.value").is(identifier.getValue()));
+
+            DocumentReferenceEntity documentReferenceEntity = mongo.findOne(qry, DocumentReferenceEntity.class);
+            if (documentReferenceEntity != null) return documentReferenceEntity;
+        }
+        return null;
+    }
+
+
+    private DocumentReferenceEntity findSavedDocumentReference(Bundle bundle) {
+
+        if (!bundle.hasIdentifier()) {
+            return null;
+        }
+       Query qry = Query.query(Criteria.where("identifier.system").is(bundle.getIdentifier().getSystem()).and("identifier.value").is(bundle.getIdentifier().getValue()));
+
+
+        DocumentReferenceEntity documentReferenceEntity = mongo.findOne(qry, DocumentReferenceEntity.class);
+        if (documentReferenceEntity != null) return documentReferenceEntity;
+
+        return null;
     }
 
     private DocumentReferenceEntity updateDocumentReference(DocumentReference documentReference, DocumentReferenceEntity foundDocumentReference) {
@@ -303,9 +324,13 @@ public class BundleDao implements IBundle {
                 .map(Composition.class::cast)
                 .findFirst();
 
+
+
+
         return compositionEntry.map(composition -> {
             DocumentReference documentReference = CompositionTransformer.transformToDocumentReference(composition);
             documentReference.setCreated(Date.from(clock.instant()));
+
 
 
             documentReference.setContent(asList(new DocumentReferenceContentComponent()
@@ -314,8 +339,12 @@ public class BundleDao implements IBundle {
                             .setContentType("application/fhir+xml"))
 
             ));
-
-            return new DocumentReferenceEntity(savedPatient, documentReference);
+            DocumentReferenceEntity foundDocumentReference = findSavedDocumentReference(documentReference);
+            if (foundDocumentReference != null ) {
+                return new DocumentReferenceEntity(documentReference, foundDocumentReference);
+            } else {
+                return new DocumentReferenceEntity(savedPatient, documentReference);
+            }
         }).orElse(null);
     }
 
@@ -351,7 +380,7 @@ public class BundleDao implements IBundle {
         OperationOutcome operationOutcome = new OperationOutcome();
         operationOutcome.setId("Composition/" + savedCompositionEntity.getId());
 
-        decorateDocumentReference(savedDocumentReferenceEntity, serverBase);
+        decorateDocumentReference(savedDocumentReferenceEntity);
 
         Bundle responseBundle = (Bundle) new Bundle()
                 .setIdentifier(savedBundle.getIdentifier())

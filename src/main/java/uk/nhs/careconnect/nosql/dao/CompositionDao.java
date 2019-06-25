@@ -19,14 +19,13 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 import uk.nhs.careconnect.nosql.entities.CompositionEntity;
+import uk.nhs.careconnect.nosql.entities.IdentifierEntity;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
 import static uk.nhs.careconnect.nosql.dao.CriteriaBuilder.aCriteriaBuilder;
 
-@Transactional
 @Repository
 public class CompositionDao implements IComposition {
 
@@ -74,7 +73,19 @@ public class CompositionDao implements IComposition {
                         // Replace Bundle Composition Id with Composition Entity id
                         resolveCompositionReferences((Composition) entry.getResource(), bundle);
                         entry.getResource().setId(compositionEntity.getId().toString());
-                        resources.add(entry.getResource());
+
+                        Composition composition = (Composition) entry.getResource();
+                        composition.setSubject(new Reference("Patient/"+compositionEntity.getIdxPatient().getId().toString()));
+                        if (!composition.getSubject().hasIdentifier()) {
+                            for (IdentifierEntity identifierEntity : compositionEntity.getIdxPatient().getIdentifiers()) {
+                                if (identifierEntity.getSystem().equals("https://fhir.nhs.uk/Id/nhs-number")) {
+                                    composition.getSubject().setIdentifier(
+                                            new Identifier().setValue(identifierEntity.getValue()).setSystem(identifierEntity.getSystem())
+                                    );
+                                }
+                            }
+                        }
+                        resources.add(composition);
                     }
                 }
             }
@@ -103,6 +114,16 @@ public class CompositionDao implements IComposition {
                         resolveCompositionReferences((Composition) entry.getResource(), bundle);
                         entry.getResource().setId(compositionEntity.getId().toString());
                         composition = (Composition) entry.getResource();
+                        composition.setSubject(new Reference("Patient/"+compositionEntity.getIdxPatient().getId().toString()));
+                        if (!composition.getSubject().hasIdentifier()) {
+                            for (IdentifierEntity identifierEntity : compositionEntity.getIdxPatient().getIdentifiers()) {
+                                if (identifierEntity.getSystem().equals("https://fhir.nhs.uk/Id/nhs-number")) {
+                                    composition.getSubject().setIdentifier(
+                                            new Identifier().setValue(identifierEntity.getValue()).setSystem(identifierEntity.getSystem())
+                                    );
+                                }
+                            }
+                        }
                     }
                 }
             }

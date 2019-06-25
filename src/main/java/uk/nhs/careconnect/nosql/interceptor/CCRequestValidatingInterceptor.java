@@ -1,4 +1,4 @@
-package uk.nhs.careconnect.nosql;
+package uk.nhs.careconnect.nosql.interceptor;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.api.EncodingEnum;
@@ -14,7 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.dstu3.model.*;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
+import uk.nhs.careconnect.nosql.support.OperationOutcomeFactory;
 import uk.org.hl7.fhir.core.Stu3.CareConnectProfile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,7 +32,7 @@ public class CCRequestValidatingInterceptor extends InterceptorAdapter {
 
     FhirContext ctx;
 
-    public CCRequestValidatingInterceptor(Logger ourLog, FhirValidator fhirValidator,  FhirContext ctx) {
+    public CCRequestValidatingInterceptor(Logger ourLog, FhirValidator fhirValidator, FhirContext ctx) {
         super();
         this.log = ourLog;
         this.fhirValidator = fhirValidator;

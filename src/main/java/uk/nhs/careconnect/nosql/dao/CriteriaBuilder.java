@@ -1,10 +1,6 @@
 package uk.nhs.careconnect.nosql.dao;
 
-import ca.uhn.fhir.rest.param.DateParam;
-import ca.uhn.fhir.rest.param.DateRangeParam;
-import ca.uhn.fhir.rest.param.ReferenceParam;
-import ca.uhn.fhir.rest.param.TokenOrListParam;
-import ca.uhn.fhir.rest.param.TokenParam;
+import ca.uhn.fhir.rest.param.*;
 import com.mongodb.DBRef;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.query.Criteria;

@@ -2,7 +2,6 @@ package uk.nhs.careconnect.nosql.dao;
 
 import ca.uhn.fhir.context.FhirContext;
 import com.mongodb.DBObject;
-import org.bson.types.ObjectId;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Resource;
@@ -15,14 +14,11 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
-import uk.nhs.careconnect.nosql.entities.CompositionEntity;
-
-import javax.transaction.Transactional;
 
 import static uk.nhs.careconnect.nosql.dao.SaveAction.CREATE;
 import static uk.nhs.careconnect.nosql.util.BundleUtils.fhirResourceToDBObject;
 
-@Transactional
+
 @Repository
 public class FHIRResourceDao implements IFHIRResource {
 

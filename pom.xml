@@ -6,7 +6,7 @@
 
     <groupId>uk.nhs.careconnect.ri</groupId>
     <artifactId>ccri-document</artifactId>
-    <version>3.7.2</version>
+    <version>3.8.0</version>
     <name>ccri-document</name>
 
 
@@ -27,7 +27,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <hapi-fhir-version>3.7.0</hapi-fhir-version>
+        <hapi-fhir-version>3.8.0</hapi-fhir-version>
         <care-connect-version>3.7.1</care-connect-version>
         <docker.image.prefix>thorlogic</docker.image.prefix>
         <hawtio.version>2.2.0</hawtio.version>
@@ -267,6 +267,24 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>28.0-jre</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.9.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.9.2</version>
         </dependency>
     </dependencies>
 

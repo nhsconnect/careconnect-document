@@ -4,28 +4,25 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenParam;
+import org.bson.types.ObjectId;
 import org.hl7.fhir.dstu3.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.nhs.careconnect.nosql.dao.transform.PatientEntityToFHIRPatient;
-
-import uk.nhs.careconnect.nosql.entities.IdentifierEntity;
-import uk.nhs.careconnect.nosql.entities.Name;
-import uk.nhs.careconnect.nosql.entities.PatientEntity;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
-
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
+import uk.nhs.careconnect.nosql.dao.transform.PatientEntityToFHIRPatient;
+import uk.nhs.careconnect.nosql.entities.IdentifierEntity;
+import uk.nhs.careconnect.nosql.entities.Name;
+import uk.nhs.careconnect.nosql.entities.PatientEntity;
 import uk.nhs.careconnect.nosql.entities.Telecom;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-@Transactional
+
 @Repository
 public class PatientDao implements IPatient {
 
