@@ -169,14 +169,6 @@ public class CcriFHIRDocumentServerHAPIConfig extends RestfulServer {
 		// Remove as believe due to issues on docker ctx.setNarrativeGenerator(new DefaultThymeleafNarrativeGenerator());
 	}
 
-	/**
-	 * This interceptor adds some pretty syntax highlighting in responses when a browser is detected
-	 */
-	@Bean(autowire = Autowire.BY_TYPE)
-	public IServerInterceptor responseHighlighterInterceptor() {
-		ResponseHighlighterInterceptor retVal = new ResponseHighlighterInterceptor();
-		return retVal;
-	}
 
 
 
