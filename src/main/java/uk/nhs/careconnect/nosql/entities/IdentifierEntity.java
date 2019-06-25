@@ -1,9 +1,6 @@
 package uk.nhs.careconnect.nosql.entities;
 
 import org.hl7.fhir.dstu3.model.Identifier;
-import org.hl7.fhir.dstu3.model.Identifier.IdentifierUse;
-
-import java.util.List;
 
 public class IdentifierEntity {
 

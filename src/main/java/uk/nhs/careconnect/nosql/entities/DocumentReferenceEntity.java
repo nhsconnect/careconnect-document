@@ -1,6 +1,7 @@
 package uk.nhs.careconnect.nosql.entities;
 
 import org.hl7.fhir.dstu3.model.DocumentReference;
+import org.hl7.fhir.dstu3.model.Identifier;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Reference;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -96,6 +97,17 @@ public class DocumentReferenceEntity {
     }
 
     public DocumentReference getFhirDocumentReference() {
+
+        documentReference.setSubject(new org.hl7.fhir.dstu3.model.Reference("Patient/"+getIdxPatient().getId().toString()));
+        if (!documentReference.getSubject().hasIdentifier()) {
+            for (IdentifierEntity identifierEntity : getIdxPatient().getIdentifiers()) {
+                if (identifierEntity.getSystem().equals("https://fhir.nhs.uk/Id/nhs-number")) {
+                    documentReference.getSubject().setIdentifier(
+                            new Identifier().setValue(identifierEntity.getValue()).setSystem(identifierEntity.getSystem())
+                    );
+                }
+            }
+        }
         return documentReference;
     }
 

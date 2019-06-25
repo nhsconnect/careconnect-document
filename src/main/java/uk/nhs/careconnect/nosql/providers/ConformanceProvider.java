@@ -82,7 +82,10 @@ public class ConformanceProvider extends ServerCapabilityStatementProvider {
         capabilityStatement.getImplementation().setDescription(System.getProperty("ccri.server"));
         capabilityStatement.getImplementation().setUrl(System.getProperty("ccri.server.base"));
         // TODO KGM move to config
-        capabilityStatement.getImplementationGuide().add(new UriType(System.getProperty("ccri.guide")));
+        // KGM only add if not already present
+        if (capabilityStatement.getImplementationGuide().size() == 0) {
+            capabilityStatement.getImplementationGuide().add(new UriType(System.getProperty("ccri.guide")));
+        }
 
         capabilityStatement.setStatus(Enumerations.PublicationStatus.ACTIVE);
         /*
