@@ -6,9 +6,8 @@
 
     <groupId>uk.nhs.careconnect.ri</groupId>
     <artifactId>ccri-document</artifactId>
-    <version>3.8.0</version>
+    <version>3.7.3</version>
     <name>ccri-document</name>
-
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -27,7 +26,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <hapi-fhir-version>3.8.0</hapi-fhir-version>
+        <hapi-fhir-version>3.7.0</hapi-fhir-version>
         <care-connect-version>3.7.1</care-connect-version>
         <docker.image.prefix>thorlogic</docker.image.prefix>
         <hawtio.version>2.2.0</hawtio.version>
