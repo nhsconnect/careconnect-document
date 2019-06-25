@@ -1,6 +1,10 @@
 package uk.nhs.careconnect.nosql.dao.transform;
 
-import org.hl7.fhir.dstu3.model.*;
+import org.hl7.fhir.dstu3.model.CodeableConcept;
+import org.hl7.fhir.dstu3.model.Composition;
+import org.hl7.fhir.dstu3.model.DocumentReference;
+import org.hl7.fhir.dstu3.model.Extension;
+import org.hl7.fhir.dstu3.model.Period;
 
 import java.util.Optional;
 
@@ -13,7 +17,6 @@ public class CompositionTransformer {
                 .setType(composition.getType())
                 .setSubject(composition.getSubject())
                 .setIdentifier(asList(composition.getIdentifier()));
-
 
         Optional<CodeableConcept> optionalCodeableConcept = composition.getExtension().stream()
                 .map(Extension::getValue)

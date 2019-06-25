@@ -1,9 +1,17 @@
-package uk.nhs.careconnect.nosql.configuration;
+package uk.nhs.careconnect.nosql;
 
 
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.validation.FhirValidator;
+import org.hl7.fhir.dstu3.hapi.validation.DefaultProfileValidationSupport;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import uk.org.hl7.fhir.validation.stu3.CareConnectProfileValidationSupport;
+import uk.org.hl7.fhir.validation.stu3.SNOMEDUKMockValidationSupport;
+import org.hl7.fhir.dstu3.hapi.validation.FhirInstanceValidator;
+import org.hl7.fhir.dstu3.hapi.validation.ValidationSupportChain;
 
 
 /**
@@ -20,9 +28,16 @@ public class Config {
     @Autowired()
     FhirContext ctx;
 
+    @Value("${ccri.server.base}")
+    private String serverBase;
+
+    @Value("${server.port}")
+    private String serverPort;
+
+    @Value("${server.servlet.context-path}")
+    private String serverPath;
 
 
-    /*
     @Bean(name="fhirValidator")
     public FhirValidator fhirValidator () {
 
@@ -53,8 +68,6 @@ public class Config {
 
         return val;
     }
-
-     */
 
 
 }

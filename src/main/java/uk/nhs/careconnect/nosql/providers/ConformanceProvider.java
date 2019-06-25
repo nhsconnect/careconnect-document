@@ -12,7 +12,6 @@ import org.hl7.fhir.dstu3.model.CapabilityStatement.ResourceInteractionComponent
 import org.hl7.fhir.instance.model.api.IPrimitiveType;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
-import uk.nhs.careconnect.nosql.HapiProperties;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
@@ -48,7 +47,7 @@ public class ConformanceProvider extends ServerCapabilityStatementProvider {
     public CapabilityStatement getServerConformance(HttpServletRequest theRequest) {
     	
     	WebApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(theRequest.getServletContext());
-    	log.debug("restful2 Server not null = " + ctx.getEnvironment().getProperty("ccri.validate_flag"));
+    	log.info("restful2 Server not null = " + ctx.getEnvironment().getProperty("ccri.validate_flag"));
     	 
         String CRUD_update =  ctx.getEnvironment().getProperty("ccri.CRUD_update");
         String CRUD_delete = ctx.getEnvironment().getProperty("ccri.CRUD_delete");
@@ -56,13 +55,18 @@ public class ConformanceProvider extends ServerCapabilityStatementProvider {
         String CRUD_read = ctx.getEnvironment().getProperty("ccri.CRUD_read");
 
 
+        String oauth2authorize = ctx.getEnvironment().getProperty("ccri.oauth2.authorize");
+        String oauth2token = ctx.getEnvironment().getProperty("ccri.oauth2.token");
+        String oauth2register = ctx.getEnvironment().getProperty("ccri.oauth2.register");
+        String oauth2 = ctx.getEnvironment().getProperty("ccri.oauth2");
+        
         if (capabilityStatement != null && myCache) {
             return capabilityStatement;
         }
         CapabilityStatement capabilityStatement = super.getServerConformance(theRequest);
 
 
-        capabilityStatement.setPublisher("NHS Digital and Project Wildfyre");
+        capabilityStatement.setPublisher("NHS Digital");
         capabilityStatement.setDateElement(conformanceDate());
         capabilityStatement.setFhirVersion(FhirVersionEnum.DSTU3.getFhirVersionString());
         capabilityStatement.setAcceptUnknown(CapabilityStatement.UnknownContentCode.EXTENSIONS); // TODO: make this configurable - this is a fairly big
@@ -73,16 +77,12 @@ public class ConformanceProvider extends ServerCapabilityStatementProvider {
         capabilityStatement.setKind(CapabilityStatement.CapabilityStatementKind.INSTANCE);
 
 
-        capabilityStatement.getSoftware().setName(HapiProperties.getSoftwareName());
-        capabilityStatement.getSoftware().setVersion(HapiProperties.getSoftwareVersion());
-        capabilityStatement.getImplementation().setDescription(HapiProperties.getSoftwareImplementationDesc());
-        capabilityStatement.getImplementation().setUrl(HapiProperties.getSoftwareImplementationUrl());
-
-        // KGM only add if not already present
-        if (capabilityStatement.getImplementationGuide().size() == 0) {
-            capabilityStatement.getImplementationGuide().add(new UriType(HapiProperties.getSoftwareImplementationGuide()));
-        }
-        capabilityStatement.setPublisher("NHS Digital & Project Wildfyre");
+        capabilityStatement.getSoftware().setName(System.getProperty("ccri.software.name"));
+        capabilityStatement.getSoftware().setVersion(System.getProperty("ccri.software.version"));
+        capabilityStatement.getImplementation().setDescription(System.getProperty("ccri.server"));
+        capabilityStatement.getImplementation().setUrl(System.getProperty("ccri.server.base"));
+        // TODO KGM move to config
+        capabilityStatement.getImplementationGuide().add(new UriType(System.getProperty("ccri.guide")));
 
         capabilityStatement.setStatus(Enumerations.PublicationStatus.ACTIVE);
         /*

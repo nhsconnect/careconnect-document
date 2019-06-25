@@ -1,15 +1,19 @@
-package uk.nhs.careconnect.nosql.interceptor;
+package uk.nhs.careconnect.nosql;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.api.server.RequestDetails;
 import ca.uhn.fhir.rest.server.interceptor.InterceptorAdapter;
+
 import org.hl7.fhir.dstu3.model.Binary;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.core.io.ClassPathResource;
 import org.xhtmlrenderer.pdf.ITextRenderer;
+
+
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,8 +34,8 @@ public class mimeInterceptor extends InterceptorAdapter {
     public boolean incomingRequestPostProcessed(RequestDetails theRequestDetails, HttpServletRequest theRequest,
                                                 HttpServletResponse theResponse) {
 
-        log.trace("iR Content-Type = "+theRequestDetails.getHeader("Content-Type"));
-        log.trace("iR Accept = "+theRequestDetails.getHeader("Accept"));
+        log.debug("iR Content-Type = "+theRequestDetails.getHeader("Content-Type"));
+        log.info("iR Accept = "+theRequestDetails.getHeader("Accept"));
         return true;
         }
 
@@ -82,7 +86,7 @@ public class mimeInterceptor extends InterceptorAdapter {
             }
         }
          */
-        log.trace("oR Content-Type = "+theRequestDetails.getHeader("Accept"));
+        log.info("oR Content-Type = "+theRequestDetails.getHeader("Accept"));
         String acceptType = theRequestDetails.getHeader("Accept");
         if (acceptType == null) {
             acceptType = theRequestDetails.getHeader("accept");
@@ -92,7 +96,7 @@ public class mimeInterceptor extends InterceptorAdapter {
         if (value != null) {
             for (String nextParam : value) {
                 acceptType = nextParam;
-                log.trace("_format = "+acceptType);
+                log.info("_format = "+acceptType);
             }
         }
 

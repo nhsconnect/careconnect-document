@@ -1,4 +1,4 @@
-package uk.nhs.careconnect.nosql.support;
+package uk.nhs.careconnect.nosql;
 
 import org.springframework.context.annotation.Configuration;
 

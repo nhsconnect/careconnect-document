@@ -4,7 +4,7 @@ services:
 
   ccrimongo:
       container_name: ccrimongo
-      image: mongo:3.6.4
+      image: mongo:3.6.3
       ports:
         - 27107:27107
       networks:
@@ -25,10 +25,14 @@ services:
         - spring.data.mongodb.database=careconnect-nosql
       ports:
         - 8181:8181
+      extra_hosts:
+        # Define an alias to loop back for REST Connections
+        - "${FHIR_SERVER_BASE_HOST}:127.0.0.1"
       volumes:
         - mongo-log-volume:/usr/local/tomcat/logs
       networks:
-        - ccri_net
+        ccri_net:
+          ipv4_address: 172.168.240.11
 
 
 

@@ -6,34 +6,54 @@ import ca.uhn.fhir.rest.api.EncodingEnum;
 import ca.uhn.fhir.rest.server.FifoMemoryPagingProvider;
 import ca.uhn.fhir.rest.server.HardcodedServerAddressStrategy;
 import ca.uhn.fhir.rest.server.IResourceProvider;
+import ca.uhn.fhir.rest.server.RestfulServer;
 import ca.uhn.fhir.rest.server.interceptor.CorsInterceptor;
+import ca.uhn.fhir.rest.server.interceptor.IServerInterceptor;
+import ca.uhn.fhir.rest.server.interceptor.ResponseHighlighterInterceptor;
 import ca.uhn.fhir.util.VersionUtil;
 import ca.uhn.fhir.validation.FhirValidator;
+import org.springframework.beans.factory.annotation.Autowire;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.web.cors.CorsConfiguration;
-import uk.nhs.careconnect.nosql.interceptor.CCRequestValidatingInterceptor;
-import uk.nhs.careconnect.nosql.interceptor.mimeInterceptor;
 import uk.nhs.careconnect.nosql.providers.ConformanceProvider;
+
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletResponse;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TimeZone;
 
 @WebServlet(urlPatterns = { "/*" }, displayName = "FHIR Server")
-public class RestfulServer extends ca.uhn.fhir.rest.server.RestfulServer {
+public class CcriFHIRDocumentServerHAPIConfig extends RestfulServer {
 
 	private static final long serialVersionUID = 1L;
-	private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(RestfulServer.class);
+	private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(CcriFHIRDocumentServerHAPIConfig.class);
 
 	private ApplicationContext applicationContext;
 
-	RestfulServer(ApplicationContext context) {
-		this.applicationContext = context;
+	@Value("${ccri.software.name}")
+	private String softwareName;
 
+	@Value("${ccri.software.version}")
+	private String softwareVersion;
+
+	@Value("${ccri.server}")
+	private String server;
+
+	@Value("${ccri.server.base}")
+	private String serverBase;
+
+	final private Boolean validate;
+
+	CcriFHIRDocumentServerHAPIConfig(ApplicationContext context, Boolean validate) {
+		this.applicationContext = context;
+		this.validate = validate;
 	}
 
 	@Override
@@ -71,14 +91,18 @@ public class RestfulServer extends ca.uhn.fhir.rest.server.RestfulServer {
 		FhirVersionEnum fhirVersion = FhirVersionEnum.DSTU3;
 		setFhirContext(new FhirContext(fhirVersion));
 
-
-		String serverBase = HapiProperties.getServerBase();
 	     if (serverBase != null && !serverBase.isEmpty()) {
             setServerAddressStrategy(new HardcodedServerAddressStrategy(serverBase));
         }
 
         if (applicationContext == null ) log.info("Context is null");
 
+		/*setResourceProviders(Arrays.asList(
+				applicationContext.getBean(BundleProvider.class)
+				,applicationContext.getBean(CompositionProvider.class)
+				,applicationContext.getBean(PatientProvider.class)
+				,applicationContext.getBean(BinaryProvider.class)
+		));*/
 
         Class<?> classType = null;
         log.info("Resource count " + permissions.size());
@@ -87,7 +111,7 @@ public class RestfulServer extends ca.uhn.fhir.rest.server.RestfulServer {
         for (String permission : permissions) {
             try {
                 classType = Class.forName("uk.nhs.careconnect.nosql.providers." + permission + "Provider");
-            } catch (ClassNotFoundException e) {
+            } catch (ClassNotFoundException  e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
@@ -103,9 +127,9 @@ public class RestfulServer extends ca.uhn.fhir.rest.server.RestfulServer {
 		// Replace built in conformance provider (CapabilityStatement)
 		setServerConformanceProvider(new ConformanceProvider());
 
-		setServerName(HapiProperties.getServerName());
-		setServerVersion(HapiProperties.getSoftwareVersion());
-		setImplementationDescription(HapiProperties.getSoftwareImplementationDesc());
+		setServerName(softwareName);
+		setServerVersion(softwareVersion);
+		setImplementationDescription(server);
 
 		CorsConfiguration config = new CorsConfiguration();
 		config.addAllowedHeader("x-fhir-starter");
@@ -136,7 +160,7 @@ public class RestfulServer extends ca.uhn.fhir.rest.server.RestfulServer {
 
 
 		// KGM 13th March 2019 - Copied from ccri-fhir
-		if (HapiProperties.getValidationFlag()) {
+		if (validate) {
 			//log.info("Registering Validation Interceptor");
 			CCRequestValidatingInterceptor requestInterceptor = new CCRequestValidatingInterceptor(log, (FhirValidator) applicationContext.getBean("fhirValidator"), ctx);
 
@@ -145,6 +169,14 @@ public class RestfulServer extends ca.uhn.fhir.rest.server.RestfulServer {
 		// Remove as believe due to issues on docker ctx.setNarrativeGenerator(new DefaultThymeleafNarrativeGenerator());
 	}
 
+	/**
+	 * This interceptor adds some pretty syntax highlighting in responses when a browser is detected
+	 */
+	@Bean(autowire = Autowire.BY_TYPE)
+	public IServerInterceptor responseHighlighterInterceptor() {
+		ResponseHighlighterInterceptor retVal = new ResponseHighlighterInterceptor();
+		return retVal;
+	}
 
 
 
