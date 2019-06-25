@@ -19,7 +19,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import java.time.Clock;
 
 @SpringBootApplication
-@EnableSwagger2
 public class CcriDocument {
 
     @Autowired
