@@ -10,6 +10,7 @@ import com.mongodb.DBRef;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.DocumentReference;
 import org.hl7.fhir.dstu3.model.OperationOutcome;
+import org.hl7.fhir.dstu3.model.Resource;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
 
 import static com.shazam.shazamcrest.MatcherAssert.assertThat;
 import static com.shazam.shazamcrest.matcher.Matchers.sameBeanAs;
@@ -112,10 +114,10 @@ public class DocumentReferenceDaoTest extends AbstractDaoTest {
                             DateRangeParam date, TokenOrListParam type, TokenOrListParam setting, DateRangeParam period) {
 
         //when
-        Bundle bundle = documentReferenceDao.search(resid, identifier, patient, date, type, setting, period);
+        List<Resource> resources = documentReferenceDao.search(resid, identifier, patient, date, type, setting, period);
 
         //then
-        DocumentReference actualDocumentReference = extractFirstResourceOfType(DocumentReference.class, bundle).get();
+        DocumentReference actualDocumentReference = (DocumentReference) resources.get(0);
         assertThat(actualDocumentReference, sameBeanAs(documentReferenceEntity.getFhirDocumentReference()).ignoring("id").ignoring("content"));
         assertThatContentsAreEqual(actualDocumentReference.getContent(), documentReferenceEntity.getFhirDocumentReference().getContent());
     }

@@ -8,11 +8,11 @@ import static java.lang.String.format;
 
 public class DocumentReferenceDecorator {
 
-    public static Resource decorateDocumentReference(DocumentReferenceEntity documentReferenceEntity, String serverBase) {
+    public static Resource decorateDocumentReference(DocumentReferenceEntity documentReferenceEntity) {
         DocumentReference documentReference = documentReferenceEntity.getFhirDocumentReference();
         documentReference.setId(documentReferenceEntity.getId());
         documentReference.getContent().stream()
-                .forEach(c -> c.setAttachment(c.getAttachment().setUrl(format(serverBase + "/%s", c.getAttachment().getUrl()))));
+                .forEach(c -> c.setAttachment(c.getAttachment().setUrl(format(System.getProperty("ccri.server.base") + "/%s", c.getAttachment().getUrl()))));
 
         return documentReference;
     }
