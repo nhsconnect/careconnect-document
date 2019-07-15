@@ -135,12 +135,12 @@ public class DocumentReferenceDao implements IDocumentReference {
     public MethodOutcome refresh(FhirContext ctxFHIR) throws Exception {
 
         clientNRLS = ctxFHIR.newRestfulGenericClient(nhsAddress);
-        updateNRLS();
+        updateNRLS(ctxFHIR);
         MethodOutcome retVal = new MethodOutcome();
         return retVal;
     }
 
-    private void updateNRLS() {
+    private void updateNRLS(FhirContext ctx) {
 
         List<Resource> doc1 = search(null,null,null, null, new TokenOrListParam().add("http://snomed.info/sct","373942005"),null,null);
         List<Resource> docs = search(null,null,null, null, new TokenOrListParam().add("http://snomed.info/sct","73625300"),null,null);
@@ -157,7 +157,7 @@ public class DocumentReferenceDao implements IDocumentReference {
                     switch (documentReference.getContext().getPracticeSetting().getCodingFirstRep().getCode()) {
 
                         case "892811000000109":
-                            sendNRLS(documentReference);
+                            sendNRLS(ctx, documentReference);
                             break;
                     }
                 }
@@ -166,7 +166,7 @@ public class DocumentReferenceDao implements IDocumentReference {
 
     }
 
-    private void sendNRLS(DocumentReference documentReference) {
+    private void sendNRLS(FhirContext ctx, DocumentReference documentReference) {
         log.info("Checking NRLS for entry "+documentReference.getId());
 
         Boolean found = false;
@@ -195,9 +195,28 @@ public class DocumentReferenceDao implements IDocumentReference {
         }
         if (!found) {
             log.info("Entry not found on NRL. Adding entry for "+documentReference.getId());
-            documentReference.getType().getCodingFirstRep().setCode("736253002").setDisplay("Mental health crisis plan");
+
+            CodeableConcept type = new CodeableConcept();
+            type.addCoding()
+                    .setCode("736253002")
+                    .setSystem("http://snomed.info/sct")
+                    .setDisplay("Mental health crisis plan");
+            documentReference.setType(type);
+
             documentReference.addAuthor().setReference("https://directory.spineservices.nhs.uk/STU3/Organization/MHT01");
             documentReference.setCustodian(new Reference("https://directory.spineservices.nhs.uk/STU3/Organization/MHT01"));
+
+
+            if (documentReference.hasSubject()) {
+                if (documentReference.getSubject().hasIdentifier()
+                        && documentReference.getSubject().getIdentifier().getSystem().equals("https://fhir.nhs.uk/Id/nhs-number")) {
+                    documentReference.setSubject(
+                            new Reference()
+                                    .setReference("https://demographics.spineservices.nhs.uk/STU3/Patient/"+documentReference.getSubject().getIdentifier().getValue())
+                    );
+                }
+            }
+            log.trace(ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(documentReference));
             clientNRLS.create().resource(documentReference).execute();
         }
 
