@@ -195,7 +195,7 @@ public class DocumentReferenceDao implements IDocumentReference {
         }
         if (!found) {
             log.info("Entry not found on NRL. Adding entry for "+documentReference.getId());
-            documentReference.getType().getCodingFirstRep().setCode("736253002");
+            documentReference.getType().getCodingFirstRep().setCode("736253002").setDisplay("Mental health crisis plan");
             documentReference.addAuthor().setReference("https://directory.spineservices.nhs.uk/STU3/Organization/MHT01");
             documentReference.setCustodian(new Reference("https://directory.spineservices.nhs.uk/STU3/Organization/MHT01"));
             clientNRLS.create().resource(documentReference).execute();
