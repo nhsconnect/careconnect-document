@@ -7,6 +7,7 @@ import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.TokenOrListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
+import org.bson.types.Code;
 import org.hl7.fhir.dstu3.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -206,6 +207,18 @@ public class DocumentReferenceDao implements IDocumentReference {
             documentReference.addAuthor().setReference("https://directory.spineservices.nhs.uk/STU3/Organization/MHT01");
             documentReference.setCustodian(new Reference("https://directory.spineservices.nhs.uk/STU3/Organization/MHT01"));
 
+            if (!documentReference.hasIndexed()) {
+                documentReference.setIndexed(documentReference.getCreated());
+            }
+            if (!documentReference.hasStatus()) {
+                documentReference.setStatus(Enumerations.DocumentReferenceStatus.CURRENT);
+            }
+            CodeableConcept _class = new CodeableConcept();
+            _class.addCoding()
+                    .setCode("734163000")
+                    .setSystem("http://snomed.info/sct")
+                    .setDisplay("Care plan");
+            documentReference.setClass_(_class);
 
             if (documentReference.hasSubject()) {
                 if (documentReference.getSubject().hasIdentifier()
@@ -216,6 +229,26 @@ public class DocumentReferenceDao implements IDocumentReference {
                     );
                 }
             }
+            DocumentReference.DocumentReferenceContentComponent content = documentReference.getContentFirstRep();
+            if (!content.hasFormat()) {
+                content.setFormat(new Coding()
+                        .setCode("proxy:https://www.iso.org/standard/63534.html")
+                        .setDisplay("PDF")
+                .setSystem("https://fhir.nhs.uk/STU3/CodeSystem/NRL-FormatCode-1"));
+            }
+
+            if (!content.hasExtension()) {
+                Extension extension = content.addExtension();
+                extension.setUrl("https://fhir.nhs.uk/STU3/StructureDefinition/Extension-NRL-ContentStability-1");
+                CodeableConcept codeableConcept = new CodeableConcept();
+                codeableConcept.addCoding()
+                        .setSystem("https://fhir.nhs.uk/STU3/CodeSystem/NRL-ContentStability-1")
+                        .setCode("static")
+                        .setDisplay("Static");
+                extension.setValue(codeableConcept);
+            }
+
+
             log.trace(ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(documentReference));
             clientNRLS.create().resource(documentReference).execute();
         }
