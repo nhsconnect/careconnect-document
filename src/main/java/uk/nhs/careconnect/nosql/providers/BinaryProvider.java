@@ -73,8 +73,8 @@ public class BinaryProvider implements IResourceProvider {
     public MethodOutcome create(HttpServletRequest httpRequest, @ResourceParam Binary binary) {
 
         OperationOutcome operationOutcome = new OperationOutcome();
-        operationOutcome.setId("Binary/" + binaryDao.save(fhirContext, binary));
-
+        Binary newBinary = binaryDao.save(fhirContext, binary);
+        operationOutcome.setId("Binary/"+newBinary.getId());
         MethodOutcome method = new MethodOutcome();
         method.setCreated(true);
 
