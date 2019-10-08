@@ -6,7 +6,7 @@
 
     <groupId>uk.nhs.careconnect.ri</groupId>
     <artifactId>ccri-document</artifactId>
-    <version>3.8.0</version>
+    <version>4.0.0</version>
     <name>ccri-document</name>
 
 
