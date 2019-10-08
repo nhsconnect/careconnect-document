@@ -8,18 +8,12 @@ import ca.uhn.fhir.rest.server.HardcodedServerAddressStrategy;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.RestfulServer;
 import ca.uhn.fhir.rest.server.interceptor.CorsInterceptor;
-import ca.uhn.fhir.rest.server.interceptor.IServerInterceptor;
-import ca.uhn.fhir.rest.server.interceptor.ResponseHighlighterInterceptor;
 import ca.uhn.fhir.util.VersionUtil;
 import ca.uhn.fhir.validation.FhirValidator;
-import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.web.cors.CorsConfiguration;
 import uk.nhs.careconnect.nosql.providers.ConformanceProvider;
-
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletResponse;
@@ -49,7 +43,7 @@ public class CcriFHIRDocumentServerHAPIConfig extends RestfulServer {
 	@Value("${ccri.server.base}")
 	private String serverBase;
 
-	final private Boolean validate;
+	private final boolean validate;
 
 	CcriFHIRDocumentServerHAPIConfig(ApplicationContext context, Boolean validate) {
 		this.applicationContext = context;
@@ -68,58 +62,51 @@ public class CcriFHIRDocumentServerHAPIConfig extends RestfulServer {
 		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 
 		//Fetching the roles set in properties file
-		String ccri_role =  this.applicationContext.getEnvironment().getProperty("ccri.role");
-		String ccri_document_resource =  this.applicationContext.getEnvironment().getProperty("ccri.ccri_document_resource");
+		String ccri_role = this.applicationContext.getEnvironment().getProperty("ccri.role");
+		String ccri_document_resource = this.applicationContext.getEnvironment().getProperty("ccri.ccri_document_resource");
 		List<String> ccri_document_resources = Arrays.asList(ccri_document_resource.split("\\s*,\\s*"));
 
-		String ccri_document_CareConnectAPI_resource =  this.applicationContext.getEnvironment().getProperty("ccri.ccri_document_CareConnectAPI_resource");
+		String ccri_document_CareConnectAPI_resource = this.applicationContext.getEnvironment().getProperty("ccri.ccri_document_CareConnectAPI_resource");
 		List<String> ccri_document_CareConnectAPI_resources = Arrays.asList(ccri_document_CareConnectAPI_resource.split("\\s*,\\s*"));
 
 		List<String> permissions = null;
-	    switch(ccri_role)
-	        {
-	            case "ccri_document" :
-	                permissions = ccri_document_resources;
-	                break;
-	            case "ccri_document_CareConnectAPI" :
-	                permissions = ccri_document_CareConnectAPI_resources;
-	                break;
+		switch (ccri_role) {
+			case "ccri_document":
+				permissions = ccri_document_resources;
+				break;
+			case "ccri_document_CareConnectAPI":
+				permissions = ccri_document_CareConnectAPI_resources;
+				break;
 
-	        }
+		}
 
 
 		FhirVersionEnum fhirVersion = FhirVersionEnum.DSTU3;
 		setFhirContext(new FhirContext(fhirVersion));
 
-	     if (serverBase != null && !serverBase.isEmpty()) {
-            setServerAddressStrategy(new HardcodedServerAddressStrategy(serverBase));
-        }
+		if (serverBase != null && !serverBase.isEmpty()) {
+			setServerAddressStrategy(new HardcodedServerAddressStrategy(serverBase));
+		}
 
-        if (applicationContext == null ) log.info("Context is null");
+		if (applicationContext == null) log.info("Context is null");
 
-		/*setResourceProviders(Arrays.asList(
-				applicationContext.getBean(BundleProvider.class)
-				,applicationContext.getBean(CompositionProvider.class)
-				,applicationContext.getBean(PatientProvider.class)
-				,applicationContext.getBean(BinaryProvider.class)
-		));*/
 
-        Class<?> classType = null;
-        log.info("Resource count " + permissions.size());
+		Class<?> classType = null;
+		log.info("Resource count {}", permissions.size());
 
-        List<IResourceProvider> permissionlist = new ArrayList<>();
-        for (String permission : permissions) {
-            try {
-                classType = Class.forName("uk.nhs.careconnect.nosql.providers." + permission + "Provider");
-            } catch (ClassNotFoundException  e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            System.out.println(permission);
-            permissionlist.add((IResourceProvider) applicationContext.getBean(classType));
-        }
+		List<IResourceProvider> permissionlist = new ArrayList<>();
+		for (String permission : permissions) {
+			try {
+				classType = Class.forName("uk.nhs.careconnect.nosql.providers." + permission + "Provider");
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
-        setResourceProviders(permissionlist);
+			permissionlist.add((IResourceProvider) applicationContext.getBean(classType));
+		}
+
+		setResourceProviders(permissionlist);
 
 
 		registerInterceptor(new mimeInterceptor());
@@ -161,14 +148,12 @@ public class CcriFHIRDocumentServerHAPIConfig extends RestfulServer {
 
 		// KGM 13th March 2019 - Copied from ccri-fhir
 		if (validate) {
-			//log.info("Registering Validation Interceptor");
+
 			CCRequestValidatingInterceptor requestInterceptor = new CCRequestValidatingInterceptor(log, (FhirValidator) applicationContext.getBean("fhirValidator"), ctx);
 
 			registerInterceptor(requestInterceptor);
 		}
-		// Remove as believe due to issues on docker ctx.setNarrativeGenerator(new DefaultThymeleafNarrativeGenerator());
 	}
-
 
 
 
