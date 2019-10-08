@@ -14,7 +14,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.time.Clock;
 
@@ -43,11 +42,10 @@ public class CcriDocument {
     private Boolean validate;
 
     public static void main(String[] args) {
-        //System.setProperty(AuthenticationFilter.HAWTIO_AUTHENTICATION_ENABLED, "false");
+
         System.setProperty("hawtio.authenticationEnabled", "false");
         System.setProperty("management.security.enabled", "false");
         System.setProperty("server.port", "8181");
-        System.setProperty("server.context-path", "/ccri-document");
         System.setProperty("management.contextPath", "");
         SpringApplication.run(CcriDocument.class, args);
 
@@ -59,7 +57,7 @@ public class CcriDocument {
     }
 
     @Bean
-    public ServletRegistrationBean ServletRegistrationBean() {
+    public ServletRegistrationBean servletRegistrationBean() {
         ServletRegistrationBean registration = new ServletRegistrationBean(new CcriFHIRDocumentServerHAPIConfig(context, validate), "/STU3/*");
         registration.setName("FhirServlet");
         registration.setLoadOnStartup(1);

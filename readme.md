@@ -37,12 +37,12 @@ Which starts the app within your browser.
 
 In this directory
 
-docker build . -t ccri-document
+docker build . -t document-repository
 
-docker tag ccri-document thorlogic/ccri-document
+docker tag document-repository thorlogic/document-repository
 
-docker push thorlogic/ccri-document
+docker push thorlogic/document-repository
 
 
-docker run -d -p 8181:8181 ccri-document 
+docker run -d -p 8181:8181 document-repository
 

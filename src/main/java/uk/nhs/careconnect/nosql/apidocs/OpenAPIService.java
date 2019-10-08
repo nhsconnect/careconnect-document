@@ -35,7 +35,7 @@ public class OpenAPIService {
     @Value("${server.port}")
     private String serverPort;
 
-    @Value("${server.servlet.context-path}")
+    @Value("${server.context-path}")
     private String serverPath;
 
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(OpenAPIService.class);
