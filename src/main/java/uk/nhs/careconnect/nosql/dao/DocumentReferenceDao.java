@@ -243,12 +243,12 @@ public class DocumentReferenceDao implements IDocumentReference {
                 }
             }
             DocumentReference.DocumentReferenceContentComponent content = documentReference.getContentFirstRep();
-            if (!content.hasFormat()) {
-                content.setFormat(new Coding()
-                        .setCode("urn:nhs-ic:unstructured")
-                        .setDisplay("Unstructured Document")
-                .setSystem("https://fhir.nhs.uk/STU3/CodeSystem/NRL-FormatCode-1"));
-            }
+
+            content.setFormat(new Coding()
+                    .setCode("urn:nhs-ic:unstructured")
+                    .setDisplay("Unstructured Document")
+            .setSystem("https://fhir.nhs.uk/STU3/CodeSystem/NRL-FormatCode-1"));
+
 
             if (!content.hasExtension()) {
                 Extension extension = content.addExtension();
