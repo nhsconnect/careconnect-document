@@ -7,6 +7,7 @@ import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.TokenOrListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
+import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import org.hl7.fhir.dstu3.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,8 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
+import uk.nhs.careconnect.nosql.HapiProperties;
+import uk.nhs.careconnect.nosql.SSPInterceptor;
 import uk.nhs.careconnect.nosql.entities.DocumentReferenceEntity;
 
 import java.util.ArrayList;
@@ -32,9 +35,6 @@ public class DocumentReferenceDao implements IDocumentReference {
 
     @Autowired
     MongoOperations mongo;
-
-    @Value("${nhs.address}")
-    String nhsAddress;
 
     IGenericClient clientNRLS = null;
 
@@ -134,7 +134,9 @@ public class DocumentReferenceDao implements IDocumentReference {
     @Override
     public MethodOutcome refresh(FhirContext ctxFHIR) throws Exception {
 
-        clientNRLS = ctxFHIR.newRestfulGenericClient(nhsAddress);
+        clientNRLS = ctxFHIR.newRestfulGenericClient(HapiProperties.getServerBase("nrl"));
+        SSPInterceptor sspInterceptor = new SSPInterceptor();
+        clientNRLS.registerInterceptor(sspInterceptor);
         updateNRLS(ctxFHIR);
         MethodOutcome retVal = new MethodOutcome();
         return retVal;
@@ -171,31 +173,43 @@ public class DocumentReferenceDao implements IDocumentReference {
 
         Boolean found = false;
         if (documentReference.getSubject().hasIdentifier()) {
-            Bundle bundle = clientNRLS.search()
-                    .forResource(DocumentReference.class)
-                    .where(DocumentReference.PATIENT.hasId(documentReference.getSubject().getIdentifier().getValue()))
-                    .returnBundle(Bundle.class)
-                    .execute();
-            //System.out.println(documentReference.getSubject().getIdentifier().getValue() + " - "+ bundle.getEntry().size());
-            for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
-                if (entry.getResource() instanceof DocumentReference) {
-                    DocumentReference nrlsDoc = (DocumentReference) entry.getResource();
-                    for (Identifier identifierNRLS : nrlsDoc.getIdentifier()) {
-                        for (Identifier identifier : documentReference.getIdentifier()) {
-                            if (identifier.getSystem().equals(identifierNRLS.getSystem())
-                                    && identifier.getValue().equals(identifierNRLS.getValue())) {
-                                found = true;
-                                break;
-                            }
-                        }
+            try {
 
+                Bundle bundle = clientNRLS.search()
+                        .forResource(DocumentReference.class)
+                        .where(DocumentReference.SUBJECT.hasId("https://demographics.spineservices.nhs.uk/STU3/Patient/"+documentReference.getSubject().getIdentifier().getValue()))
+                        .returnBundle(Bundle.class)
+                        .execute();
+
+                //System.out.println(documentReference.getSubject().getIdentifier().getValue() + " - "+ bundle.getEntry().size());
+                for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
+                    if (entry.getResource() instanceof DocumentReference) {
+                        DocumentReference nrlsDoc = (DocumentReference) entry.getResource();
+                        for (Identifier identifierNRLS : nrlsDoc.getIdentifier()) {
+                            for (Identifier identifier : documentReference.getIdentifier()) {
+                                if (identifier.getSystem().equals(identifierNRLS.getSystem())
+                                        && identifier.getValue().equals(identifierNRLS.getValue())) {
+                                    found = true;
+                                    break;
+                                }
+                            }
+
+                        }
                     }
                 }
+            }
+            catch(ResourceNotFoundException ex) {
+                found = false;
+            }
+            catch(Exception ex) {
+                log.error(ex.getMessage());
+                throw ex;
             }
         }
         if (!found) {
             log.info("Entry not found on NRL. Adding entry for "+documentReference.getId());
-
+            documentReference.setId("");
+            documentReference.setMeta( new Meta().addProfile("https://fhir.nhs.uk/STU3/StructureDefinition/NRL-DocumentReference-1"));
             CodeableConcept type = new CodeableConcept();
             type.addCoding()
                     .setCode("736253002")
@@ -231,8 +245,8 @@ public class DocumentReferenceDao implements IDocumentReference {
             DocumentReference.DocumentReferenceContentComponent content = documentReference.getContentFirstRep();
             if (!content.hasFormat()) {
                 content.setFormat(new Coding()
-                        .setCode("proxy:https://www.iso.org/standard/63534.html")
-                        .setDisplay("PDF")
+                        .setCode("urn:nhs-ic:unstructured")
+                        .setDisplay("Unstructured Document")
                 .setSystem("https://fhir.nhs.uk/STU3/CodeSystem/NRL-FormatCode-1"));
             }
 
@@ -246,10 +260,27 @@ public class DocumentReferenceDao implements IDocumentReference {
                         .setDisplay("Static");
                 extension.setValue(codeableConcept);
             }
+            if (!documentReference.hasContext()) {
+                documentReference.setContext(new DocumentReference.DocumentReferenceContextComponent());
+            }
+            if (!documentReference.getContext().hasPracticeSetting()) {
+                documentReference.getContext().getPracticeSetting().addCoding(new Coding()
+                .setCode("310095008")
+                .setSystem("http://snomed.info/sct")
+                .setDisplay("Social services occupational therapy service"));
+            }
 
 
             log.trace(ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(documentReference));
-            clientNRLS.create().resource(documentReference).execute();
+            try {
+                MethodOutcome outcome = clientNRLS.create().resource(documentReference).execute();
+                if (!outcome.getCreated()) {
+                    log.error("Failed to create NRL pointer for DocumentReference ");
+                }
+            } catch (Exception ex) {
+                log.info(ctx.newJsonParser().encodeResourceToString(documentReference));
+                log.error(ex.getMessage());
+            }
         }
 
     }
