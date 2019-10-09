@@ -2,6 +2,7 @@ package uk.nhs.careconnect.nosql.apidocs;
 
 import org.springframework.stereotype.Component;
 import springfox.documentation.swagger.web.SwaggerResource;
+import uk.nhs.careconnect.nosql.HapiProperties;
 
 
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ public class ServiceDefinitionsContext {
         List<SwaggerResource> resources = new ArrayList<>();
         SwaggerResource resource = new SwaggerResource();
         resource.setLocation("/apidocs" );
-        resource.setName(System.getProperty("ccri.software.name"));
+        resource.setName(HapiProperties.getServerName());
         resource.setSwaggerVersion("2.0");
         resources.add(resource);
         return  resources;

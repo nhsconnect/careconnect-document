@@ -10,7 +10,6 @@ import ca.uhn.fhir.rest.server.RestfulServer;
 import ca.uhn.fhir.rest.server.interceptor.CorsInterceptor;
 import ca.uhn.fhir.util.VersionUtil;
 import ca.uhn.fhir.validation.FhirValidator;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.cors.CorsConfiguration;
 import uk.nhs.careconnect.nosql.providers.ConformanceProvider;
@@ -24,30 +23,17 @@ import java.util.List;
 import java.util.TimeZone;
 
 @WebServlet(urlPatterns = { "/*" }, displayName = "FHIR Server")
-public class CcriFHIRDocumentServerHAPIConfig extends RestfulServer {
+public class NoSqlRestfulServer extends RestfulServer {
 
 	private static final long serialVersionUID = 1L;
-	private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(CcriFHIRDocumentServerHAPIConfig.class);
+	private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(NoSqlRestfulServer.class);
 
 	private ApplicationContext applicationContext;
 
-	@Value("${ccri.software.name}")
-	private String softwareName;
 
-	@Value("${ccri.software.version}")
-	private String softwareVersion;
 
-	@Value("${ccri.server}")
-	private String server;
-
-	@Value("${ccri.server.base}")
-	private String serverBase;
-
-	private final boolean validate;
-
-	CcriFHIRDocumentServerHAPIConfig(ApplicationContext context, Boolean validate) {
+	NoSqlRestfulServer(ApplicationContext context, Boolean validate) {
 		this.applicationContext = context;
-		this.validate = validate;
 	}
 
 	@Override
@@ -62,7 +48,7 @@ public class CcriFHIRDocumentServerHAPIConfig extends RestfulServer {
 		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 
 		//Fetching the roles set in properties file
-		String ccri_role = this.applicationContext.getEnvironment().getProperty("ccri.role");
+		String ccri_role = HapiProperties.getServerRole();
 		String ccri_document_resource = this.applicationContext.getEnvironment().getProperty("ccri.ccri_document_resource");
 		List<String> ccri_document_resources = Arrays.asList(ccri_document_resource.split("\\s*,\\s*"));
 
@@ -84,8 +70,8 @@ public class CcriFHIRDocumentServerHAPIConfig extends RestfulServer {
 		FhirVersionEnum fhirVersion = FhirVersionEnum.DSTU3;
 		setFhirContext(new FhirContext(fhirVersion));
 
-		if (serverBase != null && !serverBase.isEmpty()) {
-			setServerAddressStrategy(new HardcodedServerAddressStrategy(serverBase));
+		if (HapiProperties.getServerBase() != null && !HapiProperties.getServerBase().isEmpty()) {
+			setServerAddressStrategy(new HardcodedServerAddressStrategy(HapiProperties.getServerBase()));
 		}
 
 		if (applicationContext == null) log.info("Context is null");
@@ -114,9 +100,9 @@ public class CcriFHIRDocumentServerHAPIConfig extends RestfulServer {
 		// Replace built in conformance provider (CapabilityStatement)
 		setServerConformanceProvider(new ConformanceProvider());
 
-		setServerName(softwareName);
-		setServerVersion(softwareVersion);
-		setImplementationDescription(server);
+		setServerName(HapiProperties.getServerName());
+		setServerVersion(HapiProperties.getSoftwareVersion());
+		setImplementationDescription(HapiProperties.getSoftwareImplementationDesc());
 
 		CorsConfiguration config = new CorsConfiguration();
 		config.addAllowedHeader("x-fhir-starter");
@@ -147,7 +133,7 @@ public class CcriFHIRDocumentServerHAPIConfig extends RestfulServer {
 
 
 		// KGM 13th March 2019 - Copied from ccri-fhir
-		if (validate) {
+		if (HapiProperties.getValidationFlag()) {
 
 			CCRequestValidatingInterceptor requestInterceptor = new CCRequestValidatingInterceptor(log, (FhirValidator) applicationContext.getBean("fhirValidator"), ctx);
 

@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import uk.nhs.careconnect.nosql.HapiProperties;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
@@ -85,7 +86,7 @@ public class OpenAPIService {
 
         info.put("version", System.getProperty("ccri.software.version"));
         info.put("title",System.getProperty("ccri.software.name"));
-        info.put("description","A reference implementation of the "+System.getProperty("ccri.software.name")+" which conforms to the <a href=\"https://nhsconnect.github.io/CareConnectAPI/\" target=\"_blank\">Care Connect API</a> ");
+        info.put("description","A reference implementation of the "+ HapiProperties.getSoftwareName() +" which conforms to the <a href=\"https://nhsconnect.github.io/CareConnectAPI/\" target=\"_blank\">Care Connect API</a> ");
         info.put("termsOfService","http://swagger.io/terms/");
         info.put("basePath",serverPath +"/STU3");
         info.put("schemes", new JSONArray().put("http"));

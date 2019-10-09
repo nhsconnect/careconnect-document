@@ -12,6 +12,7 @@ import org.hl7.fhir.dstu3.model.CapabilityStatement.ResourceInteractionComponent
 import org.hl7.fhir.instance.model.api.IPrimitiveType;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
+import uk.nhs.careconnect.nosql.HapiProperties;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
@@ -47,19 +48,14 @@ public class ConformanceProvider extends ServerCapabilityStatementProvider {
     public CapabilityStatement getServerConformance(HttpServletRequest theRequest) {
     	
     	WebApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(theRequest.getServletContext());
-    	log.info("restful2 Server not null = " + ctx.getEnvironment().getProperty("ccri.validate_flag"));
+    	log.info("restful2 Server not null = " + HapiProperties.getValidationFlag());
     	 
-        String CRUD_update =  ctx.getEnvironment().getProperty("ccri.CRUD_update");
-        String CRUD_delete = ctx.getEnvironment().getProperty("ccri.CRUD_delete");
-        String CRUD_create = ctx.getEnvironment().getProperty("ccri.CRUD_create");
-        String CRUD_read = ctx.getEnvironment().getProperty("ccri.CRUD_read");
+        boolean CRUD_update = HapiProperties.getServerCrudUpdate();
+        boolean CRUD_delete = HapiProperties.getServerCrudDelete();
+        boolean CRUD_create = HapiProperties.getServerCrudCreate();
+        boolean CRUD_read = HapiProperties.getServerCrudRead();
 
 
-        String oauth2authorize = ctx.getEnvironment().getProperty("ccri.oauth2.authorize");
-        String oauth2token = ctx.getEnvironment().getProperty("ccri.oauth2.token");
-        String oauth2register = ctx.getEnvironment().getProperty("ccri.oauth2.register");
-        String oauth2 = ctx.getEnvironment().getProperty("ccri.oauth2");
-        
         if (capabilityStatement != null && myCache) {
             return capabilityStatement;
         }
@@ -77,14 +73,14 @@ public class ConformanceProvider extends ServerCapabilityStatementProvider {
         capabilityStatement.setKind(CapabilityStatement.CapabilityStatementKind.INSTANCE);
 
 
-        capabilityStatement.getSoftware().setName(System.getProperty("ccri.software.name"));
-        capabilityStatement.getSoftware().setVersion(System.getProperty("ccri.software.version"));
-        capabilityStatement.getImplementation().setDescription(System.getProperty("ccri.server"));
-        capabilityStatement.getImplementation().setUrl(System.getProperty("ccri.server.base"));
+        capabilityStatement.getSoftware().setName(HapiProperties.getSoftwareName());
+        capabilityStatement.getSoftware().setVersion(HapiProperties.getSoftwareVersion());
+        capabilityStatement.getImplementation().setDescription(HapiProperties.getSoftwareImplementationDesc());
+        capabilityStatement.getImplementation().setUrl(HapiProperties.getSoftwareImplementationUrl());
         // TODO KGM move to config
         // KGM only add if not already present
         if (capabilityStatement.getImplementationGuide().size() == 0) {
-            capabilityStatement.getImplementationGuide().add(new UriType(System.getProperty("ccri.guide")));
+            capabilityStatement.getImplementationGuide().add(new UriType(HapiProperties.getSoftwareImplementationGuide()));
         }
 
         capabilityStatement.setStatus(Enumerations.PublicationStatus.ACTIVE);
@@ -115,25 +111,25 @@ public class ConformanceProvider extends ServerCapabilityStatementProvider {
                  // Start of CRUD operations
                   	 List<ResourceInteractionComponent> l = restResourceComponent.getInteraction();
                        for(int i=0;i<l.size();i++)
-                       	if(CRUD_read.equals("false"))
+                       	if(!CRUD_read)
                        	if (restResourceComponent.getInteraction().get(i).getCode().toString()=="READ")
                        	{
                        		restResourceComponent.getInteraction().remove(i);
                        	}	
                        for(int i=0;i<l.size();i++)
-                       	if(CRUD_update.equals("false"))
+                       	if(!CRUD_update)
                        	if (restResourceComponent.getInteraction().get(i).getCode().toString()=="UPDATE")
                        	{
                        		restResourceComponent.getInteraction().remove(i);
                        	}	
                        for(int i=0;i<l.size();i++)
-                       	if(CRUD_create.equals("false"))
+                       	if(!CRUD_create)
                        	if (restResourceComponent.getInteraction().get(i).getCode().toString()=="CREATE")
                        	{
                        		restResourceComponent.getInteraction().remove(i);
                        	}	
                        for(int i=0;i<l.size();i++)
-                       	if(CRUD_delete.equals("false"))
+                       	if(!CRUD_delete)
                        	if (restResourceComponent.getInteraction().get(i).getCode().toString()=="DELETE")
                        	{
                        		restResourceComponent.getInteraction().remove(i);

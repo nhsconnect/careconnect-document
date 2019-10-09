@@ -28,8 +28,6 @@ public class Config {
     @Autowired()
     FhirContext ctx;
 
-    @Value("${ccri.server.base}")
-    private String serverBase;
 
     @Value("${server.port}")
     private String serverPort;
@@ -40,8 +38,6 @@ public class Config {
 
     @Bean(name="fhirValidator")
     public FhirValidator fhirValidator () {
-
-       // FhirContext r4ctx = FhirContext.forR4();
 
         FhirValidator val = ctx.newValidator();
 

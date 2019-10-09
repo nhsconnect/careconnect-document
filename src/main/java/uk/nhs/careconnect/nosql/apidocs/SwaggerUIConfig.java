@@ -14,14 +14,10 @@ import java.util.List;
 @Configuration
 public class SwaggerUIConfig {
 
-    @Autowired
-    private ServiceDefinitionsContext definitionContext;
-
-
     @Primary
     @Bean
     @Lazy
-    public SwaggerResourcesProvider swaggerResourcesProvider( ) {
+    public SwaggerResourcesProvider swaggerResourcesProvider(ServiceDefinitionsContext definitionContext ) {
         System.out.println("swaggerResourceProvider");
         return () -> {
             List<SwaggerResource> resources = new ArrayList<>();

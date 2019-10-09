@@ -2,7 +2,6 @@ package uk.nhs.careconnect.nosql;
 
 import ca.uhn.fhir.context.FhirContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -14,32 +13,17 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.time.Clock;
 
 @SpringBootApplication
+@EnableSwagger2
 public class CcriDocument {
 
     @Autowired
     ApplicationContext context;
 
-    @Value("${ccri.software.version}")
-    String softwareVersion;
-
-    @Value("${ccri.software.name}")
-    String softwareName;
-
-    @Value("${ccri.server}")
-    String server;
-
-    @Value("${ccri.guide}")
-    String guide;
-
-    @Value("${ccri.server.base}")
-    String serverBase;
-
-    @Value("${ccri.validate_flag}")
-    private Boolean validate;
 
     public static void main(String[] args) {
 
@@ -58,7 +42,7 @@ public class CcriDocument {
 
     @Bean
     public ServletRegistrationBean servletRegistrationBean() {
-        ServletRegistrationBean registration = new ServletRegistrationBean(new CcriFHIRDocumentServerHAPIConfig(context, validate), "/STU3/*");
+        ServletRegistrationBean registration = new ServletRegistrationBean(new NoSqlRestfulServer(context, HapiProperties.getValidationFlag()), "/STU3/*");
         registration.setName("FhirServlet");
         registration.setLoadOnStartup(1);
         return registration;
@@ -67,11 +51,7 @@ public class CcriDocument {
     @Bean
     public FhirContext getFhirContext() {
 
-        System.setProperty("ccri.server.base", this.serverBase);
-        System.setProperty("ccri.software.name", this.softwareName);
-        System.setProperty("ccri.software.version", this.softwareVersion);
-        System.setProperty("ccri.guide", this.guide);
-        System.setProperty("ccri.server", this.server);
+
         return FhirContext.forDstu3();
     }
 
@@ -102,6 +82,5 @@ public class CcriDocument {
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
         return builder.build();
     }
-
 
 }

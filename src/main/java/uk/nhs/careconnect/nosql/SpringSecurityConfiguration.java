@@ -12,17 +12,13 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @EnableWebSecurity
 public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    @Value("${jolokia.username}")
-    private String jolokiaUsername;
 
-    @Value("${jolokia.password}")
-    private String jolokiaPassword;
 
     @Autowired
     public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication()
-                .withUser(jolokiaUsername)
-                .password(jolokiaPassword)
+                .withUser(HapiProperties.getAppUser())
+                .password(HapiProperties.getAppPassword())
                 .roles("ACTUATOR");
     }
 
@@ -31,13 +27,6 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/").permitAll().and().csrf().disable();
-/*
-        http
-                .authorizeRequests()
-                .antMatchers("/error").permitAll()
-                .antMatchers("/jolokia/**").hasRole("ACTUATOR")
-                .and().httpBasic();
 
-                */
     }
 }

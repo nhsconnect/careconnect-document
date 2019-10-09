@@ -33,7 +33,7 @@ public class TestConfig {
     @Value("${ccri.guide}")
     String guide;
 
-    @Value("${ccri.server.base}")
+    @Value("${server.base}")
     String serverBase;
 
     private static final String DATABASE_NAME = "test-mongo-db";
